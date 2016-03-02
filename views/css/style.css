@@ -1,0 +1,495 @@
+@charset "UTF-8";
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400);
+body {
+  font-family: Avenir, "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, Roboto, "游ゴシック", "Yu Gothic", "游ゴシック体", "YuGothic", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Meiryo UI", "メイリオ", Meiryo, "MS Pゴシック", "MS PGothic", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+@charset "UTF-8";
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  vertical-align: baseline; }
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+html {
+  overflow-y: scroll; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none; }
+
+input, textarea {
+  margin: 0;
+  padding: 0; }
+
+ol, ul {
+  list-style: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+caption, th {
+  text-align: left; }
+
+a:focus {
+  outline: none; }
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  height: 0;
+  visibility: hidden; }
+
+.clearfix {
+  min-height: 1px; }
+
+* html .clearfix {
+  height: 1px;
+  /*¥*/
+  /*/
+	height: auto;
+	overflow: hidden;
+	/**/ }
+
+.both {
+  clear: both; }
+
+.inline_block {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1; }
+
+#test {
+  color: #cccccc; }
+
+body {
+  font-size: 14px;
+  color: #3f3f3f;
+  line-height: 1.7;
+  font-family: Verdana, "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif; }
+
+a {
+  color: #3f3f3f;
+  text-decoration: none; }
+
+.account-display {
+  height: 22px;
+  top: 20px;
+  position: relative;
+  text-align: right; }
+
+.account-display span {
+  margin-right: 6px;
+  margin-bottom: 30px; }
+
+.account-menu {
+  display: inline-block;
+  vertical-align: text-top; }
+
+.account-menu-button {
+  width: 25px;
+  height: 19px;
+  background: url(../img/account-menuw.gif) no-repeat;
+  background-size: 25px 19px; }
+
+.account-menu li {
+  margin: 0;
+  font-weight: bold;
+  cursor: pointer; }
+
+.account-menu li ul {
+  display: none;
+  position: absolute;
+  right: 0;
+  margin-top: 19px;
+  padding: 5px; }
+
+.account-menu a {
+  color: #ffffff; }
+
+.account-menu li ul li {
+  min-width: 90px;
+  margin: 0;
+  padding: 0;
+  border: none; }
+
+.account-menu li ul li a {
+  display: inline-block; }
+
+.header-wrap {
+  min-width: 940px;
+  border-bottom: 1px solid #ececec;
+  z-index: 1;
+  background: #e6003b; }
+
+.header-content {
+  padding: 0 20px;
+  margin: 0 auto;
+  width: 900px;
+  color: #ffffff; }
+
+.header-logo {
+  margin-bottom: 30px; }
+
+.header-logo a {
+  width: 200px;
+  height: 65px;
+  margin: 0 auto;
+  display: block;
+  background: url(../img/ictscw.gif) no-repeat;
+  background-size: 200px 65px;
+  text-indent: -9999px; }
+
+.header-gnav-wrap {
+  background: #ffffff; }
+
+.header-gnav {
+  width: 700px;
+  margin: 0 auto; }
+
+.header-gnav li {
+  width: 20%;
+  display: block;
+  float: left;
+  text-align: center;
+  font-size: 16px; }
+
+.header-gnav a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 8px 0;
+  border-bottom: 3px solid #ffffff;
+  font-family: 'Lato', sans-serif;
+  color: #505050;
+  font-weight: bold;
+  transition: 0.1s; }
+
+.header-gnav a:hover {
+  border-bottom: 3px solid #e6003b;
+  color: #e6003b; }
+
+.header-gnav span {
+  display: block;
+  font-size: 10px; }
+
+.breadcrumbs {
+  margin-bottom: 10px; }
+
+.breadcrumbs li {
+  display: inline-block;
+  margin-right: 10px; }
+
+.main-wrap {
+  min-width: 940px;
+  min-height: 1000px;
+  padding-top: 20px;
+  background: #f7f7f7;
+  background-size: 42px; }
+
+.main-content {
+  padding: 0 20px;
+  margin: 0 auto;
+  width: 900px;
+  margin: 0 auto; }
+
+.main-header {
+  margin-bottom: 10px; }
+
+.main-title {
+  margin-right: 6px;
+  font-size: 24px;
+  font-family: 'Lato', sans-serif;
+  font-weight: bold; }
+
+.main-title-sub {
+  font-weight: bold; }
+
+.main-content-wrap {
+  width: 100%;
+  margin-right: 20px; }
+
+.main-content-wrap-sub {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #ececec; }
+
+.main-content-wrap-sub a {
+  color: #339ed8;
+  text-decoration: none; }
+
+.main-content-wrap-sub a:hover {
+  text-decoration: underline; }
+
+.main-content-header {
+  margin-bottom: 10px; }
+
+.main-content-title {
+  font-size: 20px;
+  font-family: 'Lato', sans-serif;
+  font-weight: bold; }
+
+.form-item {
+  margin-bottom: 10px; }
+
+.form-item select {
+  width: 500px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  font-size: 14px; }
+
+.form-item textarea {
+  width: 840px;
+  height: 200px;
+  padding: 10px;
+  border: 1px solid #cccccc;
+  font-size: 14px; }
+
+.form-item textarea:focus {
+  outline: none; }
+
+.button-wrap {
+  text-align: right; }
+
+.button-wrap .button {
+  width: 100px;
+  background: #ee3e52;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  height: 40px;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  text-align: center;
+  transition: background 0.3s ease-in-out; }
+
+.button:hover {
+  background: #e6003b; }
+
+.answer-list-info {
+  float: left;
+  width: 120px; }
+
+.answer-list-main {
+  float: right;
+  width: 720px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #cccccc; }
+
+.answer-list-title {
+  font-weight: bold;
+  color: #909090; }
+
+.answer-list-info-main {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center; }
+
+.answer-list-main-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 14px; }
+
+.answer-list-text {
+  margin-top: 4px; }
+
+.answer-list-footer-info {
+  color: #909090;
+  margin-top: 10px; }
+
+.issues-table {
+  width: 100%; }
+
+thead {
+  border-bottom: 1px solid #ececec;
+  color: #909090;
+  font-family: 'Lato', sans-serif; }
+
+thead th {
+  padding-top: 10px;
+  text-align: center; }
+
+.table-no {
+  width: 7%;
+  text-align: center; }
+
+.table-title {
+  width: 60%; }
+
+.table-duedate {
+  width: 14%;
+  text-align: center; }
+
+.table-updated {
+  width: 14%;
+  text-align: center; }
+
+.issues-table tbody tr {
+  transition: 0.2s; }
+
+.issues-table tbody tr:hover {
+  background: #f7f7f7; }
+
+.issues-table tr + tr {
+  border-top: 1px solid #ececec; }
+
+.issues-table th {
+  padding: 18px 1%; }
+
+.issues-header {
+  margin-bottom: 6px; }
+
+/*
+.issues-no {
+	float: left;
+	font-size: 16px;
+	color: $text-sub;
+	@include font-lato;
+}
+.issues-updated {
+	float: right;
+	font-size: 16px;
+	color: $text-sub;
+	@include font-lato;
+}
+*/
+.issues-title-label {
+  color: #909090;
+  font-family: 'Lato', sans-serif;
+  font-weight: bold; }
+
+.issues-title {
+  font-size: 24px;
+  font-weight: bold; }
+
+.issues-info {
+  width: 840px;
+  margin: 20px 0 26px 0;
+  padding: 10px;
+  display: table;
+  background: #f4f4f4;
+  font-family: 'Lato', sans-serif;
+  text-align: center; }
+
+.issues-info-box {
+  width: 33%;
+  display: table-cell; }
+
+.issues-info-no, .issues-info-duedate {
+  border-right: 2px solid #ffffff; }
+
+.issues-info-title {
+  color: #909090;
+  font-weight: bold; }
+
+.issues-info-main {
+  font-size: 20px; }
+
+.issues-text {
+  width: 100%; }
+
+.issues-text img {
+  max-width: 100%; }
+
+.issues-text h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0; }
+
+.issues-text h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 10px 0; }
+
+.issues-text h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0; }
+
+.issues-text h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0; }
+
+.issues-text h5 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0; }
+
+.issues-text h6 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px 0; }
+
+.side {
+  width: 280px;
+  float: right; }
+
+.footer-wrap {
+  min-width: 940px;
+  padding: 20px 0;
+  background: #f7f7f7; }
+
+.footer-content {
+  padding: 0 20px;
+  margin: 0 auto;
+  width: 900px;
+  margin: 0 auto; }
+
+.footer-logo {
+  width: 110px;
+  height: 30px;
+  margin-top: 6px;
+  float: left; }
+
+.footer-logo a {
+  width: 110px;
+  height: 30px;
+  display: block;
+  background: url(img/sp-logo.gif) no-repeat;
+  background-size: 110px 30px;
+  text-indent: -9999px; }
+
+.footer-content-wrap {
+  margin-left: 130px; }
+
+.footer-nav li {
+  display: inline-block; }
+
+.footer-nav a {
+  font-family: 'Lato', sans-serif;
+  color: #ffffff; }
+
+.footer-nav a:hover {
+  text-decoration: underline; }
+
