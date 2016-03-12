@@ -1,16 +1,15 @@
 source "https://rubygems.org"
 
 gem "sinatra"
-gem "sinatra-contrib", require: "sinatra/contrib"
 gem "rack-protection", require: "rack/protection"
 gem "sinatra-rocketio", require: "sinatra/rocketio"
 
 gem "hamlit"
 
-# gem "sqlite3"
-# gem "sinatra-activerecord", require: "sinatra/activerecord"
-# gem "rake"
+gem "sqlite3"
+gem "sinatra-activerecord", require: "sinatra/activerecord"
 
+gem "rake"
 gem "dotenv"
 
 group :development do

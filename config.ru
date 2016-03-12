@@ -7,7 +7,6 @@ FileUtils.makedirs(["log"])
 
 Bundler.require
 
-set :environment, :development
 # set :environment, :production
 
 Bundler.require(settings.environment)
@@ -23,4 +22,4 @@ use Rack::Session::Pool,
   expire_after: 60 * 60 * 24 * 7 # 1 week
 
 use Rack::Protection
-run Sinatra::Application
+run App
