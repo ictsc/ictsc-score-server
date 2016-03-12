@@ -1,0 +1,8 @@
+development:
+	adapter: sqlite3
+	database: db/development.db
+
+production:
+	adapter: sqlite3
+	database: db/production.db
+
