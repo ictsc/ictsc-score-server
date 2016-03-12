@@ -48,7 +48,7 @@ class CreateTables < ActiveRecord::Migration
     end
 
     create_table :scores do |t|
-      t.decimal :point, null: false
+      t.integer :point, null: false
 
       t.references :answer, null: false
       t.references :marker, null: false
