@@ -22,8 +22,8 @@ ja:
       problem:
         title: タイトル
         text: 本文
-        opened_at: 出題日時
-        closed_at: 解答の終了日時
+        opened_at: 出題の開始時刻
+        closed_at: 出題の終了時刻
         creator: 出題者
       issue:
         title: タイトル
