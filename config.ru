@@ -17,9 +17,8 @@ require File.expand_path(File.dirname(__FILE__)) + '/app.rb'
 
 use Rack::Session::Pool,
   key: 'sessionkey',
-  secret: 'secret',
-  path: '/',
-  expire_after: 60 * 60 * 24 * 7 # 1 week
+  expire_after: 60 * 60 * 24 * 7, # 1 week
+  secret: 'secret'
 
 use Rack::Protection
 run App
