@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 # Coding: UTF-8
 
-# require_relative "db/model"
+Dotenv.load
+Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
+
+$LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
+
+require_relative "db/model"
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
@@ -11,16 +16,13 @@ class App < Sinatra::Base
     BetterErrors.application_root = settings.root
   end
 
-
   configure do
     Time.zone = "Tokyo"
     ActiveRecord::Base.default_timezone = :local
 
-    log_path = Pathname(settings.root) + "log"
-    FileUtils.makedirs(log_path)
-    logger = Logger.new("#{log_path}/#{settings.environment}.log", "daily")
-    logger.instance_eval { alias :write :<< unless respond_to?(:write) }
-    use Rack::CommonLogger, logger
+    def logger
+      env['app.logger'] || env['rack.logger']
+    end
 
     register Sinatra::RocketIO
 

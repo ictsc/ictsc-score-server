@@ -1,8 +1,12 @@
 source "https://rubygems.org"
 
-gem "sinatra"
-gem "rack-protection", require: "rack/protection"
+gem "sinatra", require: "sinatra/base"
+gem "sinatra-param", require: "sinatra/param"
 gem "sinatra-rocketio", require: "sinatra/rocketio"
+
+gem "rack-contrib", require: "rack/contrib"
+gem "rack-protection", require: "rack/protection"
+gem "redis-rack", require: "rack/session/redis"
 
 gem "hamlit"
 
