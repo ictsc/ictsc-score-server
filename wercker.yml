@@ -1,6 +1,4 @@
 box: ruby
-services:
-  - redis
 
 build:
   steps:
