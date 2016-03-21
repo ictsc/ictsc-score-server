@@ -24,7 +24,8 @@ end
 class Member < ActiveRecord::Base
   validates :admin, presence: true
   validates :name, presence: true
-  validates :login, presence: true
+  validates :login, presence: true, uniqueness: true
+  validates :hashed_password, presence: true
 
   has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :nullify
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
