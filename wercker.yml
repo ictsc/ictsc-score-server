@@ -1,10 +1,9 @@
-box: ruby
+box: wercker/ruby
 services:
-  - redis
+  - wercker/redis
 
 build:
   steps:
     - bundle-install
-      - script:
+    - script:
         name: create database
-        code: bundle exec rack db:create
