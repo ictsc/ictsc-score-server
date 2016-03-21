@@ -1,12 +1,12 @@
 require "bundler"
 
 Bundler.require
-
-settings.root = Dir.pwd
-
-Bundler.require(settings.environment)
+Bundler.require(:development)
 
 Dotenv.load
 
 require_relative "app"
-set :run, false
+
+# settings.root = Dir.pwd
+
+# set :run, false
