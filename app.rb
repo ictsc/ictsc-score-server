@@ -6,6 +6,7 @@ Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
 
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
 
+require_relative "controllers/member"
 require_relative "controllers/asset"
 
 require_relative "db/model"
@@ -13,6 +14,7 @@ require_relative "db/model"
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
+  use MemberRoutes
   use AssetRoutes
 
   configure :development do
