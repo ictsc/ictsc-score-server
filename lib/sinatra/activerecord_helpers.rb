@@ -9,14 +9,14 @@ module Sinatra
       options[:exclude] ||= []
       options[:exclude].map!(&:to_s)
 
-      return nil unless klass.kind_of? Class
+      raise "klass must be kind of Class" unless klass.kind_of? Class
 
       ret = klass.attribute_names - %w(id created_at updated_at) - options[:exclude] + options[:include]
       ret.map(&:to_sym)
     end
 
     def attribute_values_of_class(klass, options = {})
-      return nil unless klass.kind_of? Class
+      raise "klass must be kind of Class" unless klass.kind_of? Class
 
       ret = attribute_names_of_class(klass, options).inject(Hash.new) do |hash, attr_name|
         hash[attr_name] = params[attr_name]
@@ -28,16 +28,22 @@ module Sinatra
         ret[attr_name] = params[attr_name]
       end
 
-      ret
+      if options[:exclude_nil_value]
+        ret.reject{|k, v| v.nil? }
+      else
+        ret
+      end
     end
 
-    def satisfy_required_fields?(klass, options = {})
-      return nil unless klass.kind_of? Class
+    def satisfied_required_fields?(klass, options = {})
+      raise "klass must be kind of Class" unless klass.kind_of? Class
 
-      attribute_nonnil_values = attribute_values_of_class(klass, options).reject{|k, v| v.nil? }
-      required_keys = klass.required_fields(options)
+      attribute_keys = attribute_values_of_class(klass, options.merge(exclude_nil_value: true)).keys
+      Set[*attribute_keys].superset?(Set[*klass.required_fields(options)])
+    end
 
-      Set[*attribute_nonnil_values.keys].superset?(Set[*required_keys])
+    def insufficient_fields(klass, options = {})
+      klass.required_fields(options) - attribute_values_of_class(klass, options.merge(exclude_nil_value: true)).keys
     end
   end
 
