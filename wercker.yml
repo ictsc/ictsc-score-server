@@ -1,0 +1,10 @@
+box: ruby
+services:
+  - redis
+
+build:
+  steps:
+    - bundle-install
+      - script:
+        name: create database
+        code: bundle exec rack db:create
