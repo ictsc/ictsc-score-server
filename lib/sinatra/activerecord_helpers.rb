@@ -23,7 +23,7 @@ module Sinatra
 
       keys = attribute_names_of_class(klass, options) + options[:include]
       ret = keys.inject(Hash.new) do |hash, attr_name|
-        hash[attr_name] = params[attr_name] if params.key?(attr_name.to_s)
+        hash[attr_name.to_sym] = params[attr_name] if params.key?(attr_name.to_s)
         next hash
       end
 
