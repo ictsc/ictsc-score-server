@@ -14,6 +14,7 @@ gem "sqlite3"
 gem "sinatra-activerecord", require: "sinatra/activerecord"
 
 gem "rake"
+gem "seed-fu"
 gem "dotenv"
 
 group :development do

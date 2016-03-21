@@ -68,6 +68,9 @@ GEM
       redis-store (~> 1.1.0)
     redis-store (1.1.7)
       redis (>= 2.2)
+    seed-fu (2.3.5)
+      activerecord (>= 3.1, < 4.3)
+      activesupport (>= 3.1, < 4.3)
     shotgun (0.9.1)
       rack (>= 1.0)
     sinatra (1.4.7)
@@ -138,6 +141,7 @@ DEPENDENCIES
   rack-protection
   rake
   redis-rack
+  seed-fu
   shotgun
   sinatra
   sinatra-activerecord
