@@ -16,4 +16,4 @@ build:
         code: bundle exec rackup &
     - script: 
         name: test curl
-        code: curl localhost:9000
+        code: curl 127.0.0.1:9292
