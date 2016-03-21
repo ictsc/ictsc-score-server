@@ -6,8 +6,14 @@ build:
   steps:
     - bundle-install
     - script:
-        name: create databasea
+        name: create database
         code: bundle exec rake db:create
     - script:
         name: migration database
         code: bundle exec rake db:migrate
+    - script:
+        name: start applicaiton
+        code: rackup
+    - script: 
+        name: test curl
+        code: curl localhost:9000
