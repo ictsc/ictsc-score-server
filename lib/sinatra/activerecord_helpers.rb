@@ -18,32 +18,27 @@ module Sinatra
     def attribute_values_of_class(klass, options = {})
       raise "klass must be kind of Class" unless klass.kind_of? Class
 
-      ret = attribute_names_of_class(klass, options).inject(Hash.new) do |hash, attr_name|
-        hash[attr_name] = params[attr_name]
+      options[:include] ||= []
+      options[:include].map!(&:to_sym)
+
+      keys = attribute_names_of_class(klass, options) + options[:include]
+      ret = keys.inject(Hash.new) do |hash, attr_name|
+        hash[attr_name] = params[attr_name] if params.key?(attr_name.to_s)
         next hash
       end
 
-      options[:include] ||= []
-      options[:include].map!(&:to_sym).each do |attr_name|
-        ret[attr_name] = params[attr_name]
-      end
-
-      if options[:exclude_nil_value]
-        ret.reject{|k, v| v.nil? }
-      else
-        ret
-      end
+      ret
     end
 
     def satisfied_required_fields?(klass, options = {})
       raise "klass must be kind of Class" unless klass.kind_of? Class
 
-      attribute_keys = attribute_values_of_class(klass, options.merge(exclude_nil_value: true)).keys
+      attribute_keys = attribute_values_of_class(klass, options).keys
       Set[*attribute_keys].superset?(Set[*klass.required_fields(options)])
     end
 
     def insufficient_fields(klass, options = {})
-      klass.required_fields(options) - attribute_values_of_class(klass, options.merge(exclude_nil_value: true)).keys
+      klass.required_fields(options) - attribute_values_of_class(klass, options).keys
     end
   end
 

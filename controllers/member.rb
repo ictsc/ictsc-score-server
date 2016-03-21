@@ -90,7 +90,7 @@ class MemberRoutes < Sinatra::Base
   update_member_block = Proc.new do
     halt 404 if not Member.exists?(id: params[:id])
 
-    field_options = { exclude: [:hashed_password], include: [:password], exclude_nil_value: true }
+    field_options = { exclude: [:hashed_password], include: [:password] }
 
     if request.put? and not satisfied_required_fields?(Member, field_options)
       halt 400, { required: insufficient_fields(Member, field_options) }.to_json
