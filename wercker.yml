@@ -1,6 +1,6 @@
-box: wercker/ruby
+box: ruby
 services:
-  - wercker/redis
+  - redis
 
 build:
   steps:
