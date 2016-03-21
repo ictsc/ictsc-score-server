@@ -45,6 +45,16 @@ class App < Sinatra::Base
     def h(text)
       Rack::Utils.escape_html(text)
     end
+
+  end
+
+  options "*" do
+    response.headers["Allow"] =  "HEAD,GET,PUT,PATCH,POST,DELETE,OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Accept, Authorization, Cache-Control, Content-Type"
+    response.headers["Access-Control-Expose-Headers"] = "X-Requested-With, X-HTTP-Method-Override, X-From"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+
+    200
   end
 
   get "/?" do
