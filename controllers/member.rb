@@ -119,6 +119,11 @@ class MemberRoutes < Sinatra::Base
   delete "/member/:id" do
     @member = Member.find_by(id: params[:id])
     halt 404 if @member.nil?
-    200
+
+    if @member.destroy
+      json status: "success"
+    else
+      json status: "failed"
+    end
   end
 end
