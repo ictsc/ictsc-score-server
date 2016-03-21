@@ -43,6 +43,7 @@ class MemberRoutes < Sinatra::Base
   post "/session" do
     halt 403 if logged_in?
 
+    halt 401 if not Member.exists?(login: params[:login])
     @member = Member.find_by(login: params[:login])
 
     if compare_password(params[:password], @member.hashed_password)
