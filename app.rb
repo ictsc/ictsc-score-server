@@ -6,7 +6,13 @@ Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
 
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
 
+require_relative "controllers/answer"
+require_relative "controllers/comment"
+require_relative "controllers/issue"
 require_relative "controllers/member"
+require_relative "controllers/problem"
+require_relative "controllers/score"
+require_relative "controllers/team"
 require_relative "controllers/asset"
 
 require_relative "db/model"
@@ -14,7 +20,13 @@ require_relative "db/model"
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
+  use AnswerRoutes
+  use CommentRoutes
+  use IssueRoutes
   use MemberRoutes
+  use ProblemRoutes
+  use ScoreRoutes
+  use TeamRoutes
   use AssetRoutes
 
   configure :development do
