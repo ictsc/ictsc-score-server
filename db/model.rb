@@ -1,3 +1,19 @@
+class ActiveRecord::Base
+  def self.required_fields(options = {})
+    options[:include] ||= []
+    options[:include].map!(&:to_sym)
+
+    options[:exclude] ||= []
+    options[:exclude].map!(&:to_sym)
+
+    fields = self.validators
+                 .select{|x| ActiveRecord::Validations::PresenceValidator === x }
+                 .map(&:attributes)
+                 .flatten
+    fields - options[:exclude] + options[:include]
+  end
+end
+
 class Team < ActiveRecord::Base
   validates :name, presence: true
 
