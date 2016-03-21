@@ -6,10 +6,14 @@ Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
 
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
 
+require_relative "controllers/asset"
+
 require_relative "db/model"
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
+
+  use AssetRoutes
 
   configure :development do
     use BetterErrors::Middleware
@@ -109,29 +113,5 @@ class App < Sinatra::Base
 
   not_found do
     { error: "not found" }.to_json
-  end
-
-  get "/css/*" do
-    file_name = params[:splat].first
-    views =  Pathname(settings.views)
-
-    if File.exists?(views + "css" + file_name)
-      send_file views + "css" + file_name
-    elsif File.exists?(views + "scss" + file_name.sub(%r{.css$}, ".scss"))
-      scss :"scss/#{file_name.sub(%r{.css$}, "")}"
-    else
-      halt 404
-    end
-  end
-
-  get "/js/*.js" do
-    file_name = params[:splat].first
-    views =  Pathname(settings.views)
-
-    if File.exists?(views + "js" + "#{file_name}.js")
-      send_file views + "js" + "#{file_name}.js"
-    else
-      halt 404
-    end
   end
 end
