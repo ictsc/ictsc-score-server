@@ -15,5 +15,11 @@ build:
         name: start applicaiton
         code: bundle exec rackup &
     - script: 
-        name: test curl
+        name: test "/"
         code: curl 127.0.0.1:9292
+    - script:
+        name: create user
+        code: curl -X POST 127.0.0.1:9292/member -F "name=test-user" -F "login=test-login-name" -F "password=test-password" -F "team=test-team" -F "admin=true"
+    - script:
+        name: login
+        code: curl -X POST 127.0.0.1:9292/session -F "login=test-login-name" -F "password=test-password"
