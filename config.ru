@@ -16,11 +16,14 @@ logger.instance_eval { alias :write :<< unless respond_to?(:write) }
 use Rack::CommonLogger, logger
 use Rack::PostBodyContentTypeParser
 
-use Rack::Session::Redis, expire_after: 60 * 60 * 24 * 7 # 1 week
-# use Rack::Session::Pool,
-# use Rack::Session::Cookie,
-  # key: "rack.session",
-  # secret: "change_me",
-  # expire_after: 60 * 60 * 24 * 7 # 1 week
+if ENV["RACK_ENV"] == "production"
+  use Rack::Session::Redis, expire_after: 60 * 60 * 24 * 7 # 1 week
+else
+  # use Rack::Session::Pool,
+  use Rack::Session::Cookie,
+    key: "rack.session",
+    secret: "change_me",
+    expire_after: 60 * 60 * 24 * 7 # 1 week
+end
 
 run App
