@@ -10,9 +10,12 @@ build:
         name: migration database
         code: bundle exec rake db:migrate
     - script:
+        name: load seed data into database
+        code: bundle exec rake db:seed_fu
+    - script:
         name: start applicaiton
         code: bundle exec rackup &
-    - script: 
+    - script:
         name: test "/"
         code: curl 127.0.0.1:9292
     - script:
