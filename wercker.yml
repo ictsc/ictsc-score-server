@@ -13,7 +13,7 @@ build:
         code: bundle exec rake db:migrate
     - script:
         name: start applicaiton
-        code: rackup
+        code: bundle exec rackup &
     - script: 
         name: test curl
         code: curl localhost:9000
