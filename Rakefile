@@ -1,7 +1,8 @@
 require "bundler"
 
 Bundler.require
-Bundler.require(settings.environment)
+Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
+
 require "sinatra/activerecord/rake"
 
 namespace :db do
