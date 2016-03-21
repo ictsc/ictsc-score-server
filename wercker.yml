@@ -6,4 +6,8 @@ build:
   steps:
     - bundle-install
     - script:
-        name: create database
+        name: create databasea
+        code: bundle exec rake db:create
+    - script:
+        name: migration database
+        code: bundle exec rake db:migrate
