@@ -13,7 +13,12 @@ class MemberRoutes < Sinatra::Base
     def crypt(key, salt = "")
       return nil unless key.is_a? String
 
-      path = File.join(settings.root, "../ext", "crypt_darwin_amd64")
+      crypt_binname = case RUBY_PLATFORM
+        when /darwin/;  "crypt_darwin_amd64"
+        when /freebsd/; "crypt_freebsd_amd64"
+        when /linux/;   "crypt_linux_amd64"
+      end
+      path = File.join(settings.root, "../ext", crypt_binname)
       hash, status = Open3.capture2(path, key, salt)
       if status.exitstatus.zero?
         hash
