@@ -86,9 +86,18 @@ class Comment < ActiveRecord::Base
   validates :problem, presence: true, if: Proc.new {|comment| not comment.problem_id.nil? }
   validates :issue,   presence: true, if: Proc.new {|comment| not comment.issue_id.nil? }
   validates :required_reply, inclusion: { in: [true, false] }
+  validate :present_problem_xor_issue
 
   belongs_to :member, required: true
   belongs_to :problem
   belongs_to :issue
+
+  private
+    def present_problem_xor_issue
+      unless problem_id.blank? ^ issue_id.blank?
+        errors.add(:problem_id, "specify only problem_id or issue_id, not both")
+        errors.add(:issue_id, "specify only problem_id or issue_id, not both")
+      end
+    end
 end
 
