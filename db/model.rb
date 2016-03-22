@@ -46,7 +46,7 @@ class Problem < ActiveRecord::Base
   has_many :comments, dependent: :destroy
   has_many :issues,   dependent: :destroy
 
-  belongs_to :creator, required: true, foreign_key: "creator_id", class_name: "Member"
+  belongs_to :creator, foreign_key: "creator_id", class_name: "Member"
 end
 
 class Issue < ActiveRecord::Base
@@ -56,7 +56,7 @@ class Issue < ActiveRecord::Base
 
   has_many :comments, dependent: :destroy
 
-  belongs_to :problem, required: true
+  belongs_to :problem
 end
 
 class Answer < ActiveRecord::Base
@@ -65,9 +65,9 @@ class Answer < ActiveRecord::Base
   validates :score,   presence: true, if: Proc.new {|answer| not answer.score_id.nil? }
   validates :team,    presence: true
 
-  belongs_to :problem, required: true
+  belongs_to :problem
   belongs_to :score
-  belongs_to :team,    required: true
+  belongs_to :team
 end
 
 class Score < ActiveRecord::Base
@@ -75,8 +75,8 @@ class Score < ActiveRecord::Base
   validates :answer, presence: true
   validates :marker, presence: true
 
-  belongs_to :answer, required: true
-  belongs_to :marker, required: true, foreign_key: "marker_id", class_name: "Member"
+  belongs_to :answer
+  belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
 
 end
 
@@ -88,7 +88,7 @@ class Comment < ActiveRecord::Base
   validates :required_reply, inclusion: { in: [true, false] }
   validate :present_problem_xor_issue
 
-  belongs_to :member, required: true
+  belongs_to :member
   belongs_to :problem
   belongs_to :issue
 
