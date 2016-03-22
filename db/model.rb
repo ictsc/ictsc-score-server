@@ -28,7 +28,7 @@ class Member < ActiveRecord::Base
   validates :team,            presence: true, if: Proc.new {|member| not member.team_id.nil? }
   validates :admin,           inclusion: { in: [true, false] }
 
-  has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :nullify
+  has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :destroy
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
 
   has_many :comments, dependent: :destroy
@@ -63,11 +63,11 @@ class Answer < ActiveRecord::Base
   validates :text,    presence: true
   validates :problem, presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer.score_id.nil? }
-  validates :team,    presence: true, if: Proc.new {|answer| not answer.team_id.nil? }
+  validates :team,    presence: true
 
   belongs_to :problem, required: true
   belongs_to :score
-  belongs_to :team
+  belongs_to :team,    required: true
 end
 
 class Score < ActiveRecord::Base
