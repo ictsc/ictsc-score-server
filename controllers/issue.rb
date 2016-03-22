@@ -12,8 +12,16 @@ class IssueRoutes < Sinatra::Base
     require_login
   end
 
-  get "/issue/:id" do
+  before "/issue/:id" do
     halt 404 if not Issue.exists?(id: params[:id])
+    @issue = Issue.find_by(id: params[:id])
+
+    if request.post? || request.put? || request.patch? || request.delete?
+      halt 403 if not current_user&.admin
+    end
+  end
+
+  get "/issue/:id" do
     json Issue.find_by(id: params[:id])
   end
 
@@ -22,6 +30,8 @@ class IssueRoutes < Sinatra::Base
     @issue = Issue.new(@attrs)
 
     if @issue.save
+      status 201
+      headers "Location" => to("/issue/#{@issue.id}")
       json @issue
     else
       json @issue.errors
@@ -29,16 +39,14 @@ class IssueRoutes < Sinatra::Base
   end
 
   update_issue_block = Proc.new do
-    halt 404 if not Issue.exists?(id: params[:id])
-
     if request.put? and not satisfied_required_fields?(Issue)
       halt 400, { required: insufficient_fields(Issue) }.to_json
     end
 
-    @issue = Issue.find_by(id: params[:id])
     @attrs = attribute_values_of_class(Issue)
-
     @issue.attributes = @attrs
+
+    halt 400, json(@issue.errors) if not @issue.valid?
 
     if @issue.save
       json @issue
@@ -51,12 +59,11 @@ class IssueRoutes < Sinatra::Base
   patch "/issue/:id", &update_issue_block
 
   delete "/issue/:id" do
-    @issue = Issue.find_by(id: params[:id])
-    halt 404 if @issue.nil?
-
     if @issue.destroy
+      status 204
       json status: "success"
     else
+      status 500
       json status: "failed"
     end
   end

@@ -36,10 +36,6 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  before "/member" do
-    I18n.locale = :en if request.xhr?
-  end
-
   post "/session" do
     halt 403 if logged_in?
 
@@ -74,8 +70,20 @@ class MemberRoutes < Sinatra::Base
   get "/logout", &logout_block
   delete "/session", &logout_block
 
-  get "/member/:id" do
+  before "/member*" do
+    I18n.locale = :en if request.xhr?
+  end
+
+  before "/member/:id" do
     halt 404 if not Member.exists?(id: params[:id])
+    @member = Member.find_by(id: params[:id])
+
+    if request.post? || request.put? || request.patch? || request.delete?
+      halt 403 if (@member != current_user) and (not current_user&.admin)
+    end
+  end
+
+  get "/member/:id" do
     json Member.find_by(id: params[:id]), except: [:hashed_password]
   end
 
@@ -88,6 +96,8 @@ class MemberRoutes < Sinatra::Base
     @member = Member.new(@attrs)
 
     if @member.save
+      status 201
+      headers "Location" => to("/member/#{@member.id}")
       json @member, except: [:hashed_password]
     else
       json @member.errors
@@ -95,15 +105,12 @@ class MemberRoutes < Sinatra::Base
   end
 
   update_member_block = Proc.new do
-    halt 404 if not Member.exists?(id: params[:id])
-
     field_options = { exclude: [:hashed_password], include: [:password] }
 
     if request.put? and not satisfied_required_fields?(Member, field_options)
       halt 400, { required: insufficient_fields(Member, field_options) }.to_json
     end
 
-    @member = Member.find_by(id: params[:id])
     @attrs = attribute_values_of_class(Member, field_options)
 
     if @attrs.key?(:password)
@@ -112,6 +119,8 @@ class MemberRoutes < Sinatra::Base
     end
 
     @member.attributes = @attrs
+
+    halt 400, json(@member.errors) if not @member.valid?
 
     if @member.save
       json @member, except: [:hashed_password]
@@ -124,12 +133,11 @@ class MemberRoutes < Sinatra::Base
   patch "/member/:id", &update_member_block
 
   delete "/member/:id" do
-    @member = Member.find_by(id: params[:id])
-    halt 404 if @member.nil?
-
     if @member.destroy
+      status 204
       json status: "success"
     else
+      status 500
       json status: "failed"
     end
   end

@@ -12,8 +12,16 @@ class ScoreRoutes < Sinatra::Base
     require_login
   end
 
-  get "/score/:id" do
+  before "/score/:id" do
     halt 404 if not Score.exists?(id: params[:id])
+    @score = Score.find_by(id: params[:id])
+
+    if request.post? || request.put? || request.patch? || request.delete?
+      halt 403 if (@score.marker_id != current_user.id) and (not current_user&.admin)
+    end
+  end
+
+  get "/score/:id" do
     json Score.find_by(id: params[:id])
   end
 
@@ -23,6 +31,8 @@ class ScoreRoutes < Sinatra::Base
     @score = Score.new(@attrs)
 
     if @score.save
+      status 201
+      headers "Location" => to("/score/#{@score.id}")
       json @score
     else
       json @score.errors
@@ -30,16 +40,14 @@ class ScoreRoutes < Sinatra::Base
   end
 
   update_score_block = Proc.new do
-    halt 404 if not Score.exists?(id: params[:id])
-
     if request.put? and not satisfied_required_fields?(Score)
       halt 400, { required: insufficient_fields(Score) }.to_json
     end
 
-    @score = Score.find_by(id: params[:id])
     @attrs = attribute_values_of_class(Score)
-
     @score.attributes = @attrs
+
+    halt 400, json(@score.errors) if not @score.valid?
 
     if @score.save
       json @score
@@ -52,12 +60,11 @@ class ScoreRoutes < Sinatra::Base
   patch "/score/:id", &update_score_block
 
   delete "/score/:id" do
-    @score = Score.find_by(id: params[:id])
-    halt 404 if @score.nil?
-
     if @score.destroy
+      status 204
       json status: "success"
     else
+      status 500
       json status: "failed"
     end
   end

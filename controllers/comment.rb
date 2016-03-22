@@ -12,8 +12,16 @@ class CommentRoutes < Sinatra::Base
     require_login
   end
 
-  get "/comment/:id" do
+  before "/score/:id" do
     halt 404 if not Comment.exists?(id: params[:id])
+    @comment = Comment.find_by(id: params[:id])
+
+    if request.post? || request.put? || request.patch? || request.delete?
+      halt 403 if (@comment.member_id != current_user.id) and (not current_user&.admin)
+    end
+  end
+
+  get "/comment/:id" do
     json Comment.find_by(id: params[:id])
   end
 
@@ -23,6 +31,8 @@ class CommentRoutes < Sinatra::Base
     @comment = Comment.new(@attrs)
 
     if @comment.save
+      status 201
+      headers "Location" => to("/comment/#{@comment.id}")
       json @comment
     else
       json @comment.errors
@@ -30,16 +40,14 @@ class CommentRoutes < Sinatra::Base
   end
 
   update_comment_block = Proc.new do
-    halt 404 if not Comment.exists?(id: params[:id])
-
     if request.put? and not satisfied_required_fields?(Comment)
       halt 400, { required: insufficient_fields(Comment) }.to_json
     end
 
-    @comment = Comment.find_by(id: params[:id])
     @attrs = attribute_values_of_class(Comment)
-
     @comment.attributes = @attrs
+
+    halt 400, json(@comment.errors) if not @comment.valid?
 
     if @comment.save
       json @comment
@@ -52,12 +60,11 @@ class CommentRoutes < Sinatra::Base
   patch "/comment/:id", &update_comment_block
 
   delete "/comment/:id" do
-    @comment = Comment.find_by(id: params[:id])
-    halt 404 if @comment.nil?
-
     if @comment.destroy
+      status 204
       json status: "success"
     else
+      status 500
       json status: "failed"
     end
   end
