@@ -1,62 +1,21 @@
-%link(rel="stylesheet"){href: to("/css/style.css")}
-
-.header-wrap
-  %header.header-content
-    .account-display
-      %span Sample School
-      %ul.account-menu
-        %li.account-menu-button
-          %ul
-            %li
-              %a{:href => ""} My Account
-            %li
-              %a{:href => "signin.html"} Sign Out
-    %h1.header-logo
-      %a{:href => ""} ICTSC5
-  .header-gnav-wrap
-    %nav.header-gnav
-      %ul.clearfix
-        %li
-          %a{:href => "index.html"} TOP
-        %li
-          %a{:href => "issues.html"} ISSUES
-        %li
-          %a{:href => "answer.html"} ANSWER
-        %li
-          %a{:href => "question.html"} QUESTION
-        %li
-          %a{:href => "infomation.html"} INFOMATION
-.main-wrap.clearfix
-  .main-content
-    .main-content-wrap
-      .main-header
-        %span.main-title 閲覧可能ページ一覧
-        %span.main-title-sub
-      .main-content-wrap-sub
-        %p
-          回答ページと質問ページは要修正
-          %br/
-          運営者用回答一覧ページ製作予定
-        %ul
-          %li
-            %a{:href => "signin.html"} ログイン
-          %li
-            %a{:href => "signin-error.html"} ログイン（エラー）
-          %li
-            %a{:href => "issues.html"} 問題一覧
-          %li
-            %a{:href => "issues-01.html"} 問題詳細
-          %li
-            %a{:href => "answer.html"} 回答ページ
-          %li
-            %a{:href => "question.html"} 質問ページ
-    /
-      .side
-        .side-in
-          .side-in-title Side Title
-
-%footer.footer-wrap
-  .footer-content.clearfix
-    .copyright © 2015 ICTSC. All Rights Reserved.
-
-%script{:src => "js/animation.js", :type => "text/javascript"}
+.main-header
+  %span.main-title 閲覧可能ページ一覧
+  %span.main-title-sub
+.main-content-wrap-sub
+  %p
+    回答ページと質問ページは要修正
+    %br/
+    運営者用回答一覧ページ製作予定
+  %ul
+    %li
+      %a{href: to("/signin")} ログイン
+    %li
+      %a{href: to("/signin-error")} ログイン（エラー）
+    %li
+      %a{href: to("/issues")} 問題一覧
+    %li
+      %a{href: to("/issue")} 問題詳細
+    %li
+      %a{href: to("/answer")} 回答ページ
+    %li
+      %a{href: to("/question")} 質問ページ

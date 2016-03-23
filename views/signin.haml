@@ -1,19 +1,20 @@
-%link(rel = "stylesheet" href = "css/signin.css")
+%link{rel: "stylesheet", href: to("/css/signin.css")}
 
 .main-wrap.clearfix
   .main-content
     .header-logo
-      %a{:href => ""} ICTSC5
+      %a{href: ""} ICTSC5
     .form-message Enter your email address and password.
     %form
       .form-item
-        %label{:for => "email"}
-        %input{:name => "email", :placeholder => "Email Address", :required => "required", :type => "email"}/
+        %label{for: "email"}
+        %input{name: "email", placeholder: "Email Address", required: "required", type: "email"}
       .form-item
-        %label{:for => "password"}
-        %input{:name => "password", :placeholder => "Password", :required => "required", :type => "password"}/
+        %label{for: "password"}
+        %input{name: "password", placeholder: "Password", required: "required", type: "password"}
+      -# .form-error Email address or password is incorrect.
       .button-wrap
-        %input.button{:title => "Sign In", :type => "submit", :value => "Sign In"}/
+        %input.button{title: "Sign In", type: "submit", value: "Sign In"}
     .fpass
-      %a{:href => ""} Forgot password?
-%script{:src => "js/animation.js", :type => "text/javascript"}
+      %a{href: ""} Forgot password?
+%script{src: "js/animation.js", type: "text/javascript"}

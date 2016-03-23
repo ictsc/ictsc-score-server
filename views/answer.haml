@@ -1,98 +1,50 @@
-%link(rel="stylesheet"){href: to("/css/style.css")}
-
-.header-wrap
-  %header.header-content
-    .account-display
-      %span Sample School
-      %ul.account-menu
-        %li.account-menu-button
-          %ul
-            %li
-              %a{:href => ""} My Account
-            %li
-              %a{:href => ""} Sign Out
-    %h1.header-logo
-      %a{:href => ""} ICTSC5
-  .header-gnav-wrap
-    %nav.header-gnav
-      %ul.clearfix
-        %li
-          %a{:href => "index.html"} TOP
-        %li
-          %a{:href => "issues.html"} ISSUES
-        %li
-          %a{:href => "answer.html"} ANSWER
-        %li
-          %a{:href => "question.html"} QUESTION
-        %li
-          %a{:href => "infomation.html"} INFOMATION
-.main-wrap.clearfix
-  .main-content
-    /
-      <div class="breadcrumbs">
-      <ul>
-      <li><a href="">TOP</a></li>
-      <li><a href="">ISSUES</a></li>
-      </ul>
-      </div>
-    .main-content-wrap
-      .main-header
-        %span.main-title ANSWER
-        %span.main-title-sub
-      .main-content-wrap-sub
-        .main-content-header
-          %span.main-content-title NEW ANSWER
-          %span.main-title-sub
-        .answer-form-wrap
-          %form{"accept-charset" => "utf-8", :action => "answer.html", :method => "post"}
-            .form-item
-              %select.answer-select{:name => "answer-select"}
-                %option{:value => " "} Please choose a issue to answer.
-                %option{:value => "issues01"} #1 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                %option{:value => "issues02"} #2 Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                %option{:value => "issues03"} #3 Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
-                %option{:value => "issues04"} #4 Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-            .form-item
-              %textarea.answer-text{:name => "answer-text", :placeholder => "Please enter your answer."}
-            .button-wrap
-              %input.button{:title => "submit", :type => "submit", :value => "SUBMIT"}/
-      .main-content-wrap-sub
-        .main-content-header
-          %span.main-content-title ANSWER LIST
-          %span.main-title-sub
-        .answer-list-wrap
-          .answer-list-item.clearfix
-            .answer-list-info
-              .answer-list-title Issues No.
-              .answer-list-info-main #1
-              .answer-list-title Post Time
-              .answer-list-info-main 2/27 10:40
-            .answer-list-main
-              .answer-list-main-title
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-              .answer-list-title Your Answer
-              .answer-list-text
-                Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
-          / 2つ目
-          .answer-list-item.clearfix
-            .answer-list-info
-              .answer-list-title Issues No.
-              .answer-list-info-main #1
-              .answer-list-title Post Time
-              .answer-list-info-main 2/27 10:20
-            .answer-list-main
-              .answer-list-main-title
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-              .answer-list-title Your Answer
-              .answer-list-text
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-    /
-      <div class="side">
-      <div class="side-in">
-      <div class="side-in-title">Side Title</div>
-      </div>
-      </div>
-%footer.footer-wrap
-  .footer-content.clearfix
-    .copyright © 2015 ICTSC. All Rights Reserved.
-%script{:src => "js/animation.js", :type => "text/javascript"}
+.main-header
+  %span.main-title ANSWER
+  %span.main-title-sub
+.main-content-wrap-sub
+  .main-content-header
+    %span.main-content-title NEW ANSWER
+    %span.main-title-sub
+  .answer-form-wrap
+    %form{"accept-charset": "utf-8", action: "answer.html", method: "post"}
+      .form-item
+        %select.answer-select{name: "answer-select"}
+          %option{value: " "} Please choose a issue to answer.
+          %option{value: "issues01"} #1 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+          %option{value: "issues02"} #2 Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+          %option{value: "issues03"} #3 Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+          %option{value: "issues04"} #4 Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+      .form-item
+        %textarea.answer-text{name: "answer-text", placeholder: "Please enter your answer."}
+      .button-wrap
+        %input.button{title: "submit", type: "submit", value: "SUBMIT"}
+.main-content-wrap-sub
+  .main-content-header
+    %span.main-content-title ANSWER LIST
+    %span.main-title-sub
+  .answer-list-wrap
+    .answer-list-item.clearfix
+      .answer-list-info
+        .answer-list-title Issues No.
+        .answer-list-info-main #1
+        .answer-list-title Post Time
+        .answer-list-info-main 2/27 10:40
+      .answer-list-main
+        .answer-list-main-title
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+        .answer-list-title Your Answer
+        .answer-list-text
+          Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
+    / 2つ目
+    .answer-list-item.clearfix
+      .answer-list-info
+        .answer-list-title Issues No.
+        .answer-list-info-main #1
+        .answer-list-title Post Time
+        .answer-list-info-main 2/27 10:20
+      .answer-list-main
+        .answer-list-main-title
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+        .answer-list-title Your Answer
+        .answer-list-text
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.

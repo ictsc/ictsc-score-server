@@ -1,112 +1,5 @@
 @charset "UTF-8";
-@import url(//fonts.googleapis.com/css?family=Open+Sans:400);
-@charset "UTF-8";
-
-body {
-  font-family: Verdana, "游ゴシック", YuGothic, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
-  font-weight: 400;
-  color: #3f3f3f;
-  line-height: 1.7;
-}
-
-html, body, div, span, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, address, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strong, sub, sup, var,
-b, u, i, dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 100%;
-  vertical-align: baseline;
-}
-
-article, aside, details, figcaption, figure,
-footer, header, menu, nav, section {
-  display: block;
-}
-
-html {
-  overflow-y: scroll;
-}
-
-blockquote, q {
-  quotes: none;
-}
-
-blockquote::before, blockquote::after,
-q::before, q::after {
-  content: "";
-  content: none;
-}
-
-input, textarea {
-  margin: 0;
-  padding: 0;
-}
-
-ol, ul {
-  list-style: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-caption, th {
-  text-align: left;
-}
-
-a:focus {
-  outline: none;
-}
-
-.clearfix::after {
-  content: ".";
-  display: block;
-  clear: both;
-  height: 0;
-  visibility: hidden;
-}
-
-.clearfix {
-  min-height: 1px;
-}
-
-.clearfix::after {
-  content: "";
-  clear: both;
-  display: block;
-}
-
-.both {
-  clear: both;
-}
-
-.inline_block {
-  display: inline-block;
-  *display: inline;
-  *zoom: 1;
-}
-
-#test {
-  color: #cccccc;
-}
-
-a {
-  color: #3f3f3f;
-  text-decoration: none;
-}
+@import url(./common.css);
 
 .account-display {
   height: 22px;
@@ -175,18 +68,9 @@ a {
   color: #ffffff;
 }
 
-.header-logo {
-  margin-bottom: 30px;
-}
-
 .header-logo a {
-  width: 200px;
-  height: 65px;
-  margin: 0 auto;
-  display: block;
   background: url(../img/ictscw.gif) no-repeat;
   background-size: 200px 65px;
-  text-indent: -9999px;
 }
 
 .header-gnav-wrap {
@@ -531,11 +415,6 @@ thead th {
   font-size: 14px;
   font-weight: bold;
   margin: 10px 0;
-}
-
-.side {
-  width: 280px;
-  float: right;
 }
 
 .footer-wrap {
