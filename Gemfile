@@ -17,10 +17,11 @@ gem "rake"
 gem "seed-fu"
 gem "dotenv"
 
+gem "thin", require: false
+
 group :development do
 	gem "pry", require: false
 	gem "shotgun", require: false
-	gem "thin", require: false
 	gem "better_errors"
 	gem "binding_of_caller", require: false
 end
