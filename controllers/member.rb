@@ -70,11 +70,11 @@ class MemberRoutes < Sinatra::Base
   get "/logout", &logout_block
   delete "/session", &logout_block
 
-  before "/member*" do
+  before "/members*" do
     I18n.locale = :en if request.xhr?
   end
 
-  before "/member/:id" do
+  before "/members/:id" do
     halt 404 if not Member.exists?(id: params[:id])
     @member = Member.find_by(id: params[:id])
 
@@ -83,11 +83,11 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/member/:id" do
+  get "/members/:id" do
     json Member.find_by(id: params[:id]), except: [:hashed_password]
   end
 
-  post "/member" do
+  post "/members" do
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
     @attrs[:hashed_password] = crypt(@attrs[:password])
     @attrs.delete(:password)
@@ -97,7 +97,7 @@ class MemberRoutes < Sinatra::Base
 
     if @member.save
       status 201
-      headers "Location" => to("/member/#{@member.id}")
+      headers "Location" => to("/members/#{@member.id}")
       json @member, except: [:hashed_password]
     else
       json @member.errors
@@ -129,10 +129,10 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  put "/member/:id", &update_member_block
-  patch "/member/:id", &update_member_block
+  put "/members/:id", &update_member_block
+  patch "/members/:id", &update_member_block
 
-  delete "/member/:id" do
+  delete "/members/:id" do
     if @member.destroy
       status 204
       json status: "success"

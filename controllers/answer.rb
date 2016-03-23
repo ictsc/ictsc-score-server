@@ -7,12 +7,12 @@ class AnswerRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/answer*" do
+  before "/answers*" do
     I18n.locale = :en if request.xhr?
     require_login
   end
 
-  before "/answer/:id" do
+  before "/answers/:id" do
     halt 404 if not Answer.exists?(id: params[:id])
     @answer = Answer.find_by(id: params[:id])
 
@@ -21,17 +21,17 @@ class AnswerRoutes < Sinatra::Base
     end
   end
 
-  get "/answer/:id" do
+  get "/answers/:id" do
     json Answer.find_by(id: params[:id])
   end
 
-  post "/answer" do
+  post "/answers" do
     @attrs = attribute_values_of_class(Answer)
     @answer = Answer.new(@attrs)
 
     if @answer.save
       status 201
-      headers "Location" => to("/answer/#{@answer.id}")
+      headers "Location" => to("/answers/#{@answer.id}")
       json @answer
     else
       json @answer.errors
@@ -55,10 +55,10 @@ class AnswerRoutes < Sinatra::Base
     end
   end
 
-  put "/answer/:id", &update_answer_block
-  patch "/answer/:id", &update_answer_block
+  put "/answers/:id", &update_answer_block
+  patch "/answers/:id", &update_answer_block
 
-  delete "/answer/:id" do
+  delete "/answers/:id" do
     if @answer.destroy
       status 204
       json status: "success"

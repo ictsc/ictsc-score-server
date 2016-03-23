@@ -7,12 +7,12 @@ class ProblemRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/problem*" do
+  before "/problems*" do
     I18n.locale = :en if request.xhr?
     require_login
   end
 
-  before "/problem/:id" do
+  before "/problems/:id" do
     halt 404 if not Problem.exists?(id: params[:id])
     @problem = Problem.find_by(id: params[:id])
 
@@ -21,18 +21,18 @@ class ProblemRoutes < Sinatra::Base
     end
   end
 
-  get "/problem/:id" do
+  get "/problems/:id" do
     json Problem.find_by(id: params[:id])
   end
 
-  post "/problem" do
+  post "/problems" do
     @attrs = attribute_values_of_class(Problem)
     @attrs[:creator_id] = current_user.id
     @problem = Problem.new(@attrs)
 
     if @problem.save
       status 201
-      headers "Location" => to("/problem/#{@problem.id}")
+      headers "Location" => to("/problems/#{@problem.id}")
       json @problem
     else
       json @problem.errors
@@ -56,10 +56,10 @@ class ProblemRoutes < Sinatra::Base
     end
   end
 
-  put "/problem/:id", &update_problem_block
-  patch "/problem/:id", &update_problem_block
+  put "/problems/:id", &update_problem_block
+  patch "/problems/:id", &update_problem_block
 
-  delete "/problem/:id" do
+  delete "/problems/:id" do
     if @problem.destroy
       status 204
       json status: "success"

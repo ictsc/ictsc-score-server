@@ -7,12 +7,12 @@ class TeamRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/team*" do
+  before "/teams*" do
     I18n.locale = :en if request.xhr?
     require_login
   end
 
-  before "/team/:id" do
+  before "/teams/:id" do
     halt 404 if not Team.exists?(id: params[:id])
     @team = Team.find_by(id: params[:id])
 
@@ -21,17 +21,17 @@ class TeamRoutes < Sinatra::Base
     end
   end
 
-  get "/team/:id" do
+  get "/teams/:id" do
     json Team.find_by(id: params[:id])
   end
 
-  post "/team" do
+  post "/teams" do
     @attrs = attribute_values_of_class(Team)
     @team = Team.new(@attrs)
 
     if @team.save
       status 201
-      headers "Location" => to("/team/#{@team.id}")
+      headers "Location" => to("/teams/#{@team.id}")
       json @team
     else
       json @team.errors
@@ -55,10 +55,10 @@ class TeamRoutes < Sinatra::Base
     end
   end
 
-  put "/team/:id", &update_team_block
-  patch "/team/:id", &update_team_block
+  put "/teams/:id", &update_team_block
+  patch "/teams/:id", &update_team_block
 
-  delete "/team/:id" do
+  delete "/teams/:id" do
     if @team.destroy
       status 204
       json status: "success"
