@@ -1,5 +1,5 @@
 .main-header
-  %span.main-title ANSWER
+  %span.main-title ANSWERS
   %span.main-title-sub
 .main-content-wrap-sub
   .main-content-header
@@ -9,11 +9,11 @@
     %form{"accept-charset": "utf-8", action: "answer.html", method: "post"}
       .form-item
         %select.answer-select{name: "answer-select"}
-          %option{value: " "} Please choose a issue to answer.
-          %option{value: "issues01"} #1 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-          %option{value: "issues02"} #2 Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-          %option{value: "issues03"} #3 Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
-          %option{value: "issues04"} #4 Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+          %option{value: " "} Please choose a problem to answer.
+          %option{value: "problems01"} #1 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+          %option{value: "problems02"} #2 Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+          %option{value: "problems03"} #3 Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+          %option{value: "problems04"} #4 Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
       .form-item
         %textarea.answer-text{name: "answer-text", placeholder: "Please enter your answer."}
       .button-wrap
