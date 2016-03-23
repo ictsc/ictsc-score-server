@@ -14,7 +14,7 @@ build:
         code: bundle exec rake db:seed_fu
     - script:
         name: start applicaiton
-        code: bundle exec rackup -s thin -p 9292 &
+        code: bundle exec rackup -s thin -o 127.0.0.1 -p 9292 &
     - script:
         name: test "/"
         code: curl 127.0.0.1:9292
