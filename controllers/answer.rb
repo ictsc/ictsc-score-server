@@ -12,6 +12,10 @@ class AnswerRoutes < Sinatra::Base
     require_login
   end
 
+  get "/answers" do
+    json Answer.all
+  end
+
   before "/answers/:id" do
     halt 404 if not Answer.exists?(id: params[:id])
     @answer = Answer.find_by(id: params[:id])

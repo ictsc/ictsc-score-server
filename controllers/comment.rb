@@ -12,6 +12,10 @@ class CommentRoutes < Sinatra::Base
     require_login
   end
 
+  get "/comments" do
+    json Comment.all
+  end
+
   before "/comments/:id" do
     halt 404 if not Comment.exists?(id: params[:id])
     @comment = Comment.find_by(id: params[:id])

@@ -75,6 +75,10 @@ class MemberRoutes < Sinatra::Base
     require_login if not request.post?
   end
 
+  get "/members" do
+    json Member.all, except: [:hashed_password]
+  end
+
   before "/members/:id" do
     halt 404 if not Member.exists?(id: params[:id])
     @member = Member.find_by(id: params[:id])

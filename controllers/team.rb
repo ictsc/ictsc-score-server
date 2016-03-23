@@ -12,6 +12,10 @@ class TeamRoutes < Sinatra::Base
     require_login
   end
 
+  get "/teams" do
+    json Team.all
+  end
+
   before "/teams/:id" do
     halt 404 if not Team.exists?(id: params[:id])
     @team = Team.find_by(id: params[:id])

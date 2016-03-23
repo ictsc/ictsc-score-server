@@ -12,6 +12,10 @@ class ScoreRoutes < Sinatra::Base
     require_login
   end
 
+  get "/scores" do
+    json Score.all
+  end
+
   before "/scores/:id" do
     halt 404 if not Score.exists?(id: params[:id])
     @score = Score.find_by(id: params[:id])

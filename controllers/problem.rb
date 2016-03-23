@@ -12,6 +12,10 @@ class ProblemRoutes < Sinatra::Base
     require_login
   end
 
+  get "/problems" do
+    json Problem.all
+  end
+
   before "/problems/:id" do
     halt 404 if not Problem.exists?(id: params[:id])
     @problem = Problem.find_by(id: params[:id])
