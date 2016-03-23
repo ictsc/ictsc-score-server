@@ -80,14 +80,6 @@ a:focus {
   display: block;
 }
 
-.both {
-  clear: both;
-}
-
-.inline_block {
-  display: inline-block;
-}
-
 .header-logo {
   margin-bottom: 30px;
 }
