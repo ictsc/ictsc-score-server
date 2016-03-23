@@ -266,7 +266,7 @@
   margin-top: 10px;
 }
 
-.issues-table {
+.problems-table {
   width: 100%;
 }
 
@@ -300,52 +300,52 @@ thead th {
   text-align: center;
 }
 
-.issues-table tbody tr {
+.problems-table tbody tr {
   transition: 0.2s;
 }
 
-.issues-table tbody tr:hover {
+.problems-table tbody tr:hover {
   background: #f7f7f7;
 }
 
-.issues-table tr + tr {
+.problems-table tr + tr {
   border-top: 1px solid #ececec;
 }
 
-.issues-table th {
+.problems-table th {
   padding: 18px 1%;
 }
 
-.issues-header {
+.problems-header {
   margin-bottom: 6px;
 }
 
 /*
-.issues-no {
+.problems-no {
 	float: left;
 	font-size: 16px;
 	color: $text-sub;
 	@include font-lato;
 }
-.issues-updated {
+.problems-updated {
 	float: right;
 	font-size: 16px;
 	color: $text-sub;
 	@include font-lato;
 }
 */
-.issues-title-label {
+.problems-title-label {
   color: #909090;
   font-family: "Lato", sans-serif;
   font-weight: bold;
 }
 
-.issues-title {
+.problems-title {
   font-size: 24px;
   font-weight: bold;
 }
 
-.issues-info {
+.problems-info {
   width: 840px;
   margin: 20px 0 26px 0;
   padding: 10px;
@@ -355,63 +355,63 @@ thead th {
   text-align: center;
 }
 
-.issues-info-box {
+.problems-info-box {
   width: 33%;
   display: table-cell;
 }
 
-.issues-info-no, .issues-info-duedate {
+.problems-info-no, .problems-info-duedate {
   border-right: 2px solid #ffffff;
 }
 
-.issues-info-title {
+.problems-info-title {
   color: #909090;
   font-weight: bold;
 }
 
-.issues-info-main {
+.problems-info-main {
   font-size: 20px;
 }
 
-.issues-text {
+.problems-text {
   width: 100%;
 }
 
-.issues-text img {
+.problems-text img {
   max-width: 100%;
 }
 
-.issues-text h1 {
+.problems-text h1 {
   font-size: 24px;
   font-weight: bold;
   margin: 10px 0;
 }
 
-.issues-text h2 {
+.problems-text h2 {
   font-size: 22px;
   font-weight: bold;
   margin: 10px 0;
 }
 
-.issues-text h3 {
+.problems-text h3 {
   font-size: 20px;
   font-weight: bold;
   margin: 10px 0;
 }
 
-.issues-text h4 {
+.problems-text h4 {
   font-size: 18px;
   font-weight: bold;
   margin: 10px 0;
 }
 
-.issues-text h5 {
+.problems-text h5 {
   font-size: 16px;
   font-weight: bold;
   margin: 10px 0;
 }
 
-.issues-text h6 {
+.problems-text h6 {
   font-size: 14px;
   font-weight: bold;
   margin: 10px 0;
