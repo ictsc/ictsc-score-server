@@ -7,16 +7,16 @@ class ScoreRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/scores*" do
+  before "/api/scores*" do
     I18n.locale = :en if request.xhr?
     require_login
   end
 
-  get "/scores" do
+  get "/api/scores" do
     json Score.all
   end
 
-  before "/scores/:id" do
+  before "/api/scores/:id" do
     halt 404 if not Score.exists?(id: params[:id])
     @score = Score.find_by(id: params[:id])
 
@@ -25,18 +25,18 @@ class ScoreRoutes < Sinatra::Base
     end
   end
 
-  get "/scores/:id" do
+  get "/api/scores/:id" do
     json Score.find_by(id: params[:id])
   end
 
-  post "/scores" do
+  post "/api/scores" do
     @attrs = attribute_values_of_class(Score)
     @attrs[:marker_id] = current_user.id
     @score = Score.new(@attrs)
 
     if @score.save
       status 201
-      headers "Location" => to("/scores/#{@score.id}")
+      headers "Location" => to("/api/scores/#{@score.id}")
       json @score
     else
       json @score.errors
@@ -60,10 +60,10 @@ class ScoreRoutes < Sinatra::Base
     end
   end
 
-  put "/scores/:id", &update_score_block
-  patch "/scores/:id", &update_score_block
+  put "/api/scores/:id", &update_score_block
+  patch "/api/scores/:id", &update_score_block
 
-  delete "/scores/:id" do
+  delete "/api/scores/:id" do
     if @score.destroy
       status 204
       json status: "success"

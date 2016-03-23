@@ -7,16 +7,16 @@ class IssueRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/issues*" do
+  before "/api/issues*" do
     I18n.locale = :en if request.xhr?
     require_login
   end
 
-  get "/issues" do
+  get "/api/issues" do
     json Issue.all
   end
 
-  before "/issues/:id" do
+  before "/api/issues/:id" do
     halt 404 if not Issue.exists?(id: params[:id])
     @issue = Issue.find_by(id: params[:id])
 
@@ -25,17 +25,17 @@ class IssueRoutes < Sinatra::Base
     end
   end
 
-  get "/issues/:id" do
+  get "/api/issues/:id" do
     json Issue.find_by(id: params[:id])
   end
 
-  post "/issues" do
+  post "/api/issues" do
     @attrs = attribute_values_of_class(Issue)
     @issue = Issue.new(@attrs)
 
     if @issue.save
       status 201
-      headers "Location" => to("/issues/#{@issue.id}")
+      headers "Location" => to("/api/issues/#{@issue.id}")
       json @issue
     else
       json @issue.errors
@@ -59,10 +59,10 @@ class IssueRoutes < Sinatra::Base
     end
   end
 
-  put "/issues/:id", &update_issue_block
-  patch "/issues/:id", &update_issue_block
+  put "/api/issues/:id", &update_issue_block
+  patch "/api/issues/:id", &update_issue_block
 
-  delete "/issues/:id" do
+  delete "/api/issues/:id" do
     if @issue.destroy
       status 204
       json status: "success"

@@ -36,7 +36,7 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  post "/session" do
+  post "/api/session" do
     halt 403 if logged_in?
 
     halt 401 if not Member.exists?(login: params[:login])
@@ -50,7 +50,7 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/session" do
+  get "/api/session" do
     if logged_in?
       json status: "logged_in", member_id: current_user.id
     else
@@ -67,19 +67,19 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/logout", &logout_block
-  delete "/session", &logout_block
+  get "/api/logout", &logout_block
+  delete "/api/session", &logout_block
 
-  before "/members*" do
+  before "/api/members*" do
     I18n.locale = :en if request.xhr?
     require_login if not request.post?
   end
 
-  get "/members" do
+  get "/api/members" do
     json Member.all, except: [:hashed_password]
   end
 
-  before "/members/:id" do
+  before "/api/members/:id" do
     halt 404 if not Member.exists?(id: params[:id])
     @member = Member.find_by(id: params[:id])
 
@@ -88,11 +88,11 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/members/:id" do
+  get "/api/members/:id" do
     json Member.find_by(id: params[:id]), except: [:hashed_password]
   end
 
-  post "/members" do
+  post "/api/members" do
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
     @attrs[:hashed_password] = crypt(@attrs[:password])
     @attrs.delete(:password)
@@ -102,7 +102,7 @@ class MemberRoutes < Sinatra::Base
 
     if @member.save
       status 201
-      headers "Location" => to("/members/#{@member.id}")
+      headers "Location" => to("/api/members/#{@member.id}")
       json @member, except: [:hashed_password]
     else
       json @member.errors
@@ -134,10 +134,10 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  put "/members/:id", &update_member_block
-  patch "/members/:id", &update_member_block
+  put "/api/members/:id", &update_member_block
+  patch "/api/members/:id", &update_member_block
 
-  delete "/members/:id" do
+  delete "/api/members/:id" do
     if @member.destroy
       status 204
       json status: "success"

@@ -7,16 +7,16 @@ class CommentRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/comments*" do
+  before "/api/comments*" do
     I18n.locale = :en if request.xhr?
     require_login
   end
 
-  get "/comments" do
+  get "/api/comments" do
     json Comment.all
   end
 
-  before "/comments/:id" do
+  before "/api/comments/:id" do
     halt 404 if not Comment.exists?(id: params[:id])
     @comment = Comment.find_by(id: params[:id])
 
@@ -25,18 +25,18 @@ class CommentRoutes < Sinatra::Base
     end
   end
 
-  get "/comments/:id" do
+  get "/api/comments/:id" do
     json Comment.find_by(id: params[:id])
   end
 
-  post "/comments" do
+  post "/api/comments" do
     @attrs = attribute_values_of_class(Comment)
     @attrs[:member_id] = current_user.id
     @comment = Comment.new(@attrs)
 
     if @comment.save
       status 201
-      headers "Location" => to("/comments/#{@comment.id}")
+      headers "Location" => to("/api/comments/#{@comment.id}")
       json @comment
     else
       json @comment.errors
@@ -60,10 +60,10 @@ class CommentRoutes < Sinatra::Base
     end
   end
 
-  put "/comments/:id", &update_comment_block
-  patch "/comments/:id", &update_comment_block
+  put "/api/comments/:id", &update_comment_block
+  patch "/api/comments/:id", &update_comment_block
 
-  delete "/comments/:id" do
+  delete "/api/comments/:id" do
     if @comment.destroy
       status 204
       json status: "success"
