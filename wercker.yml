@@ -20,7 +20,7 @@ build:
         code: curl 127.0.0.1:9292
     - script:
         name: create user
-        code: curl -X POST 127.0.0.1:9292/members -F "name=test-user" -F "login=test-login-name" -F "password=test-password" -F "team=test-team" -F "admin=true"
+        code: curl -X POST 127.0.0.1:9292/api/members -F "name=test-user" -F "login=test-login-name" -F "password=test-password" -F "team=test-team" -F "admin=true"
     - script:
         name: login
-        code: curl -X POST 127.0.0.1:9292/session -F "login=test-login-name" -F "password=test-password"
+        code: curl -X POST 127.0.0.1:9292/api/session -F "login=test-login-name" -F "password=test-password"
