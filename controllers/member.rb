@@ -72,6 +72,7 @@ class MemberRoutes < Sinatra::Base
 
   before "/members*" do
     I18n.locale = :en if request.xhr?
+    require_login if not request.post?
   end
 
   before "/members/:id" do
