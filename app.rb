@@ -109,7 +109,7 @@ class App < Sinatra::Base
 
   get "/answers" do
     @title = "ANSWERS"
-    haml :answer
+    haml :answers
   end
 
   get "/issues" do
