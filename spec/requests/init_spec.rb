@@ -1,13 +1,11 @@
 require_relative "../spec_helper.rb"
 
-describe 'GET / ,' do
-
-  before do
-    get '/'
+describe "GET /" do
+  subject(:response) do
+    get "/"
   end
 
-  it '200 OK が返ってくる' do
-    expect(last_response).to be_ok
-    expect(last_response.status).to eq(200)
+  context "status is 200" do
+    it { expect(response).to be_ok }
   end
 end
