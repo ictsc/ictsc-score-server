@@ -9,4 +9,8 @@ require "rack/test"
 RSpec.configure do |config|
   config.color = true
   config.tty = true
+
+  config.after :suite do
+    ActiveRecord::Base.subclasses.each(&:delete_all)
+  end
 end
