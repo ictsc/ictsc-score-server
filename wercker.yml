@@ -4,9 +4,6 @@ build:
   steps:
     - bundle-install
     - script:
-        name: create database
-        code: bundle exec rake db:create
-    - script:
         name: migrate database
         code: bundle exec rake db:migrate
     - script:
@@ -14,13 +11,4 @@ build:
         code: bundle exec rake db:seed_fu
     - script:
         name: start applicaiton
-        code: bundle exec rackup -s thin -o 127.0.0.1 -p 9292 &
-    - script:
-        name: test "/"
-        code: curl 127.0.0.1:9292
-    - script:
-        name: create user
-        code: curl -X POST 127.0.0.1:9292/api/members -F "name=test-user" -F "login=test-login-name" -F "password=test-password" -F "admin=true"
-    - script:
-        name: login
-        code: curl -X POST 127.0.0.1:9292/api/session -F "login=test-login-name" -F "password=test-password"
+        code: bundle exec rspec spec
