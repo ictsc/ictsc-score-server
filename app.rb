@@ -91,7 +91,7 @@ class App < Sinatra::Base
 
   get "/signin" do
     @title = "SIGN IN"
-    haml :signin
+    haml :signin, layout: :"layout-simple"
   end
 
   get "/problems" do
@@ -109,7 +109,7 @@ class App < Sinatra::Base
 
   get "/answers" do
     @title = "ANSWERS"
-    haml :answer
+    haml :answers
   end
 
   get "/issues" do

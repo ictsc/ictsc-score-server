@@ -36,11 +36,7 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  before "/member" do
-    I18n.locale = :en if request.xhr?
-  end
-
-  post "/session" do
+  post "/api/session" do
     halt 403 if logged_in?
 
     halt 401 if not Member.exists?(login: params[:login])
@@ -54,7 +50,7 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/session" do
+  get "/api/session" do
     if logged_in?
       json status: "logged_in", member_id: current_user.id
     else
@@ -71,22 +67,42 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/logout", &logout_block
-  delete "/session", &logout_block
+  get "/api/logout", &logout_block
+  delete "/api/session", &logout_block
 
-  get "/member/:id" do
+  before "/api/members*" do
+    I18n.locale = :en if request.xhr?
+    require_login if not request.post?
+  end
+
+  get "/api/members" do
+    json Member.all, except: [:hashed_password]
+  end
+
+  before "/api/members/:id" do
     halt 404 if not Member.exists?(id: params[:id])
+    @member = Member.find_by(id: params[:id])
+
+    if request.post? || request.put? || request.patch? || request.delete?
+      halt 403 if (@member != current_user) and (not current_user&.admin)
+    end
+  end
+
+  get "/api/members/:id" do
     json Member.find_by(id: params[:id]), except: [:hashed_password]
   end
 
-  post "/member" do
+  post "/api/members" do
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
     @attrs[:hashed_password] = crypt(@attrs[:password])
     @attrs.delete(:password)
+    @attrs[:admin] = false if not current_user&.admin
 
     @member = Member.new(@attrs)
 
     if @member.save
+      status 201
+      headers "Location" => to("/api/members/#{@member.id}")
       json @member, except: [:hashed_password]
     else
       json @member.errors
@@ -94,15 +110,12 @@ class MemberRoutes < Sinatra::Base
   end
 
   update_member_block = Proc.new do
-    halt 404 if not Member.exists?(id: params[:id])
-
     field_options = { exclude: [:hashed_password], include: [:password] }
 
     if request.put? and not satisfied_required_fields?(Member, field_options)
       halt 400, { required: insufficient_fields(Member, field_options) }.to_json
     end
 
-    @member = Member.find_by(id: params[:id])
     @attrs = attribute_values_of_class(Member, field_options)
 
     if @attrs.key?(:password)
@@ -112,6 +125,8 @@ class MemberRoutes < Sinatra::Base
 
     @member.attributes = @attrs
 
+    halt 400, json(@member.errors) if not @member.valid?
+
     if @member.save
       json @member, except: [:hashed_password]
     else
@@ -119,16 +134,15 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  put "/member/:id", &update_member_block
-  patch "/member/:id", &update_member_block
+  put "/api/members/:id", &update_member_block
+  patch "/api/members/:id", &update_member_block
 
-  delete "/member/:id" do
-    @member = Member.find_by(id: params[:id])
-    halt 404 if @member.nil?
-
+  delete "/api/members/:id" do
     if @member.destroy
+      status 204
       json status: "success"
     else
+      status 500
       json status: "failed"
     end
   end

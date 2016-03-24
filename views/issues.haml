@@ -1,87 +1,44 @@
-%link(rel="stylesheet"){href: to("/css/style.css")}
-
-.header-wrap
-  %header.header-content
-    .account-display
-      %span Sample School
-      %ul.account-menu
-        %li.account-menu-button
-          %ul
-            %li
-              %a{:href => ""} My Account
-            %li
-              %a{:href => ""} Sign Out
-    %h1.header-logo
-      %a{:href => ""} ICTSC5
-  .header-gnav-wrap
-    %nav.header-gnav
-      %ul.clearfix
-        %li
-          %a{:href => "index.html"} TOP
-        %li
-          %a{:href => "issues.html"} ISSUES
-        %li
-          %a{:href => "answer.html"} ANSWER
-        %li
-          %a{:href => "question.html"} QUESTION
-        %li
-          %a{:href => "infomation.html"} INFOMATION
-.main-wrap.clearfix
-  .main-content
-    /
-      .breadcrumbs
-        %ul
-          %li
-            %a(href="") TOP
-          %li
-            %a(href="") ISSUES
-    .main-content-wrap
-      .main-header
-        %span.main-title ISSUES
-        %span.main-title-sub
-      .main-content-wrap-sub
-        %table.issues-table
-          %caption
-          %thead
-            %tr.table-header
-              %th.table-no #
-              %th.table-title Title
-              %th.table-duedate Due date
-              %th.table-updated Updated
-          %tbody
-            %tr{"data-href" => "issues-01.html"}
-              %th.table-no
-                \#1
-              %th.table-title
-                %a{:href => "issues-01.html"} Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-              %th.table-duedate 12:00
-              %th.table-updated 10:00
-            %tr{"data-href" => ""}
-              %th.table-no
-                \#2
-              %th.table-title
-                %a{:href => "issues-01.html"} Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-              %th.table-duedate 12:00
-              %th.table-updated 10:00
-            %tr{"data-href" => ""}
-              %th.table-no
-                \#3
-              %th.table-title
-                %a{:href => "issues-01.html"} Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
-              %th.table-duedate 12:00
-              %th.table-updated 10:00
-            %tr{"data-href" => "issues-01.html"}
-              %th.table-no
-                \#4
-              %th.table-title
-                %a{:href => ""} Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-              %th.table-duedate 12:00
-              %th.table-updated 10:00
-    /
-      .side
-        .side-in
-          .side-in-title Side Title
-%footer.footer-wrap
-  .footer-content.clearfix
-    .copyright &#169; 2015 ICTSC. All Rights Reserved.
-%script{:src => "js/animation.js", :type => "text/javascript"}
+.main-header
+  %span.main-title QUESTION
+  %span.main-title-sub
+.main-content-wrap-sub
+  .main-content-header
+    %span.main-content-title NEW QUESTION
+    %span.main-title-sub
+  .answer-form-wrap
+    %form{"accept-charset": "utf-8", action: "answer.html", method: "post"}
+      .form-item
+        %select.answer-select{name: "answer-select"}
+          %option{value: " "} Please choose a problem to question.
+          %option{value: "problems01"} #1 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+          %option{value: "problems02"} #2 Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+          %option{value: "problems03"} #3 Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+          %option{value: "problems04"} #4 Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+      .form-item
+        %textarea.answer-text{name: "answer-text", placeholder: "Please enter your question."}
+      .button-wrap
+        %input.button{title: "submit", type: "submit", value: "SUBMIT"}
+.main-content-wrap-sub
+  .main-content-header
+    %span.main-content-title QUESTION LIST
+    %span.main-title-sub
+  .answer-list-wrap
+    .answer-list-item.clearfix
+      .answer-list-info
+        .answer-list-info-main Master
+      .answer-list-main
+        .answer-list-main-title
+          \#1 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+        .answer-list-text
+          Please think on their own...
+        .answer-list-footer-info 2/27 10:24
+    / 2つ目
+    .answer-list-item.clearfix
+      .answer-list-info
+        .answer-list-info-main Me
+      .answer-list-main
+        .answer-list-main-title
+          \#1 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+        .answer-list-text
+          Is this problem and do not know at all should I do if there?
+        .answer-list-footer-info 2/27 10:20

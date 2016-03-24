@@ -14,7 +14,7 @@ module Sinatra
 
 		def current_user
 			return nil if not logged_in?
-			Member.find_by(session[:member_id])
+			Member.find_by(id: session[:member_id])
 		end
 
 		def login_as(member_id)

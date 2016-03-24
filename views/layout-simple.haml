@@ -17,7 +17,6 @@
 
     -# css
     %link{rel: "stylesheet", href: to("/normalize.css")}
-    %link{rel: "stylesheet", href: to("/css/style.css")}
 
     -# favicon
     -# %link(rel="shortcut icon"){href: to("/favicon.ico")}
@@ -42,40 +41,4 @@
   %body
     %script{src: "https://code.jquery.com/jquery-2.2.1.min.js"}
 
-    .header-wrap
-      %header.header-content
-        .account-display
-          %span Sample School
-          %ul.account-menu
-            %li.account-menu-button
-              %ul
-                %li
-                  %a{href: ""} My Account
-                %li
-                  %a{href: to("/signin")} Sign Out
-        %h1.header-logo
-          %a{href: ""} ICTSC5
-      .header-gnav-wrap
-        %nav.header-gnav
-          %ul.clearfix
-            %li
-              %a{href: to("/")} TOP
-            %li
-              %a{href: to("/problems")} PROBLEMS
-            %li
-              %a{href: to("/answers")} ANSWER
-            %li
-              %a{href: to("/issues")} QUESTION
-            %li
-              %a{href: to("/information")} INFORMATION
-    .main-wrap.clearfix
-      .main-content
-        .main-content-wrap
-          = yield if block_given?
-
-    %footer.footer-wrap
-      .footer-content.clearfix
-        .copyright &#169; 2015 ICTSC. All Rights Reserved.
-
-    %script{src: "js/animation.js", type: "text/javascript"}
-    -# %script{src: "/js/script.js"}
+    = yield if block_given?

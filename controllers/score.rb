@@ -7,22 +7,36 @@ class ScoreRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/score*" do
+  before "/api/scores*" do
     I18n.locale = :en if request.xhr?
     require_login
   end
 
-  get "/score/:id" do
+  get "/api/scores" do
+    json Score.all
+  end
+
+  before "/api/scores/:id" do
     halt 404 if not Score.exists?(id: params[:id])
+    @score = Score.find_by(id: params[:id])
+
+    if request.post? || request.put? || request.patch? || request.delete?
+      halt 403 if (@score.marker_id != current_user.id) and (not current_user&.admin)
+    end
+  end
+
+  get "/api/scores/:id" do
     json Score.find_by(id: params[:id])
   end
 
-  post "/score" do
+  post "/api/scores" do
     @attrs = attribute_values_of_class(Score)
     @attrs[:marker_id] = current_user.id
     @score = Score.new(@attrs)
 
     if @score.save
+      status 201
+      headers "Location" => to("/api/scores/#{@score.id}")
       json @score
     else
       json @score.errors
@@ -30,16 +44,14 @@ class ScoreRoutes < Sinatra::Base
   end
 
   update_score_block = Proc.new do
-    halt 404 if not Score.exists?(id: params[:id])
-
     if request.put? and not satisfied_required_fields?(Score)
       halt 400, { required: insufficient_fields(Score) }.to_json
     end
 
-    @score = Score.find_by(id: params[:id])
     @attrs = attribute_values_of_class(Score)
-
     @score.attributes = @attrs
+
+    halt 400, json(@score.errors) if not @score.valid?
 
     if @score.save
       json @score
@@ -48,16 +60,15 @@ class ScoreRoutes < Sinatra::Base
     end
   end
 
-  put "/score/:id", &update_score_block
-  patch "/score/:id", &update_score_block
+  put "/api/scores/:id", &update_score_block
+  patch "/api/scores/:id", &update_score_block
 
-  delete "/score/:id" do
-    @score = Score.find_by(id: params[:id])
-    halt 404 if @score.nil?
-
+  delete "/api/scores/:id" do
     if @score.destroy
+      status 204
       json status: "success"
     else
+      status 500
       json status: "failed"
     end
   end
