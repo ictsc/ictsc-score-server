@@ -10,5 +10,5 @@ build:
         name: load seed data into database
         code: bundle exec rake db:seed_fu
     - script:
-        name: start applicaiton
+        name: run rspec
         code: bundle exec rspec spec
