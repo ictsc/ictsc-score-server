@@ -40,7 +40,7 @@ describe "Session" do
       }
     end
 
-    let(:parsed_response) { p response; JSON.parse(response.body) }
+    let(:parsed_response) { response; JSON.parse(response.body) }
 
     it { expect(parsed_response).to eq ({ "status" => "failed"}) }
   end
@@ -57,7 +57,7 @@ describe "Session" do
       }
     end
 
-    let(:parsed_response) { p response; JSON.parse(response.body) }
+    let(:parsed_response) { response; JSON.parse(response.body) }
 
     it { expect(parsed_response).to eq ({ "status" => "success"}) }
   end
