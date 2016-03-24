@@ -5,6 +5,8 @@ Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
 
 require "sinatra/activerecord/rake"
 
+require "rspec/core/rake_task" if ENV["RACK_ENV"] == "test"
+
 namespace :db do
   desc <<-EOS
     Loads seed data for the current environment. It will look for
@@ -53,3 +55,5 @@ SeedFu.fixture_paths = [
   File.dirname(__FILE__) + "/db/fixtures",
   File.dirname(__FILE__) + "/db/fixtures/#{ENV["RACK_ENV"]}"
 ]
+
+RSpec::Core::RakeTask.new("spec") if defined? RSpec::Core::RakeTask
