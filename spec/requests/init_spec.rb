@@ -1,12 +1,6 @@
-require_relative "../../app"
 require_relative "../spec_helper.rb"
 
 describe 'GET / ,' do
-  include Rack::Test::Methods
-
-  def app
-    App
-  end
 
   before do
     get '/'
