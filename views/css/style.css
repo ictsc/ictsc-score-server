@@ -123,7 +123,7 @@
 
 .main-wrap {
   min-width: 940px;
-  min-height: 1000px;
+  min-height: calc(100vh - 276px); /* 276 は適当 */
   padding-top: 20px;
   background: #f7f7f7;
   background-size: 42px;
@@ -421,6 +421,10 @@ thead th {
   min-width: 940px;
   padding: 20px 0;
   background: #f7f7f7;
+
+  display: flex;
+  height: 32px;
+  align-items: center;
 }
 
 .footer-content {
@@ -462,4 +466,3 @@ thead th {
 .footer-nav a:hover {
   text-decoration: underline;
 }
-
