@@ -63,7 +63,7 @@ class MemberRoutes < Sinatra::Base
       logout
       json status: "success"
     else
-      halt 402, { status: "failed"}.to_json
+      halt 403, { status: "failed"}.to_json
     end
   end
 
