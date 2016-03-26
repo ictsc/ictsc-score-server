@@ -21,7 +21,7 @@ class MemberRoutes < Sinatra::Base
       path = File.join(settings.root, "../ext", crypt_binname)
       hash, status = Open3.capture2(path, key, salt)
       if status.exitstatus.zero?
-        hash
+        hash.strip
       else
         nil
       end
