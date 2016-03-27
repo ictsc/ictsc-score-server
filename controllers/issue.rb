@@ -31,6 +31,7 @@ class IssueRoutes < Sinatra::Base
 
   post "/api/issues" do
     @attrs = attribute_values_of_class(Issue)
+    @attrs[:team_id] = current_user.team_id
     @issue = Issue.new(@attrs)
 
     if @issue.save
