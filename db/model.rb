@@ -19,6 +19,7 @@ class Team < ActiveRecord::Base
 
   has_many :members, dependent: :nullify
   has_many :answers, dependent: :destroy
+  has_many :issues, dependent: :destroy
 end
 
 class Member < ActiveRecord::Base
@@ -52,11 +53,14 @@ end
 class Issue < ActiveRecord::Base
   validates :title,   presence: true
   validates :problem, presence: true
+  validates :team, presence: true
   validates :closed, inclusion: { in: [true, false] }
 
   has_many :comments, dependent: :destroy
 
   belongs_to :problem
+  belongs_to :team
+
 end
 
 class Answer < ActiveRecord::Base
