@@ -44,7 +44,7 @@ class Problem < ActiveRecord::Base
   validates :creator,   presence: true
 
   has_many :answers,  dependent: :destroy
-  has_many :comments, dependent: :destroy
+  has_many :comments, dependent: :destroy, as: :commentable
   has_many :issues,   dependent: :destroy
 
   belongs_to :creator, foreign_key: "creator_id", class_name: "Member"
@@ -56,11 +56,10 @@ class Issue < ActiveRecord::Base
   validates :team, presence: true
   validates :closed, inclusion: { in: [true, false] }
 
-  has_many :comments, dependent: :destroy
+  has_many :comments, dependent: :destroy, as: :commentable
 
   belongs_to :problem
   belongs_to :team
-
 end
 
 class Answer < ActiveRecord::Base
@@ -68,6 +67,8 @@ class Answer < ActiveRecord::Base
   validates :problem, presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer.score_id.nil? }
   validates :team,    presence: true, uniqueness: { scope: :problem }
+
+  has_many :comments, dependent: :destroy, as: :commentable
 
   belongs_to :problem
   belongs_to :score
@@ -81,27 +82,15 @@ class Score < ActiveRecord::Base
 
   belongs_to :answer
   belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
-
 end
 
 class Comment < ActiveRecord::Base
   validates :text,    presence: true
   validates :member,  presence: true
-  validates :problem, presence: true, if: Proc.new {|comment| not comment.problem_id.nil? }
-  validates :issue,   presence: true, if: Proc.new {|comment| not comment.issue_id.nil? }
   validates :required_reply, inclusion: { in: [true, false] }
-  validate :present_problem_xor_issue
+  validates :commentable, presence: true
 
   belongs_to :member
-  belongs_to :problem
-  belongs_to :issue
-
-  private
-    def present_problem_xor_issue
-      unless problem_id.blank? ^ issue_id.blank?
-        errors.add(:problem_id, "specify only problem_id or issue_id, not both")
-        errors.add(:issue_id, "specify only problem_id or issue_id, not both")
-      end
-    end
+  belongs_to :commentable, polymorphic: true
 end
 
