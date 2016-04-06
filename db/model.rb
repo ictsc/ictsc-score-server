@@ -63,7 +63,6 @@ class Issue < ActiveRecord::Base
 end
 
 class Answer < ActiveRecord::Base
-  validates :text,    presence: true
   validates :problem, presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer.score_id.nil? }
   validates :team,    presence: true, uniqueness: { scope: :problem }
