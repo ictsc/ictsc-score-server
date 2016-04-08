@@ -38,6 +38,7 @@ class TeamRoutes < Sinatra::Base
       headers "Location" => to("/api/teams/#{@team.id}")
       json @team
     else
+      status 400
       json @team.errors
     end
   end
@@ -55,6 +56,7 @@ class TeamRoutes < Sinatra::Base
     if @team.save
       json @team
     else
+      status 400
       json @team.errors
     end
   end

@@ -39,6 +39,7 @@ class AnswerRoutes < Sinatra::Base
       headers "Location" => to("/api/answers/#{@answer.id}")
       json @answer
     else
+      status 400
       json @answer.errors
     end
   end
@@ -56,6 +57,7 @@ class AnswerRoutes < Sinatra::Base
     if @answer.save
       json @answer
     else
+      status 400
       json @answer.errors
     end
   end

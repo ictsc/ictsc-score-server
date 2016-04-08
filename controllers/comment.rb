@@ -43,6 +43,7 @@ class CommentRoutes < Sinatra::Base
         headers "Location" => to("/api/#{pluralize_name}/:commentable_id/comments/#{@comment.id}")
         json @comment
       else
+        status 400
         json @comment.errors
       end
     end
@@ -60,6 +61,7 @@ class CommentRoutes < Sinatra::Base
       if @comment.save
         json @comment
       else
+        status 400
         json @comment.errors
       end
     end

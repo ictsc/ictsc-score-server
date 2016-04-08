@@ -39,6 +39,7 @@ class IssueRoutes < Sinatra::Base
       headers "Location" => to("/api/issues/#{@issue.id}")
       json @issue
     else
+      status 400
       json @issue.errors
     end
   end
@@ -56,6 +57,7 @@ class IssueRoutes < Sinatra::Base
     if @issue.save
       json @issue
     else
+      status 400
       json @issue.errors
     end
   end
