@@ -1,0 +1,23 @@
+{
+  "name": "ictsc-score-server",
+  "authors": [
+    "Takuya Fukuju <chalkygames123@icloud.com>"
+  ],
+  "description": "ICTSC Score Server",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "fastclick": "^1.0.6",
+    "jquery": "^2.2.4",
+    "bootstrap": "^3.3.6"
+  }
+}
