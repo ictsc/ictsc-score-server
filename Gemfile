@@ -20,7 +20,7 @@ gem "dotenv"
 gem "thin", require: false
 
 group :development do
-	gem "pry", require: false
+	gem "pry"
 	gem "shotgun", require: false
 	gem "better_errors"
 	gem "binding_of_caller", require: false
