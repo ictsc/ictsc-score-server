@@ -31,6 +31,7 @@ class AnswerRoutes < Sinatra::Base
 
   post "/api/answers" do
     @attrs = attribute_values_of_class(Answer)
+    @attrs[:team_id] = current_user.team_id
     @answer = Answer.new(@attrs)
 
     if @answer.save
