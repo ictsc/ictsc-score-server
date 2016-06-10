@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160406143421) do
+ActiveRecord::Schema.define(version: 20160605101050) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -22,13 +22,12 @@ ActiveRecord::Schema.define(version: 20160406143421) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string   "text",                             null: false
-    t.boolean  "required_reply",   default: false, null: false
-    t.integer  "member_id",                        null: false
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-    t.integer  "commentable_id",                   null: false
-    t.string   "commentable_type",                 null: false
+    t.string   "text",             null: false
+    t.integer  "member_id",        null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.integer  "commentable_id",   null: false
+    t.string   "commentable_type", null: false
   end
 
   add_index "comments", ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
