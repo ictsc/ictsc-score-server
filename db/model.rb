@@ -22,6 +22,22 @@ class Team < ActiveRecord::Base
   has_many :issues, dependent: :destroy
 end
 
+class Role < ActiveRecord::Base
+  validates :name, presence: true
+  validates :rank, presence: true
+
+  has_many :members
+  has_many :permissions
+end
+
+class Permission < ActiveRecord::Base
+  validates :resource, presence: true
+  validates :method,   presence: true
+  validates :query,    presence: true
+
+  belongs_to :role
+end
+
 class Member < ActiveRecord::Base
   validates :name,            presence: true
   validates :login,           presence: true, uniqueness: true
@@ -34,6 +50,7 @@ class Member < ActiveRecord::Base
 
   has_many :comments, dependent: :destroy
   belongs_to :team
+  belongs_to :role
 end
 
 class Problem < ActiveRecord::Base
@@ -92,4 +109,3 @@ class Comment < ActiveRecord::Base
   belongs_to :member
   belongs_to :commentable, polymorphic: true
 end
-
