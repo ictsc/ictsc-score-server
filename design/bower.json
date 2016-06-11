@@ -19,6 +19,7 @@
     "fastclick": "^1.0.6",
     "jquery": "^2.2.4",
     "bootstrap": "^3.3.6",
-    "simplemde": "^1.11.1"
+    "simplemde": "^1.11.1",
+    "datatable": "git@github.com:Holt59/datatable.git#^1.0.6"
   }
 }
