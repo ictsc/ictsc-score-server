@@ -108,4 +108,12 @@ class Comment < ActiveRecord::Base
 
   belongs_to :member
   belongs_to :commentable, polymorphic: true
+
+  private
+    def commentable_type_check
+      return if commentable_type.nil?
+      unless %w(Problem Issue Answer).include? commentable_type
+        errors.add(:commentable, "specify one of problems, issues or answers")
+      end
+    end
 end
