@@ -72,4 +72,36 @@ class ScoreRoutes < Sinatra::Base
       json status: "failed"
     end
   end
+
+  before "/api/answers/:id/score" do
+    halt 404 if not Answer.exists?(id: params[:id])
+    @answer = Answer.find_by(id: params[:id])
+
+    halt 404 if @answer.score.nil?
+    @score = @answer.score
+
+    if request.post? || request.put? || request.patch? || request.delete?
+      halt 403 if (@score.marker_id != current_user.id) and (not current_user&.admin)
+    end
+  end
+
+  get "/api/answers/:id/score" do
+    status 303
+    headers "Location" => to("/api/scores/#{@score.id}")
+  end
+
+  post "/api/answers/:id/score" do
+    @attrs = attribute_values_of_class(Score)
+    @attrs[:marker_id] = current_user.id
+    @attrs[:answer_id] = @answer.id
+    @score = Score.new(@attrs)
+
+    if @score.save
+      status 201
+      headers "Location" => to("/api/scores/#{@score.id}")
+      json @score
+    else
+      json @score.errors
+    end
+  end
 end

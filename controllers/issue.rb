@@ -74,4 +74,33 @@ class IssueRoutes < Sinatra::Base
       json status: "failed"
     end
   end
+
+  before "/api/problems/:id/issues" do
+    if request.post?
+      halt 404 if not Problem.exists?(id: params[:id])
+      @problem = Problem.find_by(id: params[:id])
+    end
+  end
+
+  get "/api/problems/:id/issues" do
+    @problem = Problem.find_by(id: params[:id])
+
+    json @problem.issues
+  end
+
+  post "/api/problems/:id/issues" do
+    @attrs = attribute_values_of_class(Issue)
+    @attrs[:team_id] = current_user.team_id
+    @attrs[:problem_id] = @problem.id
+    @issue = Issue.new(@attrs)
+
+    if @issue.save
+      status 201
+      headers "Location" => to("/api/issues/#{@issue.id}")
+      json @issue
+    else
+      status 400
+      json @issue.errors
+    end
+  end
 end
