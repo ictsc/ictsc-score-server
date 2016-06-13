@@ -40,6 +40,7 @@ class Permission < ActiveRecord::Base
   validates :resource, presence: true
   validates :method,   presence: true
   validates :query,    presence: true
+  validates :join,     presence: true
 
   belongs_to :role
 end

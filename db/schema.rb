@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160605101056) do
+ActiveRecord::Schema.define(version: 20160613181002) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -53,13 +53,14 @@ ActiveRecord::Schema.define(version: 20160605101056) do
   end
 
   create_table "permissions", force: :cascade do |t|
-    t.string   "resource",   null: false
-    t.string   "method",     null: false
-    t.string   "query",      null: false
+    t.string   "resource",                null: false
+    t.string   "method",                  null: false
+    t.string   "query",                   null: false
     t.string   "parameters"
     t.integer  "role_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "join",       default: "", null: false
   end
 
   create_table "problems", force: :cascade do |t|
