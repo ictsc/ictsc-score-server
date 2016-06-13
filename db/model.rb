@@ -12,6 +12,12 @@ class ActiveRecord::Base
                  .flatten
     fields - options[:exclude] + options[:include]
   end
+
+  def self.where_with(resource, method, bind)
+    p = Permission.find_by!(resource: resource, method: method)
+
+    where(p.query, eval(p.parameters, bind))
+  end
 end
 
 class Team < ActiveRecord::Base
