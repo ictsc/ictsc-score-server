@@ -76,7 +76,7 @@ end
 
 class Score < ActiveRecord::Base
   validates :point,  presence: true
-  validates :answer, presence: true
+  validates :answer, presence: true, uniqueness: true
   validates :marker, presence: true
 
   belongs_to :answer
