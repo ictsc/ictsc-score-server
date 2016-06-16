@@ -124,7 +124,6 @@ end
 class Comment < ActiveRecord::Base
   validates :text,    presence: true
   validates :member,  presence: true
-  validates :required_reply, inclusion: { in: [true, false] }
   validates :commentable, presence: true
 
   belongs_to :member
