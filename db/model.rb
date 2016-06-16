@@ -13,10 +13,10 @@ class ActiveRecord::Base
     fields - options[:exclude] + options[:include]
   end
 
-  def self.where_with(resource, method, bind)
-    p = Permission.find_by!(resource: resource, method: method)
-
-    where(p.query, eval(p.parameters, bind))
+  def self.accessible_resources(user:, method: , action: "")
+    current_user = user
+    p = Permission.find_by(resource: self.to_s.downcase.pluralize, role: user.role, method: method, action: action)
+    p.resources(binding)
   end
 end
 
@@ -43,6 +43,19 @@ class Permission < ActiveRecord::Base
   validates :join,     presence: true
 
   belongs_to :role
+
+  def resources(bind = nil)
+    klass = resource.singularize.capitalize.constantize
+
+    params = if parameters.nil?
+      {}
+    else
+      eval(parameters, bind)
+    end
+
+    klass.joins(join.split(?\s).map(&:to_sym)) \
+         .where(query, params)
+  end
 end
 
 class Member < ActiveRecord::Base
