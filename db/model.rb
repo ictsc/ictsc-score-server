@@ -15,6 +15,7 @@ class ActiveRecord::Base
 
   def self.accessible_resources(user:, method: , action: "")
     current_user = user
+    role = user.role
     p = Permission.find_by(resource: self.to_s.downcase.pluralize, role: user.role, method: method, action: action)
     p.resources(binding)
   end
