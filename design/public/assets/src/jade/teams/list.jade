@@ -1,0 +1,89 @@
+extends /extends/_layout
+
+//-
+	### /[チーム(一覧/作成)ページ]/
+	- ヘッダー
+		- "グローバルナビゲーション"
+	- チーム一覧テーブル
+		- {チーム番号, [チーム詳細ページ]}
+		- {チーム名, [チーム詳細ページ]}
+		- 所属
+		- {メンバー数, [チーム詳細ページ]}
+		- {総スコア, [スコア詳細ページ]}
+	- チーム作成フォーム
+		- |チーム名, テキストボックス|
+		- |所属, テキストボックス|
+		- <作成ボタン, [チーム(一覧/作成)ページ]>
+
+block vars
+	- signedIn = true
+
+block title
+	+title('チーム一覧')
+
+block content
+	.page-header
+		h1 チーム一覧
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			thead
+				tr
+					th 番号
+					th チーム名
+					th 所属
+					th メンバー数
+					th 総スコア
+			tbody
+				tr
+					th
+						a(href='/teams/detail.html') 1
+					td
+						a(href='/teams/detail.html') WCDI
+					td 日本工学院八王子専門学校
+					td
+						a(href='/teams/detail.html') 5
+					td
+						a(href='/answers/detail/score.html') 100
+				tr
+					th
+						a(href='/teams/detail.html') 2
+					td
+						a(href='/teams/detail.html') ISL
+					td 明治大学
+					td
+						a(href='/teams/detail.html') 3
+					td
+						a(href='/answers/detail/score.html') 200
+				tr
+					th
+						a(href='/teams/detail.html') 3
+					td
+						a(href='/teams/detail.html') にせつむり(ゆかいな仲間たち)
+					td 大阪情報コンピュータ専門学校
+					td
+						a(href='/teams/detail.html') 5
+					td
+						a(href='/answers/detail/score.html') 300
+				tr
+					th
+						a(href='/teams/detail.html') 4
+					td
+						a(href='/teams/detail.html') 専門学校穴吹コンピュータカレッジ
+					td 専門学校穴吹コンピュータカレッジチーム
+					td
+						a(href='/teams/detail.html') 5
+					td
+						a(href='/answers/detail/score.html') 400
+	.page-header
+		h2 チーム作成
+	form.form-horizontal(action='/teams/list.html', form='form-team-creation')
+		.form-group
+			label.col-sm-2.control-label(for='input-team-name') チーム名
+			.col-sm-10
+				input.form-control#input-team-name(type='text')
+		.form-group
+			label.col-sm-2.control-label(for='input-school') 所属
+			.col-sm-10
+				input.form-control#input-school(type='text')
+		.text-right
+			button.btn.btn-primary(type='submit') 作成

@@ -1,0 +1,102 @@
+extends /extends/_layout
+
+//-
+	### [問題(一覧/投稿)ページ]
+	- ヘッダー
+		- "グローバルナビゲーション"
+	- 問題一覧テーブル
+		- {問題番号, [問題詳細ページ]}
+		- {問題名, [問題詳細ページ]}
+		- 問題公開日時
+		- 問題締切日時
+		- {問題修正コメント数, [問題詳細ページ#問題修正コメント(一覧/投稿)タブ]}
+		- {問題質問コメント数, [問題詳細ページ#問題質問詳細&問題質問コメント(一覧/投稿)タブ]}
+		- {解答コメント数, [問題詳細ページ#解答詳細&解答コメント(一覧/投稿)タブ]}
+	- 問題投稿フォーム
+		- |問題名, テキストボックス|
+		- |問題本文, テキストエリア|
+		- |問題公開日時, 日時テキストボックス|
+		- |問題締切日時, 日時テキストボックス|
+		- <問題投稿フォーム, [問題(一覧/投稿)ページ]>
+
+block vars
+	- signedIn = true
+
+block title
+	+title('問題一覧')
+
+block content
+	.page-header
+		h1 問題一覧
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			thead
+				tr
+					th 番号
+					th 問題名
+					th 公開日時
+					th 締切日時
+					th 修正コメント数
+					th 質問コメント数
+					th 解答コメント数
+			tbody
+				tr
+					th
+						a(href='/problems/detail.html') 1
+					td
+						a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
+					td 2016-08-27 12:00
+					td 2016-08-27 15:00
+					td
+						a(href='/problems/detail.html#tab3-content') 3
+					td
+						a(href='/problems/detail.html#tab4-content') 3
+					td
+						a(href='/problems/detail.html#tab5-content') 3
+				tr
+					th
+						a(href='/problems/detail.html') 2
+					td
+						a(href='/problems/detail.html') Webサイトの調子が悪い
+					td 2016-08-27 12:00
+					td 2016-08-27 15:00
+					td
+						a(href='/problems/detail.html#tab3-content') 3
+					td
+						a(href='/problems/detail.html#tab4-content') 3
+					td
+						a(href='/problems/detail.html#tab5-content') 3
+				tr
+					th
+						a(href='/problems/detail.html') 3
+					td
+						a(href='/problems/detail.html') VPN接続設定のミス
+					td 2016-08-27 12:00
+					td 2016-08-27 15:00
+					td
+						a(href='/problems/detail.html#tab3-content') 3
+					td
+						a(href='/problems/detail.html#tab4-content') 3
+					td
+						a(href='/problems/detail.html#tab5-content') 3
+	.page-header
+		h2 問題投稿
+	form.form-horizontal(action='/problems/list.html', form='form-problem-creation')
+		.form-group
+			label.col-sm-2.control-label(for='input-problem-name') 問題名
+			.col-sm-10
+				input.form-control#input-problem-name(type='text')
+		.form-group
+			label.col-sm-2.control-label(for='input-problem-body') 問題本文
+			.col-sm-10
+				input.form-control#input-problem-body(type='text')
+		.form-group
+			label.col-sm-2.control-label(for='input-disclosure-datetime') 問題公開日時
+			.col-sm-10
+				input.form-control#input-disclosure-datetime(type='datetime')
+		.form-group
+			label.col-sm-2.control-label(for='input-deadlone-datetime') 問題締切日時
+			.col-sm-10
+				input.form-control#input-deadlone-datetime(type='datetime')
+		.text-right
+			button.btn.btn-primary(type='submit') 投稿

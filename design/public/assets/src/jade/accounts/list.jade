@@ -1,0 +1,126 @@
+extends /extends/_layout
+
+//-
+	### /[アカウント(一覧/作成)ページ]/
+	- ヘッダー
+		- "グローバルナビゲーション"
+	- アカウント一覧テーブル
+		- {アカウント番号, [アカウント詳細ページ]}
+		- {ユーザー名, [アカウント詳細ページ]}
+		- {アカウント ID, [アカウント詳細ページ]}
+		- {チーム名, [チーム詳細ページ]}
+		- {ロール}
+	- アカウント作成フォーム
+		- |ユーザー名, テキストボックス|
+		- |アカウント ID, テキストボックス|
+		- |チーム名, ドロップダウンリスト|
+		- |ロール, ドロップダウンリスト|
+		- <作成ボタン, [アカウント(一覧/作成)ページ]>
+
+block vars
+	- signedIn = true
+
+block title
+	+title('アカウント一覧')
+
+block content
+	.page-header
+		h1 アカウント一覧
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			thead
+				tr
+					th 番号
+					th チーム名
+					th 所属
+					th ユーザー名
+					th アカウント ID
+					th ロール
+			tbody
+				tr
+					th
+						a(href='/accounts/detail.html') 1
+					td
+						a(href='/teams/detail.html') WCDI
+					td 日本工学院八王子専門学校
+					td
+						a(href='/accounts/detail.html') 太箸 耀暉
+					td
+						a(href='/accounts/detail.html') futobashi
+					td 参加者
+				tr
+					th
+						a(href='/accounts/detail.html') 2
+					td
+						a(href='/teams/detail.html') WCDI
+					td 日本工学院八王子専門学校
+					td
+						a(href='/accounts/detail.html') 倉上 和也
+					td
+						a(href='/accounts/detail.html') kurakami
+					td 参加者
+				tr
+					th
+						a(href='/accounts/detail.html') 3
+					td
+						a(href='/teams/detail.html') WCDI
+					td 日本工学院八王子専門学校
+					td
+						a(href='/accounts/detail.html')  趙 駿一
+					td
+						a(href='/accounts/detail.html') cho
+					td 参加者
+				tr
+					th
+						a(href='/accounts/detail.html') 4
+					td
+						a(href='/teams/detail.html') WCDI
+					td 日本工学院八王子専門学校
+					td
+						a(href='/accounts/detail.html') 金澤 直輝
+					td
+						a(href='/accounts/detail.html') kanazawa
+					td 参加者
+				tr
+					th
+						a(href='/accounts/detail.html') 5
+					td
+						a(href='/teams/detail.html') WCDI
+					td 日本工学院八王子専門学校
+					td
+						a(href='/accounts/detail.html') 大塚 悠矢
+					td
+						a(href='/accounts/detail.html') otsuka
+					td 参加者
+	.page-header
+		h2 アカウント作成
+	form.form-horizontal(action='/accounts/list.html', form='form-account-creation')
+		.form-group
+			label.col-sm-2.control-label(for='select-team-name') チーム名
+			.col-sm-10
+				select.form-control#select-team-name(name='team-name')
+					option(value='0') チーム名を選択してください
+					option(value='1') WCDI
+					option(value='2') ISL
+					option(value='3') にせつむり(ゆかいな仲間たち)
+					option(value='4') 専門学校穴吹コンピュータカレッジ
+		.form-group
+			label.col-sm-2.control-label 所属
+			.col-sm-10
+				p.form-control-static チーム名が未選択
+				span.help-block チーム名を選択すると自動表示されます
+		.form-group
+			label.col-sm-2.control-label(for='input-username') ユーザー名
+			.col-sm-10
+				input.form-control#input-username(type='text')
+		.form-group
+			label.col-sm-2.control-label(for='input-account-id') アカウント ID
+			.col-sm-10
+				input.form-control#input-account-id(type='text')
+				span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
+		.form-group
+			label.col-sm-2.control-label(for='input-password') パスワード
+			.col-sm-10
+				input.form-control#input-password(name='password', type='password')
+		.text-right
+			button.btn.btn-primary(type='submit') 作成

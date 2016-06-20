@@ -1,0 +1,108 @@
+extends /extends/_layout
+
+//-
+	### [チーム詳細ページ]
+	- ヘッダー
+		- "グローバルナビゲーション"
+	- タブパネル
+		- チーム詳細タブ
+			- チーム番号
+			- チーム名
+			- 所属
+			- メンバー一覧テーブル
+				- {ユーザー名, [アカウント詳細ページ]}
+				- {アカウント ID, [アカウント詳細ページ]}
+			- {総スコア, [スコア詳細ページ]}
+		- チーム編集タブ
+			- フォーム
+				- |チーム番号, 無効テキストボックス|
+				- |チーム名, テキストボックス|
+				- |所属, テキストボックス|
+				- /|総スコア, 数値テキストボックス|/
+
+block vars
+	- signedIn = true
+
+block title
+	+title('チーム詳細')
+
+block content
+	.page-header
+		h1 チーム詳細
+	ul.nav.nav-tabs(role='tablist')
+		li.active(role='presentation')
+			a#tab1-tab(tabindex='0', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
+				i.fa.fa-search
+				|  詳細
+		li(role='presentation')
+			a#tab2-tab(tabindex='0', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
+				i.fa.fa-edit
+				|  編集
+	.tab-content
+		.tab-pane.in.active#tab1-content(role='tabpanel', aria-labelledby='tab1-tab')
+			.panel.panel-default
+				.panel-body
+					.form-horizontal
+						.form-group
+							label.col-sm-2.control-label チーム番号
+							.col-sm-10
+								p.form-control-static 1
+						.form-group
+							label.col-sm-2.control-label チーム名
+							.col-sm-10
+								p.form-control-static WCDI
+						.form-group
+							label.col-sm-2.control-label 所属
+							.col-sm-10
+								p.form-control-static 日本工学院八王子専門学校
+						.form-group
+							label.col-sm-2.control-label 総スコア
+							.col-sm-10
+								p.form-control-static 100
+				.container-fluid
+					.panel.panel-default
+						.panel-heading メンバー一覧
+						.table-responsive
+							table.table.table-striped.table-hover.table-condensed
+								thead
+									tr
+										th ユーザー名
+										th アカウント ID
+								tbody
+									tr
+										th 太箸 耀暉
+										td futobashi
+									tr
+										th 倉上 和也
+										td kurakami
+									tr
+										th 趙 駿一
+										td cho
+									tr
+										th 金澤 直輝
+										td kanazawa
+									tr
+										th 大塚 悠矢
+										td otsuka
+		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
+			.panel
+				.panel-body
+					form.form-horizontal(action='/problems/list.html', form='form-team-editing')
+						.form-group
+							label.col-sm-2.control-label(for='input-team-id') チーム番号
+							.col-sm-10
+								p.form-control-static 1
+						.form-group
+							label.col-sm-2.control-label(for='input-team-name') チーム名
+							.col-sm-10
+								input.form-control#input-team-name(type='text', value='WCDI')
+						.form-group
+							label.col-sm-2.control-label(for='input-school') 所属
+							.col-sm-10
+								input.form-control#input-school(type='text', value='日本工学院八王子専門学校')
+						.form-group
+							label.col-sm-2.control-label(for='input-score-total') 総スコア
+							.col-sm-10
+								p.form-control-static 100
+						.text-right
+							button.btn.btn-primary(type='submit') 更新

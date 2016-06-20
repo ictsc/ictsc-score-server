@@ -14,6 +14,6 @@ var sass = function() {
 		}))
 		.pipe($.sourcemaps.write('./'))
 		.pipe(gulp.dest(config.dest + 'css/'))
-};
+}
 
 gulp.task('sass', sass)
