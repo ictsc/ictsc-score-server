@@ -1,9 +1,9 @@
 ROLE_ID = {
-  admin: 1,
-  writer: 2,
-  participant: 3,
-  viewer: 4,
-  nobody: 5,
+  admin: 2,
+  writer: 3,
+  participant: 4,
+  viewer: 5,
+  nologin: 1,
 }
 
 PERMIT_ALL = ""
