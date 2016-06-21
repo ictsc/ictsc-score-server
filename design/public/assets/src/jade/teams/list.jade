@@ -76,14 +76,12 @@ block content
 						a(href='/answers/detail/score.html') 400
 	.page-header
 		h2 チーム作成
-	form.form-horizontal(action='/teams/list.html', form='form-team-creation')
+	form(action='/teams/list.html', name='form-team-creation')
 		.form-group
-			label.col-sm-2.control-label(for='input-team-name') チーム名
-			.col-sm-10
-				input.form-control#input-team-name(type='text')
+			label(for='input-team-name') チーム名
+			input.form-control#input-team-name(type='text')
 		.form-group
-			label.col-sm-2.control-label(for='input-school') 所属
-			.col-sm-10
-				input.form-control#input-school(type='text')
+			label(for='input-school') 所属
+			input.form-control#input-school(type='text')
 		.text-right
 			button.btn.btn-primary(type='submit') 作成

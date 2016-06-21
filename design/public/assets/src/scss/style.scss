@@ -12,6 +12,11 @@ body {
 
 a {
 	color: $color-primary;
+
+	&:hover,
+	&:focus {
+		color: darken($color-primary, 5%);
+	}
 }
 
 .navbar-button {
@@ -63,6 +68,30 @@ main {
 	margin-top: -1px;
 }
 
+.chatbox {
+
+	ul {
+		padding-left: 0;
+		list-style: none;
+
+		li {
+			border-bottom: 1px solid #ddd;
+
+			a {
+				color: #333;
+				display: block;
+				padding: 15px;
+
+				&:hover,
+				&:active,
+				&:focus {
+					background-color: #ddd;
+				}
+			}
+		}
+	}
+}
+
 footer {
 	display: flex;
 	justify-content: center;
@@ -100,7 +129,7 @@ input[type="color"] {
 @media (max-width: 767px) {
 
 .navbar-nav {
-	
+
 	.open {
 
 			.notifications {

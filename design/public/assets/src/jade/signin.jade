@@ -21,15 +21,13 @@ block content
 	.page-header
 		h1 サインイン
 	p.hidden バリデーションエラーメッセージ
-	form.form-horizontal(action='/problems/detail.html', name='form-signin')
+	form(action='/problems/detail.html', name='form-signin')
 		.form-group
-			label.col-sm-2.control-label(for='input-accound-id') アカウント ID
-			.col-sm-10
-				input.form-control#input-accound-id(name='accound-id', type='text')
+			label(for='input-accound-id') アカウント ID
+			input.form-control#input-accound-id(name='accound-id', type='text')
 		.form-group
-			label.col-sm-2.control-label(name='password', for='input-password') パスワード
-			.col-sm-10
-				input.form-control#input-password(type='password')
+			label(name='password', for='input-password') パスワード
+			input.form-control#input-password(type='password')
 		.text-right
 			button.btn.btn-primary(type='submit') サインイン
 		span.help-block

@@ -21,8 +21,11 @@ html
 
 		block stylesheets
 			link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+			link(rel='stylesheet', href='/bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css')
 			link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.min.css')
 			link(rel='stylesheet', href='/assets/dist/css/style.min.css')
+
+		block additional_stylesheets
 
 	body
 
@@ -42,6 +45,15 @@ html
 			script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
 			script(src='/bower_components/fastclick/lib/fastclick.js')
 			script.
-				$(function() {
+				$(function () {
 					FastClick.attach(document.body)
 				})
+			script.
+				$(function () {
+					var hash = document.location.hash
+					if (hash) {
+							$('a[data-toggle="tab"][href="' + hash + '"]').tab('show')
+					}
+				})
+
+		block additional_scripts

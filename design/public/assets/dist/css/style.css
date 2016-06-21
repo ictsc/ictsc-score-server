@@ -80,6 +80,8 @@ body {
 
 a {
   color: #e6003b; }
+  a:hover, a:focus {
+    color: #cd0034; }
 
 .navbar-button {
   color: #fff;
@@ -113,6 +115,18 @@ main {
 
 .tab-content {
   margin-top: -1px; }
+
+.chatbox ul {
+  padding-left: 0;
+  list-style: none; }
+  .chatbox ul li {
+    border-bottom: 1px solid #ddd; }
+    .chatbox ul li a {
+      color: #333;
+      display: block;
+      padding: 15px; }
+      .chatbox ul li a:hover, .chatbox ul li a:active, .chatbox ul li a:focus {
+        background-color: #ddd; }
 
 footer {
   display: flex;
