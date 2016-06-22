@@ -51,7 +51,7 @@ permit(Member, :nologin, %i(POST))
 
 # Admin
 
-%i(Member Team Score Problem Issue Answer).each do |resource|
+%i(Role, Member Team Score Problem Issue Answer).each do |resource|
   permit(resource, :admin, %i(GET POST PUT PATCH DELETE))
 end
 
