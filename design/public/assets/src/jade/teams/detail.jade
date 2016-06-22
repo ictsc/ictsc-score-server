@@ -1,27 +1,8 @@
 extends /extends/_layout
 
-//-
-	### [チーム詳細ページ]
-	- ヘッダー
-		- "グローバルナビゲーション"
-	- タブパネル
-		- チーム詳細タブ
-			- チーム番号
-			- チーム名
-			- 所属
-			- メンバー一覧テーブル
-				- {ユーザー名, [アカウント詳細ページ]}
-				- {アカウント ID, [アカウント詳細ページ]}
-			- {総スコア, [スコア詳細ページ]}
-		- チーム編集タブ
-			- フォーム
-				- |チーム番号, 無効テキストボックス|
-				- |チーム名, テキストボックス|
-				- |所属, テキストボックス|
-				- /|総スコア, 数値テキストボックス|/
-
 block vars
 	- signedIn = true
+	- isTeams = true
 
 block title
 	+title('チーム詳細')
@@ -31,11 +12,11 @@ block content
 		h1 チーム詳細
 	ul.nav.nav-tabs(role='tablist')
 		li.active(role='presentation')
-			a#tab1-tab(tabindex='0', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
+			a#tab1-tab(tabindex='1', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
 				i.fa.fa-search
 				|  詳細
 		li(role='presentation')
-			a#tab2-tab(tabindex='0', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
+			a#tab2-tab(tabindex='1', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
 				i.fa.fa-edit
 				|  編集
 	.tab-content
@@ -87,7 +68,7 @@ block content
 		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
 			.panel
 				.panel-body
-					form.form-horizontal(action='/problems/list.html', form='form-team-editing')
+					form.form-horizontal(action='/problems/list.html', name='form-team-editing')
 						.form-group
 							label.col-sm-2.control-label(for='input-team-id') チーム番号
 							.col-sm-10

@@ -1,34 +1,14 @@
 block vars
 	- var signedIn = true
+	- var isAccounts = false
+	- var isTeams = false
+	- var isProblems = false
+	- var isQuestions = false
+	- var isAnswers = false
 
-//-
-	- ヘッダー
 nav.navbar.navbar-default.navbar-fixed-top
 	.container
 		if signedIn
-			//-
-				## "グローバルナビゲーション"
-				- {ICTSC ロゴ, [トップページ]}
-				- /{アカウント, [アカウント一覧ページ]}/
-				- /{チーム, [チーム一覧ページ]}/
-				- {問題, [問題(一覧/投稿)ページ]}
-				- {質問, [問題質問一覧ページ]}
-				- {解答, [解答一覧ページ]}
-				- <通知ドロップダウンメニュー> // ベルアイコンと未読通知件数バッジを表示
-					- 通知種別 // =1: 問題公開, =2: 問題修正コメント, =3: 問題質問コメント, =4: 解答コメント
-					- =1 {問題投稿者名, [アカウント詳細ページ]}
-					- =1 {問題名, [問題詳細ページ]}
-					- =2 {問題修正コメント投稿者名, [アカウント詳細ページ]}
-					- =2 {問題修正コメント本文, [問題修正コメント詳細ページ]}
-					- =3 {問題質問コメント投稿者名, [アカウント詳細ページ]}
-					- =3 {問題質問コメント本文, [問題質問コメント詳細ページ]}
-					- =4 {解答コメント投稿者名, [アカウント詳細ページ]}
-					- =4 {解答コメント本文, [解答コメント詳細ページ]}
-					- {もっと見る, [通知一覧ページ]}
-				- <アカウントドロップダウンメニュー> // アカウント名を表示
-					- {チーム名, [チーム詳細ページ]}
-					- {アカウント設定, [アカウント詳細ページ]}
-					- {サインアウト, [トップページ]}
 			.navbar-header
 				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse-1', aria-expanded='false')
 					span.sr-only ナビゲーションを開閉する
@@ -39,18 +19,42 @@ nav.navbar.navbar-default.navbar-fixed-top
 					img(src='/assets/dist/images/ictsc-logo-white.png' srcset='/assets/dist/images/ictsc-logo-white.png 1x, /assets/dist/images/ictsc-logo-white@2x.png 2x', height='50', alt='ICTSC のロゴ')
 			.collapse.navbar-collapse#navbar-collapse-1
 				ul.nav.navbar-nav
-					li.active
-						a(href='/accounts/list.html') アカウント
-							span.sr-only  (このページ)
-					li
-						a(href='/teams/list.html') チーム
+					if isAccounts
+						li.active
+							a(href='/accounts/list.html') アカウント
+								span.sr-only  (このページ)
+					else
+						li
+							a(href='/accounts/list.html') アカウント
+					if isTeams
+						li.active
+							a(href='/teams/list.html') チーム
+								span.sr-only  (このページ)
+					else
+						li
+							a(href='/teams/list.html') チーム
 				ul.nav.navbar-nav.navbar-right
-					li
-						a(href='/problems/list.html') 問題
-					li
-						a(href='/questions/list.html') 質問
-					li
-						a(href='/answers/list.html') 解答
+					if isProblems
+						li.active
+							a(href='/problems/list.html') 問題
+								span.sr-only  (このページ)
+					else
+						li
+							a(href='/problems/list.html') 問題
+					if isQuestions
+						li.active
+							a(href='/questions/list.html') 質問
+								span.sr-only  (このページ)
+					else
+						li
+							a(href='/questions/list.html') 質問
+					if isAnswers
+						li.active
+							a(href='/answers/list.html') 解答
+								span.sr-only  (このページ)
+					else
+						li
+							a(href='/answers/list.html') 解答
 					li.dropdown
 						button.dropdown-toggle.btn-block.text-left.navbar-button#notificationsDropdownMenu(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
 							i.fa.fa-bell.fa-fw
@@ -63,23 +67,21 @@ nav.navbar.navbar-default.navbar-fixed-top
 								small.meta 2016/06/19 12:00
 							li
 								a(href='/accounts/detail.html') 問題修正コメント投稿者名
-								| さんが問題修正コメントを投稿しました。
+								| さんが補足を投稿しました。
 								a.content(href='/problems/comments/detail.html') 問題修正コメント本文
 								small.meta 2016/06/19 12:00
 							li
 								a(href='/accounts/detail.html') 問題質問コメント投稿者名
-								| さんが問題質問コメントを投稿しました。
+								| さんが質問を投稿しました。
 								a.content(href='/problems/comments/detail.html') 問題質問コメント本文
 								small.meta 2016/06/19 12:00
 							li
 								a(href='/accounts/detail.html') 解答コメント投稿者名
-								| さんが解答コメントを投稿しました。
+								| さんが解答を投稿しました。
 								a.content(href='/answers/comments/detail.html') 解答コメント本文
 								small.meta 2016/06/19 12:00
 							a.btn.btn-default.btn-block.btn-readmore(href='/notifications/list.html') もっと見る
 		else
-			//-
-				- {ICTSC ロゴ, [トップページ]}
 			.navbar-header
 				a.navbar-brand(href='/')
 					img(src='/assets/dist/images/ictsc-logo-white.png' srcset='/assets/dist/images/ictsc-logo-white.png 1x, /assets/dist/images/ictsc-logo-white@2x.png 2x', height='50', alt='ICTSC のロゴ')

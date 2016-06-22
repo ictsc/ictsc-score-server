@@ -1,0 +1,76 @@
+extends /extends/_layout
+
+block vars
+	- signedIn = true
+	- isAnswers = true
+
+block title
+	+title('スコア詳細')
+
+block content
+	.page-header
+		h1 スコア詳細
+	ul.nav.nav-tabs(role='tablist')
+		li.active(role='presentation')
+			a#tab1-tab(tabindex='1', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
+				i.fa.fa-search
+				|  詳細
+		li(role='presentation')
+			a#tab2-tab(tabindex='1', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
+				i.fa.fa-edit
+				|  編集
+	.tab-content
+		.tab-pane.in.active#tab1-content(role='tabpanel', aria-labelledby='tab1-tab')
+			.panel.panel-default
+				.panel-body
+					.form-horizontal
+						.form-group
+							label.col-sm-2.control-label 番号
+							.col-sm-10
+								p.form-control-static 1
+						.form-group
+							label.col-sm-2.control-label 採点者
+							.col-sm-10
+								a.show.form-control-static(href='/accounts/detail.html') 朝霧 涼夏
+						.form-group
+							label.col-sm-2.control-label スコア
+							.col-sm-10
+								p.form-control-static 100
+						.form-group
+							label.col-sm-2.control-label 問題番号
+							.col-sm-10
+								a.show.form-control-static(href='/problems/detail.html') 1
+						.form-group
+							label.col-sm-2.control-label 解答番号
+							.col-sm-10
+								a.show.form-control-static(href='/problems/detail.html#tab5-content') 1
+						.form-group
+							label.col-sm-2.control-label 解答チーム
+							.col-sm-10
+								a.show.form-control-static(href='/teams/detail.html') WCDI
+						.form-group
+							label.col-sm-2.control-label 作成日時
+							.col-sm-10
+								p.form-control-static 2016-08-27 12:00
+						.form-group
+							label.col-sm-2.control-label 更新日時
+							.col-sm-10
+								p.form-control-static 2016-08-27 12:00
+		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
+			.panel
+				.panel-body
+					form.form-horizontal(action='/answers/scores/detail.html', name='form-score-editing')
+						.form-group
+							label.col-sm-2.control-label 番号
+							.col-sm-10
+								p.form-control-static 1
+						.form-group
+							label.col-sm-2.control-label 採点者
+							.col-sm-10
+								a.show.form-control-static(href='/accounts/detail.html') 朝霧 涼夏
+						.form-group
+							label.col-sm-2.control-label(for='input-score') スコア
+							.col-sm-10
+								input.form-control#input-score(type='text', value='100')
+						.text-right
+							button.btn.btn-primary(type='submit') 更新

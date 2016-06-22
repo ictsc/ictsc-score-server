@@ -1,16 +1,5 @@
 extends /extends/_layout
 
-//-
-	### [サインインページ]
-	- ヘッダー
-		- "グローバルナビゲーション"
-	- サインインフォーム
-		- サインアップ完了メッセージ
-		- バリデーションエラーメッセージ
-		- |アカウント ID, テキストボックス|
-		- |パスワード, 秘匿テキストボックス|
-		- <サインインボタン, [問題トップページ]>
-
 block vars
 	- signedIn = false
 
@@ -30,5 +19,3 @@ block content
 			input.form-control#input-password(type='password')
 		.text-right
 			button.btn.btn-primary(type='submit') サインイン
-		span.help-block
-			a(href="#") パスワードを忘れましたか？

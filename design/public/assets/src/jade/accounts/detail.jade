@@ -1,27 +1,8 @@
 extends /extends/_layout
 
-//-
-	### [アカウント詳細ページ]
-	- ヘッダー
-		- "グローバルナビゲーション"
-	- タブパネル
-		- アカウント詳細タブ
-			- アカウント番号
-			- ユーザー名
-			- アカウント ID
-			- {チーム名, [チーム詳細ページ]}
-			- ロール
-		- アカウント編集タブ
-			- フォーム
-				- |アカウント番号, 無効テキストボックス|
-				- |ユーザー名, テキストボックス|
-				- |アカウント ID, 無効テキストボックス|
-				- |チーム名, 無効テキストボックス/ドロップダウンリスト/|
-				- |ロール, 無効テキストボックス/ドロップダウンリスト/|
-				- <更新ボタン, [アカウント詳細ページ]>
-
 block vars
 	- signedIn = true
+	- isAccounts = true
 
 block title
 	+title('アカウント詳細')
@@ -31,11 +12,11 @@ block content
 		h1 アカウント詳細
 	ul.nav.nav-tabs(role='tablist')
 		li.active(role='presentation')
-			a#tab1-tab(tabindex='0', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
+			a#tab1-tab(tabindex='1', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
 				i.fa.fa-search
 				|  詳細
 		li(role='presentation')
-			a#tab2-tab(tabindex='0', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
+			a#tab2-tab(tabindex='1', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
 				i.fa.fa-edit
 				|  編集
 	.tab-content
@@ -50,7 +31,8 @@ block content
 						.form-group
 							label.col-sm-2.control-label チーム名
 							.col-sm-10
-								p.form-control-static WCDI
+								p.form-control-static
+									a(href='/teams/detail.html') WCDI
 						.form-group
 							label.col-sm-2.control-label 所属
 							.col-sm-10
@@ -70,7 +52,7 @@ block content
 		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
 			.panel
 				.panel-body
-					form.form-horizontal(action='/accounts/list.html', form='form-account-editing')
+					form.form-horizontal(action='/accounts/list.html', name='form-account-editing')
 						.form-group
 							label.col-sm-2.control-label アカウント番号
 							.col-sm-10

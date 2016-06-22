@@ -120,13 +120,14 @@ main {
   padding-left: 0;
   list-style: none; }
   .chatbox ul li {
+    padding: 15px;
     border-bottom: 1px solid #ddd; }
-    .chatbox ul li a {
-      color: #333;
-      display: block;
-      padding: 15px; }
-      .chatbox ul li a:hover, .chatbox ul li a:active, .chatbox ul li a:focus {
-        background-color: #ddd; }
+    .chatbox ul li .author {
+      float: left; }
+    .chatbox ul li .detail-link {
+      float: right; }
+    .chatbox ul li .comment-body {
+      clear: both; }
 
 footer {
   display: flex;

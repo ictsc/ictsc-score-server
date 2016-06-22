@@ -1,22 +1,8 @@
 extends /extends/_layout
 
-//-
-	### /[チーム(一覧/作成)ページ]/
-	- ヘッダー
-		- "グローバルナビゲーション"
-	- チーム一覧テーブル
-		- {チーム番号, [チーム詳細ページ]}
-		- {チーム名, [チーム詳細ページ]}
-		- 所属
-		- {メンバー数, [チーム詳細ページ]}
-		- {総スコア, [スコア詳細ページ]}
-	- チーム作成フォーム
-		- |チーム名, テキストボックス|
-		- |所属, テキストボックス|
-		- <作成ボタン, [チーム(一覧/作成)ページ]>
-
 block vars
 	- signedIn = true
+	- isTeams = true
 
 block title
 	+title('チーム一覧')
@@ -43,7 +29,7 @@ block content
 					td
 						a(href='/teams/detail.html') 5
 					td
-						a(href='/answers/detail/score.html') 100
+						a(href='/answers/scores/detail.html') 100
 				tr
 					th
 						a(href='/teams/detail.html') 2
@@ -53,7 +39,7 @@ block content
 					td
 						a(href='/teams/detail.html') 3
 					td
-						a(href='/answers/detail/score.html') 200
+						a(href='/answers/scores/detail.html') 200
 				tr
 					th
 						a(href='/teams/detail.html') 3
@@ -63,7 +49,7 @@ block content
 					td
 						a(href='/teams/detail.html') 5
 					td
-						a(href='/answers/detail/score.html') 300
+						a(href='/answers/scores/detail.html') 300
 				tr
 					th
 						a(href='/teams/detail.html') 4
@@ -73,7 +59,7 @@ block content
 					td
 						a(href='/teams/detail.html') 5
 					td
-						a(href='/answers/detail/score.html') 400
+						a(href='/answers/scores/detail.html') 400
 	.page-header
 		h2 チーム作成
 	form(action='/teams/list.html', name='form-team-creation')

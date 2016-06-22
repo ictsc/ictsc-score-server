@@ -75,18 +75,19 @@ main {
 		list-style: none;
 
 		li {
+			padding: 15px;
 			border-bottom: 1px solid #ddd;
 
-			a {
-				color: #333;
-				display: block;
-				padding: 15px;
+			.author {
+				float: left;
+			}
 
-				&:hover,
-				&:active,
-				&:focus {
-					background-color: #ddd;
-				}
+			.detail-link {
+				float: right;
+			}
+
+			.comment-body {
+				clear: both;
 			}
 		}
 	}

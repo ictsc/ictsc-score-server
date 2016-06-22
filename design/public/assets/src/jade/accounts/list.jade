@@ -1,24 +1,8 @@
 extends /extends/_layout
 
-//-
-	### /[アカウント(一覧/作成)ページ]/
-	- ヘッダー
-		- "グローバルナビゲーション"
-	- アカウント一覧テーブル
-		- {アカウント番号, [アカウント詳細ページ]}
-		- {ユーザー名, [アカウント詳細ページ]}
-		- {アカウント ID, [アカウント詳細ページ]}
-		- {チーム名, [チーム詳細ページ]}
-		- {ロール}
-	- アカウント作成フォーム
-		- |ユーザー名, テキストボックス|
-		- |アカウント ID, テキストボックス|
-		- |チーム名, ドロップダウンリスト|
-		- |ロール, ドロップダウンリスト|
-		- <作成ボタン, [アカウント(一覧/作成)ページ]>
-
 block vars
 	- signedIn = true
+	- isAccounts = true
 
 block title
 	+title('アカウント一覧')
@@ -94,7 +78,7 @@ block content
 					td 参加者
 	.page-header
 		h2 アカウント作成
-	form.form-horizontal(action='/accounts/list.html', form='form-account-creation')
+	form.form-horizontal(action='/accounts/list.html', name='form-account-creation')
 		.form-group
 			label.col-sm-2.control-label(for='select-team-name') チーム名
 			.col-sm-10

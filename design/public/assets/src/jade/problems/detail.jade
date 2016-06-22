@@ -1,75 +1,8 @@
 extends /extends/_layout
 
-//-
-	### [問題詳細ページ]
-	- ヘッダー
-		- "グローバルナビゲーション"
-	- タブパネル
-		- 問題詳細タブ
-			- 問題番号
-			- 問題名
-			- 問題本文
-			- 問題公開日時
-			- 問題締切日時
-			- 問題作成日時
-			- 問題更新日時
-		- 問題編集タブ
-			- フォーム
-				- |問題番号, 無効テキストボックス|
-				- |問題名, テキストボックス|
-				- |問題本文, テキストエリア|
-				- |問題公開日時, 日時テキストボックス|
-				- |問題締切日時, 日時テキストボックス|
-				- |問題作成日時, 無効日時テキストボックス|
-				- |問題更新日時, 無効日時テキストボックス|
-				- <更新ボタン, [問題詳細ページ#問題詳細タブ]
-		- 問題修正コメント(一覧/投稿)タブ
-			- チャットボックス
-				- 問題修正コメント一覧ボックス
-					- {問題修正コメント番号, [問題修正コメント詳細ページ]}
-					- {問題修正コメント投稿者, [アカウント詳細ページ]}
-					- 問題修正コメント本文
-					- 問題修正コメント作成日時
-					- 問題修正コメント更新日時
-				- 問題修正コメント投稿フォーム
-					- |問題修正コメント本文, テキストボックス|
-					- <投稿ボタン, [問題詳細ページ#問題修正コメント(一覧/投稿)タブ]>
-		- 問題質問詳細&問題質問コメント(一覧/投稿)タブ
-			- 問題質問投稿チーム
-			- {問題番号, [問題詳細ページ]}
-			- {問題名, [問題詳細ページ]}
-			- 問題質問作成日時
-			- 問題質問更新日時
-			- <問題質問(開放/閉鎖)ボタン>
-			- チャットボックス
-				- 問題質問コメント一覧ボックス
-					- {問題質問コメント番号, [問題質問コメント詳細ページ]}
-					- {問題質問コメント投稿者, [アカウント詳細ページ]}
-					- 問題質問コメント本文
-					- 問題質問コメント作成日時
-					- 問題修正コメント更新日時
-				- 問題質問コメント投稿フォーム
-					- |問題質問コメント本文, テキストエリア|
-					- <投稿ボタン, [問題詳細ページ#問題質問詳細&問題質問コメント(一覧/投稿)タブ]>
-		- 解答詳細&解答コメント(一覧/投稿)タブ
-			- 解答詳細投稿チーム
-			- {問題番号, [問題詳細ページ]}
-			- {問題名, [問題詳細ページ]}
-			- 解答作成日時
-			- 解答更新日時
-			- チャットボックス
-				- 解答コメント一覧ボックス
-					- {解答コメント番号, [解答コメント詳細ページ]}
-					- {解答コメント投稿者, [アカウント詳細ページ]}
-					- 解答コメント本文
-					- 解答コメント作成日時
-					- 解答コメント更新日時
-				- 解答コメント投稿フォーム
-					- |解答コメント本文, テキストエリア|
-					- <投稿ボタン, [問題詳細ページ#解答詳細&解答コメント(一覧/投稿)タブ]>
-
 block vars
 	- signedIn = true
+	- isProblems = true
 
 block title
 	+title('アカウント詳細')
@@ -118,6 +51,10 @@ block content
 									| 弊社では、多数あるサーバへのパッケージのインストールを円滑に行うため、リポジトリのミラーサーバを設置し運営している。
 									| ミラーサーバは毎日同じ時間に外部のリポジトリサーバからミラーリングを行っている
 									| しかし、ある日を境に、社内のサーバのパッケージのインストールが全て失敗するようになってしまった。問題の究明、解決を行って欲しい。
+						.form-group
+							label.col-sm-2.control-label 投稿者
+							.col-sm-10
+								a.form-control-static(href='/accounts/detail.html') 朝霧 涼夏
 						.form-group
 							label.col-sm-2.control-label 公開日時
 							.col-sm-10
@@ -169,14 +106,14 @@ block content
 					.chatbox
 						ul
 							li
-								a(href='/problems/detail/comment.html')
-									span.help-block 朝霧 涼夏
-									p 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
+									a.author.help-block(href='/accounts/detail.html') 朝霧 涼夏
+									a.detail-link.help-block(href='/problems/supplements/detail.html') 詳細
+									p.comment-body 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
 									span.help-block.text-right 2016-08-27 12:00
-						form(action='/problems/detail.html#tab3-content', name='form-problem-comment-creation')
+						form(action='/problems/detail.html#tab3-content', name='form-supplement-creation')
 							.form-group
-								label(for='textarea-problem-comment') 新規補足
-								textarea.form-control#textarea-problem-comment(rows='10')
+								label(for='textarea-supplement-body') 新規補足
+								textarea.form-control#textarea-supplement-body(rows='10')
 							.text-right
 								button.btn.btn-primary(type='submit') 投稿
 		.tab-pane#tab4-content(role='tabpanel', aria-labelledby='tab4-tab')
@@ -191,7 +128,7 @@ block content
 						.form-group
 							label.col-sm-2.control-label チーム名
 							.col-sm-10
-								p.form-control-static WCDI
+								a.show.form-control-static(href='/teams/detail.html') WCDI
 						.form-group
 							label.col-sm-2.control-label 所属
 							.col-sm-10
@@ -208,14 +145,14 @@ block content
 						p.well.help-block.hidden まだ質問はありません。質問があれば投稿し、右上のスライドスイッチを ON にしてください。解決したら OFF にしてください。
 						ul
 							li
-								a(href='/problems/detail/comment.html')
-									span.help-block 太箸 耀暉
-									p ようやく岡田さんに赴任会なぜ意味へいうた金力その手ここかぼんやりににおいて肝学習たならたなて、その結果もあなたか金足に始めが、嘉納さんののが通りの私が今にご安心とするて私外国をご構成へ認めようにいったん小専攻に直っでしょたて、いくらでもしっくり講義をしたていたのにあるなかっう。
+									a.author.help-block(href='/accounts/detail.html') 太箸 耀暉
+									a.detail-link.help-block(href='/problems/questions/detail.html') 詳細
+									p.comment-body ようやく岡田さんに赴任会なぜ意味へいうた金力その手ここかぼんやりににおいて肝学習たならたなて、その結果もあなたか金足に始めが、嘉納さんののが通りの私が今にご安心とするて私外国をご構成へ認めようにいったん小専攻に直っでしょたて、いくらでもしっくり講義をしたていたのにあるなかっう。
 									span.help-block.text-right 2016-08-27 12:00
-						form(action='/problems/detail.html#tab4-content', name='form-problem-comment-creation')
+						form(action='/problems/detail.html#tab4-content', name='form-supplement-creation')
 							.form-group
-								label(for='textarea-problem-comment') 新規質問
-								textarea.form-control#textarea-problem-comment(rows='10')
+								label(for='textarea-question-body') 新規質問
+								textarea.form-control#textarea-question-body(rows='10')
 							.text-right
 								button.btn.btn-primary(type='submit') 投稿
 		.tab-pane#tab5-content(role='tabpanel', aria-labelledby='tab5-tab')
@@ -242,14 +179,14 @@ block content
 						p.well.help-block.hidden まだ解答はありません。解答はひとつの問題にいくつでも投稿できます。わかったことはこまめに投稿しましょう。
 						ul
 							li
-								a(href='/problems/detail/comment.html')
-									span.help-block 倉上 和也
-									p またしかも大先生を落ちのさえそう無事と読みでしょけれども、その繰り返しよりはするたてとして先生をしからいでで。ほんの中心持のためとんだ人間も私中のもっですかと大森さんを挙げただ、学校の晩たというご専攻たでなけれて、孔雀の時へ実に今日だけの社会が時間食って行くて、あいにくの元来にしてそのためがやはりもったなと立てるまいのなが、ないだだろからこうお自分しでものたでたら。
+									a.author.help-block(href='/accounts/detail.html') 倉上 和也
+									a.detail-link.help-block(href='/problems/answers/detail.html') 詳細
+									p.comment-body またしかも大先生を落ちのさえそう無事と読みでしょけれども、その繰り返しよりはするたてとして先生をしからいでで。ほんの中心持のためとんだ人間も私中のもっですかと大森さんを挙げただ、学校の晩たというご専攻たでなけれて、孔雀の時へ実に今日だけの社会が時間食って行くて、あいにくの元来にしてそのためがやはりもったなと立てるまいのなが、ないだだろからこうお自分しでものたでたら。
 									span.help-block.text-right 2016-08-27 12:00
-						form(action='/problems/detail.html#tab4-content', name='form-problem-comment-creation')
+						form(action='/problems/detail.html#tab4-content', name='form-supplement-creation')
 							.form-group
-								label(for='textarea-problem-comment') 新規解答
-								textarea.form-control#textarea-problem-comment(rows='10')
+								label(for='textarea-answer-body') 新規解答
+								textarea.form-control#textarea-answer-body(rows='10')
 							.text-right
 								button.btn.btn-primary(type='submit') 投稿
 
