@@ -69,9 +69,11 @@ permit(Problem, :writer, %i(GET POST))
 permit(Issue,   :writer, %i(GET POST PUT PATCH DELETE))
 permit(Answer,  :writer, %i(GET POST PUT PATCH DELETE))
 permit(Score,   :writer, %i(GET POST))
+permit(Issue,   :writer, %i(GET), action: :issues_comments)
 permit(Comment, :writer, %i(GET POST PUT PATCH DELETE), action: :issues_comments)
+permit(Answer,  :writer, %i(GET), action: :answers_comments)
 permit(Comment, :writer, %i(GET), action: :answers_comments)
-permit(Comment, :writer, %i(POST PUT PATCH DELETE), action: :answers_comments)
+forbid(Comment, :writer, %i(POST PUT PATCH DELETE), action: :answers_comments)
 
 def_perm(Member, :writer, %i(GET POST PUT PATCH DELETE),
   query: "roles.rank >= :rank",
@@ -87,12 +89,12 @@ def_perm(Problem, :writer, %i(PUT PATCH DELETE),
   query: "creator_id = :id",
   parameters: "{ id: current_user.id }")
 
-def_perm(Problem, :writer, %i(POST),
+def_perm(Problem, :writer, %i(GET),
   action: :problems_comments,
   query: "creator_id = :id",
   parameters: "{ id: current_user.id }")
 
-def_perm(Comment, :writer, %i(PUT PATCH DELETE),
+def_perm(Comment, :writer, %i(POST PUT PATCH DELETE),
   action: :problems_comments,
   query: "member_id = :id",
   parameters: "{ id: current_user.id }")
@@ -111,9 +113,11 @@ forbid(Issue,   :participant, %i(DELETE))
 permit(Answer,  :participant, %i(POST))
 forbid(Answer,  :participant, %i(DELETE))
 forbid(Score,   :participant, %i(GET POST PUT PATCH DELETE))
-forbid(Problem, :participant, %i(POST), action: "problems_comments")
-forbid(Comment, :participant, %i(PUT PATCH DELETE), action: "problems_comments")
+forbid(Problem, :participant, %i(GET), action: "problems_comments")
+forbid(Comment, :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
+forbit(Issue,   :participant, %i(GET),    action: "issues_comments")
 forbid(Comment, :participant, %i(DELETE), action: "issues_comments")
+forbit(Answer,  :participant, %i(GET),    action: "answers_comments")
 forbid(Comment, :participant, %i(DELETE), action: "answers_comments")
 
 def_perm(Member, :participant, %i(PUT PATCH),
@@ -135,12 +139,12 @@ def_perm(Answer, :participant, %i(GET PUT PATCH),
 %i(Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
 
-  def_perm(resource, :participant, %i(POST),
+  def_perm(resource, :participant, %i(GET),
     action: action,
     query: "team_id = :team_id",
     parameters: "{ team_id: current_user.team_id }")
 
-  def_perm(Comment, :participant, %i(GET PUT PATCH),
+  def_perm(Comment, :participant, %i(GET POST PUT PATCH),
     action: action,
     query: "members.team_id = :team_id",
     parameters: "{ team_id: current_user.team_id }",
@@ -160,7 +164,8 @@ end
 
 %i(Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
-  permit(Comment, :viewer, %i(GET), action: action)
+  permit(resource, :viewer, %i(GET), action: action)
+  permit(Comment,  :viewer, %i(GET), action: action)
 end
 
 %i(Member Team Score Problem Issue Answer).each do |resource|
@@ -169,6 +174,6 @@ end
 
 %i(Problem Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
-  forbid(resource, :viewer, %i(POST), action: action)
-  forbid(Comment,  :viewer, %i(PUT PATCH DELETE), action: action)
+  forbid(resource, :viewer, %i(GET), action: action)
+  forbid(Comment,  :viewer, %i(POST PUT PATCH DELETE), action: action)
 end
