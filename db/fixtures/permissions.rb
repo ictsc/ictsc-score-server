@@ -79,6 +79,9 @@ def_perm(Member, :writer, %i(GET POST PUT PATCH DELETE),
   query: "roles.rank >= :rank",
   parameters: "{ rank: role.rank }",
   join: "role")
+def_perm(Role,   :writer, %i(GET),
+  query: "rank >= :rank",
+  parameters: "{ rank: role.rank }")
 
 def_perm(Member, :writer, %i(GET POST PUT PATCH DELETE),
   query: "roles.rank >= :rank",
