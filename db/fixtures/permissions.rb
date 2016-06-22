@@ -42,6 +42,13 @@ end
   permit(Comment, role, %i(GET), action: :problems_comments)
 end
 
+# Nologin
+def_perm(Role, :nologin, %i(GET),
+  query: "id = :participant_role_id",
+  parameters: "{ participant_role_id: #{ROLE_ID[:participant]}}")
+permit(Member, :nologin, %i(POST))
+
+
 # Admin
 
 %i(Member Team Score Problem Issue Answer).each do |resource|
