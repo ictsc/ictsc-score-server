@@ -39,7 +39,10 @@ end
 
 %i(writer participant viewer).each do |role|
   permit(Team, role, %i(GET))
-  permit(Comment, role, %i(GET), action: :problems_comments)
+  def_perm(Comment, role, %i(GET),
+           action: :problems_comments,
+           query: "commentable_type = :commentable_type",
+           parameters: "{ commentable_type: 'Problem' }")
 end
 
 # Nologin
@@ -58,7 +61,10 @@ end
 %i(Problem Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
   permit(resource, :admin, %i(GET), action: action)
-  permit(Comment,  :admin, %i(POST PUT PATCH DELETE), action: action)
+  def_perm(Comment,  :admin, %i(POST PUT PATCH DELETE),
+           action: action,
+           query: "commentable_type = :commentable_type",
+           parameters: "{ commentable_type: '#{resource.to_s}' }")
 end
 
 
@@ -69,10 +75,19 @@ permit(Problem, :writer, %i(GET POST))
 permit(Issue,   :writer, %i(GET POST PUT PATCH DELETE))
 permit(Answer,  :writer, %i(GET POST PUT PATCH DELETE))
 permit(Score,   :writer, %i(GET POST))
+
 permit(Issue,   :writer, %i(GET), action: :issues_comments)
-permit(Comment, :writer, %i(GET POST PUT PATCH DELETE), action: :issues_comments)
+def_perm(Comment, :writer, %i(GET POST PUT PATCH DELETE),
+         action: :issues_comments,
+         query: "commentable_type = :commentable_type",
+         parameters: "{ commentable_type: 'Issue' }")
+
 permit(Answer,  :writer, %i(GET), action: :answers_comments)
-permit(Comment, :writer, %i(GET), action: :answers_comments)
+def_perm(Comment, :writer, %i(GET),
+         action: :answers_comments,
+         query: "commentable_type = :commentable_type",
+         parameters: "{ commentable_type: 'Answer' }")
+
 forbid(Comment, :writer, %i(POST PUT PATCH DELETE), action: :answers_comments)
 
 def_perm(Member, :writer, %i(GET POST PUT PATCH DELETE),
@@ -99,8 +114,8 @@ def_perm(Problem, :writer, %i(GET),
 
 def_perm(Comment, :writer, %i(POST PUT PATCH DELETE),
   action: :problems_comments,
-  query: "member_id = :id",
-  parameters: "{ id: current_user.id }")
+  query: "member_id = :id AND commentable_type = :commentable_type",
+  parameters: "{ id: current_user.id, commentable_type: 'Problem' }")
 
 def_perm(Score, :writer, %i(PUT PATCH DELETE),
   query: "marker_id = :id",
@@ -149,8 +164,8 @@ def_perm(Answer, :participant, %i(GET PUT PATCH),
 
   def_perm(Comment, :participant, %i(GET POST PUT PATCH),
     action: action,
-    query: "members.team_id = :team_id",
-    parameters: "{ team_id: current_user.team_id }",
+    query: "members.team_id = :team_id AND commentable_type = :commentable_type",
+    parameters: "{ team_id: current_user.team_id, commentable_type: '#{resource.to_s}' }",
     join: "member")
 end
 
@@ -168,7 +183,10 @@ end
 %i(Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
   permit(resource, :viewer, %i(GET), action: action)
-  permit(Comment,  :viewer, %i(GET), action: action)
+  permit(Comment,  :viewer, %i(GET),
+         action: action,
+         query: "commentable_type = :commentable_type",
+         parameters: "{ commentable_type: '#{resource.to_s}' }")
 end
 
 %i(Member Team Score Problem Issue Answer).each do |resource|
@@ -178,5 +196,8 @@ end
 %i(Problem Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
   forbid(resource, :viewer, %i(GET), action: action)
-  forbid(Comment,  :viewer, %i(POST PUT PATCH DELETE), action: action)
+  forbid(Comment,  :viewer, %i(POST PUT PATCH DELETE),
+         action: action,
+         query: "commentable_type = :commentable_type",
+         parameters: "{ commentable_type: '#{resource.to_s}' }")
 end
