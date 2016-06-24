@@ -118,9 +118,9 @@ forbid(Answer,  :participant, %i(DELETE))
 forbid(Score,   :participant, %i(GET POST PUT PATCH DELETE))
 forbid(Problem, :participant, %i(GET), action: "problems_comments")
 forbid(Comment, :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
-forbit(Issue,   :participant, %i(GET),    action: "issues_comments")
+forbid(Issue,   :participant, %i(GET),    action: "issues_comments")
 forbid(Comment, :participant, %i(DELETE), action: "issues_comments")
-forbit(Answer,  :participant, %i(GET),    action: "answers_comments")
+forbid(Answer,  :participant, %i(GET),    action: "answers_comments")
 forbid(Comment, :participant, %i(DELETE), action: "answers_comments")
 
 def_perm(Member, :participant, %i(PUT PATCH),
