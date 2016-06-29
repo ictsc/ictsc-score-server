@@ -45,7 +45,9 @@ end
            parameters: "{ commentable_type: 'Problem' }")
 end
 
+
 # Nologin
+
 def_perm(Role, :nologin, %i(GET),
   query: "id = :participant_role_id",
   parameters: "{ participant_role_id: #{ROLE_ID[:participant]}}")
@@ -54,14 +56,14 @@ permit(Member, :nologin, %i(POST))
 
 # Admin
 
-%i(Role, Member Team Score Problem Issue Answer).each do |resource|
+%i(Role Member Team Score Problem Issue Answer).each do |resource|
   permit(resource, :admin, %i(GET POST PUT PATCH DELETE))
 end
 
 %i(Problem Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
   permit(resource, :admin, %i(GET), action: action)
-  def_perm(Comment,  :admin, %i(POST PUT PATCH DELETE),
+  def_perm(Comment,  :admin, %i(GET POST PUT PATCH DELETE),
            action: action,
            query: "commentable_type = :commentable_type",
            parameters: "{ commentable_type: '#{resource.to_s}' }")
@@ -133,7 +135,6 @@ forbid(Answer,  :participant, %i(DELETE))
 forbid(Score,   :participant, %i(GET POST PUT PATCH DELETE))
 forbid(Problem, :participant, %i(GET), action: "problems_comments")
 forbid(Comment, :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
-forbid(Issue,   :participant, %i(GET),    action: "issues_comments")
 forbid(Comment, :participant, %i(DELETE), action: "issues_comments")
 forbid(Answer,  :participant, %i(GET),    action: "answers_comments")
 forbid(Comment, :participant, %i(DELETE), action: "answers_comments")
