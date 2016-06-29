@@ -53,7 +53,7 @@ class Role < ActiveRecord::Base
 end
 
 class Permission < ActiveRecord::Base
-  validates :resource, presence: true
+  validates :resource, presence: true, uniqueness: { scope: [:method, :action, :role_id] }
   validates :method,   presence: true
   validates :query,    presence: true
   validates :join,     presence: true
