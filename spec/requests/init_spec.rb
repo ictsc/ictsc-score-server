@@ -15,10 +15,10 @@ describe "Member" do
 
   let (:params) do
     {
-      admin: false,
       name: "user",
       login: "user",
-      password: "test"
+      password: "test",
+      role_id: 4
     }
   end
 
