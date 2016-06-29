@@ -39,6 +39,7 @@ class ScoreRoutes < Sinatra::Base
       headers "Location" => to("/api/scores/#{@score.id}")
       json @score
     else
+      status 400
       json @score.errors
     end
   end
@@ -56,6 +57,7 @@ class ScoreRoutes < Sinatra::Base
     if @score.save
       json @score
     else
+      status 400
       json @score.errors
     end
   end
