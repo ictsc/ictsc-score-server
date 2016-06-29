@@ -13,23 +13,23 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams" do
-    json Team.all
+    @teams = Team.accessible_resources(user_and_method)
+    json @teams
   end
 
   before "/api/teams/:id" do
-    halt 404 if not Team.exists?(id: params[:id])
-    @team = Team.find_by(id: params[:id])
-
-    if request.post? || request.put? || request.patch? || request.delete?
-      halt 403 unless current_user&.admin
-    end
+    @team = Team.accessible_resources(user_and_method) \
+                .find_by(id: params[:id])
+    halt 404 if not @team
   end
 
   get "/api/teams/:id" do
-    json Team.find_by(id: params[:id])
+    json @team
   end
 
   post "/api/teams" do
+    halt 403 if not Team.allowed_to_create_by?(current_user)
+
     @attrs = attribute_values_of_class(Team)
     @team = Team.new(@attrs)
 

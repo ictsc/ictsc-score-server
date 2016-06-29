@@ -12,19 +12,23 @@ class CommentRoutes < Sinatra::Base
     before "/api/#{pluralize_name}/:commentable_id/comments*" do
       I18n.locale = :en if request.xhr?
       require_login
+
+      @action = "#{pluralize_name}_comments"
+      commentable_id = params[:commentable_id]
+      @commentable = klass.accessible_resources(user: current_user, method: "GET", action: @action) \
+                          .find(commentable_id)
+      halt 404 if @commentable.nil?
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments" do
-      json Comment.where(commentable_type: klass.to_s)
+      json Comment.accessible_resources(user: current_user, method: request.request_method, action: @action) \
+                  .where(commentable_id: params[:commentable_id].to_i)
     end
 
     before "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
-      halt 404 if not Comment.exists?(id: params[:comment_id], commentable_type: klass.to_s)
-      @comment = Comment.find_by(id: params[:comment_id], commentable_type: klass.to_s)
-
-      if request.post? || request.put? || request.patch? || request.delete?
-        halt 403 if (@comment.member_id != current_user.id) and (not current_user&.admin)
-      end
+      @comment = Comment.accessible_resources(user: current_user, method: request.request_method, action: @action) \
+                        .find_by(id: params[:comment_id])
+      halt 404 if not @comment
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
@@ -32,10 +36,12 @@ class CommentRoutes < Sinatra::Base
     end
 
     post "/api/#{pluralize_name}/:commentable_id/comments" do
+      halt 403 if Comment.allowed_to_create_by?(current_user, action: @action)
+
       @attrs = attribute_values_of_class(Comment)
       @attrs[:member_id] = current_user.id
       @attrs[:commentable_type] = klass.to_s
-      @attrs[:commentable_id] = params[:commentable_id]
+      @attrs[:commentable_id] = commentable_id
       @comment = Comment.new(@attrs)
 
       if @comment.save

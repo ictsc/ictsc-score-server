@@ -36,6 +36,17 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
+  get "/api/login_as" do
+    @member = Member.find_by(id: params[:id])
+
+    if @member
+      login_as(@member.id)
+      json status: "success"
+    else
+      json status: "failed"
+    end
+  end
+
   post "/api/session" do
     halt 403 if logged_in?
 
@@ -76,29 +87,35 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members" do
-    json Member.all, except: [:hashed_password]
+    @members = Member.accessible_resources(user_and_method)
+    json @members, except: [:hashed_password]
   end
 
   before "/api/members/:id" do
-    halt 404 if not Member.exists?(id: params[:id])
-    @member = Member.find_by(id: params[:id])
-
-    if request.post? || request.put? || request.patch? || request.delete?
-      halt 403 if (@member != current_user) and (not current_user&.admin)
-    end
+    @member = Member.accessible_resources(user_and_method) \
+                    .find_by(id: params[:id])
+    halt 404 if not @member
   end
 
   get "/api/members/:id" do
-    json Member.find_by(id: params[:id]), except: [:hashed_password]
+    json @member, except: [:hashed_password]
   end
 
   post "/api/members" do
+    halt 403 if not Member.allowed_to_create_by?(current_user)
+
+    @permit_role_ids = Role.accessible_resources(user: current_user, method: "GET").ids
+
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
     @attrs[:hashed_password] = crypt(@attrs[:password])
     @attrs.delete(:password)
     @attrs[:admin] = false if not current_user&.admin
 
     @member = Member.new(@attrs)
+
+    if not @permit_role_ids.include? @member.role_id
+      halt 403
+    end
 
     if @member.save
       status 201
