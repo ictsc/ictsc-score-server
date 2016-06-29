@@ -109,7 +109,6 @@ class MemberRoutes < Sinatra::Base
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
     @attrs[:hashed_password] = crypt(@attrs[:password])
     @attrs.delete(:password)
-    @attrs[:admin] = false if not current_user&.admin
 
     @member = Member.new(@attrs)
 

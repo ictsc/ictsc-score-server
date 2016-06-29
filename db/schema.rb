@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160614025406) do
+ActiveRecord::Schema.define(version: 20160629123144) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -42,13 +42,12 @@ ActiveRecord::Schema.define(version: 20160614025406) do
   end
 
   create_table "members", force: :cascade do |t|
-    t.boolean  "admin",           default: false, null: false
-    t.string   "name",                            null: false
-    t.string   "login",                           null: false
-    t.string   "hashed_password",                 null: false
+    t.string   "name",            null: false
+    t.string   "login",           null: false
+    t.string   "hashed_password", null: false
     t.integer  "team_id"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.integer  "role_id"
   end
 

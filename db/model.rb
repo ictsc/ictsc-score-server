@@ -79,7 +79,7 @@ class Member < ActiveRecord::Base
   validates :login,           presence: true, uniqueness: true
   validates :hashed_password, presence: true
   validates :team,            presence: true, if: Proc.new {|member| not member.team_id.nil? }
-  validates :admin,           inclusion: { in: [true, false] }
+  validates :role,            presence: true
 
   has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :destroy
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
