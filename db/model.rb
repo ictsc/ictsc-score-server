@@ -30,7 +30,6 @@ class ActiveRecord::Base
                            role: role,
                            method: method.to_s.upcase,
                            action: action)
-    puts permission: p
     return self.none if p.nil?
     p.resources(binding)
   end
