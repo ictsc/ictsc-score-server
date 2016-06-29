@@ -25,6 +25,13 @@ module Sinatra
 		def logout
 			session.delete(:member_id)
 		end
+
+		def user_and_method
+			return {
+				user: current_user,
+				method: request.request_method
+			}
+		end
 	end
 
 	helpers AccountServiceHelpers
