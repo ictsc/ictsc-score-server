@@ -109,6 +109,7 @@ class MemberRoutes < Sinatra::Base
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
     @attrs[:hashed_password] = crypt(@attrs[:password])
     @attrs.delete(:password)
+    @attrs[:role_id] ||= Role.find_by(name: "Participant").id
 
     @member = Member.new(@attrs)
 

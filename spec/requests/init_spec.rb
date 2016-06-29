@@ -17,8 +17,7 @@ describe "Member" do
     {
       name: "user",
       login: "user",
-      password: "test",
-      role_id: 4
+      password: "test"
     }
   end
 
