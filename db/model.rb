@@ -13,10 +13,25 @@ class ActiveRecord::Base
     fields - options[:exclude] + options[:include]
   end
 
-  def self.accessible_resources(user:, method: , action: "")
+  def self.allowed_to_create_by?(user = nil, action: "")
+    return self.accessible_resources(user: user, method: "POST", action: action).any?
+  end
+
+  def self.accessible_resources(user: nil, method: , action: "")
     current_user = user
-    role = user.role
-    p = Permission.find_by(resource: self.to_s.downcase.pluralize, role: user.role, method: method, action: action)
+
+    role = if user
+      user.role
+    else
+      Role.find_by(name: "Nologin")
+    end
+
+    p = Permission.find_by(resource: self.to_s.downcase.pluralize,
+                           role: role,
+                           method: method.to_s.upcase,
+                           action: action)
+    puts permission: p
+    return self.none if p.nil?
     p.resources(binding)
   end
 end
