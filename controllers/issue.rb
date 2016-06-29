@@ -13,23 +13,23 @@ class IssueRoutes < Sinatra::Base
   end
 
   get "/api/issues" do
-    json Issue.all
+    @issues = Issue.accessible_resources(user_and_method)
+    json @issues
   end
 
   before "/api/issues/:id" do
-    halt 404 if not Issue.exists?(id: params[:id])
-    @issue = Issue.find_by(id: params[:id])
-
-    if request.post? || request.put? || request.patch? || request.delete?
-      halt 403 if not current_user&.admin
-    end
+    @issue = Issue.accessible_resources(user_and_method) \
+                  .find_by(id: params[:id])
+    halt 404 if not @issues
   end
 
   get "/api/issues/:id" do
-    json Issue.find_by(id: params[:id])
+    json @issue
   end
 
   post "/api/issues" do
+    halt 403 if not Issue.allowed_to_create_by?(current_user)
+
     @attrs = attribute_values_of_class(Issue)
     @attrs[:team_id] = current_user.team_id
     @issue = Issue.new(@attrs)
@@ -76,19 +76,20 @@ class IssueRoutes < Sinatra::Base
   end
 
   before "/api/problems/:id/issues" do
-    if request.post?
-      halt 404 if not Problem.exists?(id: params[:id])
-      @problem = Problem.find_by(id: params[:id])
-    end
+    @problem = Problem.accessible_resources(user: current_user, method: "GET") \
+                      .find_by(id: params[:id])
+    halt 404 if not @problem
   end
 
   get "/api/problems/:id/issues" do
-    @problem = Problem.find_by(id: params[:id])
-
-    json @problem.issues
+    @issues = Issue.accessible_resources(user_and_method) \
+                   .where(problem_id: @problem.id)
+    json @issues
   end
 
   post "/api/problems/:id/issues" do
+    halt 403 if not Issue.allowed_to_create_by?(current_user)
+
     @attrs = attribute_values_of_class(Issue)
     @attrs[:team_id] = current_user.team_id
     @attrs[:problem_id] = @problem.id

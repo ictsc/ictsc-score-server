@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160605101050) do
+ActiveRecord::Schema.define(version: 20160629123144) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -42,13 +42,25 @@ ActiveRecord::Schema.define(version: 20160605101050) do
   end
 
   create_table "members", force: :cascade do |t|
-    t.boolean  "admin",           default: false, null: false
-    t.string   "name",                            null: false
-    t.string   "login",                           null: false
-    t.string   "hashed_password",                 null: false
+    t.string   "name",            null: false
+    t.string   "login",           null: false
+    t.string   "hashed_password", null: false
     t.integer  "team_id"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "role_id"
+  end
+
+  create_table "permissions", force: :cascade do |t|
+    t.string   "resource",                null: false
+    t.string   "method",                  null: false
+    t.string   "query",                   null: false
+    t.string   "parameters"
+    t.integer  "role_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "join",       default: "", null: false
+    t.string   "action",     default: "", null: false
   end
 
   create_table "problems", force: :cascade do |t|
@@ -57,6 +69,13 @@ ActiveRecord::Schema.define(version: 20160605101050) do
     t.datetime "opened_at",  null: false
     t.datetime "closed_at",  null: false
     t.integer  "creator_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.integer  "rank",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

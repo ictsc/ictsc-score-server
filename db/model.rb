@@ -12,6 +12,27 @@ class ActiveRecord::Base
                  .flatten
     fields - options[:exclude] + options[:include]
   end
+
+  def self.allowed_to_create_by?(user = nil, action: "")
+    return self.accessible_resources(user: user, method: "POST", action: action).any?
+  end
+
+  def self.accessible_resources(user: nil, method: , action: "")
+    current_user = user
+
+    role = if user
+      user.role
+    else
+      Role.find_by(name: "Nologin")
+    end
+
+    p = Permission.find_by(resource: self.to_s.downcase.pluralize,
+                           role: role,
+                           method: method.to_s.upcase,
+                           action: action)
+    return self.none if p.nil?
+    p.resources(binding)
+  end
 end
 
 class Team < ActiveRecord::Base
@@ -22,18 +43,49 @@ class Team < ActiveRecord::Base
   has_many :issues, dependent: :destroy
 end
 
+class Role < ActiveRecord::Base
+  validates :name, presence: true
+  validates :rank, presence: true
+
+  has_many :members
+  has_many :permissions
+end
+
+class Permission < ActiveRecord::Base
+  validates :resource, presence: true, uniqueness: { scope: [:method, :action, :role_id] }
+  validates :method,   presence: true
+  validates :query,    presence: true
+  validates :join,     presence: true
+
+  belongs_to :role
+
+  def resources(bind = nil)
+    klass = resource.singularize.capitalize.constantize
+
+    params = if parameters.nil?
+      {}
+    else
+      eval(parameters, bind)
+    end
+
+    klass.joins(join.split(?\s).map(&:to_sym)) \
+         .where(query, params)
+  end
+end
+
 class Member < ActiveRecord::Base
   validates :name,            presence: true
   validates :login,           presence: true, uniqueness: true
   validates :hashed_password, presence: true
   validates :team,            presence: true, if: Proc.new {|member| not member.team_id.nil? }
-  validates :admin,           inclusion: { in: [true, false] }
+  validates :role,            presence: true
 
   has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :destroy
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
 
   has_many :comments, dependent: :destroy
   belongs_to :team
+  belongs_to :role
 end
 
 class Problem < ActiveRecord::Base
