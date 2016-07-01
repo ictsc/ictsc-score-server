@@ -4,7 +4,7 @@ var $ = require('gulp-load-plugins')()
 var imageminPngquant = require('imagemin-pngquant')
 
 var minifyImage = function() {
-	return gulp.src(config.src + 'images/*')
+	return gulp.src(config.src + 'images/*.{png,svg}')
 		.pipe($.imagemin({
 			'plugins': [
 				imageminPngquant({
