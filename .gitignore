@@ -28,7 +28,7 @@ Temporary Items
 
 node_modules
 bower_components
-assets/dist
+design/public/assets/dist
 
 .sass-cache
 .bundle
