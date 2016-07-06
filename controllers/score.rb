@@ -13,23 +13,23 @@ class ScoreRoutes < Sinatra::Base
   end
 
   get "/api/scores" do
-    json Score.all
+    @scores = Score.accessible_resources(user_and_method)
+    json @scores
   end
 
   before "/api/scores/:id" do
-    halt 404 if not Score.exists?(id: params[:id])
-    @score = Score.find_by(id: params[:id])
-
-    if request.post? || request.put? || request.patch? || request.delete?
-      halt 403 if (@score.marker_id != current_user.id) and (not current_user&.admin)
-    end
+    @score = Score.accessible_resources(user_and_method) \
+                  .find_by(id: params[:id])
+    halt 404 if not @score
   end
 
   get "/api/scores/:id" do
-    json Score.find_by(id: params[:id])
+    json @score
   end
 
   post "/api/scores" do
+    halt 403 if not Score.allowed_to_create_by?(current_user)
+
     @attrs = attribute_values_of_class(Score)
     @attrs[:marker_id] = current_user.id
     @score = Score.new(@attrs)
@@ -39,6 +39,7 @@ class ScoreRoutes < Sinatra::Base
       headers "Location" => to("/api/scores/#{@score.id}")
       json @score
     else
+      status 400
       json @score.errors
     end
   end
@@ -56,6 +57,7 @@ class ScoreRoutes < Sinatra::Base
     if @score.save
       json @score
     else
+      status 400
       json @score.errors
     end
   end
@@ -70,6 +72,38 @@ class ScoreRoutes < Sinatra::Base
     else
       status 500
       json status: "failed"
+    end
+  end
+
+  before "/api/answers/:id/score" do
+    @answer = Answer.accessible_resources(user: current_user, method: "GET") \
+                    .find_by(id: params[:id])
+    halt 404 if @answer.nil?
+  end
+
+  get "/api/answers/:id/score" do
+    halt 404 if @answer.score.nil?
+    @score = Score.accessible_resources(user_and_method) \
+                  .find_by(id: @answer.score.id)
+
+    status 303
+    headers "Location" => to("/api/scores/#{@score.id}")
+  end
+
+  post "/api/answers/:id/score" do
+    halt 403 if not Score.allowed_to_create_by?(current_user)
+
+    @attrs = attribute_values_of_class(Score)
+    @attrs[:marker_id] = current_user.id
+    @attrs[:answer_id] = @answer.id
+    @score = Score.new(@attrs)
+
+    if @score.save
+      status 201
+      headers "Location" => to("/api/scores/#{@score.id}")
+      json @score
+    else
+      json @score.errors
     end
   end
 end

@@ -15,7 +15,6 @@ describe "Member" do
 
   let (:params) do
     {
-      admin: false,
       name: "user",
       login: "user",
       password: "test"

@@ -126,6 +126,10 @@ class App < Sinatra::Base
   end
 
   not_found do
-    { error: "not found" }.to_json
+    if request.xhr?
+      { error: "not found" }.to_json
+    else
+      "<h1>Not Found</h1>"
+    end
   end
 end

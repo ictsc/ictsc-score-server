@@ -11,10 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160322070853) do
+ActiveRecord::Schema.define(version: 20160629123144) do
 
   create_table "answers", force: :cascade do |t|
-    t.string   "text",       null: false
     t.integer  "problem_id", null: false
     t.integer  "score_id"
     t.integer  "team_id",    null: false
@@ -23,31 +22,45 @@ ActiveRecord::Schema.define(version: 20160322070853) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string   "text",           null: false
-    t.boolean  "required_reply", null: false
-    t.integer  "member_id",      null: false
-    t.integer  "problem_id"
-    t.integer  "issue_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.string   "text",             null: false
+    t.integer  "member_id",        null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.integer  "commentable_id",   null: false
+    t.string   "commentable_type", null: false
   end
 
+  add_index "comments", ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
+
   create_table "issues", force: :cascade do |t|
-    t.string   "title",      null: false
-    t.boolean  "closed",     null: false
-    t.integer  "problem_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "title",                      null: false
+    t.boolean  "closed",     default: false, null: false
+    t.integer  "problem_id",                 null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "team_id",                    null: false
   end
 
   create_table "members", force: :cascade do |t|
-    t.boolean  "admin",           null: false
     t.string   "name",            null: false
     t.string   "login",           null: false
     t.string   "hashed_password", null: false
     t.integer  "team_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.integer  "role_id"
+  end
+
+  create_table "permissions", force: :cascade do |t|
+    t.string   "resource",                null: false
+    t.string   "method",                  null: false
+    t.string   "query",                   null: false
+    t.string   "parameters"
+    t.integer  "role_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "join",       default: "", null: false
+    t.string   "action",     default: "", null: false
   end
 
   create_table "problems", force: :cascade do |t|
@@ -56,6 +69,13 @@ ActiveRecord::Schema.define(version: 20160322070853) do
     t.datetime "opened_at",  null: false
     t.datetime "closed_at",  null: false
     t.integer  "creator_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.integer  "rank",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

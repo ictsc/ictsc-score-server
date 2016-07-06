@@ -13,23 +13,23 @@ class ProblemRoutes < Sinatra::Base
   end
 
   get "/api/problems" do
-    json Problem.all
+    @problems = Problem.accessible_resources(user_and_method)
+    json @problems
   end
 
   before "/api/problems/:id" do
-    halt 404 if not Problem.exists?(id: params[:id])
-    @problem = Problem.find_by(id: params[:id])
-
-    if request.post? || request.put? || request.patch? || request.delete?
-      halt 403 if (@problem.creator_id != current_user.id) and (not current_user&.admin)
-    end
+    @problem = Problem.accessible_resources(user_and_method) \
+                      .find_by(id: params[:id])
+    halt 404 if not @problems
   end
 
   get "/api/problems/:id" do
-    json Problem.find_by(id: params[:id])
+    json @problem
   end
 
   post "/api/problems" do
+    halt 403 if Member.allowed_to_create_by?(current_user)
+
     @attrs = attribute_values_of_class(Problem)
     @attrs[:creator_id] = current_user.id
     @problem = Problem.new(@attrs)
@@ -39,6 +39,7 @@ class ProblemRoutes < Sinatra::Base
       headers "Location" => to("/api/problems/#{@problem.id}")
       json @problem
     else
+      status 400
       json @problem.errors
     end
   end
@@ -56,6 +57,7 @@ class ProblemRoutes < Sinatra::Base
     if @problem.save
       json @problem
     else
+      status 400
       json @problem.errors
     end
   end
