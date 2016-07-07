@@ -1,4 +1,4 @@
-Member.seed do |s|
+Member.seed(:login) do |s|
   s.id    = 1
   s.login = "admin"
   s.name  = "admin"

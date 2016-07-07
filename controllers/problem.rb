@@ -9,7 +9,6 @@ class ProblemRoutes < Sinatra::Base
 
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
-    require_login
   end
 
   get "/api/problems" do

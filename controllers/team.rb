@@ -9,7 +9,6 @@ class TeamRoutes < Sinatra::Base
 
   before "/api/teams*" do
     I18n.locale = :en if request.xhr?
-    require_login
   end
 
   get "/api/teams" do
