@@ -22,7 +22,10 @@
     "simplemde": "^1.11.1",
     "datatable": "git@github.com:Holt59/datatable.git#^1.0.6",
     "font-awesome": "fontawesome#^4.6.3",
-    "bootstrap-switch": "^3.3.2"
+    "bootstrap-switch": "^3.3.2",
+    "jade": "~1.11.0",
+    "fetch": "~1.0.0",
+    "riot": "~2.5.0"
   },
   "devDependencies": {}
 }
