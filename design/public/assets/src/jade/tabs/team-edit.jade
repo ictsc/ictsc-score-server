@@ -1,0 +1,23 @@
+team-edit
+	.panel
+		.panel-body
+			form.form-horizontal(action='/problems/list.html', name='form-team-editing')
+				.form-group
+					label.col-sm-2.control-label(for='input-team-id') チーム番号
+					.col-sm-10
+						p.form-control-static 1
+				.form-group
+					label.col-sm-2.control-label(for='input-team-name') チーム名
+					.col-sm-10
+						input.form-control#input-team-name(type='text', value='WCDI')
+				.form-group
+					label.col-sm-2.control-label(for='input-school') 所属
+					.col-sm-10
+						input.form-control#input-school(type='text', value='日本工学院八王子専門学校')
+				.form-group
+					label.col-sm-2.control-label(for='input-score-total') 総スコア
+					.col-sm-10
+						p.form-control-static 100
+				.text-right
+					button.btn.btn-primary(type='submit') 更新
+	script

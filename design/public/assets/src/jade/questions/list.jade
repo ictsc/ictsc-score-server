@@ -7,42 +7,11 @@ block vars
 block title
 	+title('質問一覧')
 
+block riot_tags
+	+riot_script('question-list')
+
 block content
 	.page-header
 		h1 質問一覧
 	.table-responsive
-		table.table.table-striped.table-hover.table-condensed
-			thead
-				tr
-					th 番号
-					th.hidden 投稿チーム
-					th 問題番号
-					th 問題名
-			tbody
-				tr
-					th
-						a(href='/problems/detail.html#tab4-content') 1
-					td.hidden
-						a(href='/teams/detail.html') WCDI
-					td
-						a(href='/problems/detail.html') 1
-					td
-						a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
-				tr
-					th
-						a(href='/problems/detail.html#tab4-content') 2
-					td.hidden
-						a(href='/teams/detail.html') WCDI
-					td
-						a(href='/problems/detail.html') 2
-					td
-						a(href='/problems/detail.html') Webサイトの調子が悪い
-				tr
-					th
-						a(href='/problems/detail.html#tab4-content') 3
-					td.hidden
-						a(href='/teams/detail.html') ISL
-					td
-						a(href='/problems/detail.html') 1
-					td
-						a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
+		question-list

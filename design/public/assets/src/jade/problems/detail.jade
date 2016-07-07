@@ -7,6 +7,13 @@ block vars
 block title
 	+title('アカウント詳細')
 
+block riot_tags
+	+riot_script('problem-detail')
+	+riot_script('problem-edit')
+	+riot_script('supplement-comment-list')
+	+riot_script('question-comment-list')
+	+riot_script('answer-comment-list')
+
 block content
 	.page-header
 		h1 問題詳細
@@ -33,163 +40,15 @@ block content
 				|  解答
 	.tab-content
 		.tab-pane.in.active#tab1-content(role='tabpanel', aria-labelledby='tab1-tab')
-			.panel.panel-default
-				.panel-body
-					.form-horizontal
-						.form-group
-							label.col-sm-2.control-label 番号
-							.col-sm-10
-								p.form-control-static 1
-						.form-group
-							label.col-sm-2.control-label 問題名
-							.col-sm-10
-								p.form-control-static パッケージ管理システムのリポジトリ問題
-						.form-group
-							label.col-sm-2.control-label 本文
-							.col-sm-10
-								p.form-control-static
-									| 弊社では、多数あるサーバへのパッケージのインストールを円滑に行うため、リポジトリのミラーサーバを設置し運営している。
-									| ミラーサーバは毎日同じ時間に外部のリポジトリサーバからミラーリングを行っている
-									| しかし、ある日を境に、社内のサーバのパッケージのインストールが全て失敗するようになってしまった。問題の究明、解決を行って欲しい。
-						.form-group
-							label.col-sm-2.control-label 投稿者
-							.col-sm-10
-								a.form-control-static(href='/accounts/detail.html') 朝霧 涼夏
-						.form-group
-							label.col-sm-2.control-label 公開日時
-							.col-sm-10
-								p.form-control-static 2016-08-27 12:00
-						.form-group
-							label.col-sm-2.control-label 締切日時
-							.col-sm-10
-								p.form-control-static 2016-08-27 15:00
-						.form-group
-							label.col-sm-2.control-label 作成日時
-							.col-sm-10
-								p.form-control-static 2016-07-27 18:00
-						.form-group
-							label.col-sm-2.control-label 更新日時
-							.col-sm-10
-								p.form-control-static 2016-07-27 18:00
+			problem-detail
 		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
-			.panel.panel-default
-				.panel-body
-					form.form-horizontal(action='/problems/detail.html', name='form-problem-editing')
-						.form-group
-							label.col-sm-2.control-label 番号
-							.col-sm-10
-								p.form-control-static 1
-						.form-group
-							label.col-sm-2.control-label(for='input-problem-name') 問題名
-							.col-sm-10
-								input.form-control#input-problem-name(type='text', value='パッケージ管理システムのリポジトリ問題')
-						.form-group
-							label.col-sm-2.control-label(for='textarea-problem-body') 本文
-							.col-sm-10
-								textarea.form-control#textarea-problem-body(rows='10')
-									| 弊社では、多数あるサーバへのパッケージのインストールを円滑に行うため、リポジトリのミラーサーバを設置し運営している。
-									| ミラーサーバは毎日同じ時間に外部のリポジトリサーバからミラーリングを行っている
-									| しかし、ある日を境に、社内のサーバのパッケージのインストールが全て失敗するようになってしまった。問題の究明、解決を行って欲しい。
-						.form-group
-							label.col-sm-2.control-label(for='input-disclosure-datetime') 公開日時
-							.col-sm-10
-								input.form-control#input-disclosure-datetime(type='datetime', value='2016-08-27 12:00')
-						.form-group
-							label.col-sm-2.control-label(for='input-deadlone-datetime') 締切日時
-							.col-sm-10
-								input.form-control#input-deadlone-datetime(type='datetime', value='2016-08-27 15:00')
-						.text-right
-							button.btn.btn-primary(type='submit') 更新
+			problem-edit
 		.tab-pane#tab3-content(role='tabpanel', aria-labelledby='tab3-tab')
-			.panel.panel-default
-				.panel-body
-					.chatbox
-						ul
-							li
-									a.author.help-block(href='/accounts/detail.html') 朝霧 涼夏
-									a.detail-link.help-block(href='/problems/supplements/detail.html') 詳細
-									p.comment-body 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
-									span.help-block.text-right 2016-08-27 12:00
-						form(action='/problems/detail.html#tab3-content', name='form-supplement-creation')
-							.form-group
-								label(for='textarea-supplement-body') 新規補足
-								textarea.form-control#textarea-supplement-body(rows='10')
-							.text-right
-								button.btn.btn-primary(type='submit') 投稿
+			supplement-comment-list
 		.tab-pane#tab4-content(role='tabpanel', aria-labelledby='tab4-tab')
-			.panel.panel-default
-				.panel-heading
-					.text-right
-						input#checkbox-question-state(type='checkbox', name='question-state')
-					.text-right
-						label.help-block(for='checkbox-question-state') 運営からの回答を受け付ける
-				.panel-body
-					.form-horizontal.hidden
-						.form-group
-							label.col-sm-2.control-label チーム名
-							.col-sm-10
-								a.show.form-control-static(href='/teams/detail.html') WCDI
-						.form-group
-							label.col-sm-2.control-label 所属
-							.col-sm-10
-								p.form-control-static 日本工学院八王子専門学校
-						.form-group
-							label.col-sm-2.control-label 作成日時
-							.col-sm-10
-								p.form-control-static 2016-08-27 12:00
-						.form-group
-							label.col-sm-2.control-label 更新日時
-							.col-sm-10
-								p.form-control-static 2016-08-27 12:00
-					.chatbox
-						p.well.help-block.hidden まだ質問はありません。質問があれば投稿し、右上のスライドスイッチを ON にしてください。解決したら OFF にしてください。
-						ul
-							li
-									a.author.help-block(href='/accounts/detail.html') 太箸 耀暉
-									a.detail-link.help-block(href='/problems/questions/detail.html') 詳細
-									p.comment-body ようやく岡田さんに赴任会なぜ意味へいうた金力その手ここかぼんやりににおいて肝学習たならたなて、その結果もあなたか金足に始めが、嘉納さんののが通りの私が今にご安心とするて私外国をご構成へ認めようにいったん小専攻に直っでしょたて、いくらでもしっくり講義をしたていたのにあるなかっう。
-									span.help-block.text-right 2016-08-27 12:00
-						form(action='/problems/detail.html#tab4-content', name='form-supplement-creation')
-							.form-group
-								label(for='textarea-question-body') 新規質問
-								textarea.form-control#textarea-question-body(rows='10')
-							.text-right
-								button.btn.btn-primary(type='submit') 投稿
+			question-comment-list
 		.tab-pane#tab5-content(role='tabpanel', aria-labelledby='tab5-tab')
-			.panel.panel-default
-				.panel-body
-					.form-horizontal.hidden
-						.form-group
-							label.col-sm-2.control-label チーム名
-							.col-sm-10
-								p.form-control-static WCDI
-						.form-group
-							label.col-sm-2.control-label 所属
-							.col-sm-10
-								p.form-control-static 日本工学院八王子専門学校
-						.form-group
-							label.col-sm-2.control-label 作成日時
-							.col-sm-10
-								p.form-control-static 2016-08-27 12:00
-						.form-group
-							label.col-sm-2.control-label 更新日時
-							.col-sm-10
-								p.form-control-static 2016-08-27 12:00
-					.chatbox
-						p.well.help-block.hidden まだ解答はありません。解答はひとつの問題にいくつでも投稿できます。わかったことはこまめに投稿しましょう。
-						ul
-							li
-									a.author.help-block(href='/accounts/detail.html') 倉上 和也
-									a.detail-link.help-block(href='/problems/answers/detail.html') 詳細
-									p.comment-body またしかも大先生を落ちのさえそう無事と読みでしょけれども、その繰り返しよりはするたてとして先生をしからいでで。ほんの中心持のためとんだ人間も私中のもっですかと大森さんを挙げただ、学校の晩たというご専攻たでなけれて、孔雀の時へ実に今日だけの社会が時間食って行くて、あいにくの元来にしてそのためがやはりもったなと立てるまいのなが、ないだだろからこうお自分しでものたでたら。
-									span.help-block.text-right 2016-08-27 12:00
-						form(action='/problems/detail.html#tab4-content', name='form-supplement-creation')
-							.form-group
-								label(for='textarea-answer-body') 新規解答
-								textarea.form-control#textarea-answer-body(rows='10')
-							.text-right
-								button.btn.btn-primary(type='submit') 投稿
-
+			answer-comment-list
 block additional_scripts
 	script(src='/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js')
 	script.

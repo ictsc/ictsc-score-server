@@ -7,6 +7,10 @@ block vars
 block title
 	+title('アカウント詳細')
 
+block riot_tags
+	+riot_script('account-detail')
+	+riot_script('account-edit')
+
 block content
 	.page-header
 		h1 アカウント詳細
@@ -21,63 +25,6 @@ block content
 				|  編集
 	.tab-content
 		.tab-pane.in.active#tab1-content(role='tabpanel', aria-labelledby='tab1-tab')
-			.panel.panel-default
-				.panel-body
-					.form-horizontal
-						.form-group
-							label.col-sm-2.control-label アカウント番号
-							.col-sm-10
-								p.form-control-static 1
-						.form-group
-							label.col-sm-2.control-label チーム名
-							.col-sm-10
-								p.form-control-static
-									a(href='/teams/detail.html') WCDI
-						.form-group
-							label.col-sm-2.control-label 所属
-							.col-sm-10
-								p.form-control-static 日本工学院八王子専門学校
-						.form-group
-							label.col-sm-2.control-label ユーザー名
-							.col-sm-10
-								p.form-control-static 太箸 耀暉
-						.form-group
-							label.col-sm-2.control-label アカウント ID
-							.col-sm-10
-								p.form-control-static futobashi
-						.form-group
-							label.col-sm-2.control-label ロール
-							.col-sm-10
-								p.form-control-static 参加者
+			account-detail
 		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
-			.panel
-				.panel-body
-					form.form-horizontal(action='/accounts/list.html', name='form-account-editing')
-						.form-group
-							label.col-sm-2.control-label アカウント番号
-							.col-sm-10
-								p.form-control-static 1
-						.form-group
-							label.col-sm-2.control-label(for='select-team-name') チーム名
-							.col-sm-10
-								select.form-control#select-team-name(name='team-name')
-									option(value='0') チーム名を選択してください
-									option(value='1', selected) WCDI
-									option(value='2') ISL
-									option(value='3') にせつむり(ゆかいな仲間たち)
-									option(value='4') 専門学校穴吹コンピュータカレッジ
-						.form-group
-							label.col-sm-2.control-label 所属
-							.col-sm-10
-								p.form-control-static 日本工学院八王子専門学校
-								span.help-block チーム名を選択すると自動表示されます
-						.form-group
-							label.col-sm-2.control-label(for='input-username') ユーザー名
-							.col-sm-10
-								input.form-control#input-username(type='text', value='太箸 耀暉')
-						.form-group
-							label.col-sm-2.control-label(for='input-school') アカウント ID
-							.col-sm-10
-								input.form-control#input-school(type='text', value='日本工学院八王子専門学校')
-						.text-right
-							button.btn.btn-primary(type='submit') 更新
+			account-edit

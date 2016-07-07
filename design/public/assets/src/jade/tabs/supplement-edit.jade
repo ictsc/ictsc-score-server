@@ -1,0 +1,19 @@
+supplement-edit
+	.panel
+		.panel-body
+			form.form-horizontal(action='/problems/detail/comment.html', name='form-supplement-editing')
+				.form-group
+					label.col-sm-2.control-label 番号
+					.col-sm-10
+						p.form-control-static 1
+				.form-group
+					label.col-sm-2.control-label 投稿者
+					.col-sm-10
+						a.show.form-control-static(href='/accounts/detail.html') 朝霧 涼夏
+				.form-group
+					label.col-sm-2.control-label(for='textarea-supplement-body') 本文
+					.col-sm-10
+						textarea.form-control#textarea-supplement-body(rows='10') 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
+				.text-right
+					button.btn.btn-primary(type='submit') 更新
+	script

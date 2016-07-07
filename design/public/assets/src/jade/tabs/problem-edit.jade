@@ -1,0 +1,30 @@
+problem-edit
+	.panel.panel-default
+		.panel-body
+			form.form-horizontal(action='/problems/detail.html', name='form-problem-editing')
+				.form-group
+					label.col-sm-2.control-label 番号
+					.col-sm-10
+						p.form-control-static 1
+				.form-group
+					label.col-sm-2.control-label(for='input-problem-name') 問題名
+					.col-sm-10
+						input.form-control#input-problem-name(type='text', value='パッケージ管理システムのリポジトリ問題')
+				.form-group
+					label.col-sm-2.control-label(for='textarea-problem-body') 本文
+					.col-sm-10
+						textarea.form-control#textarea-problem-body(rows='10')
+							| 弊社では、多数あるサーバへのパッケージのインストールを円滑に行うため、リポジトリのミラーサーバを設置し運営している。
+							| ミラーサーバは毎日同じ時間に外部のリポジトリサーバからミラーリングを行っている
+							| しかし、ある日を境に、社内のサーバのパッケージのインストールが全て失敗するようになってしまった。問題の究明、解決を行って欲しい。
+				.form-group
+					label.col-sm-2.control-label(for='input-disclosure-datetime') 公開日時
+					.col-sm-10
+						input.form-control#input-disclosure-datetime(type='datetime', value='2016-08-27 12:00')
+				.form-group
+					label.col-sm-2.control-label(for='input-deadlone-datetime') 締切日時
+					.col-sm-10
+						input.form-control#input-deadlone-datetime(type='datetime', value='2016-08-27 15:00')
+				.text-right
+					button.btn.btn-primary(type='submit') 更新
+	script

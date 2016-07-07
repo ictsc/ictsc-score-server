@@ -7,43 +7,11 @@ block vars
 block title
 	+title('通知一覧')
 
+block riot_tags
+	+riot_script('notification-list')
+
 block content
 	.page-header
 		h1 通知一覧
 	.table-responsive
-		table.table.table-striped.table-hover.table-condensed
-			thead
-				tr
-					th 番号
-					th 種別
-					th 投稿者
-					th 内容
-			tbody
-				tr
-					th 1
-					td 問題公開
-					td
-						a(href='/accounts/detail.html') 朝霧 涼夏
-					td
-						a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
-				tr
-					th 2
-					td 補足
-					td
-						a(href='/accounts/detail.html') 朝霧 涼夏
-					td
-						a(href='/problems/supplements/detail.html') 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
-				tr
-					th 3
-					td 質問
-					td
-						a(href='/accounts/detail.html') 太箸 耀暉
-					td
-						a(href='/problems/questions/detail.html') ようやく岡田さんに赴任会なぜ意味へいうた金力その手ここかぼんやりににおいて肝学習たならたなて、その結果もあなたか金足に始めが、嘉納さんののが通りの私が今にご安心とするて私外国をご構成へ認めようにいったん小専攻に直っでしょたて、いくらでもしっくり講義をしたていたのにあるなかっう。
-				tr
-					th 4
-					td 解答
-					td
-						a(href='/accounts/detail.html') 倉上 和也
-					td
-						a(href='/problems/answers/detail.html') パッケージ管理システムのリポジトリ問題
+		notification-list

@@ -1,0 +1,40 @@
+question-comment-list
+	.panel.panel-default
+		.panel-heading
+			.text-right
+				input#checkbox-question-state(type='checkbox', name='question-state')
+			.text-right
+				label.help-block(for='checkbox-question-state') 運営からの回答を受け付ける
+		.panel-body
+			.form-horizontal.hidden
+				.form-group
+					label.col-sm-2.control-label チーム名
+					.col-sm-10
+						a.show.form-control-static(href='/teams/detail.html') WCDI
+				.form-group
+					label.col-sm-2.control-label 所属
+					.col-sm-10
+						p.form-control-static 日本工学院八王子専門学校
+				.form-group
+					label.col-sm-2.control-label 作成日時
+					.col-sm-10
+						p.form-control-static 2016-08-27 12:00
+				.form-group
+					label.col-sm-2.control-label 更新日時
+					.col-sm-10
+						p.form-control-static 2016-08-27 12:00
+			.chatbox
+				p.well.help-block.hidden まだ質問はありません。質問があれば投稿し、右上のスライドスイッチを ON にしてください。解決したら OFF にしてください。
+				ul
+					li
+							a.author.help-block(href='/accounts/detail.html') 太箸 耀暉
+							a.detail-link.help-block(href='/problems/questions/detail.html') 詳細
+							p.comment-body ようやく岡田さんに赴任会なぜ意味へいうた金力その手ここかぼんやりににおいて肝学習たならたなて、その結果もあなたか金足に始めが、嘉納さんののが通りの私が今にご安心とするて私外国をご構成へ認めようにいったん小専攻に直っでしょたて、いくらでもしっくり講義をしたていたのにあるなかっう。
+							span.help-block.text-right 2016-08-27 12:00
+				form(action='/problems/detail.html#tab4-content', name='form-supplement-creation')
+					.form-group
+						label(for='textarea-question-body') 新規質問
+						textarea.form-control#textarea-question-body(rows='10')
+					.text-right
+						button.btn.btn-primary(type='submit') 投稿
+	script

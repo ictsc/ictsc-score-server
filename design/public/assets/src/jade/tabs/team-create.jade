@@ -1,0 +1,11 @@
+team-create
+	form(action='/teams/list.html', name='form-team-creation')
+		.form-group
+			label(for='input-team-name') チーム名
+			input.form-control#input-team-name(type='text')
+		.form-group
+			label(for='input-school') 所属
+			input.form-control#input-school(type='text')
+		.text-right
+			button.btn.btn-primary(type='submit') 作成
+	script

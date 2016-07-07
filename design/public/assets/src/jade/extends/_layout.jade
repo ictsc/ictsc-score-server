@@ -6,6 +6,9 @@ mixin title(page_name)
 	else
 		title #{page_name} - #{site_name}
 
+mixin riot_script(file_name)
+	script(src="/tabs-jade/" + file_name + ".jade" type='riot/tag' template='jade')
+
 doctype html
 html
 
@@ -40,10 +43,24 @@ html
 		footer
 			include /includes/_footer
 
+		block riot_tags
+
 		block scripts
 			script(src='/bower_components/jquery/dist/jquery.min.js')
 			script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
 			script(src='/bower_components/fastclick/lib/fastclick.js')
+
+			script(src='/riot-compiler.js')
+			script(src='/jade.js')
+			script.
+				var account = riot.observable();
+
+				account.hoge = function(p) {
+					console.log(p);
+				}
+
+				riot.mount("*", {account: account})
+
 			script.
 				$(function () {
 					FastClick.attach(document.body)

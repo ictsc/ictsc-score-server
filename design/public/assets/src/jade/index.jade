@@ -6,35 +6,13 @@ block vars
 block title
 	+title('トップページ')
 
+block riot_tags
+	+riot_script('login-form')
+
 block content
 	.page-header
 		h1 トップページ
 	.page-header
 		h2 サインアップ
 	p.hidden バリデーションエラーメッセージ
-	form(action='/signin.html', name='form-signup')
-		.form-group
-			label(for='select-team-name') チーム名
-			select.form-control#select-team-name(name='team-name')
-				option(value='0') チーム名を選択してください
-				option(value='1') WCDI
-				option(value='2') ISL
-				option(value='3') にせつむり(ゆかいな仲間たち)
-				option(value='4') 専門学校穴吹コンピュータカレッジ
-		.form-group
-			label 所属
-			p.form-control-static チーム名が未選択
-				span.help-block チーム名を選択すると自動表示されます
-		.form-group
-			label(for='input-username', placeholder='(例: 山田 太郎)') ユーザー名
-			input.form-control#input-username(name='username', type='email')
-			span.help-block
-		.form-group
-			label(for='input-account-id') アカウント ID
-			input.form-control#input-account-id(name='account-id', type='text')
-			span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
-		.form-group
-			label(for='input-password') パスワード
-			input.form-control#input-password(name='password', type='password')
-		.text-right
-			button.btn.btn-primary(type='submit') サインアップ
+	login-form

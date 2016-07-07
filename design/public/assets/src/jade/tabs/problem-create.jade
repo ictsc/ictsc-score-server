@@ -1,0 +1,21 @@
+problem-create
+	form.form-horizontal(action='/problems/list.html', name='form-problem-creation')
+		.form-group
+			label.col-sm-2.control-label(for='input-problem-name') 問題名
+			.col-sm-10
+				input.form-control#input-problem-name(type='text')
+		.form-group
+			label.col-sm-2.control-label(for='input-problem-body') 問題本文
+			.col-sm-10
+				input.form-control#input-problem-body(type='text')
+		.form-group
+			label.col-sm-2.control-label(for='input-disclosure-datetime') 問題公開日時
+			.col-sm-10
+				input.form-control#input-disclosure-datetime(type='datetime')
+		.form-group
+			label.col-sm-2.control-label(for='input-deadlone-datetime') 問題締切日時
+			.col-sm-10
+				input.form-control#input-deadlone-datetime(type='datetime')
+		.text-right
+			button.btn.btn-primary(type='submit') 投稿
+	script

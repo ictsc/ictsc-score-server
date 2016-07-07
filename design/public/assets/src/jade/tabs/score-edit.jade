@@ -1,0 +1,19 @@
+score-edit
+	.panel
+		.panel-body
+			form.form-horizontal(action='/answers/scores/detail.html', name='form-score-editing')
+				.form-group
+					label.col-sm-2.control-label 番号
+					.col-sm-10
+						p.form-control-static 1
+				.form-group
+					label.col-sm-2.control-label 採点者
+					.col-sm-10
+						a.show.form-control-static(href='/accounts/detail.html') 朝霧 涼夏
+				.form-group
+					label.col-sm-2.control-label(for='input-score') スコア
+					.col-sm-10
+						input.form-control#input-score(type='text', value='100')
+				.text-right
+					button.btn.btn-primary(type='submit') 更新
+	script
