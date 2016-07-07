@@ -52,6 +52,7 @@ def_perm(Role, :nologin, %i(GET),
   query: "id = :participant_role_id",
   parameters: "{ participant_role_id: #{ROLE_ID[:participant]}}")
 permit(Member, :nologin, %i(POST))
+permit(Team, :nologin, %i(GET))
 
 
 # Admin
