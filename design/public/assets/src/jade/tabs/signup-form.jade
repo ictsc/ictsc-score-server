@@ -1,29 +1,74 @@
 signup-form
-	form(action='/signin.html', name='form-signup')
+	form(onsubmit='{ create_user }', name='form-signup')
 		.form-group
 			label(for='select-team-name') チーム名
-			select.form-control#select-team-name(name='team-name')
+			select.form-control#select-team-name(name='team-name' onchange='{ select_team }')
 				option(value='0') チーム名を選択してください
-				option(value='1') WCDI
-				option(value='2') ISL
-				option(value='3') にせつむり(ゆかいな仲間たち)
-				option(value='4') 専門学校穴吹コンピュータカレッジ
+				option(each='{ teams }' value='{ id }') { name }
 		.form-group
 			label 所属
-			p.form-control-static チーム名が未選択
-				span.help-block チーム名を選択すると自動表示されます
+			p.form-control-static { (selected_team && selected_team.organization) || "チーム名が未選択" }
+				span.help-block(hide='{ selected_team }') チーム名を選択すると自動表示されます
 		.form-group
-			label(for='input-username', placeholder='(例: 山田 太郎)') ユーザー名
-			input.form-control#input-username(name='username', type='email')
+			label(for='input-name', placeholder='(例: 山田 太郎)') ユーザー名
+			input.form-control#input-name(name='name', type='text')
 			span.help-block
 		.form-group
-			label(for='input-account-id') アカウント ID
-			input.form-control#input-account-id(name='account-id', type='text')
+			label(for='input-login') アカウント ID
+			input.form-control#input-login(name='login', type='text')
 			span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
 		.form-group
 			label(for='input-password') パスワード
 			input.form-control#input-password(name='password', type='password')
 		.text-right
 			button.btn.btn-primary(type='submit') サインアップ
-	script
+	script.
+		this.selected_team = null
 
+		fetch("/api/teams").then((res) => {
+			res.json().then((j) => {
+				this.teams = j;
+				console.log(j[0]);
+				//- this.team = j[0].name
+				this.update();
+			})
+		})
+
+		select_team(e) {
+			const idx = e.target.selectedIndex;
+			if (idx == 0) {
+				this.selected_team = null
+			} else {
+				this.selected_team = this.teams[idx-1]
+			}
+		}
+
+		value_of(id) {
+			return this.root.querySelector(id).value
+		}
+
+		create_user(e) {
+			if (!this.selected_team) {
+				return;
+			}
+
+			const body = {
+				team_id: this.selected_team.id,
+				name: this.value_of("#input-name"),
+				login: this.value_of("#input-login"),
+				password: this.value_of("#input-password"),
+			}
+
+			fetch("/api/members", {
+				method: "POST",
+				body: JSON.stringify(body),
+				headers: {
+				    "Content-Type": "application/json"
+				 },
+			}).then((res) => {
+				location.href = "/signin.html"
+			}).catch(res => {
+			});
+
+			return false;
+		}
