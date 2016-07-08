@@ -51,28 +51,3 @@ block content
 			answer-comment-list
 
 block additional_scripts
-	script.
-		$(function () {
-			window.setTimeout(function () {
-				var mdeProbrem = new SimpleMDE({
-					element: $('#textarea-problem-body')[0]
-				})
-				var mdeSupplement = new SimpleMDE({
-					element: $('#textarea-supplement-body')[0]
-				})
-				var mdeQuestion = new SimpleMDE({
-					element: $('#textarea-question-body')[0]
-				})
-				var mdeAnswer = new SimpleMDE({
-					element: $('#textarea-answer-body')[0]
-				})
-			}, 500)
-		})
-
-	script.
-		$(function () {
-			window.setTimeout(function () {
-				$("[name='question-state']").bootstrapSwitch()
-				console.log($("[name='question-state']").bootstrapSwitch('state'))
-			}, 500)
-		})

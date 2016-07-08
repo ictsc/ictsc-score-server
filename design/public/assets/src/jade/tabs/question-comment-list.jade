@@ -37,4 +37,12 @@ question-comment-list
 						textarea.form-control#textarea-question-body(rows='10')
 					.text-right
 						button.btn.btn-primary(type='submit') 投稿
-	script
+	script.
+		this.on("mount", () => {
+			$("[name='question-state']").bootstrapSwitch();
+			console.log($("[name='question-state']").bootstrapSwitch('state'));
+
+			this.mde = new SimpleMDE({
+				element: $('#textarea-question-body')[0]
+			})
+		});

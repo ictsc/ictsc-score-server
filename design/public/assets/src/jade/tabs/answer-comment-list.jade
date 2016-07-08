@@ -32,4 +32,9 @@ answer-comment-list
 						textarea.form-control#textarea-answer-body(rows='10')
 					.text-right
 						button.btn.btn-primary(type='submit') 投稿
-	script
+	script.
+		this.on("mount", () => {
+			this.mde = new SimpleMDE({
+				element: $('#textarea-answer-body')[0]
+			})
+		});

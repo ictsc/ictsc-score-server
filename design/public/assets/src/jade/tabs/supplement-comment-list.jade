@@ -14,4 +14,9 @@ supplement-comment-list
 						textarea.form-control#textarea-supplement-body(rows='10')
 					.text-right
 						button.btn.btn-primary(type='submit') 投稿
-	script
+	script.
+		this.on("mount", () => {
+			this.mde = new SimpleMDE({
+				element: $('#textarea-supplement-body')[0]
+			})
+		});

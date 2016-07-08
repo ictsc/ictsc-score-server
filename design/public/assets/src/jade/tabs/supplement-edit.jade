@@ -16,4 +16,9 @@ supplement-edit
 						textarea.form-control#textarea-supplement-body(rows='10') 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
-	script
+	script.
+		this.on("mount", () => {
+			this.mde = new SimpleMDE({
+				element: $('#textarea-supplement-body')[0]
+			})
+		});

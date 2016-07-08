@@ -27,4 +27,9 @@ problem-edit
 						input.form-control#input-deadlone-datetime(type='datetime', value='2016-08-27 15:00')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
-	script
+	script.
+		this.on("mount", () => {
+			this.mde = new SimpleMDE({
+				element: $('#textarea-problem-body')[0]
+			})
+		});
