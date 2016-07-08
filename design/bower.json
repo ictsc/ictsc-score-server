@@ -20,7 +20,6 @@
     "jquery": "^2.2.4",
     "bootstrap": "^3.3.6",
     "simplemde": "^1.11.1",
-    "datatable": "git@github.com:Holt59/datatable.git#^1.0.6",
     "font-awesome": "fontawesome#^4.6.3",
     "bootstrap-switch": "^3.3.2",
     "jade": "~1.11.0",
