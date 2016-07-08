@@ -24,7 +24,8 @@
     "bootstrap-switch": "^3.3.2",
     "jade": "~1.11.0",
     "fetch": "~1.0.0",
-    "riot": "~2.5.0"
+    "riot": "~2.5.0",
+    "datatables.net": "^1.10.12"
   },
   "devDependencies": {}
 }
