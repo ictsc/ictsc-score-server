@@ -26,6 +26,7 @@ html
 			link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
 			link(rel='stylesheet', href='/bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css')
 			link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.min.css')
+			link(rel='stylesheet', href='/bower_components/simplemde/dist/simplemde.min.css')
 			link(rel='stylesheet', href='/assets/dist/css/style.min.css')
 
 		block additional_stylesheets
@@ -48,7 +49,26 @@ html
 		block scripts
 			script(src='/bower_components/jquery/dist/jquery.min.js')
 			script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+			script(src='/bower_components/simplemde/dist/simplemde.min.js')
+			script(src='/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js')
+
 			script(src='/bower_components/fastclick/lib/fastclick.js')
+			script.
+				$(function () {
+					FastClick.attach(document.body)
+				})
+
+			script(src='/bower_components/datatables.net/js/jquery.dataTables.min.js')
+			script.
+				$(function () {
+					window.setTimeout(function () {
+						$('table').DataTable({
+							"paging": false,
+							"searching": false,
+							"info": false
+						})
+					}, 500)
+				})
 
 			script(src='/bower_components/riot/riot+compiler.js')
 			script(src='/bower_components/jade/jade.js')
@@ -62,10 +82,6 @@ html
 
 				riot.mount("*", {account: account})
 
-			script.
-				$(function () {
-					FastClick.attach(document.body)
-				})
 			script.
 				$(function () {
 					var hash = document.location.hash
