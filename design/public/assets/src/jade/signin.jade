@@ -6,16 +6,11 @@ block vars
 block title
 	+title('サインイン')
 
+block riot_tags
+	+riot_script('signin-form')
+
 block content
 	.page-header
 		h1 サインイン
 	p.hidden バリデーションエラーメッセージ
-	form(action='/problems/detail.html', name='form-signin')
-		.form-group
-			label(for='input-accound-id') アカウント ID
-			input.form-control#input-accound-id(name='accound-id', type='text')
-		.form-group
-			label(name='password', for='input-password') パスワード
-			input.form-control#input-password(type='password')
-		.text-right
-			button.btn.btn-primary(type='submit') サインイン
+	signin-form

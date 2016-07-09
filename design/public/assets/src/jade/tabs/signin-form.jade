@@ -1,0 +1,39 @@
+signin-form
+	form(onsubmit='{ do_login }', name='form-signin')
+		.form-group
+			label(for='input-login') アカウント ID
+			input.form-control#input-login(name='login', type='text')
+		.form-group
+			label(for='input-password') パスワード
+			input.form-control#input-password(name='password', type='password')
+		.text-right
+			button.btn.btn-primary(type='submit') サインイン
+	script.
+		value_of(id) {
+			return this.root.querySelector(id).value
+		}
+
+		do_login(e) {
+			const body = {
+				login: this.value_of("#input-login"),
+				password: this.value_of("#input-password"),
+			}
+
+			fetch("/api/session", {
+				method: "POST",
+				body: JSON.stringify(body),
+				headers: {
+				    "Content-Type": "application/json"
+				 },
+			}).then((res) => {
+				res.json().then((j) => {
+					if (j.status == "success") {
+						window.location.pathname = "/problems/list.html"
+					}
+				})
+			}).catch(res => {
+				console.log("Failed to sign in")
+			});
+
+			return false;
+		}
