@@ -75,6 +75,14 @@ class App < Sinatra::Base
     200
   end
 
+  get "/?" do
+    send_file settings.public_dir + "/index.html"
+  end
+
+  get %r{/\w+(/\w+)?(/\w+)?} do
+    send_file settings.public_dir + request.path + ".html"
+  end
+
   # get "/test/:message" do
   #   Sinatra::RocketIO.push :message, params[:message]
 
@@ -84,10 +92,6 @@ class App < Sinatra::Base
   # get "/notifications" do
 
   # end
-
-  get "/manage" do
-
-  end
 
   not_found do
     if request.xhr?
