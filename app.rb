@@ -75,47 +75,11 @@ class App < Sinatra::Base
     200
   end
 
-  get "/?" do
-    haml :index
-  end
-
-  get "/:name.html" do
-    redirect to(params[:name])
-  end
-
   # get "/test/:message" do
   #   Sinatra::RocketIO.push :message, params[:message]
 
   #   200
   # end
-
-  get "/signin" do
-    @title = "SIGN IN"
-    haml :signin, layout: :"layout-simple"
-  end
-
-  get "/problems" do
-    @title = "PROBLEM"
-    haml :problems
-  end
-
-  get "/users" do
-
-  end
-
-  get "/score" do
-
-  end
-
-  get "/answers" do
-    @title = "ANSWERS"
-    haml :answers
-  end
-
-  get "/issues" do
-    @title = "ISSUES"
-    haml :issues
-  end
 
   # get "/notifications" do
 
