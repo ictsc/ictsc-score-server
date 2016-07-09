@@ -25,7 +25,8 @@
     "jade": "~1.11.0",
     "fetch": "~1.0.0",
     "riot": "~2.5.0",
-    "datatables.net": "^1.10.12"
+    "datatables.net": "^1.10.12",
+    "dateformat": "~0.4.1"
   },
   "devDependencies": {}
 }
