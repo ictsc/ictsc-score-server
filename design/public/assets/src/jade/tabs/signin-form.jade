@@ -24,7 +24,8 @@ signin-form
 				body: JSON.stringify(body),
 				headers: {
 				    "Content-Type": "application/json"
-				 },
+				},
+				credentials: "same-origin"
 			}).then((res) => {
 				res.json().then((j) => {
 					if (j.status == "success") {

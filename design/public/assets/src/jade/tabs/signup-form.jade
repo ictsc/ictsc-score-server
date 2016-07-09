@@ -64,7 +64,8 @@ signup-form
 				body: JSON.stringify(body),
 				headers: {
 				    "Content-Type": "application/json"
-				 },
+			  },
+			  credentials: "same-origin"
 			}).then((res) => {
 				location.href = "/signin.html"
 			}).catch(res => {
