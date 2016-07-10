@@ -39,6 +39,5 @@ deploy:
         username: $REGISTRY_USERNAME
         password: $REGISTRY_PASSWORD
         repository: $REGISTRY_REPOSITORY
-        tag: $WERCKER_GIT_BRANCH latest
         ports: "9999"
         entrypoint: rackup -o 127.0.0.1 -p 9999
