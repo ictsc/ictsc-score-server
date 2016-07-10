@@ -5,17 +5,17 @@ build:
     - script:
         name: set nodejs environment
         code: |
-          sudo apt-get update
-          sudo apt-get install -y nodejs npm
-          sudo ln -s `which nodejs` /usr/bin/node
-          sudo npm config set registry http://registry.npmjs.org/
+          apt-get update
+          apt-get install -y nodejs npm
+          ln -s `which nodejs` /usr/bin/node
+          npm config set registry http://registry.npmjs.org/
           cd design
           npm install
     - script:
         name: bower install
         code: |
           cd design
-          $(npm bin)/bower install
+          $(npm bin)/bower --allow-root install
     - script:
         name: gulp build
         code: |
