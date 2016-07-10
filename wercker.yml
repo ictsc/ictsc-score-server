@@ -9,14 +9,13 @@ build:
           sudo apt-get install -y nodejs npm
           sudo ln -s `which nodejs` /usr/bin/node
           sudo npm config set registry http://registry.npmjs.org/
-          sudo npm install -g grunt-cli
           cd design
           npm install
     - script:
         name: bower install
         code: |
           cd design
-          bower install
+          $(npm bin)/bower install
     - script:
         name: gulp build
         code: |
