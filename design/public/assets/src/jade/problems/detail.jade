@@ -19,35 +19,35 @@ block content
 		h1 問題詳細
 	ul.nav.nav-tabs(role='tablist')
 		li.active(role='presentation')
-			a#tab1-tab(tabindex='1', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
+			a#problem-detail-tab(tabindex='1', role='tab', aria-controls='problem-detail', href='#problem-detail', data-toggle='tab')
 				i.fa.fa-search
 				|  詳細
 		li(role='presentation')
-			a#tab2-tab(tabindex='1', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
+			a#problem-edit-tab(tabindex='1', role='tab', aria-controls='problem-edit', href='#problem-edit', data-toggle='tab')
 				i.fa.fa-edit
 				|  編集
 		li(role='presentation')
-			a#tab3-tab(tabindex='1', role='tab', aria-controls='tab3-content', href='#tab3-content', data-toggle='tab')
+			a#supplement-comment-list-tab(tabindex='1', role='tab', aria-controls='supplement-comment-list', href='#supplement-comment-list', data-toggle='tab')
 				i.fa.fa-edit
 				|  補足
 		li(role='presentation')
-			a#tab4-tab(tabindex='1', role='tab', aria-controls='tab4-content', href='#tab4-content', data-toggle='tab')
+			a#question-comment-list-tab(tabindex='1', role='tab', aria-controls='question-comment-list', href='#question-comment-list', data-toggle='tab')
 				i.fa.fa-edit
 				|  質問
 		li(role='presentation')
-			a#tab5-tab(tabindex='1', role='tab', aria-controls='tab5-content', href='#tab5-content', data-toggle='tab')
+			a#answer-comment-list-tab(tabindex='1', role='tab', aria-controls='answer-comment-list', href='#answer-comment-list', data-toggle='tab')
 				i.fa.fa-edit
 				|  解答
 	.tab-content
-		.tab-pane.in.active#tab1-content(role='tabpanel', aria-labelledby='tab1-tab')
+		.tab-pane.in.active#problem-detail(role='tabpanel', aria-labelledby='problem-detail-tab')
 			problem-detail
-		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
+		.tab-pane#problem-edit(role='tabpanel', aria-labelledby='problem-edit-tab')
 			problem-edit
-		.tab-pane#tab3-content(role='tabpanel', aria-labelledby='tab3-tab')
+		.tab-pane#supplement-comment-list(role='tabpanel', aria-labelledby='supplement-comment-list-tab')
 			supplement-comment-list
-		.tab-pane#tab4-content(role='tabpanel', aria-labelledby='tab4-tab')
+		.tab-pane#question-comment-list(role='tabpanel', aria-labelledby='question-comment-list-tab')
 			question-comment-list
-		.tab-pane#tab5-content(role='tabpanel', aria-labelledby='tab5-tab')
+		.tab-pane#answer-comment-list(role='tabpanel', aria-labelledby='answer-comment-list-tab')
 			answer-comment-list
 
 block additional_scripts

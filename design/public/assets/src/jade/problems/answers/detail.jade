@@ -16,15 +16,15 @@ block content
 		h1 解答詳細
 	ul.nav.nav-tabs(role='tablist')
 		li.active(role='presentation')
-			a#tab1-tab(tabindex='1', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
+			a#answer-detail-tab(tabindex='1', role='tab', aria-controls='answer-detail', href='#answer-detail', data-toggle='tab')
 				i.fa.fa-search
 				|  詳細
 		li(role='presentation')
-			a#tab2-tab(tabindex='1', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
+			a#answer-edit-tab(tabindex='1', role='tab', aria-controls='answer-edit', href='#answer-edit', data-toggle='tab')
 				i.fa.fa-edit
 				|  編集
 	.tab-content
-		.tab-pane.in.active#tab1-content(role='tabpanel', aria-labelledby='tab1-tab')
+		.tab-pane.in.active#answer-detail(role='tabpanel', aria-labelledby='answer-detail-tab')
 			answer-detail
-		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
+		.tab-pane#answer-edit(role='tabpanel', aria-labelledby='answer-edit-tab')
 			answer-edit

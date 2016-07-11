@@ -12,15 +12,15 @@ block content
 		h1 チーム詳細
 	ul.nav.nav-tabs(role='tablist')
 		li.active(role='presentation')
-			a#tab1-tab(tabindex='1', role='tab', aria-controls='tab1-content', href='#tab1-content', data-toggle='tab')
+			a#team-detail-tab(tabindex='1', role='tab', aria-controls='team-detail', href='#team-detail', data-toggle='tab')
 				i.fa.fa-search
 				|  詳細
 		li(role='presentation')
-			a#tab2-tab(tabindex='1', role='tab', aria-controls='tab2-content', href='#tab2-content', data-toggle='tab')
+			a#team-edit-tab(tabindex='1', role='tab', aria-controls='team-edit', href='#team-edit', data-toggle='tab')
 				i.fa.fa-edit
 				|  編集
 	.tab-content
-		.tab-pane.in.active#tab1-content(role='tabpanel', aria-labelledby='tab1-tab')
+		.tab-pane.in.active#team-detail(role='tabpanel', aria-labelledby='team-detail-tab')
 			team-detail
-		.tab-pane#tab2-content(role='tabpanel', aria-labelledby='tab2-tab')
+		.tab-pane#team-edit(role='tabpanel', aria-labelledby='team-edit-tab')
 			team-edit
