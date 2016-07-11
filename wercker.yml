@@ -40,4 +40,5 @@ deploy:
         password: $REGISTRY_PASSWORD
         repository: $REGISTRY_REPOSITORY
         ports: "9999"
-        entrypoint: rackup -o 127.0.0.1 -p 9999
+        working-dir: /pipeline/source
+        cmd: ./run.sh
