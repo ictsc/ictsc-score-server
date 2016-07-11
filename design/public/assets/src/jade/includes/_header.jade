@@ -21,11 +21,11 @@ nav.navbar.navbar-default.navbar-fixed-top
 				ul.nav.navbar-nav
 					if isAccounts
 						li.active
-							a(href='/accounts/list.html') アカウント
+							a(href='/members/list.html') メンバー
 								span.sr-only  (このページ)
 					else
 						li
-							a(href='/accounts/list.html') アカウント
+							a(href='/members/list.html') メンバー
 					if isTeams
 						li.active
 							a(href='/teams/list.html') チーム
@@ -61,22 +61,22 @@ nav.navbar.navbar-default.navbar-fixed-top
 							span.badge(data-count='4') 4
 						ul.dropdown-menu.notifications(aria-labelledby='notificationsDropdownMenu')
 							li
-								a(href='/accounts/detail.html') 問題投稿者名
+								a(href='/members/detail.html') 問題投稿者名
 								| さんが問題を公開しました。
 								a.content(href='/problems/detail.html') 問題名
 								small.meta 2016/06/19 12:00
 							li
-								a(href='/accounts/detail.html') 問題修正コメント投稿者名
+								a(href='/members/detail.html') 問題修正コメント投稿者名
 								| さんが補足を投稿しました。
 								a.content(href='/problems/comments/detail.html') 問題修正コメント本文
 								small.meta 2016/06/19 12:00
 							li
-								a(href='/accounts/detail.html') 問題質問コメント投稿者名
+								a(href='/members/detail.html') 問題質問コメント投稿者名
 								| さんが質問を投稿しました。
 								a.content(href='/problems/comments/detail.html') 問題質問コメント本文
 								small.meta 2016/06/19 12:00
 							li
-								a(href='/accounts/detail.html') 解答コメント投稿者名
+								a(href='/members/detail.html') 解答コメント投稿者名
 								| さんが解答を投稿しました。
 								a.content(href='/answers/comments/detail.html') 解答コメント本文
 								small.meta 2016/06/19 12:00

@@ -75,13 +75,13 @@ html
 			script(src='/bower_components/jade/jade.js')
 			script(src='/bower_components/fetch/fetch.js')
 			script.
-				var account = riot.observable();
+				var member = riot.observable();
 
-				account.hoge = function(p) {
+				member.hoge = function(p) {
 					console.log(p);
 				}
 
-				riot.mount("*", {account: account})
+				riot.mount("*", {member: member})
 
 			script.
 				$(function () {

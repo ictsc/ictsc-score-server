@@ -1,0 +1,21 @@
+extends /extends/_layout
+
+block vars
+	- signedIn = true
+	- isAccounts = true
+
+block title
+	+title('メンバー一覧')
+
+block riot_tags
+	+riot_script('member-list')
+	+riot_script('member-create')
+
+block content
+	.page-header
+		h1 メンバー一覧
+	.table-responsive
+		member-list
+	.page-header
+		h2 メンバー作成
+	member-create

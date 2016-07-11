@@ -1,5 +1,5 @@
-account-create
-	form.form-horizontal(action='/accounts/list.html', name='form-account-creation')
+member-create
+	form.form-horizontal(action='/members/list.html', name='form-member-creation')
 		.form-group
 			label.col-sm-2.control-label(for='select-team-name') チーム名
 			.col-sm-10
@@ -19,9 +19,9 @@ account-create
 			.col-sm-10
 				input.form-control#input-username(type='text')
 		.form-group
-			label.col-sm-2.control-label(for='input-account-id') アカウント ID
+			label.col-sm-2.control-label(for='input-member-id') メンバー ID
 			.col-sm-10
-				input.form-control#input-account-id(type='text')
+				input.form-control#input-member-id(type='text')
 				span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
 		.form-group
 			label.col-sm-2.control-label(for='input-password') パスワード

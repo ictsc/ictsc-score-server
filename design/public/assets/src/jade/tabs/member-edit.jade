@@ -1,9 +1,9 @@
-account-edit
+member-edit
 	.panel
 		.panel-body
-			form.form-horizontal(action='/accounts/list.html', name='form-account-editing')
+			form.form-horizontal(action='/members/list.html', name='form-member-editing')
 				.form-group
-					label.col-sm-2.control-label アカウント番号
+					label.col-sm-2.control-label メンバー番号
 					.col-sm-10
 						p.form-control-static 1
 				.form-group
@@ -25,7 +25,7 @@ account-edit
 					.col-sm-10
 						input.form-control#input-username(type='text', value='太箸 耀暉')
 				.form-group
-					label.col-sm-2.control-label(for='input-school') アカウント ID
+					label.col-sm-2.control-label(for='input-school') メンバー ID
 					.col-sm-10
 						input.form-control#input-school(type='text', value='日本工学院八王子専門学校')
 				.text-right
