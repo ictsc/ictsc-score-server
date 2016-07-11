@@ -19,6 +19,9 @@ build:
         code: |
           cd design
           $(npm bin)/gulp build
+          rm -r ../public/tabs
+          if [ -x tabs-jade ]; then rm ../public/tabs-jade; fi
+          ln -s ../design/public/assets/src/jade/tabs ../public/tabs-jade
     - bundle-install
     - script:
         name: migrate database
