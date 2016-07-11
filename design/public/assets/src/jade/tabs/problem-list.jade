@@ -10,43 +10,25 @@ problem-list
 				th 質問コメント数
 				th 解答コメント数
 		tbody
-			tr
+			tr(each='{ problems }')
 				th
-					a(href='/problems/detail.html') 1
+					a(href='/problems/detail.html') { id }
 				td
-					a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
-				td 2016-08-27 12:00
-				td 2016-08-27 15:00
+					a(href='/problems/detail.html') { title }
+				td { dateFormat("%m/%d %H:%i:%s", new Date(opened_at)) }
+				td { dateFormat("%m/%d %H:%i:%s", new Date(closed_at)) }
 				td
 					a(href='/problems/detail.html#tab3-content') 3
 				td
 					a(href='/problems/detail.html#tab4-content') 3
 				td
 					a(href='/problems/detail.html#tab5-content') 3
-			tr
-				th
-					a(href='/problems/detail.html') 2
-				td
-					a(href='/problems/detail.html') Webサイトの調子が悪い
-				td 2016-08-27 12:00
-				td 2016-08-27 15:00
-				td
-					a(href='/problems/detail.html#tab3-content') 3
-				td
-					a(href='/problems/detail.html#tab4-content') 3
-				td
-					a(href='/problems/detail.html#tab5-content') 3
-			tr
-				th
-					a(href='/problems/detail.html') 3
-				td
-					a(href='/problems/detail.html') VPN接続設定のミス
-				td 2016-08-27 12:00
-				td 2016-08-27 15:00
-				td
-					a(href='/problems/detail.html#tab3-content') 3
-				td
-					a(href='/problems/detail.html#tab4-content') 3
-				td
-					a(href='/problems/detail.html#tab5-content') 3
-	script
+	script.
+		fetch("/api/problems", {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.problems = j;
+				this.update();
+			});
+		});
