@@ -44,4 +44,4 @@ deploy:
         repository: $REGISTRY_REPOSITORY
         ports: "9999"
         working-dir: /pipeline/source
-        cmd: ./run.sh
+        cmd: ./wercker-run.sh

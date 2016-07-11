@@ -1,4 +1,4 @@
 #!/bin/sh
 
 bundle install --path /pipeline/cache/bundle-install
-rackup $@
+bundle exec rackup $@
