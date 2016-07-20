@@ -77,11 +77,20 @@ html
 			script.
 				var member = riot.observable();
 
+				// test
 				member.hoge = function(p) {
 					console.log(p);
 				}
 
-				riot.mount("*", {member: member})
+				let opts = { member: member }
+
+				// try to get resouce id of current page: `/:resouce/:id`
+				const path_match = location.pathname.match(/^\/\w+\/(\d+)/)
+				if (path_match) {
+					opts.id = path_match[1]
+				}
+
+				riot.mount("*", opts)
 
 			script.
 				$(function () {
