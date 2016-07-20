@@ -79,8 +79,23 @@ class App < Sinatra::Base
     send_file settings.public_dir + "/index.html"
   end
 
-  get %r{/\w+(/\w+)?(/\w+)?} do
-    send_file settings.public_dir + request.path + ".html"
+  # [1] resource     : problems, answers, ...
+  # [3] sub-resource : supplements, questions, ...
+  #       resource   id   sub-resource
+  #         [1]      [2*]      [3*]     (*: optional)
+  get %r{^/(\w+)(?:/(\d+)(?:/(\w+))?)?$} do |res, id, subres|
+    path = "#{settings.public_dir}/#{res}/"
+
+    path += if id.nil?
+      "list.html"
+    elsif subres.nil?
+      "detail.html"
+    else
+      "#{subres}/detail.html"
+    end
+
+    # puts res:res, id:id, subres: subres, path: path
+    send_file path
   end
 
   # get "/test/:message" do
