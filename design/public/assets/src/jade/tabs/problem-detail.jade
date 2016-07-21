@@ -18,7 +18,7 @@ problem-detail
 				.form-group
 					label.col-sm-2.control-label 投稿者
 					.col-sm-10
-						a.form-control-static.show(href='/members/detail.html') 朝霧 涼夏
+						a.form-control-static.show(href='{ "/members/" + creator_id }') { this.creator_name }
 				.form-group
 					label.col-sm-2.control-label 公開日時
 					.col-sm-10
@@ -42,6 +42,15 @@ problem-detail
 			res.json().then((j) => {
 				this.problem = j;
 				this.update();
+
+				fetch(`/api/members/${this.problem.creator_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.creator_name = j.name
+						this.update();
+					})
+				})
 			});
 		});
 
