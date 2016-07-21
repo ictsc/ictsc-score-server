@@ -20,7 +20,7 @@ class IssueRoutes < Sinatra::Base
   before "/api/issues/:id" do
     @issue = Issue.accessible_resources(user_and_method) \
                   .find_by(id: params[:id])
-    halt 404 if not @issues
+    halt 404 if not @issue
   end
 
   get "/api/issues/:id" do
