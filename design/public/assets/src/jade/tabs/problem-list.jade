@@ -14,9 +14,9 @@ problem-list
 				th
 					a(href='{ "/problems/" + id }') { id }
 				td
-				td { dateFormat("%m/%d %H:%i:%s", new Date(opened_at)) }
-				td { dateFormat("%m/%d %H:%i:%s", new Date(closed_at)) }
 					a(href='{ "/problems/" + id }') { title }
+				td { date2str(opened_at) }
+				td { date2str(closed_at) }
 				td
 					a(href='{ "/problems/" + id + "#supplement-comment-list" }') 3
 				td
@@ -30,5 +30,6 @@ problem-list
 			res.json().then((j) => {
 				this.problems = j;
 				this.update();
+				this.activate_datatable();
 			});
 		});
