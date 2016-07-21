@@ -60,16 +60,6 @@ html
 				})
 
 			script(src='/bower_components/datatables.net/js/jquery.dataTables.min.js')
-			script.
-				$(function () {
-					window.setTimeout(function () {
-						$('table').DataTable({
-							"paging": false,
-							"searching": false,
-							"info": false
-						})
-					}, 500)
-				})
 
 			script(src='/bower_components/riot/riot+compiler.js')
 			script(src='/bower_components/jade/jade.js')
@@ -91,7 +81,14 @@ html
 				}
 
 				const helpers = {
-					date2str: x => dateFormat("%m/%d %H:%i:%s", new Date(x))
+					date2str: x => dateFormat("%m/%d %H:%i:%s", new Date(x)),
+					activate_datatable: () => {
+						$('table').DataTable({
+							"paging": false,
+							"searching": false,
+							"info": false
+						})
+					}
 				}
 
 				riot.mixin(helpers)
