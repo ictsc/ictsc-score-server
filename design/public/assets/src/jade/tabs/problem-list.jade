@@ -12,17 +12,17 @@ problem-list
 		tbody
 			tr(each='{ problems }')
 				th
-					a(href='/problems/detail.html') { id }
+					a(href='{ "/problems/" + id }') { id }
 				td
-					a(href='/problems/detail.html') { title }
 				td { dateFormat("%m/%d %H:%i:%s", new Date(opened_at)) }
 				td { dateFormat("%m/%d %H:%i:%s", new Date(closed_at)) }
+					a(href='{ "/problems/" + id }') { title }
 				td
-					a(href='/problems/detail.html#supplement-comment-list') 3
+					a(href='{ "/problems/" + id + "#supplement-comment-list" }') 3
 				td
-					a(href='/problems/detail.html#question-comment-list') 3
+					a(href='{ "/problems/" + id + "#question-comment-list" }') 3
 				td
-					a(href='/problems/detail.html#answer-comment-list') 3
+					a(href='{ "/problems/" + id + "#answer-comment-list" }') 3
 	script.
 		fetch("/api/problems", {
 			credentials: "same-origin"
