@@ -90,6 +90,11 @@ html
 					opts.id = path_match[1]
 				}
 
+				const helpers = {
+					date2str: x => dateFormat("%m/%d %H:%i:%s", new Date(x))
+				}
+
+				riot.mixin(helpers)
 				riot.mount("*", opts)
 
 			script.
