@@ -121,6 +121,7 @@ class MemberRoutes < Sinatra::Base
       headers "Location" => to("/api/members/#{@member.id}")
       json @member, except: [:hashed_password]
     else
+      status 400
       json @member.errors
     end
   end
@@ -146,6 +147,7 @@ class MemberRoutes < Sinatra::Base
     if @member.save
       json @member, except: [:hashed_password]
     else
+      status 400
       json @member.errors
     end
   end

@@ -19,7 +19,7 @@ class AnswerRoutes < Sinatra::Base
   before "/api/answers/:id" do
     @answer = Answer.accessible_resources(user_and_method) \
                     .find_by(id: params[:id])
-    halt 404 if not @answers
+    halt 404 if not @answer
   end
 
   get "/api/answers/:id" do
