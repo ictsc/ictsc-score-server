@@ -18,7 +18,7 @@ supplement-comment-list
 		this.commented_members = {}
 
 		this.on("mount", () => {
-			this.mde = this.activate_mde(this, "#textarea-question-body")
+			this.mde = this.activate_mde(this, "#textarea-supplement-body")
 		});
 
 		fetch(`/api/problems/${this.opts.id}/comments`, {
