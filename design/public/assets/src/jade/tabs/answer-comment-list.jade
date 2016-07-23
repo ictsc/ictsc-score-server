@@ -34,7 +34,5 @@ answer-comment-list
 						button.btn.btn-primary(type='submit') 投稿
 	script.
 		this.on("mount", () => {
-			this.mde = new SimpleMDE({
-				element: $('#textarea-answer-body')[0]
-			})
+			this.mde = this.activate_mde(this, "#textarea-answer-body");
 		});

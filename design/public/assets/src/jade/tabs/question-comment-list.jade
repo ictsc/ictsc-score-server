@@ -42,7 +42,5 @@ question-comment-list
 			$("[name='question-state']").bootstrapSwitch();
 			console.log($("[name='question-state']").bootstrapSwitch('state'));
 
-			this.mde = new SimpleMDE({
-				element: $('#textarea-question-body')[0]
-			})
+			this.mde = this.activate_mde(this, "#textarea-question-body");
 		});
