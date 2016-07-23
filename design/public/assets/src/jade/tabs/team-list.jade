@@ -8,44 +8,21 @@ team-list
 				th メンバー数
 				th 総スコア
 		tbody
-			tr
-				th
-					a(href='/teams/detail.html') 1
+			tr(each='{ teams }')
+				th { id }
 				td
-					a(href='/teams/detail.html') WCDI
-				td 日本工学院八王子専門学校
+					a(href='{ "/teams/" + id }') { id }
+				td { organization }
+				td XXX
 				td
-					a(href='/teams/detail.html') 5
-				td
-					a(href='/answers/scores/detail.html') 100
-			tr
-				th
-					a(href='/teams/detail.html') 2
-				td
-					a(href='/teams/detail.html') ISL
-				td 明治大学
-				td
-					a(href='/teams/detail.html') 3
-				td
-					a(href='/answers/scores/detail.html') 200
-			tr
-				th
-					a(href='/teams/detail.html') 3
-				td
-					a(href='/teams/detail.html') にせつむり(ゆかいな仲間たち)
-				td 大阪情報コンピュータ専門学校
-				td
-					a(href='/teams/detail.html') 5
-				td
-					a(href='/answers/scores/detail.html') 300
-			tr
-				th
-					a(href='/teams/detail.html') 4
-				td
-					a(href='/teams/detail.html') 専門学校穴吹コンピュータカレッジ
-				td 専門学校穴吹コンピュータカレッジチーム
-				td
-					a(href='/teams/detail.html') 5
-				td
-					a(href='/answers/scores/detail.html') 400
-	script
+					a(href='/answers/scores/detail.html') XXX
+	script.
+		fetch("/api/teams", {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.teams = j;
+				this.update();
+				this.activate_datatable();
+			});
+		});

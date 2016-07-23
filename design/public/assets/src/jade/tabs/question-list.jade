@@ -7,31 +7,22 @@ question-list
 				th 問題番号
 				th 問題名
 		tbody
-			tr
+			tr(each='{ issues }')
 				th
-					a(href='/problems/detail.html#question-comment-list') 1
+					a(href='{ "/problems/" + problem_id + "#question-comment-list" }') { id }
 				td.hidden
-					a(href='/teams/detail.html') WCDI
+					a(href='{ "/teams/" + team_id }') WCDI
+				td { problem_id }
 				td
-					a(href='/problems/detail.html') 1
-				td
-					a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
-			tr
-				th
-					a(href='/problems/detail.html#question-comment-list') 2
-				td.hidden
-					a(href='/teams/detail.html') WCDI
-				td
-					a(href='/problems/detail.html') 2
-				td
-					a(href='/problems/detail.html') Webサイトの調子が悪い
-			tr
-				th
-					a(href='/problems/detail.html#question-comment-list') 3
-				td.hidden
-					a(href='/teams/detail.html') ISL
-				td
-					a(href='/problems/detail.html') 1
-				td
-					a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
-	script
+					a(href='{ "/problems/" + problem_id }') 問題名がここに入ります
+	script.
+		fetch("/api/issues", {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.issues = j;
+				this.update();
+				this.activate_datatable();
+			});
+		});
+

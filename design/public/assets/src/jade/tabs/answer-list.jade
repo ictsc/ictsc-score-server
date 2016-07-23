@@ -8,37 +8,23 @@ answer-list
 				th 問題名
 				th スコア
 		tbody
-			tr
+			tr(each='{ answers }')
 				th
-					a(href='/problems/detail.html#answer-comment-list') 1
+					a(href='{ "/problems/" + problem_id + "#answer-comment-list" }') { id }
 				td.hidden
-					a(href='/teams/detail.html') WCDI
+					a(href='{ "/teams/" + team_id }') WCDI
+				td { problem_id }
 				td
-					a(href='/problems/detail.html') 1
+					a(href='{ "/problems/" + problem_id }') 問題名がここに入ります
 				td
-					a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
-				td
-					a(href='/answers/scores/detail.html') 100
-			tr
-				th
-					a(href='/problems/detail.html#answer-comment-list') 2
-				td.hidden
-					a(href='/teams/detail.html') WCDI
-				td
-					a(href='/problems/detail.html') 2
-				td
-					a(href='/problems/detail.html') Webサイトの調子が悪い
-				td
-					a(href='/answers/scores/detail.html') 200
-			tr
-				th
-					a(href='/problems/detail.html#answer-comment-list') 3
-				td.hidden
-					a(href='/teams/detail.html') ISL
-				td
-					a(href='/problems/detail.html') 1
-				td
-					a(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
-				td
-					a(href='/answers/scores/detail.html') 300
-	script
+					a(href='{ score_id ? ("/scores/" + score_id) : "#" }') -
+	script.
+		fetch("/api/answers", {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.answers = j;
+				this.update();
+				this.activate_datatable();
+			});
+		});
