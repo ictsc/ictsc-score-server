@@ -23,7 +23,7 @@ answer-comment-list
 				ul(each='{ comments }')
 					li
 							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
-							a.detail-link.help-block(href='{ "/problems/" + parent.opts.id + "/answers/" + id }') 詳細
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/answers/" + id }') 詳細
 							p.comment-body { text }
 							span.help-block.text-right { date2str(created_at) }
 				form(onsubmit='{ do_comment }', name='form-supplement-creation')
@@ -43,7 +43,7 @@ answer-comment-list
 			this.root.querySelector("p.well.help-block").classList.remove("hidden");
 		}
 
-		fetch(`/api/problems/${this.opts.id}/answers`, {
+		fetch(`/api/problems/${this.opts.resource_id}/answers`, {
 			credentials: "same-origin"
 		}).then((res) => {
 			res.json().then((j) => {
@@ -77,4 +77,3 @@ answer-comment-list
 				})
 			});
 		});
-

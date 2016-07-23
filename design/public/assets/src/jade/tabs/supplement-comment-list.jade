@@ -5,7 +5,7 @@ supplement-comment-list
 				ul(each='{ comments }')
 					li
 							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
-							a.detail-link.help-block(href='{ "/problems/" + parent.opts.id + "/supplements/" + id }') 詳細
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/supplements/" + id }') 詳細
 							p.comment-body { text }
 							span.help-block.text-right { date2str(created_at) }
 				form(action='/problems/detail.html#supplement-comment-list', name='form-supplement-creation')
@@ -21,7 +21,7 @@ supplement-comment-list
 			this.mde = this.activate_mde(this, "#textarea-supplement-body")
 		});
 
-		fetch(`/api/problems/${this.opts.id}/comments`, {
+		fetch(`/api/problems/${this.opts.resource_id}/comments`, {
 			credentials: "same-origin"
 		}).then((res) => {
 			res.json().then((j) => {

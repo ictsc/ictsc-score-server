@@ -36,7 +36,7 @@ problem-detail
 					.col-sm-10
 						p.form-control-static { date2str(problem.updated_at) }
 	script.
-		fetch(`/api/problems/${this.opts.id}`, {
+		fetch(`/api/problems/${this.opts.resource_id}`, {
 			credentials: "same-origin"
 		}).then((res) => {
 			res.json().then((j) => {

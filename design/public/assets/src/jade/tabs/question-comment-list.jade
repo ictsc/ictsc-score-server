@@ -28,7 +28,7 @@ question-comment-list
 				ul(each='{ comments }')
 					li
 							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
-							a.detail-link.help-block(href='{ "/problems/" + parent.opts.id + "/questions/" + id }') 詳細
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/questions/" + id }') 詳細
 							p.comment-body { text }
 							span.help-block.text-right { date2str(created_at) }
 				form(action='/problems/detail.html#question-comment-list', name='form-supplement-creation')
@@ -47,7 +47,7 @@ question-comment-list
 			this.mde = this.activate_mde(this, "#textarea-question-body");
 		});
 
-		fetch(`/api/problems/${this.opts.id}/issues`, {
+		fetch(`/api/problems/${this.opts.resource_id}/issues`, {
 			credentials: "same-origin"
 		}).then((res) => {
 			res.json().then((j) => {

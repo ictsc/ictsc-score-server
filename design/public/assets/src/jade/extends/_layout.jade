@@ -75,9 +75,15 @@ html
 				let opts = { member: member }
 
 				// try to get resouce id of current page: `/:resouce/:id`
-				const path_match = location.pathname.match(/^\/\w+\/(\d+)/)
+				// matches:                      [1]    [2]       [3]    [4]
+				const path_matcher = RegExp("^/(\\w+)/(\\d+)(?:/(\\w+)/(\\d+))?$")
+				const path_match = location.pathname.match(path_matcher)
 				if (path_match) {
-					opts.id = path_match[1]
+					[_,
+					 opts.resource,
+					 opts.resource_id,
+					 opts.sub_resource,
+					 opts.sub_resource_id] = path_match
 				}
 
 				const helpers = {
