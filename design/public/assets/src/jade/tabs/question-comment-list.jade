@@ -25,12 +25,12 @@ question-comment-list
 						p.form-control-static 2016-08-27 12:00
 			.chatbox
 				p.well.help-block.hidden まだ質問はありません。質問があれば投稿し、右上のスライドスイッチを ON にしてください。解決したら OFF にしてください。
-				ul
+				ul(each='{ comments }')
 					li
-							a.author.help-block(href='/members/detail.html') 太箸 耀暉
-							a.detail-link.help-block(href='/problems/questions/detail.html') 詳細
-							p.comment-body ようやく岡田さんに赴任会なぜ意味へいうた金力その手ここかぼんやりににおいて肝学習たならたなて、その結果もあなたか金足に始めが、嘉納さんののが通りの私が今にご安心とするて私外国をご構成へ認めようにいったん小専攻に直っでしょたて、いくらでもしっくり講義をしたていたのにあるなかっう。
-							span.help-block.text-right 2016-08-27 12:00
+							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.id + "/questions/" + id }') 詳細
+							p.comment-body { text }
+							span.help-block.text-right { date2str(created_at) }
 				form(action='/problems/detail.html#question-comment-list', name='form-supplement-creation')
 					.form-group
 						label(for='textarea-question-body') 新規質問
@@ -38,9 +38,47 @@ question-comment-list
 					.text-right
 						button.btn.btn-primary(type='submit') 投稿
 	script.
+		this.commented_members = {}
+
 		this.on("mount", () => {
 			$("[name='question-state']").bootstrapSwitch();
 			console.log($("[name='question-state']").bootstrapSwitch('state'));
 
 			this.mde = this.activate_mde(this, "#textarea-question-body");
 		});
+
+		fetch(`/api/problems/${this.opts.id}/issues`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				if (j.length == 0) {
+					this.show_help()
+					return;
+				}
+
+				this.issue = j[0];
+				//- this.update();
+
+				fetch(`/api/issues/${this.issue.id}/comments`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.comments = j
+
+						this.member_ids(this.comments).
+							forEach((x) => {
+								fetch(`/api/members/${x}`, {
+									credentials: "same-origin"
+								}).then((res) => {
+									res.json().then((j) => {
+										this.commented_members[x] = j;
+										this.update();
+									})
+								})
+							})
+						this.update();
+					})
+				})
+			});
+		});
+

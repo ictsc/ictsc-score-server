@@ -20,19 +20,61 @@ answer-comment-list
 						p.form-control-static 2016-08-27 12:00
 			.chatbox
 				p.well.help-block.hidden まだ解答はありません。解答はひとつの問題にいくつでも投稿できます。わかったことはこまめに投稿しましょう。
-				ul
+				ul(each='{ comments }')
 					li
-							a.author.help-block(href='/members/detail.html') 倉上 和也
-							a.detail-link.help-block(href='/problems/answers/detail.html') 詳細
-							p.comment-body またしかも大先生を落ちのさえそう無事と読みでしょけれども、その繰り返しよりはするたてとして先生をしからいでで。ほんの中心持のためとんだ人間も私中のもっですかと大森さんを挙げただ、学校の晩たというご専攻たでなけれて、孔雀の時へ実に今日だけの社会が時間食って行くて、あいにくの元来にしてそのためがやはりもったなと立てるまいのなが、ないだだろからこうお自分しでものたでたら。
-							span.help-block.text-right 2016-08-27 12:00
-				form(action='/problems/detail.html#question-comment-list', name='form-supplement-creation')
+							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.id + "/answers/" + id }') 詳細
+							p.comment-body { text }
+							span.help-block.text-right { date2str(created_at) }
+				form(onsubmit='{ do_comment }', name='form-supplement-creation')
 					.form-group
 						label(for='textarea-answer-body') 新規解答
 						textarea.form-control#textarea-answer-body(rows='10')
 					.text-right
 						button.btn.btn-primary(type='submit') 投稿
 	script.
+		this.commented_members = {}
+
 		this.on("mount", () => {
 			this.mde = this.activate_mde(this, "#textarea-answer-body");
 		});
+
+		show_help() {
+			this.root.querySelector("p.well.help-block").classList.remove("hidden");
+		}
+
+		fetch(`/api/problems/${this.opts.id}/answers`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				if (j.length == 0) {
+					this.show_help()
+					return;
+				}
+
+				this.answer = j[0];
+				//- this.update();
+
+				fetch(`/api/answers/${this.answer.id}/comments`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.comments = j
+
+						this.member_ids(this.comments).
+							forEach((x) => {
+								fetch(`/api/members/${x}`, {
+									credentials: "same-origin"
+								}).then((res) => {
+									res.json().then((j) => {
+										this.commented_members[x] = j;
+										this.update();
+									})
+								})
+							})
+						this.update();
+					})
+				})
+			});
+		});
+

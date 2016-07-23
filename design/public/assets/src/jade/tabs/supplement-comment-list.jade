@@ -2,12 +2,12 @@ supplement-comment-list
 	.panel.panel-default
 		.panel-body
 			.chatbox
-				ul
+				ul(each='{ comments }')
 					li
-							a.author.help-block(href='/members/detail.html') 朝霧 涼夏
-							a.detail-link.help-block(href='/problems/supplements/detail.html') 詳細
-							p.comment-body 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
-							span.help-block.text-right 2016-08-27 12:00
+							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.id + "/supplements/" + id }') 詳細
+							p.comment-body { text }
+							span.help-block.text-right { date2str(created_at) }
 				form(action='/problems/detail.html#supplement-comment-list', name='form-supplement-creation')
 					.form-group
 						label(for='textarea-supplement-body') 新規補足
@@ -15,6 +15,29 @@ supplement-comment-list
 					.text-right
 						button.btn.btn-primary(type='submit') 投稿
 	script.
+		this.commented_members = {}
+
 		this.on("mount", () => {
 			this.mde = this.activate_mde(this, "#textarea-question-body")
 		});
+
+		fetch(`/api/problems/${this.opts.id}/comments`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.comments = j
+
+				this.member_ids(this.comments).
+					forEach((x) => {
+						fetch(`/api/members/${x}`, {
+							credentials: "same-origin"
+						}).then((res) => {
+							res.json().then((j) => {
+								this.commented_members[x] = j;
+								this.update();
+							})
+						})
+					})
+				this.update();
+			})
+		})
