@@ -100,10 +100,13 @@ html
 							element: self.root.querySelector(selector)
 						})
 					},
-					member_ids: (objs) => {
-						// collect unique `obj.member_id` in objs
+					ids: (objs, key) => {
+						if (key === undefined) {
+							key = "id"
+						}
+						// collect unique `obj[key]` in objs
 						return objs.
-										reduce((ary, x) => { ary.push(x.member_id);return ary; }, []).
+										reduce((ary, x) => { ary.push(x[key]); return ary; }, []).
 										filter((x, i, self) => { return self.indexOf(x) === i })
 					}
 				}

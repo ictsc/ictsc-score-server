@@ -61,7 +61,7 @@ answer-comment-list
 					res.json().then((j) => {
 						this.comments = j
 
-						this.member_ids(this.comments).
+						this.ids(this.comments, "member_id").
 							forEach((x) => {
 								fetch(`/api/members/${x}`, {
 									credentials: "same-origin"
