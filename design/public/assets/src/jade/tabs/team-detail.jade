@@ -5,19 +5,19 @@ team-detail
 				.form-group
 					label.col-sm-2.control-label チーム番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { team.id }
 				.form-group
 					label.col-sm-2.control-label チーム名
 					.col-sm-10
-						p.form-control-static WCDI
+						p.form-control-static { team.name }
 				.form-group
 					label.col-sm-2.control-label 所属
 					.col-sm-10
-						p.form-control-static 日本工学院八王子専門学校
+						p.form-control-static { team.organization }
 				.form-group
 					label.col-sm-2.control-label 総スコア
 					.col-sm-10
-						p.form-control-static 100
+						p.form-control-static XXX
 		.container-fluid
 			.panel.panel-default
 				.panel-heading メンバー一覧
@@ -28,19 +28,27 @@ team-detail
 								th ユーザー名
 								th メンバー ID
 						tbody
-							tr
-								th 太箸 耀暉
-								td futobashi
-							tr
-								th 倉上 和也
-								td kurakami
-							tr
-								th 趙 駿一
-								td cho
-							tr
-								th 金澤 直輝
-								td kanazawa
-							tr
-								th 大塚 悠矢
-								td otsuka
-	script
+							tr(each='{ team_members }')
+								th { name }
+								td { login }
+	script.
+		this.members = {}
+
+		fetch(`/api/teams/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.team = j;
+				this.update();
+
+				fetch(`/api/members`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.members = j
+						this.team_members = j.filter((x) => { return x.team_id == this.team.id })
+						this.update();
+					})
+				})
+			});
+		});

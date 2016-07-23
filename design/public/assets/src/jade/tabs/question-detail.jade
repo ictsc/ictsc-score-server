@@ -5,29 +5,65 @@ question-detail
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { comment.id }
 				.form-group
 					label.col-sm-2.control-label 投稿者
 					.col-sm-10
-						a.show.form-control-static(href='/members/detail.html') 太箸 耀暉
+						a.form-control-static.show(href='{ "/members/" + comment.member_id }') { this.member.name }
 				.form-group
 					label.col-sm-2.control-label 本文
 					.col-sm-10
-						p.form-control-static ようやく岡田さんに赴任会なぜ意味へいうた金力その手ここかぼんやりににおいて肝学習たならたなて、その結果もあなたか金足に始めが、嘉納さんののが通りの私が今にご安心とするて私外国をご構成へ認めようにいったん小専攻に直っでしょたて、いくらでもしっくり講義をしたていたのにあるなかっう。
+						p.form-control-static { comment.text }
 				.form-group
 					label.col-sm-2.control-label 問題番号
-					.col-sm-10
-						a.show.form-control-static(href='/problems/detail.html') 1
+					.col-sm-10 { issue.problem_id }
 				.form-group
 					label.col-sm-2.control-label 問題名
 					.col-sm-10
-						a.show.form-control-static(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
+						a.show.form-control-static(href='{ "/problems/" + issue.problem_id }') { problem.title }
 				.form-group
 					label.col-sm-2.control-label 作成日時
 					.col-sm-10
-						p.form-control-static 2016-08-27 12:00
+						p.form-control-static { date2str(comment.created_at) }
 				.form-group
 					label.col-sm-2.control-label 更新日時
 					.col-sm-10
-						p.form-control-static 2016-08-27 12:00
-	script
+						p.form-control-static { date2str(comment.updated_at) }
+	script.
+		this.members = {}
+
+		fetch(`/api/issues/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.comment = j;
+				this.update();
+
+				fetch(`/api/members/${this.comment.member_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.member = j
+						this.update();
+					})
+				})
+			});
+		});
+
+		fetch(`/api/issues/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.issue = j;
+				this.update();
+
+				fetch(`/api/problems/${this.issue.problem_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.problem = j
+						this.update();
+					})
+				})
+			});
+		});

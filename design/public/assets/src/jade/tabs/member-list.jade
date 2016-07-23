@@ -2,66 +2,49 @@ member-list
 	table.table.table-striped.table-hover.table-condensed
 		thead
 			tr
-				th 番号
+				th メンバー ID
 				th チーム名
 				th 所属
-				th ユーザー名
-				th メンバー ID
+				th 名前
 				th ロール
 		tbody
-			tr
-				th
-					a(href='/members/detail.html') 1
+			tr(each='{ members }')
+				th { id }
 				td
-					a(href='/teams/detail.html') WCDI
-				td 日本工学院八王子専門学校
+					a(href='{ "/teams/" + team_id }') { parent.team(team_id).name }
+				td { parent.team(team_id).organization }
 				td
-					a(href='/members/detail.html') 太箸 耀暉
-				td
-					a(href='/members/detail.html') futobashi
-				td 参加者
-			tr
-				th
-					a(href='/members/detail.html') 2
-				td
-					a(href='/teams/detail.html') WCDI
-				td 日本工学院八王子専門学校
-				td
-					a(href='/members/detail.html') 倉上 和也
-				td
-					a(href='/members/detail.html') kurakami
-				td 参加者
-			tr
-				th
-					a(href='/members/detail.html') 3
-				td
-					a(href='/teams/detail.html') WCDI
-				td 日本工学院八王子専門学校
-				td
-					a(href='/members/detail.html')  趙 駿一
-				td
-					a(href='/members/detail.html') cho
-				td 参加者
-			tr
-				th
-					a(href='/members/detail.html') 4
-				td
-					a(href='/teams/detail.html') WCDI
-				td 日本工学院八王子専門学校
-				td
-					a(href='/members/detail.html') 金澤 直輝
-				td
-					a(href='/members/detail.html') kanazawa
-				td 参加者
-			tr
-				th
-					a(href='/members/detail.html') 5
-				td
-					a(href='/teams/detail.html') WCDI
-				td 日本工学院八王子専門学校
-				td
-					a(href='/members/detail.html') 大塚 悠矢
-				td
-					a(href='/members/detail.html') otsuka
-				td 参加者
-	script
+					a(href='{ "/members/" + id }') { name }
+				td { parent.role_name[role_id] }
+	script.
+		this.role_name =  {
+			2: "Admin",
+			3: "Writer",
+			4: "Participant",
+			5: "Viewer"
+		}
+
+		team(id) {
+			return this.teams.find((x) => { return x.id == id; })
+		}
+
+		fetch(`/api/members`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.members = j;
+				this.update();
+				this.activate_datatable();
+			});
+		});
+
+		fetch(`/api/teams`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.teams = j;
+				this.update();
+			});
+		});
+
+

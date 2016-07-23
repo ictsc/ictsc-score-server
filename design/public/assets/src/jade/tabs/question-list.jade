@@ -11,11 +11,14 @@ question-list
 				th
 					a(href='{ "/problems/" + problem_id + "#question-comment-list" }') { id }
 				td.hidden
-					a(href='{ "/teams/" + team_id }') WCDI
+					a(href='{ "/teams/" + team_id }') { parent.teams[team_id].name }
 				td { problem_id }
 				td
-					a(href='{ "/problems/" + problem_id }') 問題名がここに入ります
+					a(href='{ "/problems/" + problem_id }') { parent.problems[problem_id].title }
 	script.
+		this.problems = {}
+		this.teams = {}
+
 		fetch("/api/issues", {
 			credentials: "same-origin"
 		}).then((res) => {
@@ -23,6 +26,30 @@ question-list
 				this.issues = j;
 				this.update();
 				this.activate_datatable();
+
+				this.ids(this.issues, "problem_id").
+					forEach((x) => {
+						fetch(`/api/problems/${x}`, {
+							credentials: "same-origin"
+						}).then((res) => {
+							res.json().then((j) => {
+								this.problems[x] = j;
+								this.update();
+							})
+						})
+					})
+
+				this.ids(this.issues, "team_id").
+					forEach((x) => {
+						fetch(`/api/teams/${x}`, {
+							credentials: "same-origin"
+						}).then((res) => {
+							res.json().then((j) => {
+								this.teams[x] = j;
+								this.update();
+							})
+						})
+					})
 			});
 		});
 

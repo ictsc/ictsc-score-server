@@ -5,26 +5,52 @@ member-detail
 				.form-group
 					label.col-sm-2.control-label メンバー番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { member.id }
 				.form-group
 					label.col-sm-2.control-label チーム名
 					.col-sm-10
-						p.form-control-static
-							a(href='/teams/detail.html') WCDI
-				.form-group
+						p.form-control-static(if='{ team }')
+							a(href='{ "/teams/" + team.id }') { team.name }
+						p.form-control-static(if='{ !team }') なし
+				.form-group(if='{ team }')
 					label.col-sm-2.control-label 所属
 					.col-sm-10
-						p.form-control-static 日本工学院八王子専門学校
+						p.form-control-static { team.organization }
 				.form-group
 					label.col-sm-2.control-label ユーザー名
 					.col-sm-10
-						p.form-control-static 太箸 耀暉
-				.form-group
-					label.col-sm-2.control-label メンバー ID
-					.col-sm-10
-						p.form-control-static futobashi
+						p.form-control-static { member.name }
 				.form-group
 					label.col-sm-2.control-label ロール
 					.col-sm-10
-						p.form-control-static 参加者
-	script
+						p.form-control-static { role_name[member.role_id] }
+	script.
+		this.role_name =  {
+			2: "Admin",
+			3: "Writer",
+			4: "Participant",
+			5: "Viewer"
+		}
+
+		fetch(`/api/members/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.member = j;
+				this.update();
+
+				if (this.member.team_id === null) {
+					return;
+				}
+
+				fetch(`/api/teams/${this.member.team_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.team = j
+						this.update();
+					})
+				})
+			});
+		});
+
