@@ -83,7 +83,7 @@ class App < Sinatra::Base
   # [3] sub-resource : supplements, questions, ...
   #       resource   id   sub-resource
   #         [1]      [2*]      [3*]     (*: optional)
-  get %r{^/(\w+)(?:/(\d+)(?:/(\w+))?)?$} do |res, id, subres|
+  get %r{^/(\w+)(?:/(\d+)(?:/(\w+)/\d+)?)?$} do |res, id, subres|
     path = "#{settings.public_dir}/#{res}/"
 
     path += if id.nil?
