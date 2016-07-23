@@ -21,40 +21,40 @@ nav.navbar.navbar-default.navbar-fixed-top
 				ul.nav.navbar-nav
 					if isAccounts
 						li.active
-							a(href='/members/list.html') メンバー
+							a(href='/members') メンバー
 								span.sr-only  (このページ)
 					else
 						li
-							a(href='/members/list.html') メンバー
+							a(href='/members') メンバー
 					if isTeams
 						li.active
-							a(href='/teams/list.html') チーム
+							a(href='/teams') チーム
 								span.sr-only  (このページ)
 					else
 						li
-							a(href='/teams/list.html') チーム
+							a(href='/teams') チーム
 				ul.nav.navbar-nav.navbar-right
 					if isProblems
 						li.active
-							a(href='/problems/list.html') 問題
+							a(href='/problems') 問題
 								span.sr-only  (このページ)
 					else
 						li
-							a(href='/problems/list.html') 問題
+							a(href='/problems') 問題
 					if isQuestions
 						li.active
-							a(href='/questions/list.html') 質問
+							a(href='/questions') 質問
 								span.sr-only  (このページ)
 					else
 						li
-							a(href='/questions/list.html') 質問
+							a(href='/questions') 質問
 					if isAnswers
 						li.active
-							a(href='/answers/list.html') 解答
+							a(href='/answers') 解答
 								span.sr-only  (このページ)
 					else
 						li
-							a(href='/answers/list.html') 解答
+							a(href='/answers') 解答
 					li.dropdown
 						button.dropdown-toggle.btn-block.text-left.navbar-button#notificationsDropdownMenu(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
 							i.fa.fa-bell.fa-fw
