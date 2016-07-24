@@ -15,13 +15,13 @@ problem-edit
 					.col-sm-10
 						textarea.form-control#textarea-problem-body(rows='10')
 				.form-group
-					label.col-sm-2.control-label(for='input-disclosure-datetime') 公開日時
+					label.col-sm-2.control-label(for='input-opened-datetime') 公開日時
 					.col-sm-10
-						input.form-control#input-disclosure-datetime(type='datetime', value='{ new Date(problem.opened_at).toISOString() }')
+						input.form-control#input-opened-datetime(type='datetime', value='{ new Date(problem.opened_at).toISOString() }')
 				.form-group
-					label.col-sm-2.control-label(for='input-deadlone-datetime') 締切日時
+					label.col-sm-2.control-label(for='input-closed-datetime') 締切日時
 					.col-sm-10
-						input.form-control#input-deadlone-datetime(type='datetime', value='{ new Date(problem.closed_at).toISOString() }')
+						input.form-control#input-closed-datetime(type='datetime', value='{ new Date(problem.closed_at).toISOString() }')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.

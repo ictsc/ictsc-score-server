@@ -12,13 +12,13 @@ member-create
 				p.form-control-static { (selected_team && selected_team.organization) || "チーム名が未選択" }
 					span.help-block(hide='{ selected_team }') チーム名を選択すると自動表示されます
 		.form-group
-			label.col-sm-2.control-label(for='input-username') ユーザー名
+			label.col-sm-2.control-label(for='input-name') ユーザー名
 			.col-sm-10
-				input.form-control#input-username(type='text')
+				input.form-control#input-name(type='text')
 		.form-group
-			label.col-sm-2.control-label(for='input-member-id') メンバー ID
+			label.col-sm-2.control-label(for='input-login') メンバー ID
 			.col-sm-10
-				input.form-control#input-member-id(type='text')
+				input.form-control#input-login(type='text')
 				span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
 		.form-group
 			label.col-sm-2.control-label(for='input-password') パスワード

@@ -7,9 +7,9 @@ member-edit
 					.col-sm-10
 						p.form-control-static { member.id }
 				.form-group
-					label.col-sm-2.control-label(for='select-team-name') チーム名
+					label.col-sm-2.control-label(for='select-team') チーム名
 					.col-sm-10
-						select.form-control#select-team-name(name='team-name' onchange='{ select_team }')
+						select.form-control#select-team(name='team' onchange='{ select_team }')
 							option(value='0') チーム名を選択してください
 							option(each='{ teams }' value='{ id }' selected='{ id == member.team_id }') { name }
 				.form-group
@@ -18,13 +18,13 @@ member-edit
 						p.form-control-static { (selected_team && selected_team.organization) || "チーム名が未選択" }
 							span.help-block(hide='{ selected_team }') チーム名を選択すると自動表示されます
 				.form-group
-					label.col-sm-2.control-label(for='input-username') ユーザー名
+					label.col-sm-2.control-label(for='input-name') ユーザー名
 					.col-sm-10
-						input.form-control#input-username(type='text', value='{ member.name }')
+						input.form-control#input-name(type='text', value='{ member.name }')
 				.form-group
 					label.col-sm-2.control-label(for='input-login') メンバー ID
 					.col-sm-10
-						input.form-control#input-school(type='text', value='{ member.login }')
+						input.form-control#input-login(type='text', value='{ member.login }')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.
