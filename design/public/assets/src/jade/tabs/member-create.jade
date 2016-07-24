@@ -58,7 +58,7 @@ member-create
 				fetch("/api/members", {
 					method: "POST",
 					body: formdata,
-				  credentials: "same-origin"
+					credentials: "same-origin"
 				}).then((res) => {
 					location.reload()
 				}).catch(res => {

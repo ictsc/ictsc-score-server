@@ -13,7 +13,7 @@ team-create
 			fetch("/api/teams", {
 				method: "POST",
 				body: new FormData(this.root.querySelector("form")),
-			  credentials: "same-origin"
+				credentials: "same-origin"
 			}).then((res) => {
 				location.href = "/teams"
 			}).catch(res => {

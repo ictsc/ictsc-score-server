@@ -34,7 +34,7 @@ team-edit
 			fetch(`/api/teams/${this.opts.resource_id}`, {
 				method: "PATCH",
 				body: new FormData(this.root.querySelector("form")),
-			  credentials: "same-origin"
+				credentials: "same-origin"
 			}).then((res) => {
 				location.reload()
 			}).catch(res => {

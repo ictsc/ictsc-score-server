@@ -1,5 +1,5 @@
 signup-form
-	form(onsubmit='{ create_user }', name='form-signup')
+	form(onsubmit='{ create_member }', name='form-signup')
 		.form-group
 			label(for='select-team-name') チーム名
 			select.form-control#select-team-name(name='team-name' onchange='{ select_team }')
@@ -43,25 +43,18 @@ signup-form
 			}
 		}
 
-		create_user(e) {
+		create_member(e) {
 			if (!this.selected_team) {
 				return;
 			}
 
-			const body = {
-				team_id: this.selected_team.id,
-				name: this.get_value(this, "#input-name"),
-				login: this.get_value(this, "#input-login"),
-				password: this.get_value(this, "#input-password"),
-			}
+			let formdata = new FormData(this.root.querySelector("form"));
+			formdata.set("team_id", this.selected_team.id)
 
 			fetch("/api/members", {
 				method: "POST",
-				body: JSON.stringify(body),
-				headers: {
-				    "Content-Type": "application/json"
-			  },
-			  credentials: "same-origin"
+				body: formdata,
+				credentials: "same-origin"
 			}).then((res) => {
 				location.href = "/signin.html"
 			}).catch(res => {

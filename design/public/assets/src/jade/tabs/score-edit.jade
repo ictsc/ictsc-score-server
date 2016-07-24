@@ -51,7 +51,7 @@ score-edit
 			fetch(`/api/scores/${this.opts.sub_resource_id}`, {
 				method: "PATCH",
 				body: new FormData(this.root.querySelector("form")),
-			  credentials: "same-origin"
+				credentials: "same-origin"
 			}).then((res) => {
 				location.reload()
 			}).catch(res => {

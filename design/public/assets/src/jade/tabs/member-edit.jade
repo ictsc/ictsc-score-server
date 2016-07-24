@@ -67,7 +67,7 @@ member-edit
 			fetch(`/api/members/${this.opts.resource_id}`, {
 				method: "PATCH",
 				body: formdata,
-			  credentials: "same-origin"
+				credentials: "same-origin"
 			}).then((res) => {
 				location.reload()
 			}).catch(res => {

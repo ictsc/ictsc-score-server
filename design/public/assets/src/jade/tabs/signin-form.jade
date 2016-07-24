@@ -17,10 +17,7 @@ signin-form
 
 			fetch("/api/session", {
 				method: "POST",
-				body: JSON.stringify(body),
-				headers: {
-				    "Content-Type": "application/json"
-				},
+				body: new FormData(this.root.querySelector("form")),
 				credentials: "same-origin"
 			}).then((res) => {
 				res.json().then((j) => {
