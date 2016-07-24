@@ -95,9 +95,11 @@ html
 							"info": false
 						})
 					},
-					activate_mde: (self, selector) => {
+					activate_mde: (self, selector, value) => {
 						return new SimpleMDE({
-							element: self.root.querySelector(selector)
+							element: self.root.querySelector(selector),
+							initialValue: value,
+							spellChecker: false,
 						})
 					},
 					ids: (objs, key) => {
