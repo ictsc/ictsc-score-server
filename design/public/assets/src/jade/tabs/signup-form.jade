@@ -43,10 +43,6 @@ signup-form
 			}
 		}
 
-		value_of(id) {
-			return this.root.querySelector(id).value
-		}
-
 		create_user(e) {
 			if (!this.selected_team) {
 				return;
@@ -54,9 +50,9 @@ signup-form
 
 			const body = {
 				team_id: this.selected_team.id,
-				name: this.value_of("#input-name"),
-				login: this.value_of("#input-login"),
-				password: this.value_of("#input-password"),
+				name: this.get_value(this, "#input-name"),
+				login: this.get_value(this, "#input-login"),
+				password: this.get_value(this, "#input-password"),
 			}
 
 			fetch("/api/members", {

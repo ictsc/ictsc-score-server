@@ -110,6 +110,9 @@ html
 						return objs.
 										reduce((ary, x) => { ary.push(x[key]); return ary; }, []).
 										filter((x, i, self) => { return self.indexOf(x) === i })
+					},
+					get_value: (self, id) => {
+						return self.root.querySelector(id).value
 					}
 				}
 

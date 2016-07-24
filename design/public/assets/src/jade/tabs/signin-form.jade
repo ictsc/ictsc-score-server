@@ -9,14 +9,10 @@ signin-form
 		.text-right
 			button.btn.btn-primary(type='submit') サインイン
 	script.
-		value_of(id) {
-			return this.root.querySelector(id).value
-		}
-
 		do_login(e) {
 			const body = {
-				login: this.value_of("#input-login"),
-				password: this.value_of("#input-password"),
+				login: this.get_value(this, "#input-login"),
+				password: this.get_value(this, "#input-password"),
 			}
 
 			fetch("/api/session", {
