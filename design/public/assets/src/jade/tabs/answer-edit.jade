@@ -1,7 +1,7 @@
 answer-edit
 	.panel
 		.panel-body
-			form.form-horizontal(action='/problems/detail/comment.html', name='form-supplement-editing')
+			form(onsubmit='{ update_comment }', name='form-supplement-editing')
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
@@ -13,7 +13,7 @@ answer-edit
 				.form-group
 					label.col-sm-2.control-label(for='textarea-supplement-body') 本文
 					.col-sm-10
-						textarea.form-control(rows='10')
+						textarea.form-control#textarea-supplement-body(rows='10')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.
@@ -35,3 +35,17 @@ answer-edit
 				})
 			});
 		});
+
+		update_comment() {
+			let formdata = new FormData();
+			formdata.set("text", this.mde.value());
+
+			fetch(`/api/answers/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+				method: "PATCH",
+				body: formdata,
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}

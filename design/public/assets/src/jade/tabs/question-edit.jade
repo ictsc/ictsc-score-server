@@ -1,7 +1,7 @@
 question-edit
 	.panel
 		.panel-body
-			form.form-horizontal(action='/problems/questions/detail.html', name='form-question-editing')
+			form(onsubmit='{ update_comment }', name='form-question-editing')
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
@@ -35,3 +35,17 @@ question-edit
 				})
 			});
 		});
+
+		update_comment() {
+			let formdata = new FormData();
+			formdata.set("text", this.mde.value());
+
+			fetch(`/api/issues/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+				method: "PATCH",
+				body: formdata,
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}

@@ -1,7 +1,7 @@
 supplement-edit
 	.panel
 		.panel-body
-			form.form-horizontal(action='/problems/detail/comment.html', name='form-supplement-editing')
+			form(onsubmit='{ update_comment }', name='form-supplement-editing')
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
@@ -44,3 +44,17 @@ supplement-edit
 				this.update();
 			})
 		})
+
+		update_comment() {
+			let formdata = new FormData();
+			formdata.set("text", this.mde.value());
+
+			fetch(`/api/problems/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+				method: "PATCH",
+				body: formdata,
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}
