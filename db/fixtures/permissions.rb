@@ -126,7 +126,8 @@ def_perm(Score, :writer, %i(PUT PATCH DELETE),
 
 # Participant
 
-forbid(Member,  :participant, %i(GET POST DELETE))
+permit(Member,  :participant, %i(GET))
+forbid(Member,  :participant, %i(POST DELETE))
 forbid(Team,    :participant, %i(POST PUT PATCH DELETE))
 forbid(Problem, :participant, %i(POST PUT PATCH DELETE))
 permit(Issue,   :participant, %i(POST))
@@ -134,7 +135,6 @@ forbid(Issue,   :participant, %i(DELETE))
 permit(Answer,  :participant, %i(POST))
 forbid(Answer,  :participant, %i(DELETE))
 forbid(Score,   :participant, %i(GET POST PUT PATCH DELETE))
-forbid(Problem, :participant, %i(GET), action: "problems_comments")
 forbid(Comment, :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
 forbid(Comment, :participant, %i(DELETE), action: "issues_comments")
 forbid(Answer,  :participant, %i(GET),    action: "answers_comments")
@@ -148,6 +148,10 @@ def_perm(Problem, :participant, %i(GET),
   query: "opened_at <= :now AND :now <= closed_at",
   parameters: "{ now: DateTime.now }")
 
+def_perm(Problem, :participant, %i(GET),
+  action: "problems_comments",
+  query: "opened_at <= :now AND :now <= closed_at",
+  parameters: "{ now: DateTime.now }")
 
 %i(Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
