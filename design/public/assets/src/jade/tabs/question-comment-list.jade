@@ -42,17 +42,21 @@ question-comment-list
 			this.mde = this.activate_mde(this, "#textarea-question-body");
 		});
 
+		show_help() {
+			this.root.querySelector("p.well.help-block").classList.remove("hidden");
+		}
+
 		fetch(`/api/problems/${this.opts.resource_id}/issues`, {
 			credentials: "same-origin"
 		}).then((res) => {
 			res.json().then((j) => {
+				this.issue = j[0];
+				//- this.update();
+
 				if (j.length == 0) {
 					this.show_help()
 					return;
 				}
-
-				this.issue = j[0];
-				//- this.update();
 
 				fetch(`/api/issues/${this.issue.id}/comments`, {
 					credentials: "same-origin"
