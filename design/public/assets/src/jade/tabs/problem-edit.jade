@@ -29,7 +29,5 @@ problem-edit
 					button.btn.btn-primary(type='submit') 更新
 	script.
 		this.on("mount", () => {
-			this.mde = new SimpleMDE({
-				element: $('#textarea-problem-body')[0]
-			})
+			this.mde = this.activate_mde(this, "#textarea-problem-body")
 		});

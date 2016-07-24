@@ -18,7 +18,6 @@ question-edit
 					button.btn.btn-primary(type='submit') 更新
 	script.
 		this.on("mount", () => {
-			this.mde = new SimpleMDE({
-				element: $('#textarea-question-body')[0]
-			})
+			this.mde = this.activate_mde(this, "#textarea-question-body")
+		});
 		});
