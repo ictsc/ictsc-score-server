@@ -9,7 +9,6 @@ class ProblemRoutes < Sinatra::Base
 
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
-    require_login
   end
 
   get "/api/problems" do
@@ -28,7 +27,7 @@ class ProblemRoutes < Sinatra::Base
   end
 
   post "/api/problems" do
-    halt 403 if Member.allowed_to_create_by?(current_user)
+    halt 403 if not Problem.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Problem)
     @attrs[:creator_id] = current_user.id

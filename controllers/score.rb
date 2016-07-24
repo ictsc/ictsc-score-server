@@ -9,7 +9,6 @@ class ScoreRoutes < Sinatra::Base
 
   before "/api/scores*" do
     I18n.locale = :en if request.xhr?
-    require_login
   end
 
   get "/api/scores" do

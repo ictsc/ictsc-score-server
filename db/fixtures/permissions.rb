@@ -13,7 +13,7 @@ def def_perm(resource, role, methods, action: "", query: nil, parameters: nil, j
   methods = [methods] if not methods.is_a? Array
 
   methods.each do |method|
-    Permission.seed do |p|
+    Permission.seed(:resource, :role_id, :action, :method) do |p|
       p.resource   = resource.to_s.downcase.pluralize
       p.action     = action.to_s
       p.method     = method.to_s.upcase
@@ -52,6 +52,7 @@ def_perm(Role, :nologin, %i(GET),
   query: "id = :participant_role_id",
   parameters: "{ participant_role_id: #{ROLE_ID[:participant]}}")
 permit(Member, :nologin, %i(POST))
+permit(Team, :nologin, %i(GET))
 
 
 # Admin
