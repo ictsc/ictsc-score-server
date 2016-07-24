@@ -26,7 +26,7 @@ answer-comment-list
 							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/answers/" + id }') 詳細
 							p.comment-body { text }
 							span.help-block.text-right { date2str(created_at) }
-				form(onsubmit='{ do_comment }', name='form-supplement-creation')
+				form(onsubmit='{ create_comment }', name='form-supplement-creation')
 					.form-group
 						label(for='textarea-answer-body') 新規解答
 						textarea.form-control#textarea-answer-body(rows='10')
@@ -78,7 +78,7 @@ answer-comment-list
 			});
 		});
 
-		do_comment() {
+		create_comment() {
 			let formdata = new FormData();
 			formdata.set("text", this.mde.value());
 

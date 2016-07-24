@@ -8,7 +8,7 @@ supplement-comment-list
 							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/supplements/" + id }') 詳細
 							p.comment-body { text }
 							span.help-block.text-right { date2str(created_at) }
-				form(onsubmit='{ do_comment }', name='form-supplement-creation')
+				form(onsubmit='{ create_comment }', name='form-supplement-creation')
 					.form-group
 						label(for='textarea-supplement-body') 新規補足
 						textarea.form-control#textarea-supplement-body(rows='10')
@@ -42,7 +42,7 @@ supplement-comment-list
 			})
 		})
 
-		do_comment() {
+		create_comment() {
 			let formdata = new FormData();
 			formdata.set("text", this.mde.value());
 
