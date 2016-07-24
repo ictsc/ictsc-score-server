@@ -7,7 +7,7 @@ ROLE_ID = {
 }
 
 PERMIT_ALL = ""
-FORBID_ALL = "0"
+FORBID_ALL = "0" # Also written in db/models.rb
 
 def def_perm(resource, role, methods, action: "", query: nil, parameters: nil, join: "")
   methods = [methods] if not methods.is_a? Array

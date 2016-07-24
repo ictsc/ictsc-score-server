@@ -13,25 +13,33 @@ class ActiveRecord::Base
     fields - options[:exclude] + options[:include]
   end
 
+  FORBID_ALL = "0" # Also written in db/fixtures/permission.rb
+
   def self.allowed_to_create_by?(user = nil, action: "")
-    return self.accessible_resources(user: user, method: "POST", action: action).any?
+    p = get_permission(user: user, method: "POST", action: action)
+    return p.query != FORBID_ALL
   end
 
-  def self.accessible_resources(user: nil, method: , action: "")
-    current_user = user
+  def self.accessible_resources(user: nil, method:, action: "")
+    p = get_permission(user: user, method: method, action: action)
+    return self.none if p.nil?
 
+    current_user = user
+    p.resources(binding)
+  end
+
+  private
+  def self.get_permission(user: nil, method:, action: "")
     role = if user
       user.role
     else
       Role.find_by(name: "Nologin")
     end
 
-    p = Permission.find_by(resource: self.to_s.downcase.pluralize,
+    Permission.find_by(resource: self.to_s.downcase.pluralize,
                            role: role,
-                           method: method.to_s.upcase,
-                           action: action)
-    return self.none if p.nil?
-    p.resources(binding)
+                         method: method.to_s.upcase,
+                         action: action)
   end
 end
 
