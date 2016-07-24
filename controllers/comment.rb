@@ -14,9 +14,9 @@ class CommentRoutes < Sinatra::Base
       require_login
 
       @action = "#{pluralize_name}_comments"
-      commentable_id = params[:commentable_id]
+      @commentable_id = params[:commentable_id]
       @commentable = klass.accessible_resources(user: current_user, method: "GET", action: @action) \
-                          .find(commentable_id)
+                          .find(@commentable_id)
       halt 404 if @commentable.nil?
     end
 
@@ -36,12 +36,12 @@ class CommentRoutes < Sinatra::Base
     end
 
     post "/api/#{pluralize_name}/:commentable_id/comments" do
-      halt 403 if Comment.allowed_to_create_by?(current_user, action: @action)
+      halt 403 if not Comment.allowed_to_create_by?(current_user, action: @action)
 
       @attrs = attribute_values_of_class(Comment)
       @attrs[:member_id] = current_user.id
       @attrs[:commentable_type] = klass.to_s
-      @attrs[:commentable_id] = commentable_id
+      @attrs[:commentable_id] = @commentable_id
       @comment = Comment.new(@attrs)
 
       if @comment.save
