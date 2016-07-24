@@ -1,7 +1,7 @@
 score-edit
 	.panel
 		.panel-body
-			form.form-horizontal(action='/answers/scores/detail.html', name='form-score-editing')
+			form.form-horizontal(onsubmit='{ update_score }', name='form-score-editing')
 				.form-group
 					label.col-sm-2.control-label 問題番号
 					.col-sm-10 { problem.id }
@@ -16,7 +16,7 @@ score-edit
 				.form-group
 					label.col-sm-2.control-label(for='input-score') スコア
 					.col-sm-10
-						input.form-control#input-score(type='text', value='{ score.point }')
+						input.form-control#input-score(type='text', name='point', value='{ score.point }')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.
@@ -46,3 +46,14 @@ score-edit
 				this.update();
 			})
 		})
+
+		update_score(e) {
+			fetch(`/api/scores/${this.opts.sub_resource_id}`, {
+				method: "PATCH",
+				body: new FormData(this.root.querySelector("form")),
+			  credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}
