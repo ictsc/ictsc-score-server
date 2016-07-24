@@ -26,7 +26,7 @@ question-comment-list
 							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/questions/" + id }') 詳細
 							p.comment-body { text }
 							span.help-block.text-right { date2str(created_at) }
-				form(action='/problems/detail.html#question-comment-list', name='form-supplement-creation')
+				form(onsubmit='{ do_comment }', name='form-supplement-creation')
 					.form-group
 						label(for='textarea-question-body') 新規質問
 						textarea.form-control#textarea-question-body(rows='10')
@@ -77,3 +77,16 @@ question-comment-list
 			});
 		});
 
+		do_comment() {
+			let formdata = new FormData();
+			formdata.set("text", this.mde.value());
+
+			fetch(`/api/issues/${this.issue.id}/comments`, {
+				method: "POST",
+				body: formdata,
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}
