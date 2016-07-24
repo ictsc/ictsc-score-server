@@ -50,13 +50,13 @@ question-comment-list
 			credentials: "same-origin"
 		}).then((res) => {
 			res.json().then((j) => {
-				this.issue = j[0];
-				//- this.update();
-
 				if (j.length == 0) {
 					this.show_help()
 					return;
 				}
+
+				this.issue = j[0];
+				//- this.update();
 
 				fetch(`/api/issues/${this.issue.id}/comments`, {
 					credentials: "same-origin"
@@ -81,16 +81,40 @@ question-comment-list
 			});
 		});
 
+		get_issue_id() {
+			return new Promise(function(resolve, reject){
+				if (this.issue) {
+					resolve(this.issue.id);
+				} else {
+					let formdata = new FormData();
+					formdata.set("title", "NO_TITLE") // XXX
+
+					fetch(`/api/problems/${this.opts.resource_id}/issues`, {
+						method: "POST",
+						body: formdata,
+						credentials: "same-origin"
+					}).then((res) => {
+						const location = res.headers.get("Location")
+						resolve(parseInt(location.match(/\d+$/)))
+					}).catch(res => {
+						reject();
+					});
+				}
+			});
+		}
+
 		create_comment() {
 			let formdata = new FormData();
 			formdata.set("text", this.mde.value());
 
-			fetch(`/api/issues/${this.issue.id}/comments`, {
-				method: "POST",
-				body: formdata,
-				credentials: "same-origin"
-			}).then((res) => {
-				location.reload()
-			}).catch(res => {
+			this.get_issue_id().then((issue_id) => {
+				fetch(`/api/issues/${issue_id}/comments`, {
+					method: "POST",
+					body: formdata,
+					credentials: "same-origin"
+				}).then((res) => {
+					location.reload()
+				}).catch(res => {
+				});
 			});
 		}
