@@ -1,7 +1,7 @@
 member-edit
 	.panel
 		.panel-body
-			form.form-horizontal(action='/members/list.html', name='form-member-editing')
+			form.form-horizontal(onsubmit='{ update_member }', name='form-member-editing')
 				.form-group
 					label.col-sm-2.control-label メンバー番号
 					.col-sm-10
@@ -9,7 +9,7 @@ member-edit
 				.form-group
 					label.col-sm-2.control-label(for='select-team') チーム名
 					.col-sm-10
-						select.form-control#select-team(name='team' onchange='{ select_team }')
+						select.form-control#select-team(onchange='{ select_team }')
 							option(value='0') チーム名を選択してください
 							option(each='{ teams }' value='{ id }' selected='{ id == member.team_id }') { name }
 				.form-group
@@ -20,11 +20,11 @@ member-edit
 				.form-group
 					label.col-sm-2.control-label(for='input-name') ユーザー名
 					.col-sm-10
-						input.form-control#input-name(type='text', value='{ member.name }')
+						input.form-control#input-name(type='text', name='name', value='{ member.name }')
 				.form-group
 					label.col-sm-2.control-label(for='input-login') メンバー ID
 					.col-sm-10
-						input.form-control#input-login(type='text', value='{ member.login }')
+						input.form-control#input-login(type='text', name='login', value='{ member.login }')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.
@@ -55,4 +55,21 @@ member-edit
 			} else {
 				this.selected_team = this.teams[idx-1]
 			}
+		}
+
+		update_member(e) {
+			let formdata = new FormData(this.root.querySelector("form"));
+
+			if (this.selected_team) {
+				formdata.set("team_id", this.selected_team.id)
+			}
+
+			fetch(`/api/members/${this.opts.resource_id}`, {
+				method: "PATCH",
+				body: formdata,
+			  credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
 		}

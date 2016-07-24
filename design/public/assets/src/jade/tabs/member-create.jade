@@ -1,5 +1,5 @@
 member-create
-	form.form-horizontal(action='/members/list.html', name='form-member-creation')
+	form.form-horizontal(onsubmit='{ create_member }', name='form-member-creation')
 		.form-group
 			label.col-sm-2.control-label(for='select-team-name') チーム名
 			.col-sm-10
@@ -14,11 +14,11 @@ member-create
 		.form-group
 			label.col-sm-2.control-label(for='input-name') ユーザー名
 			.col-sm-10
-				input.form-control#input-name(type='text')
+				input.form-control#input-name(name='name', type='text')
 		.form-group
 			label.col-sm-2.control-label(for='input-login') メンバー ID
 			.col-sm-10
-				input.form-control#input-login(type='text')
+				input.form-control#input-login(name='login', type='text')
 				span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
 		.form-group
 			label.col-sm-2.control-label(for='input-password') パスワード
@@ -45,4 +45,22 @@ member-create
 				} else {
 					this.selected_team = this.teams[idx-1]
 				}
+			}
+
+			create_member(e) {
+				if (!this.selected_team) {
+					return;
+				}
+
+				let formdata = new FormData(this.root.querySelector("form"));
+				formdata.set("team_id", this.selected_team.id)
+
+				fetch("/api/members", {
+					method: "POST",
+					body: formdata,
+				  credentials: "same-origin"
+				}).then((res) => {
+					location.reload()
+				}).catch(res => {
+				});
 			}
