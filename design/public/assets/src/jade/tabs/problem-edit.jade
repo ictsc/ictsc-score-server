@@ -1,15 +1,15 @@
 problem-edit
 	.panel.panel-default
 		.panel-body
-			form.form-horizontal(action='/problems/detail.html', name='form-problem-editing')
+			form.form-horizontal(onsubmit='{ update_problem }', name='form-problem-editing')
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
 						p.form-control-static { problem.id }
 				.form-group
-					label.col-sm-2.control-label(for='input-problem-name') 問題名
+					label.col-sm-2.control-label(for='input-problem-title') 問題名
 					.col-sm-10
-						input.form-control#input-problem-name(type='text', value='{ problem.title }')
+						input.form-control#input-problem-title(type='text', name='title', value='{ problem.title }')
 				.form-group
 					label.col-sm-2.control-label(for='textarea-problem-body') 本文
 					.col-sm-10
@@ -17,11 +17,11 @@ problem-edit
 				.form-group
 					label.col-sm-2.control-label(for='input-opened-datetime') 公開日時
 					.col-sm-10
-						input.form-control#input-opened-datetime(type='datetime', value='{ new Date(problem.opened_at).toISOString() }')
+						input.form-control#input-opened-datetime(type='datetime', name='opened_at', value='{ new Date(problem.opened_at).toISOString() }')
 				.form-group
 					label.col-sm-2.control-label(for='input-closed-datetime') 締切日時
 					.col-sm-10
-						input.form-control#input-closed-datetime(type='datetime', value='{ new Date(problem.closed_at).toISOString() }')
+						input.form-control#input-closed-datetime(type='datetime', name='closed_at', value='{ new Date(problem.closed_at).toISOString() }')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.
@@ -35,3 +35,16 @@ problem-edit
 			});
 		});
 
+		update_problem(e) {
+			let formdata = new FormData(this.root.querySelector("form"));
+			formdata.set("text", this.mde.value())
+
+			fetch(`/api/problems/${this.opts.resource_id}`, {
+				method: "PATCH",
+				body: formdata,
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}
