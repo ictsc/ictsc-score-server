@@ -7,7 +7,7 @@ ROLE_ID = {
 }
 
 PERMIT_ALL = ""
-FORBID_ALL = "0"
+FORBID_ALL = "0" # Also written in db/models.rb
 
 def def_perm(resource, role, methods, action: "", query: nil, parameters: nil, join: "")
   methods = [methods] if not methods.is_a? Array
@@ -126,7 +126,8 @@ def_perm(Score, :writer, %i(PUT PATCH DELETE),
 
 # Participant
 
-forbid(Member,  :participant, %i(GET POST DELETE))
+permit(Member,  :participant, %i(GET))
+forbid(Member,  :participant, %i(POST DELETE))
 forbid(Team,    :participant, %i(POST PUT PATCH DELETE))
 forbid(Problem, :participant, %i(POST PUT PATCH DELETE))
 permit(Issue,   :participant, %i(POST))
@@ -134,7 +135,6 @@ forbid(Issue,   :participant, %i(DELETE))
 permit(Answer,  :participant, %i(POST))
 forbid(Answer,  :participant, %i(DELETE))
 forbid(Score,   :participant, %i(GET POST PUT PATCH DELETE))
-forbid(Problem, :participant, %i(GET), action: "problems_comments")
 forbid(Comment, :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
 forbid(Comment, :participant, %i(DELETE), action: "issues_comments")
 forbid(Answer,  :participant, %i(GET),    action: "answers_comments")
@@ -148,18 +148,15 @@ def_perm(Problem, :participant, %i(GET),
   query: "opened_at <= :now AND :now <= closed_at",
   parameters: "{ now: DateTime.now }")
 
-def_perm(Issue, :participant, %i(GET PUT PATCH),
-  query: "team_id = :team_id",
-  parameters: "{ team_id: current_user.team_id }")
-
-def_perm(Answer, :participant, %i(GET PUT PATCH),
-  query: "team_id = :team_id",
-  parameters: "{ team_id: current_user.team_id }")
+def_perm(Problem, :participant, %i(GET),
+  action: "problems_comments",
+  query: "opened_at <= :now AND :now <= closed_at",
+  parameters: "{ now: DateTime.now }")
 
 %i(Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
 
-  def_perm(resource, :participant, %i(GET),
+  def_perm(resource, :participant, %i(GET PUT PATCH),
     action: action,
     query: "team_id = :team_id",
     parameters: "{ team_id: current_user.team_id }")
