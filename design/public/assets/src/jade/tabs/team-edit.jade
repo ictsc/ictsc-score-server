@@ -5,19 +5,27 @@ team-edit
 				.form-group
 					label.col-sm-2.control-label(for='input-team-id') チーム番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { team.id }
 				.form-group
 					label.col-sm-2.control-label(for='input-team-name') チーム名
 					.col-sm-10
-						input.form-control#input-team-name(type='text', value='WCDI')
+						input.form-control#input-team-name(type='text', value='{ team.name }')
 				.form-group
 					label.col-sm-2.control-label(for='input-school') 所属
 					.col-sm-10
-						input.form-control#input-school(type='text', value='日本工学院八王子専門学校')
+						input.form-control#input-school(type='text', value='{ team.organization }')
 				.form-group
 					label.col-sm-2.control-label(for='input-score-total') 総スコア
 					.col-sm-10
-						p.form-control-static 100
+						p.form-control-static XXX
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
-	script
+	script.
+		fetch(`/api/teams/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.team = j;
+				this.update();
+			});
+		});

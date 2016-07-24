@@ -5,29 +5,54 @@ supplement-detail
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { comment.id }
 				.form-group
 					label.col-sm-2.control-label 投稿者
 					.col-sm-10
-						a.show.form-control-static(href='/members/detail.html') 朝霧 涼夏
+						a.show.form-control-static(href='{ "/members/" + member.id }') { member.name }
 				.form-group
 					label.col-sm-2.control-label 本文
 					.col-sm-10
-						p.form-control-static 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
+						p.form-control-static { comment.text }
 				.form-group
 					label.col-sm-2.control-label 問題番号
-					.col-sm-10
-						a.show.form-control-static(href='/problems/detail.html') 1
+					.col-sm-10 { problem.id }
 				.form-group
 					label.col-sm-2.control-label 問題名
 					.col-sm-10
-						a.show.form-control-static(href='/problems/detail.html') パッケージ管理システムのリポジトリ問題
+						a.show.form-control-static(href='{ "/problems/" + problem.id }') { problem.title }
 				.form-group
 					label.col-sm-2.control-label 作成日時
 					.col-sm-10
-						p.form-control-static 2016-08-27 12:00
+						p.form-control-static { date2str(comment.created_at) }
 				.form-group
 					label.col-sm-2.control-label 更新日時
 					.col-sm-10
-						p.form-control-static 2016-08-27 12:00
-	script
+						p.form-control-static { date2str(comment.updated_at) }
+	script.
+		fetch(`/api/problems/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.comment = j;
+				this.update();
+
+				fetch(`/api/members/${this.comment.member_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.member = j
+						this.update();
+					})
+				})
+			});
+		});
+
+		fetch(`/api/problems/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.problem = j
+				this.update();
+			})
+		})

@@ -5,18 +5,33 @@ answer-edit
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { comment.id }
 				.form-group
 					label.col-sm-2.control-label 投稿者
 					.col-sm-10
-						a.show.form-control-static(href='/members/detail.html') 倉上 和也
+						a.show.form-control-static(href='{ "/members/" + comment.member_id }') { member.name }
 				.form-group
 					label.col-sm-2.control-label(for='textarea-supplement-body') 本文
 					.col-sm-10
-						textarea.form-control(rows='10') またしかも大先生を落ちのさえそう無事と読みでしょけれども、その繰り返しよりはするたてとして先生をしからいでで。ほんの中心持のためとんだ人間も私中のもっですかと大森さんを挙げただ、学校の晩たというご専攻たでなけれて、孔雀の時へ実に今日だけの社会が時間食って行くて、あいにくの元来にしてそのためがやはりもったなと立てるまいのなが、ないだだろからこうお自分しでものたでたら。
+						textarea.form-control(rows='10')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.
-		this.on("mount", () => {
-			this.mde = this.activate_mde(this, "#textarea-supplement-body")
+		fetch(`/api/answers/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.comment = j;
+				this.update();
+				this.mde = this.activate_mde(this, "#textarea-supplement-body", j.text)
+
+				fetch(`/api/members/${this.comment.member_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.member = j
+						this.update();
+					})
+				})
+			});
 		});

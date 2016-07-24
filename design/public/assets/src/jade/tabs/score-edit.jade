@@ -3,17 +3,46 @@ score-edit
 		.panel-body
 			form.form-horizontal(action='/answers/scores/detail.html', name='form-score-editing')
 				.form-group
-					label.col-sm-2.control-label 番号
+					label.col-sm-2.control-label 問題番号
+					.col-sm-10 { problem.id }
+				.form-group
+					label.col-sm-2.control-label 問題名
 					.col-sm-10
-						p.form-control-static 1
+						a.show.form-control-static(href='{ "/problems/" + problem.id }') { problem.title }
 				.form-group
 					label.col-sm-2.control-label 採点者
 					.col-sm-10
-						a.show.form-control-static(href='/members/detail.html') 朝霧 涼夏
+						a.show.form-control-static(href='{ "/members/" + score.marker_id }') { marker.name }
 				.form-group
 					label.col-sm-2.control-label(for='input-score') スコア
 					.col-sm-10
-						input.form-control#input-score(type='text', value='100')
+						input.form-control#input-score(type='text', value='{ score.point }')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
-	script
+	script.
+		fetch(`/api/scores/${this.opts.sub_resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.score = j;
+				this.update();
+
+				fetch(`/api/members/${this.score.marker_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.marker = j
+						this.update();
+					})
+				})
+			});
+		});
+
+		fetch(`/api/problems/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.problem = j
+				this.update();
+			})
+		})

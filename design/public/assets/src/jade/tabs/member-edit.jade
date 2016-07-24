@@ -5,29 +5,54 @@ member-edit
 				.form-group
 					label.col-sm-2.control-label メンバー番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { member.id }
 				.form-group
 					label.col-sm-2.control-label(for='select-team-name') チーム名
 					.col-sm-10
-						select.form-control#select-team-name(name='team-name')
+						select.form-control#select-team-name(name='team-name' onchange='{ select_team }')
 							option(value='0') チーム名を選択してください
-							option(value='1', selected) WCDI
-							option(value='2') ISL
-							option(value='3') にせつむり(ゆかいな仲間たち)
-							option(value='4') 専門学校穴吹コンピュータカレッジ
+							option(each='{ teams }' value='{ id }' selected='{ id == member.team_id }') { name }
 				.form-group
 					label.col-sm-2.control-label 所属
 					.col-sm-10
-						p.form-control-static 日本工学院八王子専門学校
-						span.help-block チーム名を選択すると自動表示されます
+						p.form-control-static { (selected_team && selected_team.organization) || "チーム名が未選択" }
+							span.help-block(hide='{ selected_team }') チーム名を選択すると自動表示されます
 				.form-group
 					label.col-sm-2.control-label(for='input-username') ユーザー名
 					.col-sm-10
-						input.form-control#input-username(type='text', value='太箸 耀暉')
+						input.form-control#input-username(type='text', value='{ member.name }')
 				.form-group
-					label.col-sm-2.control-label(for='input-school') メンバー ID
+					label.col-sm-2.control-label(for='input-login') メンバー ID
 					.col-sm-10
-						input.form-control#input-school(type='text', value='日本工学院八王子専門学校')
+						input.form-control#input-school(type='text', value='{ member.login }')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
-	script
+	script.
+		this.selected_team = null
+
+		fetch(`/api/members/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.member = j;
+				this.update();
+			});
+		});
+
+		fetch("/api/teams").then((res) => {
+			res.json().then((j) => {
+				this.teams = j;
+				console.log(j[0]);
+				//- this.team = j[0].name
+				this.update();
+			})
+		})
+
+		select_team(e) {
+			const idx = e.target.selectedIndex;
+			if (idx == 0) {
+				this.selected_team = null
+			} else {
+				this.selected_team = this.teams[idx-1]
+			}
+		}

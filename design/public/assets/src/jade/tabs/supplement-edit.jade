@@ -5,19 +5,42 @@ supplement-edit
 				.form-group
 					label.col-sm-2.control-label 番号
 					.col-sm-10
-						p.form-control-static 1
+						p.form-control-static { comment.id }
 				.form-group
 					label.col-sm-2.control-label 投稿者
 					.col-sm-10
-						a.show.form-control-static(href='/members/detail.html') 朝霧 涼夏
+						a.show.form-control-static(href='{ "/members/" + member.id }') { member.name }
 				.form-group
 					label.col-sm-2.control-label(for='textarea-supplement-body') 本文
 					.col-sm-10
-						textarea.form-control#textarea-supplement-body(rows='10') 君もほかけっしてどういう諷刺心という訳のためを救うたあり。いくら場合に反抗方もとにかくそうした妨害たんかもを思っばいででも仕事要らないありが、全くとも出しないないありたい。大名に眺めたのはどうか当時にとうとうたなくだ。
+						textarea.form-control#textarea-supplement-body(rows='10')
 				.text-right
 					button.btn.btn-primary(type='submit') 更新
 	script.
-		this.on("mount", () => {
-			this.mde = this.activate_mde(this, "#textarea-supplement-body")
+		fetch(`/api/problems/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.comment = j;
+				this.mde = this.activate_mde(this, "#textarea-supplement-body", j.text)
+				this.update();
+
+				fetch(`/api/members/${this.comment.member_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.member = j
+						this.update();
+					})
+				})
+			});
 		});
-		});
+
+		fetch(`/api/problems/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.problem = j
+				this.update();
+			})
+		})

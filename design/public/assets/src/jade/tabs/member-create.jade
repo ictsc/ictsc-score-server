@@ -3,17 +3,14 @@ member-create
 		.form-group
 			label.col-sm-2.control-label(for='select-team-name') チーム名
 			.col-sm-10
-				select.form-control#select-team-name(name='team-name')
+				select.form-control#select-team-name(name='team-name' onchange='{ select_team }')
 					option(value='0') チーム名を選択してください
-					option(value='1') WCDI
-					option(value='2') ISL
-					option(value='3') にせつむり(ゆかいな仲間たち)
-					option(value='4') 専門学校穴吹コンピュータカレッジ
+					option(each='{ teams }' value='{ id }' selected='{ id == member.team_id }') { name }
 		.form-group
 			label.col-sm-2.control-label 所属
 			.col-sm-10
-				p.form-control-static チーム名が未選択
-				span.help-block チーム名を選択すると自動表示されます
+				p.form-control-static { (selected_team && selected_team.organization) || "チーム名が未選択" }
+					span.help-block(hide='{ selected_team }') チーム名を選択すると自動表示されます
 		.form-group
 			label.col-sm-2.control-label(for='input-username') ユーザー名
 			.col-sm-10
@@ -29,4 +26,23 @@ member-create
 				input.form-control#input-password(name='password', type='password')
 		.text-right
 			button.btn.btn-primary(type='submit') 作成
-	script
+	script.
+			this.selected_team = null
+
+			fetch("/api/teams").then((res) => {
+				res.json().then((j) => {
+					this.teams = j;
+					console.log(j[0]);
+					//- this.team = j[0].name
+					this.update();
+				})
+			})
+
+			select_team(e) {
+				const idx = e.target.selectedIndex;
+				if (idx == 0) {
+					this.selected_team = null
+				} else {
+					this.selected_team = this.teams[idx-1]
+				}
+			}
