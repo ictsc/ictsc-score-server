@@ -32,7 +32,6 @@ member-create
 			fetch("/api/teams").then((res) => {
 				res.json().then((j) => {
 					this.teams = j;
-					console.log(j[0]);
 					//- this.team = j[0].name
 					this.update();
 				})
