@@ -30,8 +30,6 @@ question-detail
 					.col-sm-10
 						p.form-control-static { date2str(comment.updated_at) }
 	script.
-		this.members = {}
-
 		fetch(`/api/issues/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
 			credentials: "same-origin"
 		}).then((res) => {
