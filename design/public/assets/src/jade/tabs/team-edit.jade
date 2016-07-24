@@ -32,7 +32,7 @@ team-edit
 
 		update_team(e) {
 			fetch(`/api/teams/${this.opts.resource_id}`, {
-				method: "PUT",
+				method: "PATCH",
 				body: new FormData(this.root.querySelector("form")),
 			  credentials: "same-origin"
 			}).then((res) => {
