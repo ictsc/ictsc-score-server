@@ -50,7 +50,7 @@ module.exports = webpackMerge(commonConfig, {
    * See: http://webpack.github.io/docs/configuration.html#devtool
    * See: https://github.com/webpack/docs/wiki/build-performance#sourcemaps
    */
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
 
   /**
    * Options affecting the output of the compilation.
@@ -144,7 +144,17 @@ module.exports = webpackMerge(commonConfig, {
       aggregateTimeout: 300,
       poll: 1000
     },
-    outputPath: helpers.root('dist')
+    outputPath: helpers.root('dist'),
+    proxy: {
+      "/api/*": {
+        target: "http://stg.ictsc.pref.yokohama",
+        rewrite: function(req) {
+          req.headers.host = "stg.ictsc.pref.yokohama";
+          console.log("Proxy: ", req.url, req.headers);
+          // req.url = req.url.replace(/^\/api/, '');
+        }
+      }
+    },
   },
 
   /*

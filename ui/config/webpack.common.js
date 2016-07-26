@@ -13,6 +13,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 const HtmlElementsPlugin = require('./html-elements-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 /*
  * Webpack Constants
@@ -161,7 +162,8 @@ module.exports = {
        */
       {
         test: /\.css$/,
-        loaders: ['to-string-loader', 'css-loader']
+        // loaders: ExtractTextPlugin.extract(['to-string-loader', 'css-loader', 'source-map-loader'])
+        loader: ExtractTextPlugin.extract('css-loader?sourceMap')
       },
 
       /* Raw loader support for *.html
@@ -178,8 +180,15 @@ module.exports = {
       {
         test: /\.jade$/,
         loader: 'raw!jade-html'
+      },
+      {
+        test: /\.scss$/,
+        loader: 'to-string!css!sass'
+      },
+      {
+        test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        loader: 'file-loader?name=fonts/[name].[ext]'
       }
-
     ]
 
   },
@@ -220,6 +229,13 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: ['polyfills', 'vendor'].reverse()
     }),
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery",
+      "Tether": "tether"
+    }),
+
 
     /*
      * Plugin: CopyWebpackPlugin
@@ -272,6 +288,8 @@ module.exports = {
     new HtmlElementsPlugin({
       headTags: require('./head-config.common')
     }),
+
+    new ExtractTextPlugin("[name].css")
 
   ],
 

@@ -8,6 +8,7 @@ import { DataResolver } from './main.resolver';
 export const routes: RouterConfig = [
   { path: '',      component: Home },
   { path: 'home',  component: Home },
+  { path: 'login',  component: 'Login' },
   // make sure you match the component type string to the require in asyncRoutes
   { path: 'about', component: 'About',
     resolve: {
@@ -31,6 +32,7 @@ export const asyncRoutes: AsyncRoutes = {
   'About': require('es6-promise-loader!../about'),
   'Detail': require('es6-promise-loader!../+detail'),
   'Index': require('es6-promise-loader!../+detail'), // must be exported with detail/index.ts
+  'Login': require('es6-promise-loader!../login'),
 };
 
 

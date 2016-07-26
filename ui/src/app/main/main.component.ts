@@ -2,19 +2,16 @@
  * Angular 2 decorators and services
  */
 import { Component, ViewEncapsulation } from '@angular/core';
-
 import { AppState } from './main.service';
+import 'bootstrap/dist/css/bootstrap.css';
 
-/*
- * App Component
- * Top Level Component
- */
+
 
 @Component({
   selector: 'main',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: [
-    './main.style.css'
+  styles: [
+    require('./main.style.scss'),
   ],
   template: require("./main.template.jade")
 })
