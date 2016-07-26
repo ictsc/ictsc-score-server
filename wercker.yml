@@ -7,21 +7,18 @@ build:
         code: |
           curl -sL https://deb.nodesource.com/setup_6.x | bash -
           sudo apt-get install -y nodejs
-          cd design
+          cd ui
           npm install
     - script:
         name: bower install
         code: |
           cd design
-          $(npm bin)/bower --allow-root install
+          npm i
     - script:
-        name: gulp build
+        name: webpack build
         code: |
           cd design
-          $(npm bin)/gulp build
-          rm -r ../public/tabs
-          if [ -x tabs-jade ]; then rm ../public/tabs-jade; fi
-          ln -s ../design/public/assets/src/jade/tabs ../public/tabs-jade
+          npm run build:prod
     - bundle-install
     - script:
         name: migrate database

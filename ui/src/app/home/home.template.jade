@@ -1,0 +1,6 @@
+h1 hello jade
+div
+  p test
+  form((ngSubmit)="submitState(localState.value)" autocomplete="off")
+    input([value]="localState.value", (input)="localState.value = $event.target.value", placeholder="Submit Local State to App State", autofocus)
+    button.md-raised-button Submit Value
