@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Response } from '@angular/http';
 import { ApiService } from '../common/api.service'
-import { Signup } from "./signup.component";
 import { Miniform } from "../common/miniform.component"
 
 @Component({
-  selector: 'login',
-  template: require('./login.template.jade'),
-  directives: [Signup]
+  selector: 'signup',
+  template: require('./signup.template.jade')
 })
-export class Login extends Miniform {
+export class Signup extends Miniform {
   constructor(
     private route: Router,
     private api: ApiService) {super()}
   form = {
-    user: "",
     password: "",
+    login: "",
+    name: "",
   }
 
   private teamList: Array<any> = [];
@@ -25,16 +25,23 @@ export class Login extends Miniform {
   }
 
   ngOnInit() {
+    (window as any).login = this;
+    this.api.teams.list().subscribe(r => {
+      console.log("team list", r);
+      this.teamList = (r as Array<any>);
+    });
   }
 
   post(){
-    return this.api.login(this.form.user, this.form.password)
+    return this.api.members.add(Object.assign(this.form, {
+      team_id: this.selectedTeamId
+    }));
   }
   success(response: any){
     console.log("OK");
     this.route.navigate(["/"]);
   }
-  error(response: any){
-    return "ログインが失敗しました";
+  error(response: Response){
+    return "登録に失敗しました。" + response.json().login;
   }
 }

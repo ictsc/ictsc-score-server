@@ -1,12 +1,19 @@
 .page-header
-  h1 サインイン
 signin-form
-  form(onsubmit='', name='form-signin')
-    .form-group
-      label(for='input-login') メンバー ID
-      input.form-control#input-login(name='login', type='text')
-    .form-group
-      label(for='input-password') パスワード
-      input.form-control#input-password(name='password', type='password')
-    .text-right
-      button.btn.btn-primary(type='submit') サインイン
+  .row
+    .col-sm-4.col-sm-offset-1
+      h2 サインイン
+      .alert.alert-warning(*ngIf="errorMessage")
+        {{errorMessage}}
+      form(onsubmit='', name='form-signin', (ngSubmit)="submit()")
+        fieldset([disabled]="disabled")
+          .form-group
+            label(for='input-login') メンバー ID
+            input.form-control#input-login(name='login', type='text', [(ngModel)]="form.user")
+          .form-group
+            label(for='input-password') パスワード
+            input.form-control#input-password(name='password', type='password', [(ngModel)]="form.password" )
+          .text-right
+            button.btn.btn-primary(type='submit') サインイン
+    .col-sm-5.col-sm-offset-1
+      signup
