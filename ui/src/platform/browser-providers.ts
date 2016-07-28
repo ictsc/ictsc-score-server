@@ -31,7 +31,7 @@ export const APPLICATION_PROVIDERS = [
 
   provideRouter(routes),
   provideWebpack(asyncRoutes),
-  // providePrefetchIdleCallbacks(prefetchRouteCallbacks),
+  providePrefetchIdleCallbacks(prefetchRouteCallbacks),
 
   ...HTTP_PROVIDERS,
 

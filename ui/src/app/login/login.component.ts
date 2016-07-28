@@ -18,12 +18,6 @@ export class Login extends Miniform {
     password: "",
   }
 
-  private teamList: Array<any> = [];
-  private selectedTeamId: string;
-  private get selectedTeam(){
-    return this.teamList.find(t => t.id == parseInt(this.selectedTeamId))
-  }
-
   ngOnInit() {
   }
 

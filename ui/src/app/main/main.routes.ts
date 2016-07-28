@@ -11,6 +11,7 @@ let canActivate =  [AuthGuard];
 export const routes: RouterConfig = [
   { path: '',      component: Home,  canActivate},
   { path: 'login',  component: 'Login' },
+  { path: 'members',  component: 'Members' },
   { path: 'about', component: 'About',
     resolve: {
       'yourData': DataResolver
@@ -32,8 +33,9 @@ export const asyncRoutes: AsyncRoutes = {
   // we have to use the alternative syntax for es6-promise-loader to grab the routes
   'About': require('es6-promise-loader!../about'),
   'Detail': require('es6-promise-loader!../+detail'),
-  'Index': require('es6-promise-loader!../+detail'), // must be exported with detail/index.ts
+  'Index': require('es6-promise-loader!../+detail'),
   'Login': require('es6-promise-loader!../login'),
+  'Members': require('es6-promise-loader!../members'),
 };
 
 
@@ -42,6 +44,7 @@ export const asyncRoutes: AsyncRoutes = {
 export const prefetchRouteCallbacks: Array<IdleCallbacks> = [
   asyncRoutes['About'],
   asyncRoutes['Detail'],
+  asyncRoutes['Login'],
    // es6-promise-loader returns a function
 ];
 
