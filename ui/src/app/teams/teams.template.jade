@@ -1,0 +1,20 @@
+.page-header
+  h1 チーム一覧
+.table-responsive
+  table.table.table-striped.table-hover.table-condensed
+    thead
+      tr
+        th 番号
+        th チーム名
+        th 所属
+        th メンバー数
+        th 総スコア
+    tbody
+      tr(*ngFor="let item of list")
+        th {{ item?.id }}
+        td
+          a(href='{ "/teams/" + id }') {{ item.name }}
+        td {{ item.organization }}
+        td XXX
+        td
+          a(href='/answers/scores/detail.html') XXX

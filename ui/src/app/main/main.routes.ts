@@ -12,6 +12,7 @@ export const routes: RouterConfig = [
   { path: '',      component: Home,  canActivate},
   { path: 'login',  component: 'Login' },
   { path: 'members',  component: 'Members' },
+  { path: 'teams',  component: 'Teams' },
   { path: 'about', component: 'About',
     resolve: {
       'yourData': DataResolver
@@ -36,6 +37,7 @@ export const asyncRoutes: AsyncRoutes = {
   'Index': require('es6-promise-loader!../+detail'),
   'Login': require('es6-promise-loader!../login'),
   'Members': require('es6-promise-loader!../members'),
+  'Teams': require('es6-promise-loader!../teams'),
 };
 
 

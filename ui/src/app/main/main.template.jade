@@ -94,5 +94,5 @@ header
 .container
   footer(style="border-top: 1px solid #eee; margin: 20px 0; padding: 20px 0")
     ul.nav.nav-pills
-      li(*ngFor="let link of ['/','login', 'members']")
+      li(*ngFor="let link of ['/','login', 'members', 'teams']")
         a([routerLink]="[link]") {{link}}
