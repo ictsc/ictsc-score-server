@@ -1,5 +1,5 @@
 {
-  "name": "slack-channel-guide",
+  "name": "ictsc-score-server",
   "version": "0.0.1",
   "description": "",
   "keywords": [
@@ -7,7 +7,7 @@
     "webpack",
     "typescript"
   ],
-  "author": "t-kamijo <t-kamijo@sakura.ad.jp>",
+  "author": "kamijin_fanta <kamijin@live.jp>",
   "homepage": "",
   "license": "MIT",
   "scripts": {
@@ -98,6 +98,7 @@
     "html-webpack-plugin": "^2.21.0",
     "imports-loader": "^0.6.5",
     "istanbul-instrumenter-loader": "^0.2.0",
+    "jade": "^1.11.0",
     "jade-html-loader": "0.0.3",
     "jquery": "^3.1.0",
     "json-loader": "^0.5.4",
