@@ -16,7 +16,7 @@
           a(href='{ "/teams/" + team_id }') {{getTeam(item.team_id)?.name}}
         td {{getTeam(item.team_id)?.organization}}
         td
-          a(href='{ "/members/" + id }') {{item.name}}
+          a([routerLink]="['edit',item.id]") {{item.name}}
         td {{ roleName[item.role_id] }}
 .page-header
   h2 メンバー作成

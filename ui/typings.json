@@ -7,6 +7,7 @@
     "js-yaml": "registry:dt/js-yaml#3.5.2+20160316171810",
     "node": "registry:dt/node#6.0.0+20160621231320",
     "selenium-webdriver": "registry:dt/selenium-webdriver#2.44.0+20160317120654",
+    "showdown": "registry:dt/showdown#1.4.1+20160608102004",
     "source-map": "registry:dt/source-map#0.0.0+20160317120654",
     "uglify-js": "registry:dt/uglify-js#2.6.1+20160316155526",
     "webpack": "registry:dt/webpack#1.12.9+20160523035535"

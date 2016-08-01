@@ -186,7 +186,7 @@ module.exports = {
         loader: 'to-string!css!sass'
       },
       {
-        test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        test: /\.(ttf|otf|eot|svg|woff(2)?)(\?.*)?$/,
         loader: 'file-loader?name=fonts/[name].[ext]'
       }
     ]

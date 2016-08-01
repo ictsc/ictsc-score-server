@@ -19,7 +19,7 @@ form(name='form-signup', (ngSubmit)="submit()")
       label(for='input-login') メンバー ID
       input.form-control#input-login(name='login', type='text', [(ngModel)]="form.login")
       span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
-    .form-group
+    .form-group(*ngIf="!isEdit")
       label(for='input-password') パスワード
       input.form-control#input-password(name='password', type='password', [(ngModel)]="form.password")
     .text-right

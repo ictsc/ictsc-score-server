@@ -1,4 +1,5 @@
-import { Component , Input } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Component , Input, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Response } from '@angular/http';
 import { ApiService } from '../common/api.service'
@@ -10,6 +11,7 @@ import { Miniform } from "../common/miniform.component"
 })
 export class Signup extends Miniform {
   @Input() redirect: boolean = true;
+  @Input() edit: number = undefined;
 
   constructor(
     protected route: Router,
@@ -32,6 +34,31 @@ export class Signup extends Miniform {
       console.log("team list", r);
       this.teamList = (r as Array<any>);
     });
+  }
+
+  private memberSource: Observable<any[]>;
+
+  get isEdit(){
+    return typeof this.edit !== "undefined"
+  }
+  ngOnChanges(changes: SimpleChanges){
+    // 編集時の処理
+    if(!this.isEdit) return;
+    if(!this.memberSource) this.memberSource = this.api.members.list();
+
+    this.memberSource.combineLatest(Observable.of(this.edit))
+      .subscribe(r => {
+        let [members, id] = r;
+        let member = members.find(m => m.id == id);
+        console.log("editmode", members, id);
+
+        if(!member) return this.errorMessage = "メンバーが見つかりません。";
+        else this.errorMessage = undefined;
+
+        this.selectedTeamId = member.team_id;
+        this.form.login = member.login;
+        this.form.name = member.name;
+      });
   }
 
   post(){
