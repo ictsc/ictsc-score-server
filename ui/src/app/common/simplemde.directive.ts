@@ -1,7 +1,7 @@
 import {  ElementRef, SimpleChanges, Output, EventEmitter, Directive, Input } from '@angular/core';
 import "simplemde/dist/simplemde.min.css";
 import "font-awesome/css/font-awesome.min.css";
-let simplemde = require("simplemde/dist/simplemde.min.js");
+let simplemde = require("simplemde/src/js/simplemde.js");
 
 @Directive({
   selector: '[simplemde]',
