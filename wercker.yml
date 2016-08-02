@@ -1,20 +1,13 @@
-box: ruby:2.3.0
+box: kamijin/ruby-nodejs
 
 build:
   steps:
     - script:
-        name: set nodejs environment and install packages
-        code: |
-          curl -sL https://deb.nodesource.com/setup_6.x | bash -
-          sudo apt-get install -y nodejs
-          cd ui
-          npm install
-    - script:
         name: webpack build
         code: |
           cd ui
+          npm i
           npm run build:prod
-          mv dist/* ../public/
     - bundle-install
     - script:
         name: migrate database
