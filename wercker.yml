@@ -5,13 +5,13 @@ build:
     - bundle-install
     - script:
         name: migrate database
-        code: bundle exec rake db:migrate
+        code: RACK_ENV=test bundle exec rake db:migrate
     - script:
         name: load seed data into database
-        code: bundle exec rake db:seed_fu
+        code: RACK_ENV=test bundle exec rake db:seed_fu
     - script:
         name: run rspec
-        code: bundle exec rspec spec
+        code: RACK_ENV=test bundle exec rspec spec
   after-steps:
     - wantedly/pretty-slack-notify:
         webhook_url: $SLACK_WEBHOOK_URL
