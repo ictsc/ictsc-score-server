@@ -86,6 +86,7 @@ class Member < ActiveRecord::Base
   validates :login,           presence: true, uniqueness: true
   validates :hashed_password, presence: true
   validates :team,            presence: true, if: Proc.new {|member| not member.team_id.nil? }
+  validates :team,            presence: true, on: :sign_up
   validates :role,            presence: true
 
   has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :destroy
