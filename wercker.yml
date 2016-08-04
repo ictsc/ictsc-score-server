@@ -2,12 +2,12 @@ box: kamijin/ruby-nodejs
 
 build:
   steps:
-    - script:
-        name: webpack build
-        code: |
-          cd ui
-          npm i
-          npm run build:prod
+    # - script:
+    #     name: webpack build
+    #     code: |
+    #       cd ui
+    #       npm i
+    #       npm run build:prod
     - bundle-install
     - script:
         name: migrate database
