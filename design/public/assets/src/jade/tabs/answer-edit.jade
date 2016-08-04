@@ -1,0 +1,51 @@
+answer-edit
+	.panel
+		.panel-body
+			form(onsubmit='{ update_comment }', name='form-supplement-editing')
+				.form-group
+					label.col-sm-2.control-label 番号
+					.col-sm-10
+						p.form-control-static { comment.id }
+				.form-group
+					label.col-sm-2.control-label 投稿者
+					.col-sm-10
+						a.show.form-control-static(href='{ "/members/" + comment.member_id }') { member.name }
+				.form-group
+					label.col-sm-2.control-label(for='textarea-supplement-body') 本文
+					.col-sm-10
+						textarea.form-control#textarea-supplement-body(rows='10')
+				.text-right
+					button.btn.btn-primary(type='submit') 更新
+	script.
+		fetch(`/api/answers/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.comment = j;
+				this.update();
+				this.mde = this.activate_mde(this, "#textarea-supplement-body", j.text)
+
+				fetch(`/api/members/${this.comment.member_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.member = j
+						this.update();
+					})
+				})
+			});
+		});
+
+		update_comment() {
+			let formdata = new FormData();
+			formdata.set("text", this.mde.value());
+
+			fetch(`/api/answers/${this.opts.resource_id}/comments/${this.opts.sub_resource_id}`, {
+				method: "PATCH",
+				body: formdata,
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}

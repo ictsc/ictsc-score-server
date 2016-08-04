@@ -76,11 +76,26 @@ class App < Sinatra::Base
   end
 
   get "/?" do
-    haml :index
+    send_file settings.public_dir + "/index.html"
   end
 
-  get "/:name.html" do
-    redirect to(params[:name])
+  # [1] resource     : problems, answers, ...
+  # [3] sub-resource : supplements, questions, ...
+  #       resource   id   sub-resource
+  #         [1]      [2*]      [3*]     (*: optional)
+  get %r{^/(\w+)(?:/(\d+)(?:/(\w+)/\d+)?)?$} do |res, id, subres|
+    path = "#{settings.public_dir}/#{res}/"
+
+    path += if id.nil?
+      "list.html"
+    elsif subres.nil?
+      "detail.html"
+    else
+      "#{subres}/detail.html"
+    end
+
+    # puts res:res, id:id, subres: subres, path: path
+    send_file path
   end
 
   # get "/test/:message" do
@@ -89,41 +104,9 @@ class App < Sinatra::Base
   #   200
   # end
 
-  get "/signin" do
-    @title = "SIGN IN"
-    haml :signin, layout: :"layout-simple"
-  end
-
-  get "/problems" do
-    @title = "PROBLEM"
-    haml :problems
-  end
-
-  get "/users" do
-
-  end
-
-  get "/score" do
-
-  end
-
-  get "/answers" do
-    @title = "ANSWERS"
-    haml :answers
-  end
-
-  get "/issues" do
-    @title = "ISSUES"
-    haml :issues
-  end
-
   # get "/notifications" do
 
   # end
-
-  get "/manage" do
-
-  end
 
   not_found do
     if request.xhr?

@@ -1,0 +1,31 @@
+signin-form
+	form(onsubmit='{ do_login }', name='form-signin')
+		.form-group
+			label(for='input-login') メンバー ID
+			input.form-control#input-login(name='login', type='text')
+		.form-group
+			label(for='input-password') パスワード
+			input.form-control#input-password(name='password', type='password')
+		.text-right
+			button.btn.btn-primary(type='submit') サインイン
+	script.
+		do_login(e) {
+			const body = {
+				login: this.get_value(this, "#input-login"),
+				password: this.get_value(this, "#input-password"),
+			}
+
+			fetch("/api/session", {
+				method: "POST",
+				body: new FormData(this.root.querySelector("form")),
+				credentials: "same-origin"
+			}).then((res) => {
+				res.json().then((j) => {
+					if (j.status == "success") {
+						window.location.pathname = "/problems/list.html"
+					}
+				})
+			}).catch(res => {
+				console.log("Failed to sign in")
+			});
+		}

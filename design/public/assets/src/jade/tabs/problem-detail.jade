@@ -1,0 +1,56 @@
+problem-detail
+	.panel.panel-default
+		.panel-body
+			.form-horizontal
+				.form-group
+					label.col-sm-2.control-label 番号
+					.col-sm-10
+						p.form-control-static { problem.id }
+				.form-group
+					label.col-sm-2.control-label 問題名
+					.col-sm-10
+						p.form-control-static { problem.title }
+				.form-group
+					label.col-sm-2.control-label 本文
+					.col-sm-10
+						p.form-control-static
+							{ problem.text }
+				.form-group
+					label.col-sm-2.control-label 投稿者
+					.col-sm-10
+						a.form-control-static.show(href='{ "/members/" + creator_id }') { this.creator_name }
+				.form-group
+					label.col-sm-2.control-label 公開日時
+					.col-sm-10
+						p.form-control-static { date2str(problem.opened_at) }
+				.form-group
+					label.col-sm-2.control-label 締切日時
+					.col-sm-10
+						p.form-control-static { date2str(problem.opened_at) }
+				.form-group
+					label.col-sm-2.control-label 作成日時
+					.col-sm-10
+						p.form-control-static { date2str(problem.created_at) }
+				.form-group
+					label.col-sm-2.control-label 更新日時
+					.col-sm-10
+						p.form-control-static { date2str(problem.updated_at) }
+	script.
+		fetch(`/api/problems/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.problem = j;
+				this.update();
+
+				fetch(`/api/members/${this.problem.creator_id}`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.creator_name = j.name
+						this.update();
+					})
+				})
+			});
+		});
+

@@ -1,0 +1,17 @@
+extends /extends/_layout
+
+block vars
+	- signedIn = true
+	- isAnswers = true
+
+block title
+	+title('通知一覧')
+
+block riot_tags
+	+riot_script('notification-list')
+
+block content
+	.page-header
+		h1 通知一覧
+	.table-responsive
+		notification-list

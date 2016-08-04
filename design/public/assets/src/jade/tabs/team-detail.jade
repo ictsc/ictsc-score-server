@@ -1,0 +1,54 @@
+team-detail
+	.panel.panel-default
+		.panel-body
+			.form-horizontal
+				.form-group
+					label.col-sm-2.control-label チーム番号
+					.col-sm-10
+						p.form-control-static { team.id }
+				.form-group
+					label.col-sm-2.control-label チーム名
+					.col-sm-10
+						p.form-control-static { team.name }
+				.form-group
+					label.col-sm-2.control-label 所属
+					.col-sm-10
+						p.form-control-static { team.organization }
+				.form-group
+					label.col-sm-2.control-label 総スコア
+					.col-sm-10
+						p.form-control-static XXX
+		.container-fluid
+			.panel.panel-default
+				.panel-heading メンバー一覧
+				.table-responsive
+					table.table.table-striped.table-hover.table-condensed
+						thead
+							tr
+								th ユーザー名
+								th メンバー ID
+						tbody
+							tr(each='{ team_members }')
+								th { name }
+								td { login }
+	script.
+		this.members = {}
+
+		fetch(`/api/teams/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.team = j;
+				this.update();
+
+				fetch(`/api/members`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.members = j
+						this.team_members = j.filter((x) => { return x.team_id == this.team.id })
+						this.update();
+					})
+				})
+			});
+		});

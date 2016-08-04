@@ -1,7 +1,13 @@
-box: ruby:2.3.0
+box: kamijin/ruby-nodejs
 
 build:
   steps:
+    - script:
+        name: webpack build
+        code: |
+          cd ui
+          npm i
+          npm run build:prod
     - bundle-install
     - script:
         name: migrate database
@@ -15,3 +21,13 @@ build:
   after-steps:
     - wantedly/pretty-slack-notify:
         webhook_url: $SLACK_WEBHOOK_URL
+deploy:
+  steps:
+    - internal/docker-push:
+        registry: $REGISTRY_HOST
+        username: $REGISTRY_USERNAME
+        password: $REGISTRY_PASSWORD
+        repository: $REGISTRY_REPOSITORY
+        ports: "9999"
+        working-dir: /pipeline/source
+        cmd: ./wercker-run.sh

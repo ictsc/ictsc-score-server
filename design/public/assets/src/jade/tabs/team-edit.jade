@@ -1,0 +1,42 @@
+team-edit
+	.panel
+		.panel-body
+			form.form-horizontal(onsubmit='{ update_team }', name='form-team-editing')
+				.form-group
+					label.col-sm-2.control-label(for='input-team-id') チーム番号
+					.col-sm-10
+						p.form-control-static { team.id }
+				.form-group
+					label.col-sm-2.control-label(for='input-team-name') チーム名
+					.col-sm-10
+						input.form-control#input-team-name(type='text', name='name', value='{ team.name }')
+				.form-group
+					label.col-sm-2.control-label(for='input-organization') 所属
+					.col-sm-10
+						input.form-control#input-organization(type='text', name='organization', value='{ team.organization }')
+				.form-group
+					label.col-sm-2.control-label(for='input-score-total') 総スコア
+					.col-sm-10
+						p.form-control-static XXX
+				.text-right
+					button.btn.btn-primary(type='submit') 更新
+	script.
+		fetch(`/api/teams/${this.opts.resource_id}`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.team = j;
+				this.update();
+			});
+		});
+
+		update_team(e) {
+			fetch(`/api/teams/${this.opts.resource_id}`, {
+				method: "PATCH",
+				body: new FormData(this.root.querySelector("form")),
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}

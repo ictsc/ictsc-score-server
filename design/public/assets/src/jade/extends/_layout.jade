@@ -1,0 +1,130 @@
+- var site_name = 'ICTSC6'
+
+mixin title(page_name)
+	if page_name == ''
+		title #{site_name}
+	else
+		title #{page_name} - #{site_name}
+
+mixin riot_script(file_name)
+	script(src="/tabs-jade/" + file_name + ".jade" type='riot/tag' template='jade')
+
+doctype html
+html
+
+	head
+
+		block meta
+			meta(charset='UTF-8')
+			meta(name='viewport', content="width=device-width, initial-scale=1.0")
+			meta(http-equiv='X-UA-Compatible', content='IE=edge')
+
+		block title
+			+title('')
+
+		block stylesheets
+			link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+			link(rel='stylesheet', href='/bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css')
+			link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.min.css')
+			link(rel='stylesheet', href='/bower_components/simplemde/dist/simplemde.min.css')
+			link(rel='stylesheet', href='/assets/dist/css/style.min.css')
+
+		block additional_stylesheets
+
+	body
+
+		header
+			include /includes/_header
+
+		main
+			.container
+				block content
+					p コンテンツがありません。
+
+		footer
+			include /includes/_footer
+
+		block riot_tags
+
+		block scripts
+			script(src='/bower_components/jquery/dist/jquery.min.js')
+			script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+			script(src='/bower_components/simplemde/dist/simplemde.min.js')
+			script(src='/bower_components/dateformat/dist/dateformat.min.js')
+			script(src='/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js')
+
+			script(src='/bower_components/fastclick/lib/fastclick.js')
+			script.
+				$(function () {
+					FastClick.attach(document.body)
+				})
+
+			script(src='/bower_components/datatables.net/js/jquery.dataTables.min.js')
+
+			script(src='/bower_components/riot/riot+compiler.js')
+			script(src='/bower_components/jade/jade.js')
+			script(src='/bower_components/fetch/fetch.js')
+			script.
+				var member = riot.observable();
+
+				// test
+				member.hoge = function(p) {
+					console.log(p);
+				}
+
+				let opts = { member: member }
+
+				// try to get resouce id of current page: `/:resouce/:id`
+				// matches:                      [1]    [2]       [3]    [4]
+				const path_matcher = RegExp("^/(\\w+)/(\\d+)(?:/(\\w+)/(\\d+))?$")
+				const path_match = location.pathname.match(path_matcher)
+				if (path_match) {
+					[_,
+					 opts.resource,
+					 opts.resource_id,
+					 opts.sub_resource,
+					 opts.sub_resource_id] = path_match
+				}
+
+				const helpers = {
+					date2str: x => dateFormat("%m/%d %H:%i:%s", new Date(x)),
+					activate_datatable: () => {
+						$('table').DataTable({
+							"paging": false,
+							"searching": false,
+							"info": false
+						})
+					},
+					activate_mde: (self, selector, value) => {
+						return new SimpleMDE({
+							element: self.root.querySelector(selector),
+							initialValue: value,
+							spellChecker: false,
+						})
+					},
+					ids: (objs, key) => {
+						if (key === undefined) {
+							key = "id"
+						}
+						// collect unique `obj[key]` in objs
+						return objs.
+										reduce((ary, x) => { ary.push(x[key]); return ary; }, []).
+										filter((x, i, self) => { return self.indexOf(x) === i })
+					},
+					get_value: (self, id) => {
+						return self.root.querySelector(id).value
+					}
+				}
+
+				riot.mixin(helpers)
+				riot.mount("*", opts)
+
+			script.
+				$(function () {
+					var hash = document.location.hash
+					if (hash) {
+							$('a[data-toggle="tab"][href="' + hash + '"]').tab('show')
+					}
+				})
+
+		block additional_scripts

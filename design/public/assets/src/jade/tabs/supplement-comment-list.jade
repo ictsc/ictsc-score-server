@@ -1,0 +1,57 @@
+supplement-comment-list
+	.panel.panel-default
+		.panel-body
+			.chatbox
+				ul(each='{ comments }')
+					li
+							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/supplements/" + id }') 詳細
+							p.comment-body { text }
+							span.help-block.text-right { date2str(created_at) }
+				form(onsubmit='{ create_comment }', name='form-supplement-creation')
+					.form-group
+						label(for='textarea-supplement-body') 新規補足
+						textarea.form-control#textarea-supplement-body(rows='10')
+					.text-right
+						button.btn.btn-primary(type='submit') 投稿
+	script.
+		this.commented_members = {}
+
+		this.on("mount", () => {
+			this.mde = this.activate_mde(this, "#textarea-supplement-body")
+		});
+
+		fetch(`/api/problems/${this.opts.resource_id}/comments`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.comments = j
+
+				this.ids(this.comments, "member_id").
+					forEach((x) => {
+						fetch(`/api/members/${x}`, {
+							credentials: "same-origin"
+						}).then((res) => {
+							res.json().then((j) => {
+								this.commented_members[x] = j;
+								this.update();
+							})
+						})
+					})
+				this.update();
+			})
+		})
+
+		create_comment() {
+			let formdata = new FormData();
+			formdata.set("text", this.mde.value());
+
+			fetch(`/api/problems/${this.opts.resource_id}/comments`, {
+				method: "POST",
+				body: formdata,
+				credentials: "same-origin"
+			}).then((res) => {
+				location.reload()
+			}).catch(res => {
+			});
+		}

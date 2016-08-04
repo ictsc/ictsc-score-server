@@ -1,0 +1,113 @@
+answer-comment-list
+	.panel.panel-default
+		.panel-body
+			.form-horizontal.hidden
+				.form-group
+					label.col-sm-2.control-label チーム名
+					.col-sm-10
+						a.show.form-control-static(href='/teams/detail.html') WCDI
+				.form-group
+					label.col-sm-2.control-label 所属
+					.col-sm-10
+						p.form-control-static 日本工学院八王子専門学校
+				.form-group
+					label.col-sm-2.control-label 作成日時
+					.col-sm-10
+						p.form-control-static 2016-08-27 12:00
+				.form-group
+					label.col-sm-2.control-label 更新日時
+					.col-sm-10
+						p.form-control-static 2016-08-27 12:00
+			.chatbox
+				p.well.help-block.hidden まだ解答はありません。解答はひとつの問題にいくつでも投稿できます。わかったことはこまめに投稿しましょう。
+				ul(each='{ comments }')
+					li
+							a.author.help-block(href='{ "/members/" + member_id }') { parent.commented_members[member_id].name }
+							a.detail-link.help-block(href='{ "/problems/" + parent.opts.resource_id + "/answers/" + id }') 詳細
+							p.comment-body { text }
+							span.help-block.text-right { date2str(created_at) }
+				form(onsubmit='{ create_comment }', name='form-supplement-creation')
+					.form-group
+						label(for='textarea-answer-body') 新規解答
+						textarea.form-control#textarea-answer-body(rows='10')
+					.text-right
+						button.btn.btn-primary(type='submit') 投稿
+	script.
+		this.commented_members = {}
+
+		this.on("mount", () => {
+			this.mde = this.activate_mde(this, "#textarea-answer-body");
+		});
+
+		show_help() {
+			this.root.querySelector("p.well.help-block").classList.remove("hidden");
+		}
+
+		fetch(`/api/problems/${this.opts.resource_id}/answers`, {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				if (j.length == 0) {
+					this.show_help()
+					return;
+				}
+
+				this.answer = j[0];
+				//- this.update();
+
+				fetch(`/api/answers/${this.answer.id}/comments`, {
+					credentials: "same-origin"
+				}).then((res) => {
+					res.json().then((j) => {
+						this.comments = j
+
+						this.ids(this.comments, "member_id").
+							forEach((x) => {
+								fetch(`/api/members/${x}`, {
+									credentials: "same-origin"
+								}).then((res) => {
+									res.json().then((j) => {
+										this.commented_members[x] = j;
+										this.update();
+									})
+								})
+							})
+						this.update();
+					})
+				})
+			});
+		});
+
+		get_answer_id() {
+			return new Promise(function(resolve, reject){
+				if (this.answer) {
+					resolve(this.answer.id);
+				} else {
+					fetch(`/api/problems/${this.opts.resource_id}/answers`, {
+						method: "POST",
+						credentials: "same-origin"
+					}).then((res) => {
+						const location = res.headers.get("Location")
+						resolve(parseInt(location.match(/\d+$/)))
+					}).catch(res => {
+						reject();
+					});
+				}
+			});
+		}
+
+		create_comment() {
+			let formdata = new FormData();
+			formdata.set("text", this.mde.value());
+
+			this.get_answer_id().then((answer_id) => {
+				fetch(`/api/answers/${answer_id}/comments`, {
+					method: "POST",
+					body: formdata,
+					credentials: "same-origin"
+				}).then((res) => {
+					location.reload()
+				}).catch(res => {
+				});
+			})
+		}

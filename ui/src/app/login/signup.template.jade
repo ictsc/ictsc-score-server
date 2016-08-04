@@ -1,0 +1,26 @@
+.alert.alert-warning(*ngIf="errorMessage")
+  {{errorMessage}}
+form(name='form-signup', (ngSubmit)="submit()")
+  fieldset([disabled]="disabled")
+    .form-group
+      label(for='select-team-name') チーム名
+      select.form-control#select-team-name(name='team-name', [(ngModel)]="selectedTeamId")
+        option(value='0') チーム名を選択してください
+        option(*ngFor="let team of teamList" value='{{team.id}}') {{team.name}}
+    .form-group
+      label 所属
+      p.form-control-static {{ selectedTeam?selectedTeam.organization:"チーム名が未選択" }}
+        //- span.help-block(hide='{ selected_team }') チーム名を選択すると自動表示されます
+    .form-group
+      label(for='input-name', placeholder='(例: 山田 太郎)') ユーザー名
+      input.form-control#input-name(name='name', type='text', [(ngModel)]="form.name")
+      span.help-block
+    .form-group
+      label(for='input-login') メンバー ID
+      input.form-control#input-login(name='login', type='text', [(ngModel)]="form.login")
+      span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
+    .form-group(*ngIf="!isEdit")
+      label(for='input-password') パスワード
+      input.form-control#input-password(name='password', type='password', [(ngModel)]="form.password")
+    .text-right
+      button.btn.btn-primary(type='submit') サインアップ

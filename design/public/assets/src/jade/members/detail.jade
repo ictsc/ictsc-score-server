@@ -1,0 +1,30 @@
+extends /extends/_layout
+
+block vars
+	- signedIn = true
+	- isAccounts = true
+
+block title
+	+title('メンバー詳細')
+
+block riot_tags
+	+riot_script('member-detail')
+	+riot_script('member-edit')
+
+block content
+	.page-header
+		h1 メンバー詳細
+	ul.nav.nav-tabs(role='tablist')
+		li.active(role='presentation')
+			a#member-detail-tab(tabindex='1', role='tab', aria-controls='member-detail', href='#member-detail', data-toggle='tab')
+				i.fa.fa-search
+				|  詳細
+		li(role='presentation')
+			a#member-edit-tab(tabindex='1', role='tab', aria-controls='member-edit', href='#member-edit', data-toggle='tab')
+				i.fa.fa-edit
+				|  編集
+	.tab-content
+		.tab-pane.in.active#member-detail(role='tabpanel', aria-labelledby='member-detail-tab')
+			member-detail
+		.tab-pane#member-edit(role='tabpanel', aria-labelledby='member-edit-tab')
+			member-edit

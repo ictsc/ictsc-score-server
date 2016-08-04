@@ -1,0 +1,23 @@
+.page-header
+  h1 メンバー一覧
+.table-responsive
+  table.table.table-striped.table-hover.table-condensed
+    thead
+      tr
+        th メンバー ID
+        th チーム名
+        th 所属
+        th 名前
+        th ロール
+    tbody
+      tr(*ngFor="let item of list")
+        th {{ item.id }}
+        td
+          a(href='{ "/teams/" + team_id }') {{getTeam(item.team_id)?.name}}
+        td {{getTeam(item.team_id)?.organization}}
+        td
+          a([routerLink]="['edit',item.id]") {{item.name}}
+        td {{ roleName[item.role_id] }}
+.page-header
+  h2 メンバー作成
+  signup(redirect="false")

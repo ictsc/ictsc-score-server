@@ -27,9 +27,12 @@ Temporary Items
 .apdisk
 
 node_modules
+bower_components
+design/public/assets/dist
 
 .sass-cache
 .bundle
 
 db/*.db
 bin
+dist/

@@ -1,0 +1,35 @@
+problem-list
+	table.table.table-striped.table-hover.table-condensed
+		thead
+			tr
+				th 番号
+				th 問題名
+				th 公開日時
+				th 締切日時
+				th 修正コメント数
+				th 質問コメント数
+				th 解答コメント数
+		tbody
+			tr(each='{ problems }')
+				th
+					a(href='{ "/problems/" + id }') { id }
+				td
+					a(href='{ "/problems/" + id }') { title }
+				td { date2str(opened_at) }
+				td { date2str(closed_at) }
+				td
+					a(href='{ "/problems/" + id + "#supplement-comment-list" }') 3
+				td
+					a(href='{ "/problems/" + id + "#question-comment-list" }') 3
+				td
+					a(href='{ "/problems/" + id + "#answer-comment-list" }') 3
+	script.
+		fetch("/api/problems", {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.problems = j;
+				this.update();
+				this.activate_datatable();
+			});
+		});

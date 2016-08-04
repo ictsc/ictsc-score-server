@@ -1,0 +1,30 @@
+answer-list
+	table.table.table-striped.table-hover.table-condensed
+		thead
+			tr
+				th 番号
+				th.hidden 投稿チーム
+				th 問題番号
+				th 問題名
+				th スコア
+		tbody
+			tr(each='{ answers }')
+				th
+					a(href='{ "/problems/" + problem_id + "#answer-comment-list" }') { id }
+				td.hidden
+					a(href='{ "/teams/" + team_id }') WCDI
+				td { problem_id }
+				td
+					a(href='{ "/problems/" + problem_id }') 問題名がここに入ります
+				td
+					a(href='{ score_id ? ("/scores/" + score_id) : "#" }') -
+	script.
+		fetch("/api/answers", {
+			credentials: "same-origin"
+		}).then((res) => {
+			res.json().then((j) => {
+				this.answers = j;
+				this.update();
+				this.activate_datatable();
+			});
+		});
