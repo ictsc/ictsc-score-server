@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { ApiService, MiniList } from "../common";
-import { Signup } from "../login/signup.component";
+import { Time } from "../common";
 
 @Component({
-  template: require('./teams.template.jade'),
+  template: require('./issue.template.jade'),
 })
-export class Teams extends MiniList {
+export class Issue extends MiniList {
   constructor(private api: ApiService) {super()}
 
   ngOnInit() {
@@ -13,6 +13,8 @@ export class Teams extends MiniList {
   }
 
   get(){
-    return this.api.teams.get();
+    return this.api.issues.get();
   }
+
+  dateFormat(input: any){ return Time.dateFormat(input); }
 }

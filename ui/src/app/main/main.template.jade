@@ -9,83 +9,60 @@ header
 
   nav.navbar.navbar-default.navbar-fixed-top
     .container
-      if signedIn
-        .navbar-header
-          button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse-1', aria-expanded='false')
-            span.sr-only ナビゲーションを開閉する
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a.navbar-brand(href='/')
-            img(src='/assets/img/logo/ictsc-logo-white.png', height='50', alt='ICTSC のロゴ')
-        .collapse.navbar-collapse#navbar-collapse-1
-          ul.nav.navbar-nav
-            if isAccounts
-              li.active
-                a(href='/members') メンバー
-                  span.sr-only  (このページ)
-            else
+      .navbar-header
+        button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse-1', aria-expanded='false')
+          span.sr-only ナビゲーションを開閉する
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand(href='/')
+          img(src='/assets/img/logo/ictsc-logo-white.png', height='50', alt='ICTSC のロゴ')
+      .collapse.navbar-collapse#navbar-collapse-1
+        ul.nav.navbar-nav
+          li.active
+            a([routerLink]="['members']") メンバー
+              span.sr-only  (このページ)
+          li.active
+            a([routerLink]="['teams']") チーム
+              span.sr-only  (このページ)
+        ul.nav.navbar-nav.navbar-right
+          li.active
+            a([routerLink]="['problems']") 問題
+          li.active
+            a([routerLink]="['issue']") 質問
+          if isAnswers
+            li.active
+              a(href='/answers') 解答
+                span.sr-only  (このページ)
+          else
+            li
+              a(href='/answers') 解答
+          li.dropdown
+            button.dropdown-toggle.btn-block.text-left.navbar-button#notificationsDropdownMenu(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              i.fa.fa-bell.fa-fw
+              span.badge(data-count='4') 4
+            ul.dropdown-menu.notifications(aria-labelledby='notificationsDropdownMenu')
               li
-                a(href='/members') メンバー
-            if isTeams
-              li.active
-                a(href='/teams') チーム
-                  span.sr-only  (このページ)
-            else
+                a(href='/members/detail.html') 問題投稿者名
+                | さんが問題を公開しました。
+                a.content(href='/problems/detail.html') 問題名
+                small.meta 2016/06/19 12:00
               li
-                a(href='/teams') チーム
-          ul.nav.navbar-nav.navbar-right
-            if isProblems
-              li.active
-                a(href='/problems') 問題
-                  span.sr-only  (このページ)
-            else
+                a(href='/members/detail.html') 問題修正コメント投稿者名
+                | さんが補足を投稿しました。
+                a.content(href='/problems/comments/detail.html') 問題修正コメント本文
+                small.meta 2016/06/19 12:00
               li
-                a(href='/problems') 問題
-            if isQuestions
-              li.active
-                a(href='/questions') 質問
-                  span.sr-only  (このページ)
-            else
+                a(href='/members/detail.html') 問題質問コメント投稿者名
+                | さんが質問を投稿しました。
+                a.content(href='/problems/comments/detail.html') 問題質問コメント本文
+                small.meta 2016/06/19 12:00
               li
-                a(href='/questions') 質問
-            if isAnswers
-              li.active
-                a(href='/answers') 解答
-                  span.sr-only  (このページ)
-            else
-              li
-                a(href='/answers') 解答
-            li.dropdown
-              button.dropdown-toggle.btn-block.text-left.navbar-button#notificationsDropdownMenu(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-                i.fa.fa-bell.fa-fw
-                span.badge(data-count='4') 4
-              ul.dropdown-menu.notifications(aria-labelledby='notificationsDropdownMenu')
-                li
-                  a(href='/members/detail.html') 問題投稿者名
-                  | さんが問題を公開しました。
-                  a.content(href='/problems/detail.html') 問題名
-                  small.meta 2016/06/19 12:00
-                li
-                  a(href='/members/detail.html') 問題修正コメント投稿者名
-                  | さんが補足を投稿しました。
-                  a.content(href='/problems/comments/detail.html') 問題修正コメント本文
-                  small.meta 2016/06/19 12:00
-                li
-                  a(href='/members/detail.html') 問題質問コメント投稿者名
-                  | さんが質問を投稿しました。
-                  a.content(href='/problems/comments/detail.html') 問題質問コメント本文
-                  small.meta 2016/06/19 12:00
-                li
-                  a(href='/members/detail.html') 解答コメント投稿者名
-                  | さんが解答を投稿しました。
-                  a.content(href='/answers/comments/detail.html') 解答コメント本文
-                  small.meta 2016/06/19 12:00
-                a.btn.btn-default.btn-block.btn-readmore(href='/notifications/list.html') もっと見る
-      else
-        .navbar-header
-          a.navbar-brand(href='/')
-            img(src='/assets/dist/images/ictsc-logo-white.png' srcset='/assets/dist/images/ictsc-logo-white.png 1x, /assets/dist/images/ictsc-logo-white@2x.png 2x', height='50', alt='ICTSC のロゴ')
+                a(href='/members/detail.html') 解答コメント投稿者名
+                | さんが解答を投稿しました。
+                a.content(href='/answers/comments/detail.html') 解答コメント本文
+                small.meta 2016/06/19 12:00
+              a.btn.btn-default.btn-block.btn-readmore(href='/notifications/list.html') もっと見る
 
 
 .container
@@ -94,5 +71,5 @@ header
 .container
   footer(style="border-top: 1px solid #eee; margin: 20px 0; padding: 20px 0")
     ul.nav.nav-pills
-      li(*ngFor="let link of ['/','login', 'members', 'teams']")
+      li(*ngFor="let link of ['/','login', 'members', 'teams', 'teams', 'problems', 'issue']")
         a([routerLink]="[link]") {{link}}

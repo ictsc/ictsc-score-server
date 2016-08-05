@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../common/api.service'
 import { Observable } from "rxjs";
 
-export class Miniform {
+export class MiniForm {
   constructor() {}
   public form: any;
   public disabled = false;
@@ -34,4 +34,5 @@ export class Miniform {
       this.errorMessage = this.error(err);
     });
   }
+
 }

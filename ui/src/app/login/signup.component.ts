@@ -3,13 +3,13 @@ import { Component , Input, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Response } from '@angular/http';
 import { ApiService } from '../common/api.service'
-import { Miniform } from "../common/miniform.component"
+import { MiniForm } from "../common"
 
 @Component({
   selector: 'signup',
   template: require('./signup.template.jade')
 })
-export class Signup extends Miniform {
+export class Signup extends MiniForm {
   @Input() redirect: boolean = true;
   @Input() edit: number = undefined;
 

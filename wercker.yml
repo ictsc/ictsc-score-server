@@ -7,7 +7,7 @@ build:
         code: |
           cd ui
           npm i
-          npm run build:prod
+          npm run build
     - bundle-install
     - script:
         name: migrate database
