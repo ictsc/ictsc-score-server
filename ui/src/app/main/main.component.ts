@@ -10,9 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 @Component({
   selector: 'main',
   encapsulation: ViewEncapsulation.None,
-  styles: [
-    require('./main.style.scss'),
-  ],
+  styles: [ require('./main.style.scss') ],
   template: require("./main.template.jade")
 })
 export class Main {

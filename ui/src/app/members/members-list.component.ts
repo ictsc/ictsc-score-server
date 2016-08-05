@@ -1,26 +1,33 @@
+import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
-import { ApiService } from "../common/api.service";
+import { ApiService, MiniList } from "../common";
 import { Signup } from "../login/signup.component";
 
 @Component({
-  styles: [ require('./members.style.scss') ],
   template: require('./members-list.template.jade'),
   directives: [Signup]
 })
-export class MembersList {
-  constructor(private api: ApiService) {}
+export class MembersList extends MiniList {
+  constructor(private api: ApiService) {
+    super();
+    this.list = [[],[]];
+  }
 
-  private list: Object[] = [];
-  private team: Object[] = [];
   ngOnInit() {
-    this.api.members.get().subscribe(r => this.list = r);
-    this.api.teams.get().subscribe(r => this.team = r);
+    this.fetch();
+  }
+
+  get(){
+    return Observable.forkJoin(
+      this.api.members.get(),
+      this.api.teams.get()
+    );
   }
 
   getTeam(id: number){
-    if(!this.team)
+    if(!this.list[1])
       return undefined;
-    return this.team.find(r => (r as any).id == id);
+    return this.list[1].find(r => (r as any).id == id);
   }
 
   private roleName = {

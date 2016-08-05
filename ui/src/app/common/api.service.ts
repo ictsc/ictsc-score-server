@@ -35,6 +35,7 @@ export class ApiService {
   public members = new RestResources("members", this.http);
   public teams = new RestResources("teams", this.http);
   public problems = new RestResources("problems", this.http);
+  public issues = new RestResources("issues", this.http);
 }
 
 

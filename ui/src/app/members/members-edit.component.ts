@@ -1,19 +1,16 @@
 import { Response } from '@angular/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ApiService, Miniform } from "../common";
+import { ApiService, MiniForm } from "../common";
 import { Signup } from "../login/signup.component";
 
 import { Observable } from "rxjs";
 
 @Component({
-  styles: [
-    require('./members.style.scss'),
-  ],
   template: require('./members-edit.template.jade'),
   directives: [Signup]
 })
-export class MembersEdit extends Miniform {
+export class MembersEdit extends MiniForm {
   constructor(private api: ApiService, private route: ActivatedRoute) {super();}
 
   // private list: any[] = [];
