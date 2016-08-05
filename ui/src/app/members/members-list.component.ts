@@ -18,7 +18,7 @@ export class MembersList extends MiniList {
   }
 
   get(){
-    return Observable.forkJoin(
+    return Observable.zip(
       this.api.members.get(),
       this.api.teams.get()
     );

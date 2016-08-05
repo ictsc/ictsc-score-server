@@ -7,7 +7,7 @@ export class ApiService {
   constructor(private http: Http) {
   }
 
-  private session = new RestResources("session", this.http);
+  private session = new RestResources("session", this.http, false);
 
   login(user: string, password: string){
     return this.session.post({
@@ -60,7 +60,8 @@ export class LoginStatus {
 class RestResources<T1> {
   constructor(
     private resourcesName: string,
-    private http: Http
+    private http: Http,
+    public cacheResponseDefault = true
     // private permission: Array<RestPermission> = []
   ){}
 
@@ -90,11 +91,20 @@ class RestResources<T1> {
       this.httpOption
     ).map(this.responseFilter);
   }
-  private httpGet(path: string){
-    return this.http.get(
+  private httpGet(path: string, cacheResponse?: boolean){
+    if(typeof cacheResponse == "undefined") cacheResponse = this.cacheResponseDefault;
+    let getReq =  this.http.get(
       this.url(path),
       this.httpOption
-    ).map(this.responseFilter);
+    ).map(this.responseFilter).map(d=>{
+      TempStorage.setIteam(path, d);
+      return d;
+    });
+    let cache = TempStorage.getItem(path);
+
+    if(!cacheResponse || !cache) return getReq;
+    console.log("cache response", path, cache);
+    return Observable.concat(Observable.of(TempStorage.getItem(path)), getReq);
   }
   private httpDelete(path: string){
     return this.http.delete(
@@ -103,15 +113,15 @@ class RestResources<T1> {
     ).map(this.responseFilter);
   }
 
-  list(){
-    return this.get();
+  list(cacheResponse?: boolean){
+    return this.get(cacheResponse);
   }
-  get(){
-    return this.httpGet(`${this.resourcesName}`);
+  get(cacheResponse?: boolean){
+    return this.httpGet(`${this.resourcesName}`, cacheResponse);
   }
 
-  item(id: string){
-    return this.httpGet(`${this.resourcesName}/${id}`);
+  item(id: string, cacheResponse?: boolean){
+    return this.httpGet(`${this.resourcesName}/${id}`, cacheResponse);
   }
 
   add(content: T1){  // todo: type
@@ -125,4 +135,35 @@ class RestResources<T1> {
     return this.httpPut(`${this.resourcesName}/${id}`, content);
   }
 
+}
+
+
+interface TempStorageDataSet {
+  timestamp: number;
+  data: any;
+}
+export class TempStorage {
+  static expire = 1000 * 60 * 5; // 5m
+  static storage: Storage = sessionStorage;
+
+  static stringfy(data: any){
+    return JSON.stringify(<TempStorageDataSet>{
+      timestamp: new Date().valueOf(),
+      data,
+    });
+  }
+  static parse<T>(data: string, defaultValue: T): T{
+    let obj = JSON.parse(data) as TempStorageDataSet;
+    if(obj && obj.timestamp + this.expire > new Date().valueOf()) return obj.data;
+    return defaultValue;
+  }
+  static setIteam(id, data: any){
+    this.storage.setItem(id, this.stringfy(data));
+  }
+  static getItem<T>(id, defaultValue: T = undefined){
+    return this.parse(this.storage.getItem(id), defaultValue);
+  }
+  static clear(){
+    return
+  }
 }
