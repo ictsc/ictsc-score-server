@@ -6,6 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "bower": "^1.7.9",
+    "del": "^2.2.1",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.0.7",
     "gulp-imagemin": "^3.0.1",
@@ -13,6 +14,7 @@
     "gulp-load-plugins": "^1.2.2",
     "gulp-notify": "^2.2.0",
     "gulp-plumber": "^1.1.0",
+    "gulp-pug": "^3.0.4",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.3.1",
     "gulp-sourcemaps": "^1.6.0",
