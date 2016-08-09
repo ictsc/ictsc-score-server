@@ -116,7 +116,11 @@ class MemberRoutes < Sinatra::Base
       halt 403
     end
 
-    if @member.save
+
+    context = :create
+    context = :sign_up if not logged_in?
+
+    if @member.save(context: context)
       status 201
       headers "Location" => to("/api/members/#{@member.id}")
       json @member, except: [:hashed_password]

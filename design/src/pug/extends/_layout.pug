@@ -1,0 +1,44 @@
+- var site_name = 'ICTSC6'
+
+mixin title(page_title)
+	if page_title == ''
+		title #{site_name}
+	else
+		title #{page_title} - #{site_name}
+
+doctype html
+html
+
+	head
+
+		block meta
+			meta(charset='UTF-8')
+			meta(name='viewport', content="width=device-width, minimum-scale=1, initial-scale=1.0")
+
+		block title
+			+title('')
+
+		block stylesheets
+			link(rel='stylesheet', href='/bower_components/sanitize.css/dist/sanitize.min.css')
+			link(rel='stylesheet', href='/bower_components/datatables.net-dt/css/jquery.dataTables.min.css')
+			link(rel='stylesheet', href='/bower_components/simplemde/dist/simplemde.min.css')
+			link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.min.css')
+			link(rel='stylesheet', href='/assets/css/style.min.css')
+
+	body
+
+		header
+			include /includes/_header
+
+		main
+			.container.clearfix
+				block content
+					p コンテンツがありません。
+
+		footer
+			include /includes/_footer
+
+		block scripts
+			script(src='/bower_components/jquery/dist/jquery.min.js')
+			script(src='/bower_components/datatables.net/js/jquery.dataTables.min.js')
+			script(src='/bower_components/simplemde/dist/simplemde.min.js')
