@@ -24,7 +24,10 @@
     "run-sequence": "^1.2.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp",
+    "watch": "gulp watch",
+    "postinstall": "bower install"
   },
   "author": "",
   "license": "ISC"
