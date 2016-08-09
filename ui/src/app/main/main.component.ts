@@ -4,13 +4,17 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { AppState } from './main.service';
 import 'bootstrap/dist/css/bootstrap.css';
+// import '../../../../design/public/assets/css/style.css';
 
 
 
 @Component({
   selector: 'main',
   encapsulation: ViewEncapsulation.None,
-  styles: [ require('./main.style.scss') ],
+  styles: [
+    require('../../../../design/src/scss/style.scss'),
+    `body { font-family: "游ゴシック Medium", "メイリオ", meiryo, "Helvetica Neue", Helvetica, Arial, sans-serif; }`
+  ],
   template: require("./main.template.jade")
 })
 export class Main {

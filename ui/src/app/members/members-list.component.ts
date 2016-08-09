@@ -18,7 +18,7 @@ export class MembersList extends MiniList {
   }
 
   get(){
-    return Observable.zip(
+    return Observable.combineLatest(
       this.api.members.get(),
       this.api.teams.get()
     );

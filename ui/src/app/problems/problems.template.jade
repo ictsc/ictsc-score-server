@@ -18,8 +18,8 @@
         th {{ item?.id }}
         td
           a(href='{ "/teams/" + id }') {{ item.title }}
-        td {{ dateFormat(item.opened_at) }}
-        td {{ dateFormat(item.closed_at) }}
+        td {{ item.opened_at | time }}
+        td {{ item.closed_at | time }}
         td 12345
         td 12345
         td 12345

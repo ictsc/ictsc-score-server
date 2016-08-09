@@ -15,6 +15,4 @@ export class Problems extends MiniList {
   get(){
     return this.api.problems.get();
   }
-
-  dateFormat(input: any){ return Time.dateFormat(input); }
 }

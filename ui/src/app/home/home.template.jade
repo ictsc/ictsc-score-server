@@ -1,6 +1,147 @@
-h1 hello jade
 div
-	.page-header
-		h2 Home
-	signup-form
+  .alert.alert-warning(*ngIf="errorMessage")
+    {{errorMessage}}
+  .column.column_thickness_thin
+    .row
+      section
+        .row__header
+          h1.title お知らせ
+        .row__body
+          .panel
+            section
+              .panel__header
+                h1.title
+                  i.fa.fa-fw.fa-thumb-tack(aria-hidden='true')
+                  | スケジュール
+                button.icon-button.icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+                button.text-button.text-button_type_cancel.pull-right(type='button') キャンセル
+              .panel__body
+                | 1日目:
+                br
+                | 10:00 - 12:00 競技時間 (午前)
+                br
+                | 12:00 - 13:00 昼食
+                br
+                | 13:00 - 15:30 競技時間 (午後)
+                br
+                | 15:30 - 17:00 企業紹介
+                br
+                | 17:00 - 18:30 懇親会
+              .panel__footer.clearfix
+                button.icon-button.icon-button_type_delete.fa.fa-times.pull-left(type='button')
+                  span.icon-button__label 削除
+                .posted-at 01/01 00:00 (
+                  span.elapsed 5
+                  |  分前)
+    .row
+      .row__body
+        .panel
+          section
+            .panel__header
+              h1.title お知らせ投稿
+              .form-item
+                input#checkbox-pinning(type='checkbox', name='pinning')
+                label.optional(for='checkbox-pinning')
+                  i.fa.fa-fw.fa-thumb-tack(aria-hidden='true')
+                  | お知らせ固定
+            .panel__body
+              .form-item
+                label(for='input-panel-title') タイトル
+                input#input-panel-title(type='text', name='panel-title')
+              .form-item
+                label(for='textarea-panel-body') 本文
+                textarea#textarea-panel-body(name='panel-body')
+            .panel__footer.clearfix
+              button.button.button_color_green.pull-right(type='submit') 投稿
+        .panel
+          section
+            .panel__header
+              .form-item
+                input#checkbox-pinning(type='checkbox', name='pinning')
+                label.optional(for='checkbox-pinning')
+                  i.fa.fa-fw.fa-thumb-tack(aria-hidden='true')
+                  | お知らせ固定
+              button.icon-button.icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+              button.text-button.text-button_type_cancel.pull-right(type='button') キャンセル
+              .form-item
+                label(for='input-panel-title') タイトル
+                input#input-panel-title(type='text', name='panel-title')
+            .panel__body
+              .form-item
+                label(for='textarea-panel-body') 本文
+                textarea#textarea-panel-body(name='panel-body')
+            .panel__footer.clearfix
+              button.icon-button.icon-button_type_delete.fa.fa-times.pull-left(type='button')
+                span.icon-button__label 削除
+              button.button.button_color_green.pull-right(type='submit') 更新
+              .posted-at 01/01 00:00 (
+                span.elapsed 5
+                |  分前)
+        .panel
+          section
+            .panel__header
+              section
+                h1.title タイトル
+              button.icon-button.icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+            .panel__body
+              p 本文本文本文本文本文本文本文本文
+            .panel__footer.clearfix
+              .posted-at 01/01 00:00 (
+                span.elapsed 5
+                |  分前)
+  .column.column_thickness_thin
+    .row
+      section
+        .row__header
+          h1.title 公開中の問題
+        .row__body
+          .panel(*ngFor="let item of problems", [ngClass]="{panel_type_new: item.isNew}")
+            .panel__header
+              p.supplement 回答締め切り
+              span.closed-at {{ item.closed_at | time }}
+            .panel__body
+              p {{ item.id }} {{ item.title }}
+  .column.column_thickness_thin
+    .row
+      section
+        .row__header
+          h1.title 質問・補足のアップデート
+        .row__body
+          .panel
+            .panel__header
+              span.notification-label.notification-label_type_supplement 補足
+            .panel__body
+              p 1 ちょーーーーーーーーーーーーながいタイトルがついてる問題に補足が追加されました。
+            .panel__footer.clearfix
+              .posted-at 01/01 00:00 (
+                span.elapsed 5
+                |  分前)
+          .panel
+            .panel__header
+              span.notification-label.notification-label_type_question 質問
+            .panel__body
+              p xxxxxのxxについて
+            .panel__footer.clearfix
+              .posted-at 01/01 00:00 (
+                span.elapsed 5
+                |  分前)
+          .panel
+            .panel__header
+              span.notification-label.notification-label_type_supplement 補足
+            .panel__body
+              p 1 ちょーーーーーーーーーーーーながいタイトルがついてる問題に補足が追加されました。
+            .panel__footer.clearfix
+              .posted-at 01/01 00:00 (
+                span.elapsed 5
+                |  分前)
+          .panel
+            .panel__header
+              span.notification-label.notification-label_type_question 質問
+            .panel__body
+              p xxxxxのxxについて
+            .panel__footer.clearfix
+              .posted-at 01/01 00:00 (
+                span.elapsed 5
+                |  分前)
+
 
