@@ -1,0 +1,144 @@
+extends /extends/_layout
+
+block title
+	+title('参加メンバー')
+
+block content
+
+	h1.page-title 参加メンバー
+
+	table.member-list.member-list_of_participant
+		thead
+			tr
+				th.sort.sort_direction_asc メンバー番号
+				th.sort.sort_direction_asc 名前
+				th.sort.sort_direction_asc ユーザー名
+				th.sort.sort_direction_desc チーム
+				th.sort.sort_direction_asc 所属
+				th.sort.sort_direction_asc ロール
+		tbody
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すこしながめのチームめい
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すこしながめのチームめい
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すこしながめのチームめい
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すこしながめのチームめい
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すこしながめのチームめい
+				td すーこしながめのがっこうめい
+				td Participant
+
+	h1.page-title 運営メンバー
+
+	table.member-list.member-list_of_admin
+		thead
+			tr
+				th.sort.sort_direction_asc メンバー番号
+				th.sort.sort_direction_asc 名前
+				th.sort.sort_direction_asc ユーザー名
+				th.sort.sort_direction_asc 所属
+				th.sort.sort_direction_desc ロール
+		tbody
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すーこしながめのがっこうめい
+				td Participant
+			tr
+				th 100
+				td
+					i.fa.fa-fw.fa-user
+					| 歳納京子
+				td mirakurun
+				td すーこしながめのがっこうめい
+				td Participant
+	.member-list-buttons
+		button.icon-button.icon-button_shape_circle
+			i.fa.fa-plus-circle(aria-hidden='true')
+		button.icon-button.icon-button_shape_circle
+			i.fa.fa-chevron-circle-up(aria-hidden='true')
+		button.icon-button.icon-button_shape_circle.icon-button__label 参加者
+		button.icon-button.icon-button_shape_circle.icon-button__label 運営
+	.modal.modal_state_active.clearfix
+		.form-item
+			label(for='input-member-name') ユーザー名
+			input#input-member-name(type='text', name='member-name')
+		.form-item
+			label(for='input-member-id') メンバー ID
+			input#input-member-id(type='text', name='member-id')
+		.form-item
+			label(for='input-team-name') チーム名
+			select#input-team-name(name='team-name')
+				option(value='0') チーム名を選択してください
+		.form-item
+			label(for='static-school-name') 所属
+			p#static-school-name.supplement.supplement__important チーム名を選択すると自動表示されます
+		.form-item
+			label(for='input-password') パスワード
+			input#input-password(type='password', name='password')
+		.form-item
+			label(for='input-role') ロール
+			input#input-role(type='text', name='role')
+		button.button.button_color_green.button_size_large.pull-right(type='submit') メンバー追加

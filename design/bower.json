@@ -18,7 +18,9 @@
   "dependencies": {
     "datatables.net": "^1.10.12",
     "font-awesome": "fontawesome#^4.6.3",
-    "simplemde": "^1.11.1"
+    "simplemde": "^1.11.1",
+    "bootstrap": "^3.3.7",
+    "sanitize.css": "^2.0.0"
   },
   "devDependencies": {
     "datatables.net-dt": "^1.10.12"

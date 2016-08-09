@@ -19,6 +19,7 @@ html
 			+title('')
 
 		block stylesheets
+			link(rel='stylesheet', href='/bower_components/sanitize.css/dist/sanitize.min.css')
 			link(rel='stylesheet', href='/bower_components/datatables.net-dt/css/jquery.dataTables.min.css')
 			link(rel='stylesheet', href='/bower_components/simplemde/dist/simplemde.min.css')
 			link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.min.css')
@@ -30,8 +31,9 @@ html
 			include /includes/_header
 
 		main
-			block content
-				p コンテンツがありません。
+			.container.clearfix
+				block content
+					p コンテンツがありません。
 
 		footer
 			include /includes/_footer
