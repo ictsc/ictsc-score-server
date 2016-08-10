@@ -5,19 +5,19 @@ block title
 
 block content
 
-	h1.page-title.page-title_type_bordered サインイン
+	h1.p-page-title.p-page-title_type_bordered サインイン
 
-	form.form-panel(name='form-signin', action='/dashboard.html')
+	form.p-form-panel(name='form-signin', action='/dashboard.html')
 
-		.form-item
+		.p-form-item
 			label(for='input-member-id') メンバー ID
 			input#input-member-id(type='text', name='member-id')
-			p.supplement 半角英数字、ハイフン("-")、アンダースコア("_")、ピリオド(".")、xx 〜 xx 文字
+			p.p-supplement 半角英数字、ハイフン("-")、アンダースコア("_")、ピリオド(".")、xx 〜 xx 文字
 
-		.form-item
+		.p-form-item
 			label(for='input-password') パスワード
 			input#input-password(type='password', name='password')
 
-		button.button.button_color_green.button_size_large.button_of_signin.center-block(type='submit') サインイン
+		button.p-button.p-button_color_green.p-button_size_large.p-button_of_signin.center-block(type='submit') サインイン
 
 		a.alternative-link(href='/signup.html') サインアップはこちら

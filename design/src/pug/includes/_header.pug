@@ -1,23 +1,24 @@
-.header.clearfix
-    img.logo(src='/assets/images/ictsc-logo-white.svg', width='117', height='50' alt='ICTSC のロゴ')
-    .header__left
-        ul.list
-            li.list__item
-                a(href='#') メンバー
-            li.list__item
-                a(href='#') チーム
-    .header__right
-        ul.list
-            li.list__item
-                a(href='#') トップ
-            li.list__item
-                a(href='#') 問題
-            li.list__item
-                a(href='#') 質問
-            li.list__item
+.p-header.u-cf
+    img.c-logo(src='/assets/images/ictsc-logo-white.svg', width='117', height='50' alt='ICTSC のロゴ')
+    .p-header__left
+        ul.p-list
+            li.p-list__item
+                a(href='/member-list.html') メンバー
+            li.p-list__item
+                a(href='/team-list.html') チーム
+    .p-header__right
+        ul.p-list
+            li.p-list__item
+                a(href='/dashboard.html') トップ
+                    .notification-badge
+            li.p-list__item
+                a(href='/problem-list.html') 問題
+            li.p-list__item
+                a(href='/question-list.html') 質問
+            li.p-list__item
                 a(href='#') 解答
-            li.list__item
+            li.p-list__item
                 a(href='#') ログアウト
-    .clock
-        .clock__date 8/27
-        .clock__time 13:02
+    .c-clock
+        .c-clock__date 8/27
+        .c-clock__time 13:02

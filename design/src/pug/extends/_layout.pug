@@ -1,4 +1,4 @@
-- var site_name = 'ICTSC6'
+- var site_name = 'ICTSC6 大会専用サイト'
 
 mixin title(page_title)
 	if page_title == ''
@@ -19,6 +19,7 @@ html
 			+title('')
 
 		block stylesheets
+			link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
 			link(rel='stylesheet', href='/bower_components/sanitize.css/dist/sanitize.min.css')
 			link(rel='stylesheet', href='/bower_components/datatables.net-dt/css/jquery.dataTables.min.css')
 			link(rel='stylesheet', href='/bower_components/simplemde/dist/simplemde.min.css')
@@ -31,7 +32,7 @@ html
 			include /includes/_header
 
 		main
-			.container.clearfix
+			.p-container.u-cf
 				block content
 					p コンテンツがありません。
 
@@ -40,5 +41,6 @@ html
 
 		block scripts
 			script(src='/bower_components/jquery/dist/jquery.min.js')
+			script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
 			script(src='/bower_components/datatables.net/js/jquery.dataTables.min.js')
 			script(src='/bower_components/simplemde/dist/simplemde.min.js')
