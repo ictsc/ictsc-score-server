@@ -47,6 +47,7 @@ block content
 	.l-column.l-column_size_1of2.l-column_type_bordered
 		button.p-button-toggle-width.p-button-toggle-width__right
 		button.c-tab.c-tab_state_active(type='button') 解答
+		button.c-tab(type='button') 質問
 		.c-tab-panel-heading.pull-right
 			span.c-score
 				| 得点
@@ -57,6 +58,11 @@ block content
 			button.p-button.p-button_color_green.hidden 採点
 		.c-tab-panel
 			.c-tab-panel__content
+
+				.u-cf
+					textarea#textarea-question-comment(type='text', name='question-comment', placeholder='コメントを記入してください')
+					button.p-button.p-button_color_green.pull-right(type='button') 送信
+
 				.c-message-panel.u-cf
 					span.c-message-panel__name 3 すこし長めのチーム名
 					| を採点

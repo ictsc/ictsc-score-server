@@ -931,15 +931,20 @@ tr {
 
 .c-tab {
 	display: inline-block;
-	padding: 15px 25px;
-	border: 1px solid #fdbbcc;
-	border-bottom: none;
+	border: none;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
+	padding: 15px 25px;
 	color: #fd6d92;
 	font-size: 1.2em;
 	font-weight: bold;
 	background-color: #fff;
+	box-sizing: border-box;
+
+	&.c-tab_state_active {
+		border: 1px solid #fdbbcc;
+		border-bottom: 1px solid transparent;
+	}
 }
 
 .c-tab-panel-heading {
@@ -980,17 +985,16 @@ tr {
 	.c-tab-panel__state-column {
 		float: left;
 		width: 70px;
+		margin-right: 20px;
 	}
 
 	.c-tab-panel__content {
 		overflow: hidden;
-		padding-left: 20px;
+		margin-bottom: 20px;
 	}
 }
 
 .c-message-panel {
-	overflow: scroll;
-	height: 60vh;
 	margin-bottom: 20px;
 
 	a {
@@ -1001,6 +1005,11 @@ tr {
 		font-size: 1.6em;
 		margin-right: 10px;
 		margin-bottom: 10px;
+	}
+
+	&.c-message-panel_type_fixed {
+		overflow: scroll;
+		height: 60vh;
 	}
 
 	.c-message-panel__body {
@@ -1084,8 +1093,11 @@ tr {
 
 .c-filter-list {
 	padding-bottom: 20px;
-	border-bottom: 1px solid #fdbbcc;
 	text-align: center;
+
+	&.c-filter-list_type_bordered {
+		border-bottom: 1px solid #fdbbcc;
+	}
 
 	.c-filter-list__heading {
 		display: inline-block;
@@ -1218,3 +1230,8 @@ tr {
 		}
 	}
 }
+
+.c-question-post {
+	margin-bottom: 20px;
+}
+
