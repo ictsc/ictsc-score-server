@@ -90,6 +90,21 @@ class NotificationRoutes < Sinatra::Base
               end
             end
 
-    json notifications.sort_by{|x| x[:created_at] }.reverse
+    filter_time_after = nil
+    if params[:after]
+      begin
+        filter_time_after = DateTime.parse(params[:after])
+      rescue
+        halt 400
+      end
+    end
+
+    notifications = notifications.sort_by{|x| x[:created_at] }.reverse
+    if filter_time_after
+      notifications = notifications.select{|x| filter_time_after <= x[:created_at] }
+      json notifications
+    else
+      json notifications
+    end
   end
 end
