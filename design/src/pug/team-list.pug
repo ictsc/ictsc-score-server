@@ -1,0 +1,119 @@
+extends /extends/_layout
+
+block title
+	+title('参加チーム')
+
+block content
+
+	h1.p-page-title 参加チーム
+
+	.c-team-panel-wrapper
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  1
+			.team-panel__right
+				.c-team-name ごらく部
+				.c-school-name 七森中学校
+				.c-total-score 総スコア 100
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  2
+			.team-panel__right
+				.c-team-name すこし長めのチーム名
+				.c-school-name すこし長めの学校名
+				.c-total-score 総スコア 200
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  3
+			.team-panel__right
+				.c-team-name チーム名
+				.c-school-name かなーーーーりながめの学校めい
+				.c-total-score 総スコア 300
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  1
+			.team-panel__right
+				.c-team-name ごらく部
+				.c-school-name 七森中学校
+				.c-total-score 総スコア 100
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  2
+			.team-panel__right
+				.c-team-name すこし長めのチーム名
+				.c-school-name すこし長めの学校名
+				.c-total-score 総スコア 200
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  3
+			.team-panel__right
+				.c-team-name チーム名
+				.c-school-name かなーーーーりながめの学校めい
+				.c-total-score 総スコア 300
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  1
+			.team-panel__right
+				.c-team-name ごらく部
+				.c-school-name 七森中学校
+				.c-total-score 総スコア 100
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  2
+			.team-panel__right
+				.c-team-name すこし長めのチーム名
+				.c-school-name すこし長めの学校名
+				.c-total-score 総スコア 200
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  3
+			.team-panel__right
+				.c-team-name チーム名
+				.c-school-name かなーーーーりながめの学校めい
+				.c-total-score 総スコア 300
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  1
+			.team-panel__right
+				.c-team-name ごらく部
+				.c-school-name 七森中学校
+				.c-total-score 総スコア 100
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  2
+			.team-panel__right
+				.c-team-name すこし長めのチーム名
+				.c-school-name すこし長めの学校名
+				.c-total-score 総スコア 200
+		a(href='/team-detail.html').team-panel
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure  3
+			.team-panel__right
+				.c-team-name チーム名
+				.c-school-name かなーーーーりながめの学校めい
+				.c-total-score 総スコア 300
+
+	form(name='create-team', action='#')
+		.team-panel.team-panel_type_form
+			.team-panel__left
+				.c-entry-number Entry no.
+					span.c-entry-number__figure
+						input.p-form-item.p-form-item_type_inline#input-team-number(type='number')
+			.team-panel__right
+				.c-team-name
+					input#input-team-name(type='text', name='team-name', placeholder='チーム名')
+				.c-school-name
+					input#input-school-name(type='text', name='school-name', placeholder='所属')
+		button.p-button.p-button_color_green.p-button_size_large.center-block(type='submit') チーム追加

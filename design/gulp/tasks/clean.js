@@ -5,8 +5,8 @@ var del = require('del');
 
 var clean = function() {
 	return del([
-		config.root + 'public/assets/**/*',
-		config.root + 'public/**/*.html'
+		config.dest + '**/*',
+		config.dest + '../**/*.html',
 	]);
 };
 

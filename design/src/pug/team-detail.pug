@@ -1,0 +1,72 @@
+extends /extends/_layout
+
+block title
+	+title('すこし長めのチーム名の得点と詳細')
+
+block content
+
+	h1.p-page-title.p-page-title_type_bordered.p-page-title_with_button
+		.p-page-title__left
+			.p-page-title__entry-number Entry no.
+				.c-figure  1
+		.p-page-title__right
+			span.c-school-name 七森中学校
+			span.c-team-name すこし長めのチーム名
+			| の得点と詳細
+		button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+
+	.c-member-list
+		a.c-member-list__item(href='/member-detail.html')
+			.c-member-name 赤座あかり
+			.c-member-id akkarin
+		a.c-member-list__item(href='/member-detail.html')
+			.c-member-name 歳納京子
+			.c-member-id mirakurun
+		a.c-member-list__item(href='/member-detail.html')
+			.c-member-name 船見結衣
+			.c-member-id yui422
+		a.c-member-list__item(href='/member-detail.html')
+			.c-member-name 吉川ちなつ
+			.c-member-id Chi-na
+		a.c-member-list__item(href='/member-detail.html')
+			.c-member-name 古谷向日葵
+			.c-member-id Tsundere
+		button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+
+	.c-score-board.center-block
+		p.c-total-score
+			| 総スコア
+			span.c-total-score__figure  456
+			|  点
+			button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+			ul.c-score-list
+				li.c-score-list__item
+					a(href='/problem-detail-mark.html')
+						span.score-number 1
+						span.problem-name 普通の長さのタイトル名がついてる次の問題
+						span.score 100 点
+				li.c-score-list__item
+					a(href='/problem-detail-mark.html')
+						span.score-number 2
+						span.problem-name ちょーーーーーーーーーーながいタイトルがついてる前の問題
+						span.score 200 点
+				li.c-score-list__item
+					a(href='/problem-detail-mark.html')
+						span.score-number 3
+						span.problem-name 普通の長さのタイトル名がついてる次の問題
+						span.score 300 点
+				li.c-score-list__item
+					a(href='/problem-detail-mark.html')
+						span.score-number 4
+						span.problem-name ちょーーーーーーーーーーながいタイトルがついてる前の問題
+						span.score 400 点
+				li.c-score-list__item
+					a(href='/problem-detail-mark.html')
+						span.score-number 5
+						span.problem-name 普通の長さのタイトル名がついてる次の問題
+						span.score 500 点
+				li.c-score-list__item
+					a(href='/problem-detail-mark.html')
+						span.score-number 6
+						span.problem-name ちょーーーーーーーーーーながいタイトルがついてる前の問題
+						span.score 600 点
