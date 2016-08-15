@@ -59,11 +59,15 @@ class NotificationRoutes < Sinatra::Base
               end
             end
 
-  	Comment.where(commentable_type: "Issue") \
-  	       .joins("INNER JOIN issues ON issues.id = comments.commentable_id") \
-  	       .where(issues: {team_id: 1}) \
-  	       .order(:updated_at) \
-           .map do |x|
+  	comments = Comment.where(commentable_type: "Issue") \
+  	                  .joins("INNER JOIN issues ON issues.id = comments.commentable_id") \
+
+    if current_user.team_id
+    	comments = comments.where(issues: {team_id: current_user.team_id }) \
+    end
+
+  	comments.order(:updated_at) \
+            .map do |x|
               resource_info = {
                 resource: "Comment",
                 resource_id: x.id,
