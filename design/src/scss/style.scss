@@ -333,6 +333,12 @@ tr {
 		font-weight: normal;
 	}
 
+	.c-member-name {
+		font-size: 1.4em;
+		font-weight: normal;
+		line-height: 1.7;
+	}
+
 	.c-problem-number {
 		margin-bottom: 5px;
 		font-size: 0.6em;
@@ -1235,3 +1241,14 @@ tr {
 	margin-bottom: 20px;
 }
 
+.u-member-detail {
+	max-width: 600px;
+
+	.separator {
+		color: #eee;
+	}
+
+	.control-label {
+		line-height: 2.6;
+	}
+}

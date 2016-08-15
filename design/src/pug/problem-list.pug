@@ -302,6 +302,9 @@ block content
 			label(for='textarea-problem-body') 新規問題本文
 			textarea#textarea-problem-body(type='text', name='problem-body')
 		.p-form-item
+			label(for='input-publish-datetime') 公開日時
+			input#input-publish-datetime(type='datetime-local', name='publish-datetime', value='2016-08-27T10:00')
+		.p-form-item
 			label(for='input-due-datetime') 締切日時
 			input#input-due-datetime(type='datetime-local', name='due-datetime', value='2016-08-27T10:00')
 		button.p-button.p-button_color_green.p-button_size_large.center-block(type='submit') 問題投稿
