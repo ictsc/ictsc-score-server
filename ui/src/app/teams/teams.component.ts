@@ -13,6 +13,6 @@ export class Teams extends MiniList {
   }
 
   get(){
-    return this.api.teams.get();
+    return this.api.teamsDetail();
   }
 }

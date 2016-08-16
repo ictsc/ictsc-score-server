@@ -1,22 +1,24 @@
-.page-header
-  h1 チーム一覧
-.alert.alert-warning(*ngIf="errorMessage")
-  {{errorMessage}}
-.table-responsive
-  table.table.table-striped.table-hover.table-condensed
-    thead
-      tr
-        th 番号
-        th チーム名
-        th 所属
-        th メンバー数
-        th 総スコア
-    tbody
-      tr(*ngFor="let item of list")
-        th {{ item?.id }}
-        td
-          a(href='{ "/teams/" + id }') {{ item.name }}
-        td {{ item.organization }}
-        td XXX
-        td
-          a(href='/answers/scores/detail.html') XXX
+h1.p-page-title 参加チーム
+
+.c-team-panel-wrapper
+  a.team-panel([routerLink]="[item?.id]", *ngFor="let item of list")
+    .team-panel__left
+      .c-entry-number Entry no.
+        span.c-entry-number__figure  {{ item?.id }}
+    .team-panel__right
+      .c-team-name {{ item.name }}
+      .c-school-name {{ item.organization }}
+      .c-total-score 総スコア {{ item.sum }}
+
+form(name='create-team', action='#')
+  .team-panel.team-panel_type_form
+    .team-panel__left
+      .c-entry-number Entry no.
+        span.c-entry-number__figure
+          input.p-form-item.p-form-item_type_inline#input-team-number(type='number')
+    .team-panel__right
+      .c-team-name
+        input#input-team-name(type='text', name='team-name', placeholder='チーム名')
+      .c-school-name
+        input#input-school-name(type='text', name='school-name', placeholder='所属')
+  button.p-button.p-button_color_green.p-button_size_large.center-block(type='submit') チーム追加

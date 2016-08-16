@@ -36,6 +36,41 @@ export class ApiService {
   public teams = new RestResources("teams", this.http);
   public problems = new RestResources("problems", this.http);
   public issues = new RestResources("issues", this.http);
+
+
+  public teamsDetail(){
+    return Observable.combineLatest([
+      this.teams.list(),
+      this.problems.list(),
+      this.answer.list(),
+      this.scores.list(),
+      this.members.list(),
+    ]).map(res => {
+      let [teams, problems, answers, scores, members] = res as any;
+      let leftJoin = (left: Object[], leftKey, right: Object[], rightKey, keyName, multi = true) => {
+        return left.map(l => {
+          let funcName = multi?"filter":"find";
+          l[keyName] = right[funcName](r => r[rightKey] == l[leftKey])
+          return l;
+        });
+      }
+      let ans = leftJoin(answers, "id", scores, "answer_id", "score", false);
+      let prb = leftJoin(ans, "problem_id", problems, "id", "problem", false);
+      let tam = leftJoin(teams, "id", prb, "team_id", "answers");
+      let mem = leftJoin(tam, "id", members, "team_id", "members");
+
+      let final = mem.map(m => {
+        let sum = 0;
+        for(let ans of (m as any).answers){
+          if(ans.score && ans.score.point) sum += ans.score.point;
+        }
+        (m as any).sum = sum;
+        return m;
+      });
+
+      return final;
+    });
+  }
 }
 
 

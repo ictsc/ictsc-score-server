@@ -6,35 +6,39 @@
 - var isAnswers = true
 
 header
-
-  .header.clearfix
+  .p-header.u-cf
     a([routerLink]="['/']")
-      img.logo(src='/assets/img/logo/ictsc-logo-white.svg', width='117', height='50' alt='ICTSC のロゴ')
-    .header__left
-      ul.list
-        li.list__item
+      img.c-logo(src='/assets/img/logo/ictsc-logo-white.svg', width='117', height='50' alt='ICTSC のロゴ')
+    .p-header__left
+      ul.p-list
+        li.p-list__item
+          a(href='/guide.html') ガイド
+        li.p-list__item
           a([routerLink]="['members']") メンバー
-        li.list__item
+        li.p-list__item
           a([routerLink]="['teams']") チーム
-    .header__right
-      ul.list
-        li.list__item
+        li.p-list__item
+          a(href='/team-detail.html') (自分のチーム)
+    .p-header__right
+      ul.p-list
+        li.p-list__item
           a([routerLink]="['/']") トップ
-        li.list__item
+            .notification-badge
+        li.p-list__item
           a([routerLink]="['problems']") 問題
-        li.list__item
+        li.p-list__item
           a([routerLink]="['issue']") 質問
-        li.list__item
-          a(href='#') 解答
-        li.list__item
-          a(href='#') ログアウト
-    .clock
-      .clock__date 8/27
-      .clock__time 13:02
+        li.p-list__item
+          a(href='/answer-list.html') 解答
+        li.p-list__item
+          a(href='/signin.html') ログアウト
+    .c-clock
+      .c-clock__date 8/27
+      .c-clock__time 13:02
 
-
-.container
-  router-outlet
+main
+  .p-container.u-cf
+    router-outlet
 
 .container
   footer(style="border-top: 1px solid #eee; margin: 20px 0; padding: 20px 0")
