@@ -57,7 +57,7 @@ permit(Team, :nologin, %i(GET))
 
 # Admin
 
-%i(Role Member Team Score Problem Issue Answer).each do |resource|
+%i(Role Member Team Score Problem Issue Answer Notice).each do |resource|
   permit(resource, :admin, %i(GET POST PUT PATCH DELETE))
 end
 
@@ -124,10 +124,17 @@ def_perm(Score, :writer, %i(PUT PATCH DELETE),
   query: "marker_id = :id",
   parameters: "{ id: current_user.id }")
 
+permit(Notice,  :writer, %i(GET POST))
+def_perm(Notice, :writer, %i(PUT PATCH DELETE),
+  query: "member_id = :id",
+  parameters: "{ id: current_user.id }")
+
 # Participant
 
 permit(Member,  :participant, %i(GET))
 forbid(Member,  :participant, %i(POST DELETE))
+permit(Notice,  :participant, %i(GET))
+forbid(Notice,  :participant, %i(POST DELETE))
 forbid(Team,    :participant, %i(POST PUT PATCH DELETE))
 forbid(Problem, :participant, %i(POST PUT PATCH DELETE))
 permit(Issue,   :participant, %i(POST))
@@ -175,7 +182,7 @@ def_perm(Member, :viewer, %i(GET),
   parameters: "{ rank: role.rank }",
   join: "role")
 
-%i(Problem Score Issue Answer).each do |resource|
+%i(Problem Score Issue Answer Notice).each do |resource|
   permit(resource, :viewer, %i(GET))
 end
 
@@ -188,7 +195,7 @@ end
          parameters: "{ commentable_type: '#{resource.to_s}' }")
 end
 
-%i(Member Team Score Problem Issue Answer).each do |resource|
+%i(Member Team Score Problem Issue Answer Notice).each do |resource|
   forbid(resource, :viewer, %i(POST PUT PATCH DELETE))
 end
 

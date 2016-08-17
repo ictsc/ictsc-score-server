@@ -93,6 +93,8 @@ class Member < ActiveRecord::Base
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
 
   has_many :comments, dependent: :destroy
+  has_many :notices, dependent: :destroy
+
   belongs_to :team
   belongs_to :role
 end
@@ -159,4 +161,14 @@ class Comment < ActiveRecord::Base
         errors.add(:commentable, "specify one of problems, issues or answers")
       end
     end
+end
+
+class Notice < ActiveRecord::Base
+  validates :name,    presence: true
+  validates :title,   presence: true
+  validates :text,    presence: true
+  validates :pinned, inclusion: { in: [true, false] }
+
+  validates :member,  presence: true
+  belongs_to :member
 end
