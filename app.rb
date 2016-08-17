@@ -11,6 +11,7 @@ require_relative "controllers/comment"
 require_relative "controllers/issue"
 require_relative "controllers/member"
 require_relative "controllers/notification"
+require_relative "controllers/notice"
 require_relative "controllers/problem"
 require_relative "controllers/score"
 require_relative "controllers/team"
@@ -26,6 +27,7 @@ class App < Sinatra::Base
   use IssueRoutes
   use MemberRoutes
   use NotificationRoutes
+  use NoticeRoutes
   use ProblemRoutes
   use ScoreRoutes
   use TeamRoutes
