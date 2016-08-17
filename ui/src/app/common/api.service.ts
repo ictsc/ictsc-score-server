@@ -49,6 +49,7 @@ export class ApiService {
       let [teams, problems, answers, scores, members] = res as any;
       let leftJoin = (left: Object[], leftKey, right: Object[], rightKey, keyName, multi = true) => {
         return left.map(l => {
+          l = Object.assign(l, {});
           let funcName = multi?"filter":"find";
           l[keyName] = right[funcName](r => r[rightKey] == l[leftKey])
           return l;
