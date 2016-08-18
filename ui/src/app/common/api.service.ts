@@ -13,12 +13,15 @@ export class ApiService {
     return this.session.post({
       login: user,
       password: password
+    }).map(m => {
+      this.cachedLoginStatus = undefined;
+      return m;
     });
   }
   private cachedLoginStatus: LoginStatus;
   private lastCacheTime: Date = new Date(0);
   getLoginStatus(cache = false): Observable<LoginStatus> {
-    if(cache && new Date().valueOf() - this.lastCacheTime.valueOf() < 60 * 1000)
+    if(cache && this.cachedLoginStatus && new Date().valueOf() - this.lastCacheTime.valueOf() < 30 * 1000)
       return Observable.of(this.cachedLoginStatus);
     else
       return this.session.get().map(r => {
@@ -32,11 +35,22 @@ export class ApiService {
 
   public scores = new RestResources("scores", this.http);
   public answer = new RestResources("answers", this.http);
+  public answerComments = (id: String) => new RestResources(`answers/${id}/comments`, this.http);
   public members = new RestResources("members", this.http);
   public teams = new RestResources("teams", this.http);
   public problems = new RestResources("problems", this.http);
+  public problemsComments = (id: String) => new RestResources(`problems/${id}/comments`, this.http);
   public issues = new RestResources("issues", this.http);
+  public issueComments = (id: String) => new RestResources(`issues/${id}/comments`, this.http);
 
+  private leftJoin = (left: Object[], leftKey, right: Object[], rightKey, keyName, multi = true) => {
+    return left.map(l => {
+      l = Object.assign(l, {});
+      let funcName = multi?"filter":"find";
+      l[keyName] = right[funcName](r => r[rightKey] == l[leftKey])
+      return l;
+    });
+  }
 
   public teamsDetail(){
     return Observable.combineLatest([
@@ -47,18 +61,11 @@ export class ApiService {
       this.members.list(),
     ]).map(res => {
       let [teams, problems, answers, scores, members] = res as any;
-      let leftJoin = (left: Object[], leftKey, right: Object[], rightKey, keyName, multi = true) => {
-        return left.map(l => {
-          l = Object.assign(l, {});
-          let funcName = multi?"filter":"find";
-          l[keyName] = right[funcName](r => r[rightKey] == l[leftKey])
-          return l;
-        });
-      }
-      let ans = leftJoin(answers, "id", scores, "answer_id", "score", false);
-      let prb = leftJoin(ans, "problem_id", problems, "id", "problem", false);
-      let tam = leftJoin(teams, "id", prb, "team_id", "answers");
-      let mem = leftJoin(tam, "id", members, "team_id", "members");
+
+      let ans = this.leftJoin(answers, "id", scores, "answer_id", "score", false);
+      let prb = this.leftJoin(ans, "problem_id", problems, "id", "problem", false);
+      let tam = this.leftJoin(teams, "id", prb, "team_id", "answers");
+      let mem = this.leftJoin(tam, "id", members, "team_id", "members");
 
       let final = mem.map(m => {
         let sum = 0;
@@ -129,18 +136,21 @@ class RestResources<T1> {
   }
   private httpGet(path: string, cacheResponse?: boolean){
     if(typeof cacheResponse == "undefined") cacheResponse = this.cacheResponseDefault;
-    let getReq =  this.http.get(
+    let getReq = (cacheContent?) => this.http.get(
       this.url(path),
       this.httpOption
-    ).map(this.responseFilter).map(d=>{
+    ).map(this.responseFilter).concatMap(d=>{
+      if(cacheContent && JSON.stringify(d) == JSON.stringify(cacheContent)){
+        return Observable.never();
+      }
       TempStorage.setIteam(path, d);
-      return d;
+      return Observable.of(d);
     });
     let cache = TempStorage.getItem(path);
 
-    if(!cacheResponse || !cache) return getReq;
+    if(!cacheResponse || !cache) return getReq();
     console.log("cache response", path, cache);
-    return Observable.concat(Observable.of(TempStorage.getItem(path)), getReq);
+    return Observable.concat(Observable.of(cache), getReq(cache));
   }
   private httpDelete(path: string){
     return this.http.delete(
