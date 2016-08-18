@@ -27,7 +27,7 @@ header
         li.p-list__item
           a([routerLink]="['problems']") 問題
         li.p-list__item
-          a([routerLink]="['issue']") 質問
+          a([routerLink]="['issues']") 質問
         li.p-list__item
           a(href='/answer-list.html') 解答
         li.p-list__item
@@ -43,5 +43,5 @@ main
 .container
   footer(style="border-top: 1px solid #eee; margin: 20px 0; padding: 20px 0")
     ul.nav.nav-pills
-      li(*ngFor="let link of ['/','login', 'members', 'teams', 'teams', 'problems', 'issue']")
+      li(*ngFor="let link of ['/','login', 'members', 'teams', 'teams', 'problems', 'issues']")
         a([routerLink]="[link]") {{link}}

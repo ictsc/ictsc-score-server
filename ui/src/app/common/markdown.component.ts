@@ -12,12 +12,14 @@ export class Markdown {
 
   private textAreaElem: ElementRef;
   private simplemde: any;
-  @Input("body") text: string = "";
-  @Input("bypass") bypass: boolean = false;
+  private htmlText: any;
+  @Input() body: string = "";
+  @Input() bypass: boolean = false;
 
   ngOnInit() {
   }
   ngOnChanges(changes: SimpleChanges){
+    this.htmlText = this.gethtmlText;
   }
 
   getEditorValue(){
@@ -27,8 +29,8 @@ export class Markdown {
     this.simplemde.value(str);
   }
 
-  get htmlText(){
-    let html = new showdown.Converter().makeHtml(this.text);
+  private get gethtmlText(){
+    let html = new showdown.Converter().makeHtml(this.body);
     if(this.bypass)
       return this.sanitizer.bypassSecurityTrustHtml(html);
     return html;

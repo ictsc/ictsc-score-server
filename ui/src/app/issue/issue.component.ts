@@ -3,9 +3,10 @@ import { ApiService, MiniList } from "../common";
 import { Time } from "../common";
 
 @Component({
-  template: require('./issue.template.jade'),
+  selector: Issues.name.toLowerCase(),
+  template: require('./issues.template.jade'),
 })
-export class Issue extends MiniList {
+export class Issues extends MiniList {
   constructor(private api: ApiService) {super()}
 
   ngOnInit() {
@@ -17,4 +18,9 @@ export class Issue extends MiniList {
   }
 
   dateFormat(input: any){ return Time.dateFormat(input); }
+
+  get filterd_list(){
+    // tood list
+    return this.list;
+  }
 }

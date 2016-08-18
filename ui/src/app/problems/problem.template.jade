@@ -1,0 +1,143 @@
+div([class]="isProblemOnly?'l-column l-column_size_1of2':''")
+  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="isProblemOnly")
+  .p-pagination.u-cf
+    a.p-pagination__prev todo ここどうやって実装しようかな
+    a.p-pagination__next 普通の長さのタイトル名がついてる次の問題
+
+  h1.p-page-title.p-page-title_type_bordered.p-page-title_size_large.p-page-title_with_button
+    .c-problem-number 問題 {{ problemData?.id }}:
+    .c-problem-name {{ problemData?.title }}
+    button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+
+  p.c-problem-info.center-block 公開 　{{ problemData?.opened_at | time }}　|　更新　{{ problemData?.updated_at | time }} |　締切　{{ problemData?.closed_at | time }}
+
+  .c-problem-panel
+    .p-item-heading 補足事項:
+    p.c-problem-panel__supplement 補足事項誤字脱字がありましたとか。新しい補足に背景色を付けたい
+      span.p-post-meta.pull-right 01/01 00:00
+    .p-item-heading 問題:
+    p.u-cf
+      markdown([body]="problemData?.text")
+      span.p-post-meta.pull-right 投稿者
+        a(href='/member-detail.html') admin
+  pre
+    | @Input() id: string; {{ id }}
+    | @Input() team: string; {{ team }}
+    | @Input() issue: string; {{ issue }}
+    | @Input() show: string; {{ show }}
+    | @Input() mode: string; {{ mode }}
+    | {{ issues | json}}
+    | isSingleIssue: {{ isSingleIssue?"t":"f" }}
+
+.l-column.l-column_size_1of2.l-column_type_bordered(*ngIf="isProblemOnly")
+  button.p-button-toggle-width.p-button-toggle-width__right
+  a.c-tab([ngClass]="{'c-tab_state_active': isAnswer}", type='button') 解答
+  a.c-tab([ngClass]="{'c-tab_state_active': isIssue}", type='button') 質問
+  .c-tab-panel-heading.pull-right
+    span.c-score
+      | ToDo 得点
+      span.c-score__figure 35
+      input.hidden#input-score(type='number')
+      | 点
+    button.p-button.p-button_color_yellow 編集
+    button.p-button.p-button_color_green.hidden 採点
+  .c-tab-panel(*ngIf="isAnswer")
+    .c-tab-panel__content
+
+      .u-cf
+        textarea#textarea-question-comment(type='text', name='question-comment', placeholder='コメントを記入してください')
+        button.p-button.p-button_color_green.pull-right(type='button') 送信
+
+      .c-message-panel.u-cf
+        span.c-message-panel__name 3 すこし長めのチーム名
+        | を採点
+        .c-message.c-message_of_general
+          .c-message__body
+            | このページのもんだいの解答。どんどん追加。新しい解答。
+          .c-message__footer.u-cf
+            .p-post-meta
+              a(href='/team-detail.html') すこし長めのチーム名
+              a(href='/member-detail.html') 参加者
+              | 01/01 00:00
+        .c-message.c-message_of_general
+          .c-message__body
+            | このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。
+          .c-message__footer.u-cf
+            .p-post-meta
+              a(href='/team-detail.html') すこし長めのチーム名
+              a(href='/member-detail.html') 参加者
+              | 01/01 00:00
+        .c-message.c-message_of_general
+          .c-message__body
+            | このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。
+          .c-message__footer.u-cf
+            .p-post-meta
+              a(href='/team-detail.html') すこし長めのチーム名
+              a(href='/member-detail.html') 参加者
+              | 01/01 00:00
+
+  .c-tab-panel(*ngIf="isIssue")
+    div(*ngIf="!isSingleIssue")
+      .c-question-post.u-cf
+        input#textarea-question-name(type='text', name='question-name', placeholder='タイトルは具体的かつ端的に記入してください')
+        textarea#textarea-question-body(name='question-body', placeholder='質問内容を記入してください')
+        button.p-button.p-button_color_green.pull-right(type='button') 質問投稿
+
+      .c-filter-list
+        .c-filter-list__heading ラベルフィルター
+        .c-filter-list__item
+          button.p-state-label.p-state-label__all 全て
+        .c-filter-list__item
+          button.p-state-label.p-state-label__no-response 未回答
+        .c-filter-list__item
+          button.p-state-label.p-state-label__in-progress 対応中
+        .c-filter-list__item
+          button.p-state-label.p-state-label__resolved 解決済
+
+    .issue(*ngFor="let item of issues")
+      .c-tab-panel__state-column
+        button.p-state-label.p-state-label__in-progress.center-block 対応中
+        .p-state-supplement 解決したらクリック
+
+      .c-tab-panel__content
+
+        //- .c-message-panel_type_fixed を付与するとメッセージ一覧エリアの高さが固定される (運営側向け)
+        .c-message-panel.u-cf
+          .c-message-panel__name(*ngIf="isSingleIssue") {{ item.title }}
+          a.c-message-panel__name([routerLink]="[item.id]", *ngIf="!isSingleIssue") {{ item.title }}
+          .c-message-panel__body
+            //- markdown([body]="item?.comments[0]?.text")
+            .p-posted-by
+              a(href='/team-detail.html') ごらく部チーム
+              a(href='/member-detail.html') 参加者
+            .p-posted-at 投稿　01/01 00:00　|　更新　01/01 00:00
+
+          .c-message.c-message_of_others(*ngFor="let comment of item?.comments?.slice(1)")
+            .c-message__body
+              markdown([body]="comment.text")
+            .c-message__footer.u-cf
+              .p-post-meta
+                a(href='/team-detail.html') ごらく部チーム
+                a(href='/member-detail.html') 参加者
+                | 01/01 00:00
+
+          .c-message.c-message_of_own
+            .c-message__body
+              | Todo 運営側・参加者側 ユーザ名
+            .c-message__footer.u-cf
+              .p-post-meta
+                a(href='/member-detail.html') admin
+                | 01/01 00:00
+            button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+
+          .c-message.c-message_of_others
+            .c-message__body
+              | え、どういうこと？
+            .c-message__footer.u-cf
+              .p-post-meta
+                a(href='/team-detail.html') ごらく部チーム
+                a(href='/member-detail.html') 参加者
+                | 01/01 00:00
+
+        textarea#textarea-question-comment(type='text', name='question-comment', placeholder='コメントを記入してください')
+        button.p-button.p-button_color_green.pull-right(type='button') 送信

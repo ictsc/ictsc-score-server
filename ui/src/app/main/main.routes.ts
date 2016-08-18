@@ -20,8 +20,11 @@ export const routes: RouterConfig = [
   },
   { path: 'teams/:id', component: Page.TeamsDetail, canActivate },
   { path: 'teams', component: Page.Teams, canActivate },
+  { path: 'problems/:id', component: Page.ProblemsDetail, canActivate },
   { path: 'problems', component: Page.Problems, canActivate },
-  { path: 'issue', component: Page.Issue, canActivate },
+  { path: 'issues', component: Page.Issues, canActivate },
+  { path: 'issues/:problem/:team', component: Page.IssueDetail, canActivate },
+  { path: 'issues/:problem/:team/:issue', component: Page.IssueDetail, canActivate },
   { path: '**', component: Page.NoContent },
 ];
 

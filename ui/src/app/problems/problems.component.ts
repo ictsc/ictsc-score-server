@@ -3,6 +3,7 @@ import { ApiService, MiniList } from "../common";
 import { Time } from "../common";
 
 @Component({
+  selector: Problems.name,
   template: require('./problems.template.jade'),
 })
 export class Problems extends MiniList {
@@ -14,5 +15,9 @@ export class Problems extends MiniList {
 
   get(){
     return this.api.problems.get();
+  }
+
+  problem(section: any){
+    return this.list;
   }
 }
