@@ -14,13 +14,13 @@ table
       th {{ item.id }}
       td
         i.fa.fa-fw.fa-user
-        a(href='/member-detail.html')  {{ item.name }}
+        a([routerLink]="[item.id]")  {{ item.name }}
       td
-        a(href='/member-detail.html') {{ item.login }}
+        a([routerLink]="[item.id]") {{ item.login }}
       td
-        a(href='/team-detail.html') {{ getTeam(item.team_id)?.name }}
+        a([routerLink]="['/teams', item.id]") {{ getTeam(item.team_id)?.name }}
       td
-        a(href='/team-detail.html') {{ getTeam(item.team_id)?.organization }}
+        a([routerLink]="['/teams', item.id]") {{ getTeam(item.team_id)?.organization }}
       td {{ roleName[item.role_id] }}
 
 h1.p-page-title 運営メンバー

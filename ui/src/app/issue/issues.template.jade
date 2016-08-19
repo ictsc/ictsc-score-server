@@ -1,33 +1,7 @@
-.page-header
-  h1 質問一覧
-.alert.alert-warning(*ngIf="errorMessage")
-  {{errorMessage}}
-.table-responsive
-  table.table.table-striped.table-hover.table-condensed
-    thead
-      tr
-        th 番号
-        th 問題名
-        th 公開日時
-        th 締切日時
-        th 修正コメント数
-        th 質問コメント数
-        th 解答コメント数
-    tbody
-      tr(*ngFor="let item of list")
-        th {{ item?.id }}
-        td
-          a(href='{ "/teams/" + id }') {{ item.title }}
-        td {{ dateFormat(item.opened_at) }}
-        td {{ dateFormat(item.closed_at) }}
-        td 12345
-        td 12345
-        td 12345
-
 h1.p-page-title 到着質問
 
 .c-filter-list.c-filter-list_type_bordered
-  .c-filter-list__heading ラベルフィルター
+  .c-filter-list__heading ラベルフィルター(未実装)
   .c-filter-list__item
     button.p-state-label.p-state-label__all 全て
   .c-filter-list__item
