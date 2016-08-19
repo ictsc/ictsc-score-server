@@ -9,6 +9,12 @@ export class ApiService {
 
   private session = new RestResources("session", this.http, false);
 
+  // todo ログインユーザが変わった時にmainの画面更新掛ける
+  private changeUserObserver;
+  private changeUser = Observable.create(function (observer) {
+    this.changeUserObserver = observer;
+  });
+
   login(user: string, password: string){
     return this.session.post({
       login: user,
@@ -18,9 +24,14 @@ export class ApiService {
       return m;
     });
   }
+  logout(){
+    TempStorage.clear();
+    return this.session.delete();
+  }
   private cachedLoginStatus: LoginStatus;
   private lastCacheTime: Date = new Date(0);
   getLoginStatus(cache = false): Observable<LoginStatus> {
+    // this.changeUserObserver.onNext();
     if(cache && this.cachedLoginStatus && new Date().valueOf() - this.lastCacheTime.valueOf() < 30 * 1000)
       return Observable.of(this.cachedLoginStatus);
     else
@@ -31,6 +42,26 @@ export class ApiService {
         this.cachedLoginStatus = status;
         return status;
       });
+  }
+  getLoginMember(cache = true){
+    return this.getLoginStatus(cache)
+      .concatMap(r => {
+        if(!r.isLogin) return Observable.throw("not logined");
+        return this.members.item(r.member_id.toString(), cache);
+      }).map(u => {
+        return u;
+      });
+  }
+
+  private isRole = (cache: boolean, role: Roles) => {
+    console.warn("isrole", "call")
+    return this.getLoginMember(cache).map(m => m.role_id == role)
+  };
+  isAdmin(cache = true){
+    return this.isRole(cache, Roles.Admin);
+  }
+  isParticipant(cache = true){
+    return this.isRole(cache, Roles.Participant);
   }
 
   public scores = new RestResources("scores", this.http);
@@ -114,6 +145,12 @@ export class LoginStatus {
   }
 }
 
+export enum Roles {
+    Admin = 2,
+    Writer,
+    Participant,
+    Viewe,
+}
 
 // enum RestPermission {
 //   getList,
@@ -203,6 +240,12 @@ class RestResources<T1> {
 
   modify(id: string, content: T1){  // todo: type
     return this.httpPut(`${this.resourcesName}/${id}`, content);
+  }
+  delete(){
+    return this.httpDelete(`${this.resourcesName}`);
+  }
+  deleteItem(id: string){
+    return this.httpDelete(`${this.resourcesName}/${id}`);
   }
 
 }

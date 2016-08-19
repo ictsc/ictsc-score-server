@@ -10,6 +10,7 @@ let canActivate =  [AuthGuard];
 export const routes: RouterConfig = [
   { path: '', component: Page.Home, canActivate },
   { path: 'login', component: Page.Login },
+  { path: 'guide', component: Page.Guide},
   { path: 'members', component: Page.Members, canActivate },
   { path: 'members/:id', component: Page.Member, canActivate },
   { path: 'teams', component: Page.Teams, canActivate },

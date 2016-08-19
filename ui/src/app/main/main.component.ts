@@ -1,12 +1,8 @@
-/*
- * Angular 2 decorators and services
- */
+import { Router } from '@angular/router';
 import { Component, ViewEncapsulation } from '@angular/core';
-import { AppState } from './main.service';
+import { ApiService } from '../common';
 import 'bootstrap/dist/css/bootstrap.css';
-// import '../../../../design/public/assets/css/style.css';
-
-
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'main',
@@ -18,25 +14,22 @@ import 'bootstrap/dist/css/bootstrap.css';
   template: require("./main.template.jade")
 })
 export class Main {
-  angularclassLogo = 'assets/img/angularclass-avatar.png';
-  name = 'Angular 2 Webpack Starter';
-  url = 'https://twitter.com/AngularClass';
+  constructor(public router: Router, public api: ApiService) {}
 
-  constructor(
-    public appState: AppState) {
-
-  }
+  isAdmin = this.api.isAdmin();
+  loginMember;
 
   ngOnInit() {
-    console.log('Initial App State', this.appState.state);
+    this.api.getLoginMember()
+      .concatMap(m => {
+        if(!m.team_id) return Observable.of(m);
+        return this.api.teams.item(m.team_id)
+          .map(t => { m.team = t; return m; });
+      })
+      .subscribe(a => this.loginMember = a);
   }
 
+  logout(){
+    this.api.logout().subscribe(r => this.router.navigate(["login"]));
+  }
 }
-
-/*
- * Please review the https://github.com/AngularClass/angular2-examples/ repo for
- * more angular app examples that you may copy/paste
- * (The examples may not be updated as quickly. Please open an issue on github for us to update it)
- * For help or questions please contact us at @AngularClass on twitter
- * or our chat on Slack at https://AngularClass.com/slack-join
- */

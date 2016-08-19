@@ -6,3 +6,4 @@ export * from './issue';
 export * from './no-content';
 export * from './members';
 export * from './answers';
+export * from './guide';

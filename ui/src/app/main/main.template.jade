@@ -12,13 +12,13 @@ header
     .p-header__left
       ul.p-list
         li.p-list__item
-          a(href='/guide.html') ガイド
+          a([routerLink]="['guide']") ガイド
         li.p-list__item
           a([routerLink]="['members']") メンバー
         li.p-list__item
           a([routerLink]="['teams']") チーム
-        li.p-list__item
-          a(href='/team-detail.html') (自分のチーム)
+        //- li.p-list__item(*ngIf="loginMember?.team_id")
+          //- a([routerLink]="['teams', loginMember?.team_id]") ({{ loginMember?.team?.name }})
     .p-header__right
       ul.p-list
         li.p-list__item
@@ -31,7 +31,7 @@ header
         li.p-list__item
           a([routerLink]="['answers']") 解答
         li.p-list__item
-          a(href='/signin.html') ログアウト
+          a((click)="logout()") ログアウト {{ isAdmin | async | json }}
     .c-clock
       .c-clock__date 8/27
       .c-clock__time 13:02
