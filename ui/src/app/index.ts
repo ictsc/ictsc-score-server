@@ -5,3 +5,4 @@ export * from './login';
 export * from './issue';
 export * from './no-content';
 export * from './members';
+export * from './answers';

@@ -1,2 +1,2 @@
 export * from './issue.component';
-export * from './issue-detail.component';
+export * from './issues.component';

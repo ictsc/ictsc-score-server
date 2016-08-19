@@ -48,7 +48,7 @@ export class Problem {
   }
 
   get isProblemOnly(){
-    return !!this.team;
+    return !this.team;
   }
 
   get isIssue(){
@@ -56,7 +56,8 @@ export class Problem {
   }
 
   get isAnswer(){
-    return !(this.isProblemOnly || this.isIssue);
+    console.log(this.isProblemOnly, this.isIssue);
+    return (!this.isProblemOnly) && (!this.isIssue);
   }
 
   get isSingleIssue(){

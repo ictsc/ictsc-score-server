@@ -1,26 +1,27 @@
-import { Component } from '@angular/core';
-import { ApiService, MiniList } from "../common";
-import { Time } from "../common";
+import { ActivatedRoute } from '@angular/router';
+import { Component, SimpleChanges, Input } from '@angular/core';
+import { ApiService, MiniList ,Time } from "../common";
+import { Problem } from "../";
 
+// <problem id="1" [team=""] [issue=""] [show="issue|answer|all"] [mode="issue(default)|answer"]>
 @Component({
-  selector: Issues.name.toLowerCase(),
-  template: require('./issues.template.jade'),
+  selector: Issue.name.toLowerCase(),
+  directives: [ Problem ],
+  template: `<problem [id]="problemId" [team]="team" [issue]="issue" mode="issue"></problem>`
 })
-export class Issues extends MiniList {
-  constructor(private api: ApiService) {super()}
+export class Issue {
+  constructor(private api: ApiService, private route: ActivatedRoute) {}
+  problemId: string;
+  team: string;
+  issue: string;
 
   ngOnInit() {
-    this.fetch();
+    this.route.params.subscribe(parms => {
+      this.problemId = parms["problem"];
+      this.team = parms["team"];
+      this.issue = parms["issue"];
+      console.log("params", parms, this);
+    });
   }
 
-  get(){
-    return this.api.issues.get();
-  }
-
-  dateFormat(input: any){ return Time.dateFormat(input); }
-
-  get filterd_list(){
-    // tood list
-    return this.list;
-  }
 }

@@ -24,6 +24,7 @@ export class Time {
 @Pipe({name: 'time'})
 export class TimePipe implements PipeTransform {
   transform(value: string, exponent: string){
+    if(typeof value == "undefined") return "NaN";
     return Time.dateFormat(value);
   }
 }

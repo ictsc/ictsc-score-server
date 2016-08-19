@@ -1,4 +1,4 @@
-div([class]="isProblemOnly?'l-column l-column_size_1of2':''")
+div([class]="isProblemOnly?'':'l-column l-column_size_1of2'")
   button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="isProblemOnly")
   .p-pagination.u-cf
     a.p-pagination__prev todo ここどうやって実装しようかな
@@ -28,11 +28,13 @@ div([class]="isProblemOnly?'l-column l-column_size_1of2':''")
     | @Input() mode: string; {{ mode }}
     | {{ issues | json}}
     | isSingleIssue: {{ isSingleIssue?"t":"f" }}
+    | isAnswer: {{ isAnswer?"t":"f" }}
+    | isIssue: {{ isIssue?"t":"f" }}
 
-.l-column.l-column_size_1of2.l-column_type_bordered(*ngIf="isProblemOnly")
+.l-column.l-column_size_1of2.l-column_type_bordered(*ngIf="!isProblemOnly")
   button.p-button-toggle-width.p-button-toggle-width__right
-  a.c-tab([ngClass]="{'c-tab_state_active': isAnswer}", type='button') 解答
-  a.c-tab([ngClass]="{'c-tab_state_active': isIssue}", type='button') 質問
+  a.c-tab([routerLink]="['/answers', id, team]", [ngClass]="{'c-tab_state_active': isAnswer}", type='button') 解答
+  a.c-tab([routerLink]="['/issues', id, team]", [ngClass]="{'c-tab_state_active': isIssue}", type='button') 質問
   .c-tab-panel-heading.pull-right
     span.c-score
       | ToDo 得点

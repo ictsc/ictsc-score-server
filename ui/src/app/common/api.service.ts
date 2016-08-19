@@ -45,9 +45,9 @@ export class ApiService {
 
   private leftJoin = (left: Object[], leftKey, right: Object[], rightKey, keyName, multi = true) => {
     return left.map(l => {
-      l = Object.assign(l, {});
+      l = Object.assign({}, l);
       let funcName = multi?"filter":"find";
-      l[keyName] = right[funcName](r => r[rightKey] == l[leftKey])
+      l[keyName] = right[funcName](r => r[rightKey] == l[leftKey]);
       return l;
     });
   }
@@ -77,6 +77,30 @@ export class ApiService {
       });
 
       return final;
+    });
+  }
+
+  public problemAnswerDetail(){
+    return Observable.combineLatest([
+      this.teams.list(),
+      this.problems.list(),
+      this.answer.list(),
+      this.scores.list(),
+    ]).map(res => {
+      let [teams, problems, answers, scores] = res as any;
+
+      let ans = this.leftJoin(answers, "id", scores, "answer_id", "score", false);
+      let tem = () => this.leftJoin(teams, "id", ans, "team_id", "answer");
+      let prob = problems
+        .map(p => {p.teams = tem(); return p;})
+        .map(p => {
+          p.teams = p.teams.map(t => {
+            t.answer = t.answer && t.answer.find(a => a.problem_id == p.id)
+            return t;
+          });
+          return p;
+        });
+      return prob;
     });
   }
 }

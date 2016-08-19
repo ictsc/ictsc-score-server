@@ -5,11 +5,11 @@ import { Problem } from "../";
 
 // <problem id="1" [team=""] [issue=""] [show="issue|answer|all"] [mode="issue(default)|answer"]>
 @Component({
-  selector: IssueDetail.name.toLowerCase(),
+  selector: Answer.name.toLowerCase(),
   directives: [ Problem ],
-  template: `<problem [id]="problemId" [team]="team" [issue]="issue" mode="issue"></problem>`
+  template: `<problem [id]="problemId" [team]="team" mode="answer"></problem>`
 })
-export class IssueDetail {
+export class Answer {
   constructor(private api: ApiService, private route: ActivatedRoute) {}
   problemId: string;
   team: string;
@@ -19,8 +19,6 @@ export class IssueDetail {
     this.route.params.subscribe(parms => {
       this.problemId = parms["problem"];
       this.team = parms["team"];
-      this.issue = parms["issue"];
-      console.log("params", parms, this);
     });
   }
 
