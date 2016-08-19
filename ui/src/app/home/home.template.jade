@@ -94,30 +94,13 @@ h1.sr-only トップ
       .l-row__header
         h1.c-title 公開中の問題
       .l-row__body
-        .l-row-panel.l-row-panel_type_new
+        //- TODO New content
+        .l-row-panel(*ngFor="let problem of problems", [ngClass]="{'l-row-panel_type_new': false}")
           .l-row-panel__header
             p.p-supplement 解答締め切り
-            span.c-closed-at 01/01 00:00
+            span.c-closed-at {{ problem.closed_at | time }}
           .l-row-panel__body
-            a(href='/problem-detail.html') 1 ちょーーーーーーーーーーーーながいタイトルがついてる問題（新着はピンク背景）
-        .l-row-panel
-          .l-row-panel__header
-            p.p-supplement 解答締め切り
-            span.c-closed-at 01/01 00:00
-          .l-row-panel__body
-            a(href='/problem-detail.html') 1 ちょーーーーーーーーーーーーながいタイトルがついてる問題
-        .l-row-panel
-          .l-row-panel__header
-            p.p-supplement 解答締め切り
-            span.c-closed-at 01/01 00:00
-          .l-row-panel__body
-            a(href='/problem-detail.html') 1 ちょーーーーーーーーーーーーながいタイトルがついてる問題
-        .l-row-panel
-          .l-row-panel__header
-            p.p-supplement 解答締め切り
-            span.c-closed-at 01/01 00:00
-          .l-row-panel__body
-            a(href='/problem-detail.html') 1 ちょーーーーーーーーーーーーながいタイトルがついてる問題
+            a(href='/problem-detail.html') {{ problem.id }} {{ problem.title }}
         .l-row-panel
           .l-row-panel__header
             p.p-supplement 解答締め切り
@@ -130,15 +113,15 @@ h1.sr-only トップ
       .l-row__header
         h1.c-title 質問・補足のアップデート
       .l-row__body
-        .l-row-panel
-          .l-row-panel__header
-            span.p-notification-label.p-notification-label_type_supplement 補足
+        .l-row-panel(*ngFor="let notification of notifications")
+          .l-row-panel__header([ngSwitch]="notification.resource")
+            span.p-notification-label.p-notification-label_type_supplement(*ngSwitchCase="'Problem'") 問題
+            span.p-notification-label.p-notification-label_type_question(*ngSwitchCase="'Comment'") 質問・補足
+            span.p-notification-label(*ngSwitchDefault) その他
           .l-row-panel__body
-            a(href='/problem-detail.html') 1 ちょーーーーーーーーーーーーながいタイトルがついてる問題に補足が追加されました。
+            a([routerLink]="notification.link") {{ notification.resource_id }} {{ notification.text }}
           .l-row-panel__footer.u-cf
-            .p-post-meta.pull-right 01/01 00:00 (
-              span.elapsed 5
-              |  分前)
+            .p-post-meta.pull-right {{ notification.created_at | time }}
         .l-row-panel
           .l-row-panel__header
             span.p-notification-label.p-notification-label_type_question 質問

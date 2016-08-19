@@ -18,6 +18,7 @@ export const routes: RouterConfig = [
   { path: 'problems/:id', component: Page.ProblemsDetail, canActivate },
   { path: 'problems', component: Page.Problems, canActivate },
   { path: 'issues', component: Page.Issues, canActivate },
+  // { path: 'issues/:issue', component: Page.Issue, canActivate },
   { path: 'issues/:problem/:team', component: Page.Issue, canActivate },
   { path: 'issues/:problem/:team/:issue', component: Page.Issue, canActivate },
   { path: 'answers', component: Page.Answers, canActivate },

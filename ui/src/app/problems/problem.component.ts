@@ -1,5 +1,5 @@
 import { Component, SimpleChanges, Input } from '@angular/core';
-import { ApiService, MiniList, Markdown, Time } from "../common";
+import { ApiService, MiniList, Markdown, Time, Editable } from "../common";
 
 /**
  * <problem id="1" [team=""] [issue=""] [show="issue|answer|all"] [mode="issue|answer"]>
@@ -8,7 +8,7 @@ import { ApiService, MiniList, Markdown, Time } from "../common";
 @Component({
   selector: Problem.name.toLowerCase(),
   template: require('./problem.template.jade'),
-  directives: [Markdown]
+  directives: [Markdown, Editable]
 })
 export class Problem {
   constructor(private api: ApiService) {}
@@ -21,6 +21,7 @@ export class Problem {
 
   problemData: any;
   issues: any;
+  problemComment: any;
 
   ngOnInit() {
     console.log("Problem", this);
@@ -29,8 +30,10 @@ export class Problem {
   ngOnChanges(changes: SimpleChanges){
     console.log("Problem Changes",changes);
 
-    if("id" in changes)
+    if("id" in changes){
       this.api.problems.item(this.id).subscribe(p => this.problemData = p);
+      this.api.problemsComments(this.id).list().do(r => console.warn(r)).subscribe(c => this.problemComment = c);
+    }
 
     if("issue" in changes){
       let src = this.isSingleIssue?
@@ -56,7 +59,6 @@ export class Problem {
   }
 
   get isAnswer(){
-    console.log(this.isProblemOnly, this.isIssue);
     return (!this.isProblemOnly) && (!this.isIssue);
   }
 

@@ -1,4 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, SimpleChanges, Input } from '@angular/core';
 import { ApiService, MiniList ,Time } from "../common";
 import { Problem } from "../";
@@ -10,7 +10,7 @@ import { Problem } from "../";
   template: `<problem [id]="problemId" [team]="team" [issue]="issue" mode="issue"></problem>`
 })
 export class Issue {
-  constructor(private api: ApiService, private route: ActivatedRoute) {}
+  constructor(private api: ApiService, private route: ActivatedRoute, private router: Router) {}
   problemId: string;
   team: string;
   issue: string;
@@ -20,7 +20,11 @@ export class Issue {
       this.problemId = parms["problem"];
       this.team = parms["team"];
       this.issue = parms["issue"];
-      console.log("params", parms, this);
+      if(!this.team)
+        this.api.issues.item(this.issue)
+          .subscribe(i => {
+            this.router.navigate(["issues", i.problem_id, i.team_id, i.id]);
+          });
     });
   }
 
