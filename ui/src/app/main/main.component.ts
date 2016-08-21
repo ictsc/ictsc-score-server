@@ -20,6 +20,8 @@ export class Main {
   isAdmin = this.api.isAdmin();
   loginMember;
 
+  datetime = {date: "", time: ""};
+
   ngOnInit() {
     this.api.getLoginMember()
       .concatMap(m => {
@@ -28,6 +30,12 @@ export class Main {
           .map(t => { m.team = t; return m; });
       })
       .subscribe(a => this.loginMember = a);
+    Observable.timer(0, 16)
+      .subscribe(_ => {
+        let d = new Date();
+        this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;
+        this.datetime.time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+      });
   }
 
   logout(){

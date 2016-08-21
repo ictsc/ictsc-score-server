@@ -6,7 +6,6 @@ import { ProblemIssue } from "./problem-issue.component";
 /**
  * <problem id="1" [team=""] [issue=""] [show="issue|answer|all"] [mode="issue|answer"]>
  */
-console.warn("ProblemIssue", ProblemIssue);
 
 @Component({
   selector: Problem.name.toLowerCase(),
@@ -25,6 +24,9 @@ export class Problem {
   problemData: any;
   issues: any;
   problemComment: any;
+  answer: any;
+  members = [];
+  teamData: any;
 
   private role: number;
   get isParticipant(){ return this.role == Roles.Participant }
@@ -51,17 +53,28 @@ export class Problem {
       });
   }
 
+  score: number;
+  scoreEdit = false;
+  scoreEditCancel(){
+    this.ngOnChanges({team: {}} as any);
+    this.scoreEdit = false;
+  }
+
   ngOnInit() {
     this.api.getLoginMember().subscribe(mem => this.role = mem.role_id);
   }
 
   ngOnChanges(changes: SimpleChanges){
-    if("id" in changes){
+    let changeId = "id" in changes;
+    let changeIssue = "issue" in changes;
+    let changeTeam = "team" in changes;
+
+    if(changeId){
       this.api.problems.item(this.id).subscribe(p => this.problemData = p);
       this.api.problemsComments(this.id).list().subscribe(c => this.problemComment = c);
     }
 
-    if("issue" in changes){
+    if(changeTeam){
       let src = this.isSingleIssue?
         this.api.issues.item(this.issue).map(a => [a])
         :this.api.issues.list();
@@ -86,6 +99,16 @@ export class Problem {
         console.log("Done fetch issue", issues);
       });
     }
+
+    if((changeTeam || changeId) && this.team){
+      this.getCurrentProblemsAnswer().concatMap(ans => {
+          if(!ans) return Observable.of(undefined);
+          return this.api.answerComments(ans.id).list().map(ac => {ans.comments = ac; return ans});
+        })
+        .subscribe(r => this.answer = r);
+      this.api.members.list().subscribe(m => this.members = m);
+      this.api.teams.item(this.team).subscribe(t => this.teamData = t);
+    }
   }
 
   postIssue(){
@@ -103,13 +126,33 @@ export class Problem {
         // todo
       });
   }
+  postAnswer(){
+    console.log("post answer");
+    this.getCurrentProblemsAnswer()
+      .do(r => console.log("途中", r))
+      .concatMap(ans => ans?Observable.of(ans):this.api.problemsAnswer(this.id).add({}))
+      .subscribe(r => {
+        console.log("post answer!!", r);
+
+      }, err => console.warn(err));
+  }
+
+  getCurrentProblemsAnswer(): Observable<any>{
+    return this.api.problemsAnswer(this.id).get()
+      .catch(err => {
+        console.warn(err);
+        if(err.status == 404) return Observable.of([]);
+        throw err;
+      })
+      .map(m => m.find(m => m.team_id == this.team && m.problem_id == this.id));
+  }
 
   get isProblemOnly(){
     return !this.team;
   }
 
   get isIssue(){
-    return this.issues || this.mode == "issue";
+    return this.issue || this.mode == "issue";
   }
 
   get isAnswer(){
@@ -118,5 +161,9 @@ export class Problem {
 
   get isSingleIssue(){
     return !!this.issue;
+  }
+
+  getMember(id){
+    return this.members.find(m => m.id == id)
   }
 }

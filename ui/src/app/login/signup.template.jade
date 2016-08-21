@@ -1,13 +1,13 @@
 
 .alert.alert-warning(*ngIf="errorMessage")
-  {{errorMessage}}
+  {{ errorMessage }}
 form(name='form-signup', (ngSubmit)="submit()")
   fieldset([disabled]="disabled")
     .form-group
       label(for='select-team-name') チーム名
       select.form-control#select-team-name(name='team-name', [(ngModel)]="selectedTeamId")
         option(value='0') チーム名を選択してください
-        option(*ngFor="let team of teamList" value='{{team.id}}') {{team.name}}
+        option(*ngFor="let team of teamList" value='{{ team.id }}') {{ team.name }}
     .form-group
       label 所属
       p.form-control-static {{ selectedTeam?selectedTeam.organization:"チーム名が未選択" }}

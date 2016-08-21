@@ -4,7 +4,7 @@ signin-form
     .col-sm-4.col-sm-offset-1
       h1.p-page-title.p-page-title_type_bordered ログイン
       .alert.alert-warning(*ngIf="errorMessage")
-        {{errorMessage}}
+        {{ errorMessage }}
       form.p-form-panel(onsubmit='', name='form-signin', (ngSubmit)="submit()")
 
         .p-form-item

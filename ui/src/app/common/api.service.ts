@@ -74,6 +74,8 @@ export class ApiService {
   public issueComments = (id: String) => new RestResources(`issues/${id}/comments`, this.http);
   public notifications = new RestResources("notifications", this.http);
   public notices = new RestResources("notices", this.http);
+  public problemsAnswer = (problem: String) => new RestResources(`problems/${problem}/answers`, this.http);
+  public answersComments = (id: String) => new RestResources(`answers/${id}/comments`, this.http);
 
   private leftJoin = (left: Object[], leftKey, right: Object[], rightKey, keyName, multi = true) => {
     return left.map(l => {

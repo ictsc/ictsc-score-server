@@ -15,16 +15,23 @@ export class Member extends MiniList {
   }
 
   ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges){
     this.route.params.subscribe(param => {
       this.id = param["id"];
       this.fetch()
     });
   }
+
+  ngOnChanges(changes: SimpleChanges){
+  }
   id: any;
   get(){
-    return this.api.members.item(this.id);
+    return Observable.combineLatest(
+      this.api.members.item(this.id),
+      this.api.teams.list()
+    ).map(r => {
+      let [member, teams] = r as any;
+      member.team = teams.find(t => t.id == member.team_id);
+      return member;
+    }).do(d => console.log("get member", d));
   }
 }

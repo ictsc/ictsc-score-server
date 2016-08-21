@@ -5,30 +5,26 @@ h1.p-page-title.p-page-title_type_bordered.p-page-title_with_button
       | Member no.
       .c-figure  1
   .p-page-title__right
-    span.c-member-name 赤座あかり
+    span.c-member-name {{ list?.name }}
   button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
 
 .form-horizontal.u-member-detail.center-block
   .form-group
     label.col-xs-2.control-label メンバー ID
     .col-xs-10
-      p.form-control-static akkarin
-        button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
+      p.form-control-static {{ list?.login }}
   .form-group
     label.col-xs-2.control-label ロール
     .col-xs-10
-      p.form-control-static Participant
-        button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
+      p.form-control-static {{ list?.role_id }}
   .form-group
     label.col-xs-2.control-label.separator
       i.fa.fa-circle
   .form-group
     label.col-xs-2.control-label 所属
     .col-xs-10
-      p.form-control-static 七森中学校
-        button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
+      p.form-control-static {{ list?.team?.organization }}
   .form-group
     label.col-xs-2.control-label チーム
     .col-xs-10
-      p.form-control-static [Entry no.1] すこし長めのチーム名
-        button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
+      p.form-control-static [Entry no.{{ list?.team_id }}] {{ list?.team?.name }}
