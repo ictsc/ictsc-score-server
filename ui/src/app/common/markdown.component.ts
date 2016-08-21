@@ -11,7 +11,6 @@ export class Markdown {
   }
 
   private textAreaElem: ElementRef;
-  private simplemde: any;
   private htmlText: any;
   @Input() body: string = "";
   @Input() bypass: boolean = false;
@@ -20,13 +19,6 @@ export class Markdown {
   }
   ngOnChanges(changes: SimpleChanges){
     this.htmlText = this.gethtmlText;
-  }
-
-  getEditorValue(){
-    return this.simplemde.value();
-  }
-  updateEditorValue(str: string){
-    this.simplemde.value(str);
   }
 
   private get gethtmlText(){

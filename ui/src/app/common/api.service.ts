@@ -196,6 +196,13 @@ class RestResources<T1> {
       this.httpOption
     ).map(this.responseFilter);
   }
+  private httpPath(path: string, body: Object){
+    return this.http.patch(
+      this.url(path),
+      JSON.stringify(body),
+      this.httpOption
+    ).map(this.responseFilter);
+  }
   private httpGet(path: string, cacheResponse?: boolean){
     if(typeof cacheResponse == "undefined") cacheResponse = this.cacheResponseDefault;
     let getReq = (cacheContent?) => this.http.get(
@@ -218,7 +225,7 @@ class RestResources<T1> {
     return this.http.delete(
       this.url(path),
       this.httpOption
-    ).map(this.responseFilter);
+    );
   }
 
   list(cacheResponse?: boolean){
@@ -239,8 +246,11 @@ class RestResources<T1> {
     return this.httpPost(`${this.resourcesName}`, content);
   }
 
-  modify(id: string, content: T1){  // todo: type
+  put(id: string, content: T1){  // todo: type
     return this.httpPut(`${this.resourcesName}/${id}`, content);
+  }
+  modify(id: string, content: T1){  // todo: type
+    return this.httpPath(`${this.resourcesName}/${id}`, content);
   }
   delete(){
     return this.httpDelete(`${this.resourcesName}`);

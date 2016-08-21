@@ -1,5 +1,5 @@
 import { Component, SimpleChanges, Input } from '@angular/core';
-import { ApiService, MiniList, Markdown, Time, Editable, Roles } from "../common";
+import { ApiService, MiniList, Markdown, SimpleMDE, Time, Editable, Roles } from "../common";
 import { Observable } from "rxjs";
 import { ProblemIssue } from "./problem-issue.component";
 
@@ -11,7 +11,7 @@ console.warn("ProblemIssue", ProblemIssue);
 @Component({
   selector: Problem.name.toLowerCase(),
   template: require('./problem.template.jade'),
-  directives: [Markdown, Editable, ProblemIssue]
+  directives: [Markdown, Editable, ProblemIssue, SimpleMDE]
 })
 export class Problem {
   constructor(private api: ApiService) {}
@@ -28,9 +28,28 @@ export class Problem {
 
   private role: number;
   get isParticipant(){ return this.role == Roles.Participant }
+  get isAdmin(){ return this.role == Roles.Admin || this.role == Roles.Writer }
 
   postTitle = "";
   postText = "";
+
+  problemEdit = false;
+  problemEditCancel(){
+    this.problemEdit = false;
+    this.ngOnChanges({id: {}} as any);
+  }
+  problemEditPost(){
+    this.api.problems.modify(this.id, {
+      text: this.problemData.text,
+      title: this.problemData.title,
+      closed_at: this.problemData.closed_at,
+      opened_at: this.problemData.opened_at
+    }).subscribe(res => {
+        this.problemEditCancel();
+      }, err => {
+        // todo
+      });
+  }
 
   ngOnInit() {
     this.api.getLoginMember().subscribe(mem => this.role = mem.role_id);

@@ -15,6 +15,7 @@ export class ProblemIssue {
 
   // todo tow way bindingにしたい
   @Input('issue') issue: any;
+  @Input('isadmin') isAdmin: any;
 	@Output('issueChange') emitter = new EventEmitter();
 
   ngOnInit() {
@@ -35,5 +36,12 @@ export class ProblemIssue {
     }, err => {
       // todo
     });
+  }
+
+  delete(){
+    if(window.confirm("本当に削除しますか？")){
+      this.api.issues.deleteItem(this.issue.id)
+        .subscribe(res => this.emitter.emit({}));
+    }
   }
 }

@@ -9,6 +9,7 @@ import { Observable } from "rxjs";
   encapsulation: ViewEncapsulation.None,
   styles: [
     require('../../../../design/src/scss/style.scss'),
+    require('./main.style.scss'),
     `body { font-family: "游ゴシック Medium", "メイリオ", meiryo, "Helvetica Neue", Helvetica, Arial, sans-serif; }`
   ],
   template: require("./main.template.jade")

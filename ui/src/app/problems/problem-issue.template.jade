@@ -1,6 +1,7 @@
 .c-tab-panel__state-column
   button.p-state-label.p-state-label__in-progress.center-block 対応中
   .p-state-supplement 解決したらクリック
+  button.center-block.p-state-label(*ngIf="isAdmin", (click)="delete()") 削除
 
 .c-tab-panel__content
 
@@ -13,7 +14,7 @@
       .p-posted-by
         a([routerLink]="['/teams', issue.comments[0]?.member?.team_id]") {{ issue.comments[0]?.member?.team?.name }}
         a([routerLink]="['/members', issue.comments[0].member.id]") {{ issue.comments[0]?.member.name }}
-      .p-posted-at 投稿　01/01 00:00　|　更新　01/01 00:00
+      .p-posted-at 投稿　{{ issue.comments[0].created_at | time }}　|　更新　{{ issue.comments[0].updated_at | time }}
 
     .c-message(*ngFor="let comment of issue?.comments?.slice(1)", [ngClass]="{'c-message_of_others':comment.member.role_id == 4, 'c-message_of_own': comment.member.role_id != 4}")
       .c-message__body
@@ -33,7 +34,7 @@
         .p-post-meta
           a(href='/member-detail.html') admin
           | 01/01 00:00
-      button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+      button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集', *ngIf="isAdmin")
 
     .c-message.c-message_of_others
       .c-message__body
