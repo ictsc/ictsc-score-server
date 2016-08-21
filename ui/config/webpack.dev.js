@@ -151,6 +151,7 @@ module.exports = webpackMerge(commonConfig, {
         rewrite: function(req) {
           req.headers.host = "stg.ictsc.pref.yokohama";
           delete req.headers.referer;
+          req.headers.origin = "http://stg.ictsc.pref.yokohama";
           console.log("Proxy: ", req.url, req.headers);
           // req.url = req.url.replace(/^\/api/, '');
         }

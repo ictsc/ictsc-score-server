@@ -54,11 +54,10 @@ export class ApiService {
   }
 
   private isRole = (cache: boolean, role: Roles) => {
-    console.warn("isrole", "call")
     return this.getLoginMember(cache).map(m => m.role_id == role)
   };
   isAdmin(cache = true){
-    return this.isRole(cache, Roles.Admin);
+    return this.getLoginMember(cache).map(m => m.role_id == Roles.Admin || m.role_id == Roles.Writer);
   }
   isParticipant(cache = true){
     return this.isRole(cache, Roles.Participant);
@@ -74,6 +73,7 @@ export class ApiService {
   public issues = new RestResources("issues", this.http);
   public issueComments = (id: String) => new RestResources(`issues/${id}/comments`, this.http);
   public notifications = new RestResources("notifications", this.http);
+  public notices = new RestResources("notices", this.http);
 
   private leftJoin = (left: Object[], leftKey, right: Object[], rightKey, keyName, multi = true) => {
     return left.map(l => {

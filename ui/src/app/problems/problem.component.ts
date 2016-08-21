@@ -1,14 +1,17 @@
 import { Component, SimpleChanges, Input } from '@angular/core';
-import { ApiService, MiniList, Markdown, Time, Editable } from "../common";
+import { ApiService, MiniList, Markdown, Time, Editable, Roles } from "../common";
+import { Observable } from "rxjs";
+import { ProblemIssue } from "./problem-issue.component";
 
 /**
  * <problem id="1" [team=""] [issue=""] [show="issue|answer|all"] [mode="issue|answer"]>
  */
+console.warn("ProblemIssue", ProblemIssue);
 
 @Component({
   selector: Problem.name.toLowerCase(),
   template: require('./problem.template.jade'),
-  directives: [Markdown, Editable]
+  directives: [Markdown, Editable, ProblemIssue]
 })
 export class Problem {
   constructor(private api: ApiService) {}
@@ -23,31 +26,63 @@ export class Problem {
   issues: any;
   problemComment: any;
 
+  private role: number;
+  get isParticipant(){ return this.role == Roles.Participant }
+
+  postTitle = "";
+  postText = "";
+
   ngOnInit() {
-    console.log("Problem", this);
+    this.api.getLoginMember().subscribe(mem => this.role = mem.role_id);
   }
 
   ngOnChanges(changes: SimpleChanges){
-    console.log("Problem Changes",changes);
-
     if("id" in changes){
       this.api.problems.item(this.id).subscribe(p => this.problemData = p);
-      this.api.problemsComments(this.id).list().do(r => console.warn(r)).subscribe(c => this.problemComment = c);
+      this.api.problemsComments(this.id).list().subscribe(c => this.problemComment = c);
     }
 
     if("issue" in changes){
       let src = this.isSingleIssue?
         this.api.issues.item(this.issue).map(a => [a])
         :this.api.issues.list();
-      src.subscribe(p => {
-        for(let a of p){
+
+      Observable.combineLatest(
+        src,
+        this.api.members.list(),
+        this.api.teams.list()
+      ).subscribe(p => {
+        let [issues, members, temas] = p as any;
+        for(let a of issues){
           this.api.issueComments(a.id).list()
-            .subscribe(i => a.comments = i);
+            .subscribe(ics => {
+              a.comments = ics.map(ic => {
+                ic.member = members.find(m => m.id == ic.member_id);
+                ic.member.team = temas.find(t => t.id == ic.member.team_id);
+                return ic;
+              });
+            });
         }
-        this.issues = p;
-        console.log("Done fetch issue", p);
+        this.issues = issues;
+        console.log("Done fetch issue", issues);
       });
     }
+  }
+
+  postIssue(){
+    this.api.issues
+      .add({title: this.postTitle, problem_id: this.id})
+      .concatMap(res => {
+        console.log("post issue done");
+        return this.api.issueComments(res.id).add({text: this.postText});
+      })
+      .subscribe(res => {
+        this.ngOnChanges({issue: {}} as any);
+        this.postText = "";
+        this.postTitle = "";
+      }, err => {
+        // todo
+      });
   }
 
   get isProblemOnly(){

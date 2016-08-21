@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { MiniList, ApiService } from '../common';
+import { MiniList, ApiService, Markdown } from '../common';
 import { Component } from '@angular/core';
 
 import { AppState } from '../main/main.service';
@@ -7,12 +7,20 @@ import { AppState } from '../main/main.service';
 @Component({
   selector: Home.name.toLowerCase(),
   styleUrls: [ './home.style.scss' ],
-  template: require('./home.template.jade')
+  template: require('./home.template.jade'),
+  directives: [ Markdown ]
 })
 export class Home extends MiniList {
   constructor(private api: ApiService) {
     super();
-    this.list = [[],[],[]];
+    this.list = [[],[],[],[]];
+  }
+
+  postErr = "";
+  postObj = {
+    title: "",
+    body: "",
+    pinned: false,
   }
 
   ngOnInit() {
@@ -23,8 +31,19 @@ export class Home extends MiniList {
     return Observable.combineLatest(
       this.api.problems.list(),
       this.api.notifications.list(),
-      this.api.issues.list()
+      this.api.issues.list(),
+      this.api.notices.list()
     );
+  }
+
+  postNotice(){
+    this.postErr = "";
+    this.api.notices.add(this.postObj)
+      .subscribe(res => {
+        this.fetch();
+      }, err => {
+        this.postErr = "通信エラー： " + err.text();
+      });
   }
 
   get problems(){
@@ -63,4 +82,7 @@ export class Home extends MiniList {
       });
   }
 
+  get notices(){
+    return this.list[3];
+  }
 }

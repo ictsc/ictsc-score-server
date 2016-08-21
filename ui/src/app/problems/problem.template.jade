@@ -1,5 +1,5 @@
 div([class]="isProblemOnly?'':'l-column l-column_size_1of2'")
-  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="isProblemOnly")
+  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="!isProblemOnly")
   .p-pagination.u-cf
     a.p-pagination__prev todo ここどうやって実装しようかな
     a.p-pagination__next 普通の長さのタイトル名がついてる次の問題
@@ -83,10 +83,10 @@ div([class]="isProblemOnly?'':'l-column l-column_size_1of2'")
 
   .c-tab-panel(*ngIf="isIssue")
     div(*ngIf="!isSingleIssue")
-      .c-question-post.u-cf
-        input#textarea-question-name(type='text', name='question-name', placeholder='タイトルは具体的かつ端的に記入してください')
-        textarea#textarea-question-body(name='question-body', placeholder='質問内容を記入してください')
-        button.p-button.p-button_color_green.pull-right(type='button') 質問投稿
+      .c-question-post.u-cf(*ngIf="isParticipant")
+        input#textarea-question-name(type='text', name='question-name', placeholder='タイトルは具体的かつ端的に記入してください', [(ngModel)]="postTitle")
+        textarea#textarea-question-body(name='question-body', placeholder='質問内容を記入してください', [(ngModel)]="postText")
+        button.p-button.p-button_color_green.pull-right(type='button', (click)="postIssue()") 質問投稿
 
       .c-filter-list
         .c-filter-list__heading ラベルフィルター
@@ -99,50 +99,5 @@ div([class]="isProblemOnly?'':'l-column l-column_size_1of2'")
         .c-filter-list__item
           button.p-state-label.p-state-label__resolved 解決済
 
-    .issue(*ngFor="let item of issues")
-      .c-tab-panel__state-column
-        button.p-state-label.p-state-label__in-progress.center-block 対応中
-        .p-state-supplement 解決したらクリック
-
-      .c-tab-panel__content
-
-        //- .c-message-panel_type_fixed を付与するとメッセージ一覧エリアの高さが固定される (運営側向け)
-        .c-message-panel.u-cf
-          .c-message-panel__name(*ngIf="isSingleIssue") {{ item.title }}
-          a.c-message-panel__name([routerLink]="[item.id]", *ngIf="!isSingleIssue") {{ item.title }}
-          .c-message-panel__body
-            //- markdown([body]="item?.comments[0]?.text")
-            .p-posted-by
-              a(href='/team-detail.html') ごらく部チーム
-              a(href='/member-detail.html') 参加者
-            .p-posted-at 投稿　01/01 00:00　|　更新　01/01 00:00
-
-          .c-message.c-message_of_others(*ngFor="let comment of item?.comments?.slice(1)")
-            .c-message__body
-              markdown([body]="comment.text")
-            .c-message__footer.u-cf
-              .p-post-meta
-                a(href='/team-detail.html') ごらく部チーム
-                a(href='/member-detail.html') 参加者
-                | 01/01 00:00
-
-          .c-message.c-message_of_own
-            .c-message__body
-              | Todo 運営側・参加者側 ユーザ名
-            .c-message__footer.u-cf
-              .p-post-meta
-                a(href='/member-detail.html') admin
-                | 01/01 00:00
-            button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
-
-          .c-message.c-message_of_others
-            .c-message__body
-              | え、どういうこと？
-            .c-message__footer.u-cf
-              .p-post-meta
-                a(href='/team-detail.html') ごらく部チーム
-                a(href='/member-detail.html') 参加者
-                | 01/01 00:00
-
-        textarea#textarea-question-comment(type='text', name='question-comment', placeholder='コメントを記入してください')
-        button.p-button.p-button_color_green.pull-right(type='button') 送信
+    div(*ngFor="#item of issues; #i = index")
+      problem-issue([issue]="issues[i]", (issueChange)="ngOnChanges({issue: {}})")

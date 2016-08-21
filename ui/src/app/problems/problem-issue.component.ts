@@ -1,0 +1,39 @@
+import { Router, ActivatedRoute } from '@angular/router';
+import { Component, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
+import { ApiService, MiniList, Markdown, Time, Editable } from "../common";
+import { Observable } from "rxjs";
+
+
+@Component({
+  selector: "problem-issue",
+  template: require('./problem-issue.template.jade'),
+  // template: "hello!hello!hello!hello!hello!",
+  directives: [Markdown, Editable]
+})
+export class ProblemIssue {
+  constructor(private api: ApiService, private route: Router, private activatedRoute: ActivatedRoute) {}
+
+  // todo tow way bindingにしたい
+  @Input('issue') issue: any;
+	@Output('issueChange') emitter = new EventEmitter();
+
+  ngOnInit() {
+  }
+
+  comment = "";
+
+  ngOnChanges(changes: SimpleChanges){
+  }
+
+  postComment(){
+    this.api.issueComments(this.issue.id).post({
+      text: this.comment
+    }).subscribe(res => {
+      this.comment = "";
+      this.issue.comments.push(res);
+      this.emitter.emit(this.issue);
+    }, err => {
+      // todo
+    });
+  }
+}
