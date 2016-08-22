@@ -36,4 +36,11 @@ export class Members extends MiniList {
     4: "Participant",
     5: "Viewer"
   }
+
+  get participants(){
+    return this.list[0].filter(m => m.role_id == 4);
+  }
+  get others(){
+    return this.list[0].filter(m => m.role_id != 4);
+  }
 }
