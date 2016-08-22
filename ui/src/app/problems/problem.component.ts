@@ -35,6 +35,8 @@ export class Problem {
   postTitle = "";
   postText = "";
 
+  viewExpand = 0; // -1:problem  0:normal  1:issue/answer
+
   problemEdit = false;
   problemEditCancel(){
     this.problemEdit = false;
@@ -126,15 +128,26 @@ export class Problem {
         // todo
       });
   }
+
+  postAnswerText = "";
+  answerPostError = "";
   postAnswer(){
     console.log("post answer");
-    this.getCurrentProblemsAnswer()
-      .do(r => console.log("途中", r))
-      .concatMap(ans => ans?Observable.of(ans):this.api.problemsAnswer(this.id).add({}))
+    this.answerPostError = "";
+    this.api.problemsAnswer(this.id).add({})
+      .catch(err => Observable.of([]))
+      .concatMap(_ => this.getCurrentProblemsAnswer())
+      .concatMap(ans => this.api.answersComments(ans.id).add({
+        text: this.postAnswerText,
+      }))
       .subscribe(r => {
+        this.postAnswerText = "";
+        this.ngOnChanges({team:{}} as any);
         console.log("post answer!!", r);
-
-      }, err => console.warn(err));
+      }, err => {
+        console.warn(err);
+        this.answerPostError = "送信エラーが発生しました。";
+      });
   }
 
   getCurrentProblemsAnswer(): Observable<any>{

@@ -15,6 +15,7 @@ export class SimpleMDE {
   private simplemde: any;
   @Input("ngModel") model: any;
   @Output('ngModelChange') update = new EventEmitter();
+  @Input() autoSaveKey: string;
 
   ngOnInit() {
     if(this.simplemde) return;
@@ -23,6 +24,11 @@ export class SimpleMDE {
       spellChecker: false,
       autoDownloadFontAwesome: false,
       simplifiedAutoLink: true,
+      autosave: {
+        enabled: this.autoSaveKey,
+        uniqueId: this.autoSaveKey,
+        delay: 1000,
+      },
     });
     this.simplemde.codemirror.on("change", () => this.onTextChanges());
   }

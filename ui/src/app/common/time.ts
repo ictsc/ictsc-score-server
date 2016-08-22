@@ -6,7 +6,7 @@ export class Time {
   static dateFormat(datetime: Date | string){
     let date = moment(datetime);
 
-    let time = date.format('Do h:mm');
+    let time = date.format('Do H:mm');
     let offset = date.fromNow();
     return `${time} (${offset})`;
   }

@@ -1,5 +1,5 @@
-div([class]="isProblemOnly?'':'l-column l-column_size_1of2'")
-  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="!isProblemOnly")
+div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_expanded': viewExpand == -1}")
+  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="!isProblemOnly", (click)="viewExpand = viewExpand+1")
   .p-pagination.u-cf
     a.p-pagination__prev todo ここどうやって実装しようかな
     a.p-pagination__next 普通の長さのタイトル名がついてる次の問題
@@ -24,24 +24,26 @@ div([class]="isProblemOnly?'':'l-column l-column_size_1of2'")
       markdown(*ngIf="!problemEdit", [body]="problemData?.text")
       span.p-post-meta.pull-right 投稿者
         a(href='/member-detail.html') admin
-  pre.
-    @Input() id: string; {{ id }}
-    @Input() team: string; {{ team }}
-    @Input() issue: string; {{ issue }}
-    @Input() show: string; {{ show }}
-    @Input() mode: string; {{ mode }}
-    {{ issues | json }}
-  pre.
-    isSingleIssue: {{ isSingleIssue?"t":"f" }}
-    isAnswer: {{ isAnswer?"t":"f" }}
-    isIssue: {{ isIssue?"t":"f" }}
-    title: {{ problemData?.title }}
-    problemsComments: {{ problemComment | json }}
-    answer: {{ answer | json }}
-    teamData: {{ teamData | json }}
+  div(*ngIf="true")
+    pre.
+      @Input() id: string; {{ id }}
+      @Input() team: string; {{ team }}
+      @Input() issue: string; {{ issue }}
+      @Input() show: string; {{ show }}
+      @Input() mode: string; {{ mode }}
+      {{ issues | json }}
+    pre.
+      isSingleIssue: {{ isSingleIssue?"t":"f" }}
+      isAnswer: {{ isAnswer?"t":"f" }}
+      isIssue: {{ isIssue?"t":"f" }}
+      title: {{ problemData?.title }}
+      problemsComments: {{ problemComment | json }}
+      answer: {{ answer | json }}
+      teamData: {{ teamData | json }}
+      viewExpand: {{ viewExpand }}
 
-.l-column.l-column_size_1of2.l-column_type_bordered(*ngIf="!isProblemOnly")
-  button.p-button-toggle-width.p-button-toggle-width__right
+.l-column.l-column_size_1of2.l-column_type_bordered(*ngIf="!isProblemOnly", [ngClass]="{'l-column_size_expanded': viewExpand == 1}")
+  button.p-button-toggle-width.p-button-toggle-width__right((click)="viewExpand = viewExpand-1")
   a.c-tab([routerLink]="['/answers', id, team]", [ngClass]="{'c-tab_state_active': isAnswer}", type='button') 解答
   a.c-tab([routerLink]="['/issues', id, team]", [ngClass]="{'c-tab_state_active': isIssue}", type='button') 質問
   .c-tab-panel-heading.pull-right(*ngIf="isAdmin")
@@ -68,8 +70,10 @@ div([class]="isProblemOnly?'':'l-column l-column_size_1of2'")
               a([routerLink]="['/members', comment.member_id]") {{ getMember(comment.member_id)?.name }}
               | {{ comment.updated_at | time }}
 
-      .u-cf
-        textarea#textarea-question-comment(simplemde, name='question-comment', placeholder='解答を記入してください')
+      .u-cf(*ngIf="isParticipant")
+        .alert.alert-warning(*ngIf="answerPostError")
+          {{ answerPostError }}
+        textarea#textarea-question-comment(simplemde, [(ngModel)]="postAnswerText", name='question-comment', placeholder='解答を記入してください')
         button.p-button.p-button_color_green.pull-right(type='button', (click)="postAnswer()") 送信
 
   .c-tab-panel(*ngIf="isIssue")
