@@ -1090,6 +1090,10 @@ tr {
 	.c-message__body {
 		padding: 10px 20px;
 		border-radius: 5px;
+
+		&.message_type_answer {
+			border-radius: 0;
+		}
 	}
 
 	.c-message__footer {
