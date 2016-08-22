@@ -30,7 +30,7 @@ export class Main {
           .map(t => { m.team = t; return m; });
       })
       .subscribe(a => this.loginMember = a);
-    Observable.timer(0, 16)
+    Observable.timer(0, 1000)
       .subscribe(_ => {
         let d = new Date();
         this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;
