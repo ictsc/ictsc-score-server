@@ -20,6 +20,7 @@ export class ApiService {
       login: user,
       password: password
     }).map(m => {
+      if(m.status == "failed") throw "ログインが失敗しました";
       this.cachedLoginStatus = undefined;
       return m;
     });
