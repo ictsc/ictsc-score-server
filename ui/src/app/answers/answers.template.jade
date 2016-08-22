@@ -22,7 +22,8 @@ h1.p-page-title 解答と採点
       .c-answer-list__item(*ngFor="let team of problem.teams")
         a.p-state-label([routerLink]="[problem.id, team.id]", [ngClass]="{'p-state-label__in-progress': state(team) == 0, 'p-state-label__no-response': state(team) == 1, 'p-state-label__resolved': state(team) == 2 }")
           i.fa.fa-fw.fa-chevron-right
-          | {{ team.id }} {{ team.name }} ({{ state(team) }})
+          | {{ team.id }} {{ team.name }}
+          span(*ngIf="state(team) == 2") &nbsp; ({{ team?.answer?.score?.point }}点)
 
   .c-problem-state-list__item
     .c-problem-name 問題 1 もんだいタイトル

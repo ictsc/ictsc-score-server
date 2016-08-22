@@ -40,27 +40,29 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
       problemsComments: {{ problemComment | json }}
       answer: {{ answer | json }}
       teamData: {{ teamData | json }}
+      score: {{ score | json }}
       viewExpand: {{ viewExpand }}
 
 .l-column.l-column_size_1of2.l-column_type_bordered(*ngIf="!isProblemOnly", [ngClass]="{'l-column_size_expanded': viewExpand == 1}")
   button.p-button-toggle-width.p-button-toggle-width__right((click)="viewExpand = viewExpand-1")
   a.c-tab([routerLink]="['/answers', id, team]", [ngClass]="{'c-tab_state_active': isAnswer}", type='button') 解答
   a.c-tab([routerLink]="['/issues', id, team]", [ngClass]="{'c-tab_state_active': isIssue}", type='button') 質問
-  .c-tab-panel-heading.pull-right(*ngIf="isAdmin")
+  .c-tab-panel-heading.pull-right(*ngIf="isAdmin && !ansewrIsNotFound && score")
     span.c-score
       | 得点
-      span.c-score__figure([editable]="scoreEdit", [(editableModel)]="score")
-      input.hidden#input-score(type='number')
+      span.c-score__figure(*ngIf="!scoreEdit") {{ score?.point }}
+      input#input-score(type='number', [ngClass]="{hidden:!scoreEdit}", [(ngModel)]="score.point")
       | 点
     span([ngSwitch]="scoreEdit")
       button.p-button.p-button_color_yellow(*ngSwitchCase="false", (click)="scoreEdit = true") 編集
-      button.p-button.p-button_color_green(*ngSwitchCase="true", (click)="scoreEditCancel()") 採点
+      button.p-button.p-button_color_green(*ngSwitchCase="true", (click)="scoreEditSubmit()") 採点
   .c-tab-panel(*ngIf="isAnswer")
     .c-tab-panel__content
 
       .c-message-panel.u-cf
         span.c-message-panel__name {{ teamData?.id }}. {{ teamData?.name }}
         | の解答
+        div(*ngIf="ansewrIsNotFound") 解答が投稿されていません
         .c-message.c-message_of_general(*ngFor="let comment of answer?.comments")
           .c-message__body
             | {{ comment.text }}

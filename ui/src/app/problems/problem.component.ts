@@ -24,7 +24,8 @@ export class Problem {
   problemData: any;
   issues: any;
   problemComment: any;
-  answer: any;
+  answer: any = [];
+  get ansewrIsNotFound(){ return typeof this.answer == 'undefined' }
   members = [];
   teamData: any;
 
@@ -55,11 +56,16 @@ export class Problem {
       });
   }
 
-  score: number;
+  score: any;
   scoreEdit = false;
-  scoreEditCancel(){
-    this.ngOnChanges({team: {}} as any);
-    this.scoreEdit = false;
+  scoreEditSubmit(){
+    let src = this.score.id
+      ?this.api.scores.modify(this.score.id, this.score)
+      :this.api.scores.add(this.score);
+    src.subscribe(r => {
+        this.ngOnChanges({team: {}} as any);
+        this.scoreEdit = false;
+      })
   }
 
   ngOnInit() {
@@ -76,7 +82,7 @@ export class Problem {
       this.api.problemsComments(this.id).list().subscribe(c => this.problemComment = c);
     }
 
-    if(changeTeam){
+    if(changeTeam){ // issue
       let src = this.isSingleIssue?
         this.api.issues.item(this.issue).map(a => [a])
         :this.api.issues.list();
@@ -102,7 +108,7 @@ export class Problem {
       });
     }
 
-    if((changeTeam || changeId) && this.team){
+    if((changeTeam || changeId) && this.team){  // answer
       this.getCurrentProblemsAnswer().concatMap(ans => {
           if(!ans) return Observable.of(undefined);
           return this.api.answerComments(ans.id).list().map(ac => {ans.comments = ac; return ans});
@@ -110,6 +116,18 @@ export class Problem {
         .subscribe(r => this.answer = r);
       this.api.members.list().subscribe(m => this.members = m);
       this.api.teams.item(this.team).subscribe(t => this.teamData = t);
+    }
+
+    if((changeTeam || changeId) && this.team){  // answer
+      this.getCurrentProblemsAnswer()
+        .concatMap(a => {
+          if(!a.score_id) return Observable.of(undefined);
+          return this.api.scores.item(a.score_id)
+        })
+        .subscribe(s => {
+          if(!s) s = {point: 0};
+          this.score = s;
+        });
     }
   }
 
@@ -135,8 +153,15 @@ export class Problem {
     console.log("post answer");
     this.answerPostError = "";
     this.api.problemsAnswer(this.id).add({})
-      .catch(err => Observable.of([]))
-      .concatMap(_ => this.getCurrentProblemsAnswer())
+      .catch(err => {
+        console.warn("problem ansewr post", err);
+        return Observable.of([])
+      })
+      .concatMap(_ => this.getCurrentProblemsAnswer(false))
+      .catch(err => {
+        console.warn("get problem ansewr post", err);
+        return Observable.throw(err);
+      })
       .concatMap(ans => this.api.answersComments(ans.id).add({
         text: this.postAnswerText,
       }))
@@ -150,8 +175,8 @@ export class Problem {
       });
   }
 
-  getCurrentProblemsAnswer(): Observable<any>{
-    return this.api.problemsAnswer(this.id).get()
+  getCurrentProblemsAnswer(cache = true): Observable<any>{
+    return this.api.problemsAnswer(this.id).get(cache)
       .catch(err => {
         console.warn(err);
         if(err.status == 404) return Observable.of([]);
