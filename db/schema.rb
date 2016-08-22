@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160815084219) do
+ActiveRecord::Schema.define(version: 20160822011234) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -52,7 +52,6 @@ ActiveRecord::Schema.define(version: 20160815084219) do
   end
 
   create_table "notices", force: :cascade do |t|
-    t.string   "name",                       null: false
     t.string   "title",                      null: false
     t.string   "text",                       null: false
     t.boolean  "pinned",     default: false, null: false

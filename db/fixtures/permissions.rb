@@ -97,6 +97,7 @@ def_perm(Member, :writer, %i(GET POST PUT PATCH DELETE),
   query: "roles.rank >= :rank",
   parameters: "{ rank: role.rank }",
   join: "role")
+
 def_perm(Role,   :writer, %i(GET),
   query: "rank >= :rank",
   parameters: "{ rank: role.rank }")
@@ -162,6 +163,10 @@ def_perm(Problem, :participant, %i(GET),
 
 %i(Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
+
+  def_perm(resource, :participant, %i(GET PUT PATCH),
+    query: "team_id = :team_id",
+    parameters: "{ team_id: current_user.team_id }")
 
   def_perm(resource, :participant, %i(GET PUT PATCH),
     action: action,
