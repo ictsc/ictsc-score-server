@@ -593,6 +593,7 @@ tr {
 
 .l-row-panel {
 	position: relative;
+	display: block;
 
 	&.l-row-panel_type_new {
 		margin-top: -20px;
