@@ -57,7 +57,7 @@ permit(Team, :nologin, %i(GET))
 
 # Admin
 
-%i(Role Member Team Score Problem Issue Answer Notice).each do |resource|
+%i(Role Member Team Score Problem Issue Answer Notice Attachment).each do |resource|
   permit(resource, :admin, %i(GET POST PUT PATCH DELETE))
 end
 
@@ -73,11 +73,12 @@ end
 
 # Writer
 
-permit(Team,    :writer, %i(POST PUT PATCH DELETE))
-permit(Problem, :writer, %i(GET POST))
-permit(Issue,   :writer, %i(GET POST PUT PATCH DELETE))
-permit(Answer,  :writer, %i(GET POST PUT PATCH DELETE))
-permit(Score,   :writer, %i(GET POST))
+permit(Attachment, :writer, %i(GET POST PUT PATCH DELETE))
+permit(Team,       :writer, %i(POST PUT PATCH DELETE))
+permit(Problem,    :writer, %i(GET POST))
+permit(Issue,      :writer, %i(GET POST PUT PATCH DELETE))
+permit(Answer,     :writer, %i(GET POST PUT PATCH DELETE))
+permit(Score,      :writer, %i(GET POST))
 
 permit(Issue,   :writer, %i(GET), action: :issues_comments)
 def_perm(Comment, :writer, %i(GET POST PUT PATCH DELETE),
@@ -131,21 +132,26 @@ def_perm(Notice, :writer, %i(PUT PATCH DELETE),
 
 # Participant
 
-permit(Member,  :participant, %i(GET))
-forbid(Member,  :participant, %i(POST DELETE))
-permit(Notice,  :participant, %i(GET))
-forbid(Notice,  :participant, %i(POST DELETE))
-forbid(Team,    :participant, %i(POST PUT PATCH DELETE))
-forbid(Problem, :participant, %i(POST PUT PATCH DELETE))
-permit(Issue,   :participant, %i(POST))
-forbid(Issue,   :participant, %i(DELETE))
-permit(Answer,  :participant, %i(POST))
-forbid(Answer,  :participant, %i(DELETE))
-forbid(Score,   :participant, %i(GET POST PUT PATCH DELETE))
-forbid(Comment, :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
-forbid(Comment, :participant, %i(DELETE), action: "issues_comments")
-forbid(Answer,  :participant, %i(GET),    action: "answers_comments")
-forbid(Comment, :participant, %i(DELETE), action: "answers_comments")
+permit(Member,     :participant, %i(GET))
+forbid(Member,     :participant, %i(POST DELETE))
+permit(Notice,     :participant, %i(GET))
+forbid(Notice,     :participant, %i(POST DELETE))
+forbid(Team,       :participant, %i(POST PUT PATCH DELETE))
+forbid(Problem,    :participant, %i(POST PUT PATCH DELETE))
+forbid(Attachment, :participant, %i(POST PUT PATCH DELETE))
+permit(Issue,      :participant, %i(POST))
+forbid(Issue,      :participant, %i(DELETE))
+permit(Answer,     :participant, %i(POST))
+forbid(Answer,     :participant, %i(DELETE))
+forbid(Score,      :participant, %i(GET POST PUT PATCH DELETE))
+forbid(Comment,    :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
+forbid(Comment,    :participant, %i(DELETE), action: "issues_comments")
+forbid(Answer,     :participant, %i(GET),    action: "answers_comments")
+forbid(Comment,    :participant, %i(DELETE), action: "answers_comments")
+
+def_perm(Attachment, :participant, %i(GET),
+  query: "member_id = :id",
+  parameters: "{ id: current_user.id }")
 
 def_perm(Member, :participant, %i(PUT PATCH),
   query: "id = :id",
@@ -182,7 +188,7 @@ def_perm(Member, :viewer, %i(GET),
   parameters: "{ rank: role.rank }",
   join: "role")
 
-%i(Problem Score Issue Answer Notice).each do |resource|
+%i(Problem Score Issue Answer Notice Attachment).each do |resource|
   permit(resource, :viewer, %i(GET))
 end
 
@@ -195,7 +201,7 @@ end
          parameters: "{ commentable_type: '#{resource.to_s}' }")
 end
 
-%i(Member Team Score Problem Issue Answer Notice).each do |resource|
+%i(Member Team Score Problem Issue Answer Notice Attachment).each do |resource|
   forbid(resource, :viewer, %i(POST PUT PATCH DELETE))
 end
 
