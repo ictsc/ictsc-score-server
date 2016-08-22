@@ -1230,12 +1230,12 @@ tr {
 }
 
 .c-answer-list {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
+	letter-spacing: 4px;
 
 	.c-answer-list__item {
-		width: 165px;
+		display: inline-block;
+		width: 163px;
+		letter-spacing: 0px;
 
 		.p-state-label {
 			width: 100%;
