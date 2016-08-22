@@ -32,9 +32,10 @@ header
           a([routerLink]="['answers']") 解答
         li.p-list__item
           a((click)="logout()") ログアウト {{ isAdmin | async | json }}
-    .c-clock
-      .c-clock__date {{ datetime.date }}
-      .c-clock__time {{ datetime.time }}
+    //- .c-clock
+    //-   .c-clock__date {{ datetime.date }}
+    //-   .c-clock__time {{ datetime.time }}
+    mainclock
 
 main
   .p-container.u-cf

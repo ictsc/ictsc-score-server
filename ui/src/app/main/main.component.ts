@@ -3,6 +3,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { ApiService } from '../common';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Observable } from "rxjs";
+import { MainClock } from "./main-clock.component";
 
 @Component({
   selector: 'main',
@@ -12,7 +13,8 @@ import { Observable } from "rxjs";
     require('./main.style.scss'),
     `body { font-family: "游ゴシック Medium", "メイリオ", meiryo, "Helvetica Neue", Helvetica, Arial, sans-serif; }`
   ],
-  template: require("./main.template.jade")
+  template: require("./main.template.jade"),
+  directives: [ MainClock ],
 })
 export class Main {
   constructor(public router: Router, public api: ApiService) {}
@@ -30,12 +32,12 @@ export class Main {
           .map(t => { m.team = t; return m; });
       })
       .subscribe(a => this.loginMember = a);
-    Observable.timer(0, 1000)
-      .subscribe(_ => {
-        let d = new Date();
-        this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;
-        this.datetime.time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
-      });
+    // Observable.timer(0, 1000)
+    //   .subscribe(_ => {
+    //     let d = new Date();
+    //     this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;
+    //     this.datetime.time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+    //   });
   }
 
   logout(){

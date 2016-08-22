@@ -14,7 +14,7 @@ export class MainClock {
   datetime = {date: "", time: ""};
 
   ngOnInit() {
-    Observable.timer(0, 1000)
+    Observable.timer(0, 100)
       .subscribe(_ => {
         let d = new Date();
         this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;

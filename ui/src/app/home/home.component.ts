@@ -30,7 +30,28 @@ export class Home extends MiniList {
   get(){
     return Observable.combineLatest(
       this.api.problems.list(),
-      this.api.notifications.list(),
+      this.api.notifications.list().map(a => a.map(n => {
+        let notif = Object.assign({}, n);
+        switch(notif.type){
+          case "problem_opened":
+          case "problem_updated":
+            notif.link = ["problems", notif.resource_id];
+            break;
+          case "new_comment_to_problem":
+          case "updated_comment_to_problem":
+            notif.link = ["problems", notif.resource_id];
+            break;
+          case "created_comment_to_issue":
+          case "updated_comment_to_issue":
+            let issue = this.list[2].find(i => i.id == notif.sub_resource_id);
+            if(issue)
+              notif.link = ["issues", issue.problem_id, issue.team_id, issue.id];
+            else
+              notif.link = [];
+            break;
+        }
+        return notif;
+      })),
       this.api.issues.list(),
       this.api.notices.list()
     );
@@ -58,28 +79,6 @@ export class Home extends MiniList {
   get notifications(){
     // ToDo: 問題のタイトル表示
     return this.list[1]
-      .map(n => {
-        let notif = Object.assign({}, n);
-        switch(notif.type){
-          case "problem_opened":
-          case "problem_updated":
-            notif.link = ["problems", notif.resource_id];
-            break;
-          case "new_comment_to_problem":
-          case "updated_comment_to_problem":
-            notif.link = ["problems", notif.resource_id];
-            break;
-          case "created_comment_to_issue":
-          case "updated_comment_to_issue":
-            let issue = this.list[2].find(i => i.id == notif.sub_resource_id);
-            if(issue)
-              notif.link = ["issues", issue.problem_id, issue.team_id, issue.id];
-            else
-              notif.link = [];
-            break;
-        }
-        return notif;
-      });
   }
 
   get notices(){
