@@ -31,8 +31,11 @@ class AttachmentRoutes < Sinatra::Base
   post "/api/attachments" do
     halt 403 if not Attachment.allowed_to_create_by?(current_user)
 
+    f = params[:file]
+
     @attrs = attribute_values_of_class(Attachment)
-    @attrs[:marker_id] = current_user.id
+    @attrs[:member_id] = current_user.id
+    @attrs[:filename]  = f[:filename]
     @attachment = Attachment.new(@attrs)
 
     if not @attachment.save
@@ -40,9 +43,10 @@ class AttachmentRoutes < Sinatra::Base
       json @attachment.errors
     else
       # save file
-      f = params[:file]
-      file_path = (Pathname(settings.root) + "/uploads/#{@attachment.id}/" + f[:filename]).to_s
-      halt 400 unless file_path.start_with? (settings.root + "/uploads/")
+      uploads_dir = Pathname(settings.root) + "../uploads/#{@attachment.id}/"
+      file_path = (uploads_dir + f[:filename]).to_s
+      Dir.mkdir uploads_dir.to_s
+      halt 400 unless file_path.start_with? uploads_dir.to_s
 
       File.write(file_path, f[:tempfile].read)
 
@@ -71,11 +75,16 @@ class AttachmentRoutes < Sinatra::Base
       halt 404
     end
 
-    file_path = settings.root + "/uploads/#{params[:id]}/#{params[:filename]}"
+    begin
+      uploads_dir = Pathname(settings.root) + "../uploads/#{@attachment.id}/"
+      file_path = (uploads_dir + params[:filename]).to_s
 
-    hash = Digest::SHA256.file(file_path).hexdigest
-    if hash != params[:hash]
-      halt 403
+      hash = Digest::SHA256.file(file_path).hexdigest
+      if hash != params[:hash]
+        halt 403
+      end
+    rescue
+      halt 500
     end
 
     send_file file_path
