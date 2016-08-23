@@ -22,8 +22,10 @@ export class Problem {
   @Input() mode: string;
 
   problemData: any;
+  problemComments: any;
+  problemCommentsAddEnable = false;
+  problemCommentsAddText = "";
   issues: any;
-  problemComment: any;
   answer: any = [];
   get ansewrIsNotFound(){ return typeof this.answer == 'undefined' }
   members = [];
@@ -56,6 +58,21 @@ export class Problem {
       });
   }
 
+  problemCommentsAdd(){
+    this.api.problemsComments(this.id).add({
+      text: this.problemCommentsAddText
+    }).subscribe(res => {
+      this.problemCommentsAddEnable = false;
+      this.problemCommentsAddText = "";
+      this.ngOnChanges({id: {}} as any);
+    });
+  }
+  problemCommentsDelete(id){
+    if(window.confirm("本当に質問を削除しますか？"))
+      this.api.problemsComments(this.id).deleteItem(id)
+        .subscribe(res => this.ngOnChanges({id: {}} as any));
+  }
+
   score: any;
   scoreEdit = false;
   scoreEditSubmit(){
@@ -85,7 +102,7 @@ export class Problem {
           return p;
         })
         .subscribe(p => this.problemData = p);
-      this.api.problemsComments(this.id).list().subscribe(c => this.problemComment = c);
+      this.api.problemsComments(this.id).list().subscribe(c => this.problemComments = c);
     }
 
     if(changeTeam || changeIssue){ // issue
