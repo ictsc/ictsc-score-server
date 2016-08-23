@@ -4,6 +4,7 @@ import { ApiService, MiniList } from "../common";
 import { Signup } from "../login/signup.component";
 
 @Component({
+  selector: Members.name.toLowerCase(),
   template: require('./members.template.jade'),
   directives: [Signup]
 })

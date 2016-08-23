@@ -1,46 +1,48 @@
 h1.p-page-title 参加メンバー
 
-table
-  thead
-    tr
-      th.sort.sort_direction_asc メンバー番号
-      th.sort.sort_direction_asc 名前
-      th.sort.sort_direction_asc ユーザー名
-      th.sort.sort_direction_desc チーム
-      th.sort.sort_direction_asc 所属
-      th.sort.sort_direction_asc ロール
-  tbody
-    tr(*ngFor="let item of participants")
-      th {{ item.id }}
-      td
-        i.fa.fa-fw.fa-user
-        a([routerLink]="[item.id]")  {{ item.name }}
-      td
-        a([routerLink]="[item.id]") {{ item.login }}
-      td
-        a([routerLink]="['/teams', item.id]") {{ getTeam(item.team_id)?.name }}
-      td
-        a([routerLink]="['/teams', item.id]") {{ getTeam(item.team_id)?.organization }}
-      td {{ roleName[item.role_id] }}
+.c-aside-of-floating-buttons
+  table
+    thead
+      tr
+        th.sort.sort_direction_asc メンバー番号
+        th.sort.sort_direction_asc 名前
+        th.sort.sort_direction_asc ユーザー名
+        th.sort.sort_direction_desc チーム
+        th.sort.sort_direction_asc 所属
+        th.sort.sort_direction_asc ロール
+    tbody
+      tr(*ngFor="let item of participants")
+        th {{ item.id }}
+        td
+          i.fa.fa-fw.fa-user
+          a([routerLink]="[item.id]")  {{ item.name }}
+        td
+          a([routerLink]="[item.id]") {{ item.login }}
+        td
+          a([routerLink]="['/teams', item.id]") {{ getTeam(item.team_id)?.name }}
+        td
+          a([routerLink]="['/teams', item.id]") {{ getTeam(item.team_id)?.organization }}
+        td {{ roleName[item.role_id] }}
 
 h1.p-page-title 運営メンバー
 
-table
-  thead
-    tr
-      th.sort.sort_direction_asc メンバー番号
-      th.sort.sort_direction_asc 名前
-      th.sort.sort_direction_asc ユーザー名
-      th.sort.sort_direction_asc ロール
-  tbody
-    tr(*ngFor="let item of others")
-      th {{ item.id }}
-      td
-        i.fa.fa-fw.fa-user
-        a([routerLink]="[item.id]")  {{ item.name }}
-      td
-        a([routerLink]="[item.id]") {{ item.login }}
-      td {{ roleName[item.role_id] }}
+.c-aside-of-floating-buttons
+  table
+    thead
+      tr
+        th.sort.sort_direction_asc メンバー番号
+        th.sort.sort_direction_asc 名前
+        th.sort.sort_direction_asc ユーザー名
+        th.sort.sort_direction_asc ロール
+    tbody
+      tr(*ngFor="let item of others")
+        th {{ item.id }}
+        td
+          i.fa.fa-fw.fa-user
+          a([routerLink]="[item.id]")  {{ item.name }}
+        td
+          a([routerLink]="[item.id]") {{ item.login }}
+        td {{ roleName[item.role_id] }}
 
 .c-floating-action-buttons
   button.p-icon-button.p-icon-button_shape_circle
