@@ -486,9 +486,23 @@ tr {
 	top: 80px;
 	right: 20px;
 	width: 55px;
+	font-size: 2em;
 
-	.p-icon-button_shape_circle {
-		margin-bottom: 10px;
+	.p-icon-button {
+
+		&.p-icon-button_shape_circle {
+			margin-bottom: 10px;
+		}
+
+		&.p-icon-button__label {
+			font-size: 0.4em;
+		}
+
+		&.c-opened {
+			.fa {
+				transform: rotateZ(45deg);
+			}
+		}
 	}
 }
 
