@@ -417,6 +417,15 @@ tr {
 	padding: 5px 25px;
 	margin-bottom: 10px;
 	color: #fff;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+
+	&.p-button_size_small {
+		padding: 3px 20px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
 
 	&.p-button_size_large {
 		padding: 15px 60px;
@@ -427,6 +436,10 @@ tr {
 	&.p-button_of_signin,
 	&.p-button_of_signup {
 		margin-top: 40px;
+	}
+
+	&.p-button_color_gray {
+		background-color: #aaaaaa;
 	}
 
 	&.p-button_color_green {
@@ -465,7 +478,7 @@ tr {
 	.p-icon-button__label {
 		vertical-align: middle;
 		margin-left: 4px;
-		font-size: 0.6em;
+		font-size: 14px;
 	}
 
 	&.p-icon-button_shape_circle {
@@ -473,11 +486,7 @@ tr {
 		height: 55px;
 		border-radius: 50%;
 		color: #fff;
-		background-color: #95989a;
-
-		&.p-icon-button__label {
-			font-size: 0.6em;
-		}
+		background-color: #5b5b5b;
 	}
 }
 
@@ -486,7 +495,6 @@ tr {
 	top: 80px;
 	right: 20px;
 	width: 55px;
-	font-size: 2em;
 
 	.p-icon-button {
 
@@ -495,7 +503,7 @@ tr {
 		}
 
 		&.p-icon-button__label {
-			font-size: 0.4em;
+			font-size: 10px;
 		}
 
 		&.c-opened {
@@ -503,6 +511,13 @@ tr {
 				transform: rotateZ(45deg);
 			}
 		}
+	}
+}
+
+.p-icon-button {
+
+	&.p-icon-button_shape_circle {
+		font-size: 28px;
 	}
 }
 
@@ -897,9 +912,17 @@ tr {
 	}
 
 	.c-problem-panel__supplement {
-		background-color: #fcf0f0;
+		position: relative;
 		padding: 15px;
 		border-radius: 10px;
+		margin-top: 40px;
+		background-color: #fcf0f0;
+
+		.p-icon-button {
+			position: absolute;
+			top: -40px;
+			right: 0;
+		}
 	}
 }
 
@@ -1313,6 +1336,43 @@ tr {
 					transform: none;
 				}
 			}
+		}
+	}
+}
+
+.c-editorial-buttons {
+	position: absolute;
+	top: 0;
+	right: 0;
+	float: right;
+	font-size: 0;
+
+	.c-button-wrapper {
+		display: inline-block;
+		padding-left: 15px;
+		padding-right: 15px;
+		font-size: 1em;
+
+		&:not(:last-of-type) {
+			border-right: 1px solid #fdbbcc;
+		}
+
+		.p-button {
+			margin: 0;
+		}
+	}
+}
+
+.c-button-supplement-addition {
+	margin-top: 10px;
+
+	.p-icon-button {
+		margin-right: 15px;
+
+		&.p-icon-button_shape_circle {
+			width: 35px;
+			height: 35px;
+			font-size: 18px;
 		}
 	}
 }
