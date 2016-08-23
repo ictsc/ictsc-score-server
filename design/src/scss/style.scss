@@ -540,6 +540,13 @@ tr {
 	text-align: center;
 }
 
+.l-column-container {
+
+	&.l-column-container_type_fixed {
+		min-width: 1020px;
+	}
+}
+
 .l-column {
 	float: left;
 	padding-right: 30px;
