@@ -1231,15 +1231,13 @@ tr {
 }
 
 .c-answer-list {
-	letter-spacing: 4px;
 
 	.c-answer-list__item {
 		display: inline-block;
-		width: 163px;
-		letter-spacing: 0px;
+		margin-right: 5px;
+		vertical-align: top;
 
 		.p-state-label {
-			width: 100%;
 		}
 	}
 }
