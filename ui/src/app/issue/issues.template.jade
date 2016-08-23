@@ -1,5 +1,4 @@
 h1.p-page-title 到着質問
-
 .c-filter-list.c-filter-list_type_bordered
   .c-filter-list__heading ラベルフィルター(未実装)
   .c-filter-list__item
@@ -14,21 +13,21 @@ h1.p-page-title 到着質問
 .c-question-list
   .c-question-list__item(*ngFor="let item of filterd_list")
     .c-question-left
-      .c-state([ngSwitch]="item.closed")
-        button.p-state-label.p-state-label__in-progress(*ngSwitchCase="true") 対応中
-        button.p-state-label.p-state-label__no-response(*ngSwitchCase="false") 未回答
+      .c-state([ngSwitch]="issueStatus(item)")
+        button.p-state-label.p-state-label__in-progress(*ngSwitchCase="2") 対応中
+        button.p-state-label.p-state-label__no-response(*ngSwitchCase="1") 未回答
         button.p-state-label.p-state-label__resolved(*ngSwitchDefault) 解決済
     .c-question-right
       .c-question-meta
-        a.c-problem-name([routerLink]="['/problem', item.problem_id]") {{ item.problem_id }}. TODO もんだいタイトル
+        a.c-problem-name([routerLink]="['/problem', item.problem_id]") {{ item.problem_id }}. {{ item.problem?.title }}
         a.c-question-name([routerLink]="[item.problem_id, item.team_id, item.id]") {{ item.title }}
-        a.c-team-name([routerLink]="['/teams', item.team_id]") {{ item.team_id }} TODO すこし長めのチーム名
+        a.c-team-name([routerLink]="['/teams', item.team_id]") {{ item.team_id }} {{ item.team?.name }} / {{ item.team?.organization }}
       a.c-question-comment.c-question-comment_of_participant([routerLink]="[item.problem_id, item.team_id, item.id]")
-        p これこれこうしようとしたらうまくいきませんでした。××は○○でしょうか？回答のほど宜しくおね…
-          span.p-post-meta.pull-right すこし長めのチーム名　参加者
+        p {{ getLastRequest(item)?.text?.substr(0,50) }}
+          span.p-post-meta.pull-right {{ item.team?.name }}　参加者
       i.fa.fa-chevron-right.c-icon-reply
       a.c-question-comment.c-question-comment_of_admin([routerLink]="[item.problem_id, item.team_id, item.id]")
-          p 調査中ですので少々お待ち下さい。
+          p {{ getLastResponse(item)?.text?.substr(0,50) }}
 
   .c-question-list__item
     .c-question-left
@@ -71,3 +70,6 @@ h1.p-page-title 到着質問
     i.fa.fa-chevron-right.c-icon-reply
     a.c-question-comment.c-question-comment_of_admin(href='/problem-detail-question.html')
         p 調査中ですので少々お待ち下さい。
+
+pre.
+  {{ list | json }}

@@ -139,6 +139,33 @@ export class ApiService {
       return prob;
     });
   }
+
+  public issueDetail(){
+    return Observable.combineLatest(
+      this.issues.list(),
+      this.problems.list(),
+      this.members.list(),
+      this.teams.list()
+    ).concatMap(r => {
+      let [issues, problems, members, teams] = r as any;
+      return Observable.combineLatest(
+        issues.map(i => this.issueComments(i.id).list().map(r => ({
+          id:i.id,
+          arr: r.map(ic => {
+            ic.member = members.find(m => m.id == ic.member_id);
+            return ic;
+          })
+        })))
+      ).map(ics => {
+        for(let issue of issues){
+          issue.comments = (ics.find(r => (r as any).id == issue.id) as any).arr;
+          issue.problem = problems.find(p => p.id == issue.problem_id);
+          issue.team = teams.find(p => p.id == issue.team_id);
+        }
+        return issues;
+      });
+    });
+  }
 }
 
 

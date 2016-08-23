@@ -1,6 +1,6 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { Component, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
-import { ApiService, MiniList, Markdown, Time, Editable } from "../common";
+import { ApiService, MiniList, Markdown, Time, Editable, SimpleMDE } from "../common";
 import { Observable } from "rxjs";
 
 
@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
   selector: "problem-issue",
   template: require('./problem-issue.template.jade'),
   // template: "hello!hello!hello!hello!hello!",
-  directives: [Markdown, Editable]
+  directives: [Markdown, Editable, SimpleMDE]
 })
 export class ProblemIssue {
   constructor(private api: ApiService, private route: Router, private activatedRoute: ActivatedRoute) {}
@@ -39,8 +39,15 @@ export class ProblemIssue {
   }
 
   delete(){
-    if(window.confirm("本当に削除しますか？")){
+    if(window.confirm("本当に質問を削除しますか？")){
       this.api.issues.deleteItem(this.issue.id)
+        .subscribe(res => this.emitter.emit({}));
+    }
+  }
+
+  deleteComment(commentId){
+    if(window.confirm("本当にコメントを削除しますか？")){
+      this.api.issueComments(this.issue.id).deleteItem(commentId)
         .subscribe(res => this.emitter.emit({}));
     }
   }

@@ -1,4 +1,4 @@
-h1.p-page-title 参加メンバー
+h1.p-page-title#participant 参加メンバー
 
 .c-aside-of-floating-buttons
   table
@@ -24,7 +24,7 @@ h1.p-page-title 参加メンバー
           a([routerLink]="['/teams', item.id]") {{ getTeam(item.team_id)?.organization }}
         td {{ roleName[item.role_id] }}
 
-h1.p-page-title 運営メンバー
+h1.p-page-title#other 運営メンバー
 
 .c-aside-of-floating-buttons
   table
@@ -45,33 +45,39 @@ h1.p-page-title 運営メンバー
         td {{ roleName[item.role_id] }}
 
 .c-floating-action-buttons
-  button.p-icon-button.p-icon-button_shape_circle
-    i.fa.fa-plus-circle(aria-hidden='true')
-  button.p-icon-button.p-icon-button_shape_circle
-    i.fa.fa-chevron-circle-up(aria-hidden='true')
-  button.p-icon-button.p-icon-button_shape_circle.p-icon-button__label 参加者
-  button.p-icon-button.p-icon-button_shape_circle.p-icon-button__label 運営
-.c-action-modal.c-action-modal_state_active.u-cf(*ngIf="false")
-  form(name='create-member', action='#')
-    .u-flex
-      .p-form-item.p-form-item_type_inline
-        label(for='input-member-name') ユーザー名
-        input#input-member-name(type='text', name='member-name')
-      .p-form-item.p-form-item_type_inline
-        label(for='input-member-id') メンバー ID
-        input#input-member-id(type='text', name='member-id')
-      .p-form-item.p-form-item_type_inline
-        label(for='input-team-name') チーム名
-        select#input-team-name(name='team-name')
-          option(value='0') チーム名を選択してください
-      .p-form-item.p-form-item_type_inline
-        label(for='static-school-name') 所属
-        p#static-school-name.p-supplement.p-supplement__important チーム名を選択すると自動表示されます
-      .p-form-item.p-form-item_type_inline
-        label(for='input-password') パスワード
-        input#input-password(type='password', name='password')
-      .p-form-item.p-form-item_type_inline
-        label(for='select-role') ロール
-        select#select-role(name='role')
-          option(value='0') ロールを選択してください
-    button.p-button.p-button_color_green.p-button_size_large.pull-right(type='submit') メンバー追加
+  button.p-icon-button.p-icon-button_shape_circle((click)="addEnable = !addEnable")
+    i.fa.fa-plus-circle(aria-hidden='true', *ngIf="!addEnable")
+    i.fa.fa-times-circle(aria-hidden='true', *ngIf="addEnable")
+  a(pageScroll, href="#participant", pageScrollDuration="200")
+    button.p-icon-button.p-icon-button_shape_circle
+      i.fa.fa-chevron-circle-up(aria-hidden='true')
+  a(pageScroll, href="#participant", pageScrollDuration="200")
+    button.p-icon-button.p-icon-button_shape_circle.p-icon-button__label 参加者
+  a(pageScroll, href="#other", pageScrollDuration="200")
+    button.p-icon-button.p-icon-button_shape_circle.p-icon-button__label 運営
+
+.c-action-modal.c-action-modal_state_active.u-cf(*ngIf="addEnable")
+  signup
+  //- form(name='create-member', action='#')
+  //-   .u-flex
+  //-     .p-form-item.p-form-item_type_inline
+  //-       label(for='input-member-name') ユーザー名
+  //-       input#input-member-name(type='text', name='member-name')
+  //-     .p-form-item.p-form-item_type_inline
+  //-       label(for='input-member-id') メンバー ID
+  //-       input#input-member-id(type='text', name='member-id')
+  //-     .p-form-item.p-form-item_type_inline
+  //-       label(for='input-team-name') チーム名
+  //-       select#input-team-name(name='team-name')
+  //-         option(value='0') チーム名を選択してください
+  //-     .p-form-item.p-form-item_type_inline
+  //-       label(for='static-school-name') 所属
+  //-       p#static-school-name.p-supplement.p-supplement__important チーム名を選択すると自動表示されます
+  //-     .p-form-item.p-form-item_type_inline
+  //-       label(for='input-password') パスワード
+  //-       input#input-password(type='password', name='password')
+  //-     .p-form-item.p-form-item_type_inline
+  //-       label(for='select-role') ロール
+  //-       select#select-role(name='role')
+  //-         option(value='0') ロールを選択してください
+  //-   button.p-button.p-button_color_green.p-button_size_large.pull-right(type='submit') メンバー追加

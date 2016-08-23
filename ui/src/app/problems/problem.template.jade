@@ -33,7 +33,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
       markdown(*ngIf="!problemEdit", [body]="problemData?.text")
       span.p-post-meta.pull-right 投稿者
         a(href='/member-detail.html') admin
-  div(*ngIf="true")
+  div(*ngIf="false")
     pre.
       @Input() id: string; {{ id }}
       @Input() team: string; {{ team }}
@@ -92,7 +92,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
     div(*ngIf="!isSingleIssue")
       .c-question-post.u-cf(*ngIf="isParticipant")
         input#textarea-question-name(type='text', name='question-name', placeholder='タイトルは具体的かつ端的に記入してください', [(ngModel)]="postTitle")
-        textarea#textarea-question-body(name='question-body', placeholder='質問内容を記入してください', [(ngModel)]="postText")
+        textarea#textarea-question-body(name='question-body', placeholder='質問内容を記入してください', [(ngModel)]="postText", simplemde)
         button.p-button.p-button_color_green.pull-right(type='button', (click)="postIssue()") 質問投稿
 
       .c-filter-list

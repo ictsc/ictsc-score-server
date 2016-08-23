@@ -88,10 +88,10 @@ export class Problem {
       this.api.problemsComments(this.id).list().subscribe(c => this.problemComment = c);
     }
 
-    if(changeTeam){ // issue
+    if(changeTeam || changeIssue){ // issue
       let src = this.isSingleIssue?
         this.api.issues.item(this.issue).map(a => [a])
-        :this.api.issues.list();
+        :this.api.issues.list().map(iss => iss.filter(i => i.team_id == this.team));
 
       Observable.combineLatest(
         src,

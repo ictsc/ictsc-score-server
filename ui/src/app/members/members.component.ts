@@ -2,17 +2,20 @@ import { Observable } from 'rxjs/Observable';
 import { Component } from '@angular/core';
 import { ApiService, MiniList } from "../common";
 import { Signup } from "../login/signup.component";
+import { PageScroll } from 'ng2-page-scroll';
 
 @Component({
   selector: Members.name.toLowerCase(),
   template: require('./members.template.jade'),
-  directives: [Signup]
+  directives: [Signup, PageScroll]
 })
 export class Members extends MiniList {
   constructor(private api: ApiService) {
     super();
     this.list = [[],[]];
   }
+
+  addEnable = false;
 
   ngOnInit() {
     this.fetch();
