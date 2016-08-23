@@ -6,6 +6,7 @@ Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
 
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
 
+require_relative "controllers/attachment"
 require_relative "controllers/answer"
 require_relative "controllers/comment"
 require_relative "controllers/issue"
@@ -22,7 +23,7 @@ require_relative "db/model"
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
-  use AnswerRoutes
+  use AttachmentRoutes
   use CommentRoutes
   use IssueRoutes
   use MemberRoutes
