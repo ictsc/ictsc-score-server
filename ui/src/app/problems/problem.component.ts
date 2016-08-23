@@ -78,7 +78,13 @@ export class Problem {
     let changeTeam = "team" in changes;
 
     if(changeId){
-      this.api.problems.item(this.id).subscribe(p => this.problemData = p);
+      this.api.problems.item(this.id)
+        .map(p => {
+          p.opened_at = p.opened_at.substr(0,19);
+          p.closed_at = p.closed_at.substr(0,19);
+          return p;
+        })
+        .subscribe(p => this.problemData = p);
       this.api.problemsComments(this.id).list().subscribe(c => this.problemComment = c);
     }
 
