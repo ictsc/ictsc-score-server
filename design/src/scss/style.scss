@@ -1261,7 +1261,9 @@ tr {
 }
 
 .c-aside-of-floating-buttons {
-	width: calc(100% - 75px);
+	width: calc(100% - (75px * 2));
+	margin-left: auto;
+	margin-right: auto;
 }
 
 @media only screen and (min-width: 800px) {
