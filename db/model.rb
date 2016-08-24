@@ -94,6 +94,7 @@ class Member < ActiveRecord::Base
 
   has_many :comments, dependent: :destroy
   has_many :notices, dependent: :destroy
+  has_many :attachments, dependent: :destroy
 
   belongs_to :team
   belongs_to :role
@@ -123,6 +124,12 @@ class Issue < ActiveRecord::Base
 
   belongs_to :problem
   belongs_to :team
+end
+
+class Attachment < ActiveRecord::Base
+  validates :filename, presence: true
+
+  belongs_to :member
 end
 
 class Answer < ActiveRecord::Base
