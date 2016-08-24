@@ -16,7 +16,7 @@ class TeamRoutes < Sinatra::Base
       .map do |x|
         r = x.attributes
         r["hashed_registration_code"] = Digest::SHA1.hexdigest(r["registration_code"])
-        r.delete("registration_code") if not Role.where(name: ["Admin", "Writer"]).ids.include? current_user.role_id
+        r.delete("registration_code") unless current_user && Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
         r
       end
     json @teams
