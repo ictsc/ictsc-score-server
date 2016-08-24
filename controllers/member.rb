@@ -106,6 +106,19 @@ class MemberRoutes < Sinatra::Base
     @permit_role_ids = Role.accessible_resources(user: current_user, method: "GET").ids
 
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
+
+    if not Role.where(name: ["Admin", "Writer"]).ids.include? current_user.role_id
+      @team = Team.find_by(registration_code: params[:registration_code])
+      if @team.nil?
+        error = { "registration_code" => ["を入力してください"] }
+        # status 400
+        halt 400, error.to_json
+      end
+
+      @attrs.delete(:registration_code)
+      @attrs[:team_id] = @team.id
+    end
+
     @attrs[:hashed_password] = crypt(@attrs[:password])
     @attrs.delete(:password)
     @attrs[:role_id] ||= Role.find_by(name: "Participant").id
@@ -115,7 +128,6 @@ class MemberRoutes < Sinatra::Base
     if not @permit_role_ids.include? @member.role_id
       halt 403
     end
-
 
     context = :create
     context = :sign_up if not logged_in?
