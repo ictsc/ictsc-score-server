@@ -1,0 +1,21 @@
+section
+.l-row-panel__header
+  h1.c-title
+    i.fa.fa-fw.fa-thumb-tack(aria-hidden='true', *ngIf="notic.pinned")
+    span([editable]="edit", [(editableModel)]="notic.title")
+  button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集', *ngIf="isAdmin && !edit", (click)="edit = true")
+  button.p-text-button.p-text-button_type_cancel.pull-right(type='button', *ngIf="edit", (click)="edit = false; change()") キャンセル
+  .p-form-item(*ngIf="edit")
+    input#checkbox-pinning(type='checkbox', name='pinning', [(ngModel)]="notic.pinned")
+    label.optional(for='checkbox-pinning')
+      i.fa.fa-fw.fa-thumb-tack(aria-hidden='true')
+      | お知らせ固定
+.l-row-panel__body
+  markdown([body]="notic.text", *ngIf="!edit")
+  div(*ngIf="edit")
+    textarea(simplemde, [(ngModel)]="notic.text")
+.l-row-panel__footer.u-cf
+  button.p-icon-button.p-icon-button_type_delete.fa.fa-times.pull-left(type='button', (click)="delete()", *ngIf="isAdmin && !edit")
+    span.p-icon-button__label 削除
+  button.p-button.p-button_color_green.pull-right(type='submit', (click)="update()", *ngIf="edit") 更新
+  .p-post-meta.pull-right {{ notic.updated_at | time }}

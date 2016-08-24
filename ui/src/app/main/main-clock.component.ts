@@ -18,7 +18,8 @@ export class MainClock {
       .subscribe(_ => {
         let d = new Date();
         this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;
-        this.datetime.time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+        // this.datetime.time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+        this.datetime.time = `${d.getHours()}:${d.getMinutes()}`;
       });
   }
 }

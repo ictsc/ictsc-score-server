@@ -7,20 +7,8 @@ h1.sr-only トップ
         h1.c-title お知らせ
       .l-row__body
         .l-row-panel(*ngFor="let notic of notices")
-          section
-            .l-row-panel__header
-              h1.c-title
-                i.fa.fa-fw.fa-thumb-tack(aria-hidden='true')
-                | {{ notic.title }}
-              button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
-              button.p-text-button.p-text-button_type_cancel.pull-right(type='button') キャンセル
-            .l-row-panel__body
-              markdown([body]="notic.text")
-            .l-row-panel__footer.u-cf
-              button.p-icon-button.p-icon-button_type_delete.fa.fa-times.pull-left(type='button')
-                span.p-icon-button__label 削除
-              .p-post-meta.pull-right {{ notic.timestamps | time }}
-  .l-row
+          homenotif([model]="notic", (modelChange)="fetch()", [isAdmin]="isAdmin")
+  .l-row(*ngIf="isAdmin") 
     .l-row__body
       .l-row-panel
         section
@@ -38,45 +26,45 @@ h1.sr-only トップ
               input#input-panel-title(type='text', name='panel-title', [(ngModel)]="postObj.title")
             .p-form-item
               label(for='textarea-panel-body') 本文
-              textarea#textarea-panel-body(name='panel-body', [(ngModel)]="postObj.text")
+              textarea#textarea-panel-body(name='panel-body', [(ngModel)]="postObj.text", simplemde)
           .l-row-panel__footer.u-cf
             button.p-button.p-button_color_green.pull-right(type='submit', (click)="postNotice()") 投稿
-      .l-row-panel
-        section
-          .l-row-panel__header
-            .p-form-item
-              input#checkbox-pinning-2(type='checkbox', name='pinning')
-              label.optional(for='checkbox-pinning')
-                i.fa.fa-fw.fa-thumb-tack(aria-hidden='true')
-                | お知らせ固定
-            button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
-            button.p-text-button.p-text-button_type_cancel.pull-right(type='button') キャンセル
-            .p-form-item
-              label(for='input-panel-title') タイトル
-              input#input-panel-title-2(type='text', name='panel-title')
-          .l-row-panel__body
-            .p-form-item
-              label(for='textarea-panel-body') 本文
-              textarea#textarea-panel-body-2(name='panel-body')
-          .l-row-panel__footer.u-cf
-            button.p-icon-button.p-icon-button_type_delete.fa.fa-times.pull-left(type='button')
-              span.p-icon-button__label 削除
-            button.p-button.p-button_color_green.pull-right(type='submit') 更新
-            .p-post-meta.pull-right 01/01 00:00 (
-              span.elapsed 5
-              |  分前)
-      .l-row-panel
-        section
-          .l-row-panel__header
-            section
-              h1.c-title タイトル
-            button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
-          .l-row-panel__body
-            p 本文本文本文本文本文本文本文本文
-          .l-row-panel__footer.u-cf
-            .p-post-meta.pull-right 01/01 00:00 (
-              span.elapsed 5
-              |  分前)
+      //- .l-row-panel
+      //-   section
+      //-     .l-row-panel__header
+      //-       .p-form-item
+      //-         input#checkbox-pinning-2(type='checkbox', name='pinning')
+      //-         label.optional(for='checkbox-pinning')
+      //-           i.fa.fa-fw.fa-thumb-tack(aria-hidden='true')
+      //-           | お知らせ固定
+      //-       button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+      //-       button.p-text-button.p-text-button_type_cancel.pull-right(type='button') キャンセル
+      //-       .p-form-item
+      //-         label(for='input-panel-title') タイトル
+      //-         input#input-panel-title-2(type='text', name='panel-title')
+      //-     .l-row-panel__body
+      //-       .p-form-item
+      //-         label(for='textarea-panel-body') 本文
+      //-         textarea#textarea-panel-body-2(name='panel-body')
+      //-     .l-row-panel__footer.u-cf
+      //-       button.p-icon-button.p-icon-button_type_delete.fa.fa-times.pull-left(type='button')
+      //-         span.p-icon-button__label 削除
+      //-       button.p-button.p-button_color_green.pull-right(type='submit') 更新
+      //-       .p-post-meta.pull-right 01/01 00:00 (
+      //-         span.elapsed 5
+      //-         |  分前)
+      //- .l-row-panel
+      //-   section
+      //-     .l-row-panel__header
+      //-       section
+      //-         h1.c-title タイトル
+      //-       button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+      //-     .l-row-panel__body
+      //-       p 本文本文本文本文本文本文本文本文
+      //-     .l-row-panel__footer.u-cf
+      //-       .p-post-meta.pull-right 01/01 00:00 (
+      //-         span.elapsed 5
+      //-         |  分前)
 .l-column.l-column_size_1of3
   .l-row
     section

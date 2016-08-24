@@ -1,14 +1,15 @@
 import { Observable } from 'rxjs';
-import { MiniList, ApiService, Markdown } from '../common';
+import { MiniList, ApiService, Markdown, SimpleMDE } from '../common';
 import { Component } from '@angular/core';
 
 import { AppState } from '../main/main.service';
+import { HomeNotif } from "./home-notif.component";
 
 @Component({
   selector: Home.name.toLowerCase(),
   styleUrls: [ './home.style.scss' ],
   template: require('./home.template.jade'),
-  directives: [ Markdown ]
+  directives: [ Markdown ,SimpleMDE, HomeNotif ]
 })
 export class Home extends MiniList {
   constructor(private api: ApiService) {
@@ -23,8 +24,12 @@ export class Home extends MiniList {
     pinned: false,
   }
 
+  isAdmin = false;
+  
+
   ngOnInit() {
     this.fetch();
+    this.api.isAdmin().subscribe(r => this.isAdmin = r);
   }
 
   get(){
