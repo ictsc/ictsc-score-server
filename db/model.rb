@@ -45,6 +45,7 @@ end
 
 class Team < ActiveRecord::Base
   validates :name, presence: true
+  validates :registration_code, presence: true
 
   has_many :members, dependent: :nullify
   has_many :answers, dependent: :destroy

@@ -12,7 +12,13 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams" do
-    @teams = Team.accessible_resources(user_and_method)
+    @teams = Team.accessible_resources(user_and_method) \
+      .map do |x|
+        r = x.attributes
+        r["hashed_registration_code"] = Digest::SHA1.hexdigest(r["registration_code"])
+        r.delete("registration_code") if not Role.where(name: ["Admin", "Writer"]).ids.include? current_user.role_id
+        r
+      end
     json @teams
   end
 
@@ -23,7 +29,12 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams/:id" do
-    json @team
+    @team = Team.accessible_resources(user_and_method) \
+                .find_by(id: params[:id])
+    @return = @team.attributes
+    @return["hashed_registration_code"] = Digest::SHA1.hexdigest(@return["registration_code"])
+    @return.delete("registration_code") if not Role.where(name: ["Participant", "Admin", "Writer"]).ids.include? current_user.role_id
+    json @return
   end
 
   post "/api/teams" do
