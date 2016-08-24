@@ -172,7 +172,6 @@ class Comment < ActiveRecord::Base
 end
 
 class Notice < ActiveRecord::Base
-  validates :name,    presence: true
   validates :title,   presence: true
   validates :text,    presence: true
   validates :pinned, inclusion: { in: [true, false] }
