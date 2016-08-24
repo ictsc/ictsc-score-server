@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
-import { Observable } from "rxjs";
+import { Observable, Subscriber } from "rxjs";
 
 @Injectable()
 export class ApiService {
@@ -11,9 +11,25 @@ export class ApiService {
 
   // todo ログインユーザが変わった時にmainの画面更新掛ける
   private changeUserObserver;
-  private changeUser = Observable.create(function (observer) {
+  public changeUser: Observable<any> = Observable.create((observer: Subscriber<any>) => {
     this.changeUserObserver = observer;
+    // Observable.interval(1000).subscribe(r => observer.next())
   });
+  private lastUser = null;
+  private changeUserNext(user){
+    console.log("aaa", user, this.lastUser);
+    let memberid = user.member_id;
+    if(this.changeUserObserver && this.lastUser !== memberid){
+      console.log("user changed");
+      this.lastUser = memberid;
+      if(memberid)
+        this.members.item(memberid)
+          .catch(r => Observable.of(undefined))
+          .subscribe(r => this.changeUserObserver.next(r));
+      else
+        this.changeUserObserver.next(undefined);
+    }
+  }
 
   login(user: string, password: string){
     return this.session.post({
@@ -32,7 +48,6 @@ export class ApiService {
   private cachedLoginStatus: LoginStatus;
   private lastCacheTime: Date = new Date(0);
   getLoginStatus(cache = false): Observable<LoginStatus> {
-    // this.changeUserObserver.onNext();
     if(cache && this.cachedLoginStatus && new Date().valueOf() - this.lastCacheTime.valueOf() < 30 * 1000)
       return Observable.of(this.cachedLoginStatus);
     else
@@ -41,8 +56,9 @@ export class ApiService {
         status.member_id = r.member_id;
         status.status = r.status;
         this.cachedLoginStatus = status;
+        this.changeUserNext(status);
         return status;
-      });
+      }).catch(err => Observable.of(undefined));
   }
   getLoginMember(cache = true){
     return this.getLoginStatus(cache)
@@ -55,8 +71,9 @@ export class ApiService {
   }
 
   private isRole = (cache: boolean, role: Roles) => {
-    return this.getLoginMember(cache).map(m => m.role_id == role)
+    return this.getLoginMember(cache).catch(r => Observable.of({} as any)).map(m => m.role_id == role)
   };
+
   isAdmin(cache = true){
     return this.getLoginMember(cache).map(m => m.role_id == Roles.Admin || m.role_id == Roles.Writer);
   }

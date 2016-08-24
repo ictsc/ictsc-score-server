@@ -19,19 +19,24 @@ import { MainClock } from "./main-clock.component";
 export class Main {
   constructor(public router: Router, public api: ApiService) {}
 
-  isAdmin = this.api.isAdmin();
+  isAdmin = false;
   loginMember;
 
   datetime = {date: "", time: ""};
 
   ngOnInit() {
-    this.api.getLoginMember()
-      .concatMap(m => {
-        if(!m.team_id) return Observable.of(m);
-        return this.api.teams.item(m.team_id)
-          .map(t => { m.team = t; return m; });
-      })
-      .subscribe(a => this.loginMember = a);
+    this.api.changeUser.subscribe(r => {
+      console.warn("change user", r);
+      this.api.isAdmin().subscribe(r => this.isAdmin = r);
+
+      this.api.getLoginMember()
+        .concatMap(m => {
+          if(!m.team_id) return Observable.of(m);
+          return this.api.teams.item(m.team_id)
+            .map(t => { m.team = t; return m; });
+        })
+        .subscribe(a => this.loginMember = a);
+    });
     // Observable.timer(0, 1000)
     //   .subscribe(_ => {
     //     let d = new Date();

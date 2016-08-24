@@ -16,9 +16,9 @@ header
         li.p-list__item
           a([routerLink]="['members']") メンバー
         li.p-list__item
-          a([routerLink]="['teams']") チーム
-        //- li.p-list__item(*ngIf="loginMember?.team_id")
-          //- a([routerLink]="['teams', loginMember?.team_id]") ({{ loginMember?.team?.name }})
+          a([routerLink]="['teams']", *ngIf="isAdmin") チーム
+        li.p-list__item(*ngIf="loginMember?.team_id")
+          a([routerLink]="['teams', loginMember?.team_id]") ({{ loginMember?.team?.name }})
     .p-header__right
       ul.p-list
         li.p-list__item
@@ -27,11 +27,11 @@ header
         li.p-list__item
           a([routerLink]="['problems']") 問題
         li.p-list__item
-          a([routerLink]="['issues']") 質問
+          a([routerLink]="['issues']") 質問一覧
         li.p-list__item
-          a([routerLink]="['answers']") 解答
+          a([routerLink]="['answers']", *ngIf="isAdmin") 解答
         li.p-list__item
-          a((click)="logout()") ログアウト {{ isAdmin | async | json }}
+          a((click)="logout()") ログアウト {{ isAdmin | json }}
     //- .c-clock
     //-   .c-clock__date {{ datetime.date }}
     //-   .c-clock__time {{ datetime.time }}
