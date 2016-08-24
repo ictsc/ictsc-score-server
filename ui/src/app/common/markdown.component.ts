@@ -8,6 +8,13 @@ import * as showdown from "showdown";
 })
 export class Markdown {
   constructor(private sanitizer: DomSanitizationService) {
+    let conv =  new showdown.Converter();
+    conv.setOption("tables", "true");
+    conv.setOption("tablesHeaderId", "true");
+    conv.setOption("tasklists", "true");
+    conv.setOption("parseImgDimensions", "true");
+    conv.setOption("headerLevelStart", "2");
+    this.converter = conv;
   }
 
   private textAreaElem: ElementRef;
@@ -21,8 +28,9 @@ export class Markdown {
     this.htmlText = this.gethtmlText;
   }
 
+  converter;
   private get gethtmlText(){
-    let html = new showdown.Converter().makeHtml(this.body);
+    let html = this.converter.makeHtml(this.body);
     if(this.bypass)
       return this.sanitizer.bypassSecurityTrustHtml(html);
     return html;
