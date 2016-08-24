@@ -1,0 +1,72 @@
+extends /extends/_layout
+
+block title
+	+title('スコアサーバの案内')
+
+block content
+
+	h1.p-page-title.p-page-title_type_bordered.p-page-title_size_full.text-left コンテストサイト利用ガイド (運営向け)
+
+	.p-page-description
+		h2.page-description__title コンテストサイトとは：
+		p.page-description__body
+			| 午前、午後のパートに分かれて問題の出題を行います。
+			br
+			| 各チームの問題ごとに採点、質問への回答を行ってください。
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h3.p-section__title トップページの用途
+			p お知らせや新着の質問回答などの通知を掲載しています。逐次目を通すようにしてください。
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h3.p-section__title 参加者側の用途
+			ul
+				li 出題された問題に対して解答
+				li 必要があれば各問題ごとに質問
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h3.p-section__title 運営側の用途
+			.p-section.p-section--small
+				h4.p-section__title ・問題を出題
+				.p-section__body
+					p 問題一覧より出題を行ってください。
+
+			.p-section.p-section--small
+				h4.p-section__title ・解答を採点
+				.p-section__body
+					p
+						| 採点は採点ページより各チームの問題ごとに採点してください。
+						br
+						| ※ 原則、採点者は問題ひとつにつき一人の担当
+
+			.p-section.p-section--small
+				h4.p-section__title ・質問に対して解答
+				.p-section__body
+					p コンテスト中、参加者は必要に応じて問題に質問を行うことがありますので、質問が到着し次第回答を行ってください。
+
+			.p-section.p-section--small
+				h4.p-section__title ・質問ラベルについて
+				.p-section__body
+					p
+						| 質問が解決した場合、ラベルをクリックして表示を切り替えてください。到着質問一覧でラベルの状態が反映されます。
+						br
+						| ラベル切替は参加者と運営側担当者の双方が行えます。
+						br
+						| また、解決ラベルになっていても、引き続き回答を要する場合は再度対応中に戻すことができます。
+						br
+						img(src="/assets/images/sample-question-label.png", alt="", srcset="/assets/images/sample-question-label.png 1x, /assets/images/sample-question-label@2x.png 2x")
+
+			.p-section.p-section--small
+				h4.p-section__title ・ラベルフィルターの役割
+				.p-section__body
+					p ラベルフィルターは質問や問題の回答状況をフィルタリングすることができます。
+					dl.p-image-dl
+						dt.p-image-dl__term 質問ページのサンプル：
+						dd.p-image-dl__image
+							img(src="/assets/images/sample-label-filter-question.png", alt="", srcset="/assets/images/sample-label-filter-question.png 1x, /assets/images/sample-label-filter-question@2x.png 2x")
+						dt.p-image-dl__term 回答ページのサンプル：
+						dd.p-image-dl__image
+							img(src="/assets/images/sample-label-filter-answer.png", alt="", srcset="/assets/images/sample-label-filter-answer.png 1x, /assets/images/sample-label-filter-answer@2x.png 2x")
