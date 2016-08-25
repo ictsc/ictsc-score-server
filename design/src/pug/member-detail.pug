@@ -13,29 +13,55 @@ block content
 				.c-figure  1
 		.p-page-title__right
 			span.c-member-name 赤座あかり
+			input.shortened-input#input-member-name(type='text', name='member-name', placeholder='フルネームで入力')
+			.c-editorial-buttons.c-editorial-buttons--inline
+				.c-button-wrapper
+					button(type="submit").p-button.p-button_color_gray.p-button_size_small 編集取消
+				.c-button-wrapper
+					button(type="submit").p-button.p-button_color_green 保存
 		button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
 
 	.form-horizontal.u-member-detail.center-block
 		.form-group
 			label.col-xs-2.control-label メンバー ID
 			.col-xs-10
-				p.form-control-static akkarin
-					button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
+				p.form-control-static.pull-left akkarin
+				input.shortened-input#input-member-id(type='text', name='member-id', placeholder='任意のメンバー ID を入力')
+				.c-editorial-buttons.c-editorial-buttons--inline
+					.c-button-wrapper
+						button(type="submit").p-button.p-button_color_gray.p-button_size_small 編集取消
+					.c-button-wrapper
+						button(type="submit").p-button.p-button_color_green 保存
+				button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
 		.form-group
 			label.col-xs-2.control-label ロール
 			.col-xs-10
-				p.form-control-static Participant
+				p.form-control-static.pull-left 参加者
+				.p-form-item
+					select.shortened-input#input-role(name='team-role')
+						option(value='0') ロールを選択してください
+					.c-editorial-buttons.c-editorial-buttons--inline
+						.c-button-wrapper
+							button(type="submit").p-button.p-button_color_gray.p-button_size_small 編集取消
+						.c-button-wrapper
+							button(type="submit").p-button.p-button_color_green 保存
 					button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
 		.form-group
 			label.col-xs-2.control-label.separator
 				i.fa.fa-circle
 		.form-group
-			label.col-xs-2.control-label 所属
+			label.col-xs-2.control-label 所属とチーム
 			.col-xs-10
-				p.form-control-static 七森中学校
-					button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')
+				p.form-control-static.pull-left 七森中学校 / すこし長めのチーム名
 		.form-group
-			label.col-xs-2.control-label チーム
+			label(for='input-password').col-xs-2.control-label パスワード
 			.col-xs-10
-				p.form-control-static [Entry no.1] すこし長めのチーム名
+				.p-form-item
+					p.form-control-static.pull-left ******
+					input.shortened-input#input-password(type='password', name='password', placeholder='新しいパスワードを入力')
+					.c-editorial-buttons.c-editorial-buttons--inline
+						.c-button-wrapper
+							button(type="submit").p-button.p-button_color_gray.p-button_size_small 編集取消
+						.c-button-wrapper
+							button(type="submit").p-button.p-button_color_green 保存
 					button.p-icon-button.fa.fa-pencil(type='button', aria-label='編集')

@@ -68,6 +68,7 @@ input {
 	display: block;
 	box-sizing: border-box;
 	width: 100%;
+	height: 42px;
 	max-width: 100%;
 	padding: 8px 10px;
 	border: 1px solid #95989A;
@@ -1403,7 +1404,21 @@ tr {
 	}
 
 	.control-label {
-		line-height: 2.6;
+		line-height: 36px;
+	}
+
+	.form-control-static {
+		line-height: 36px;
+	}
+
+	.c-editorial-buttons {
+		vertical-align: baseline;
+	}
+
+	.p-icon-button {
+		vertical-align: sub;
+		padding-top: 8px;
+		line-height: 36px;
 	}
 }
 
@@ -1473,6 +1488,15 @@ tr {
 			margin: 0;
 		}
 	}
+
+	&.c-editorial-buttons--inline {
+		position: static;
+		top: auto;
+		right: auto;
+		float: none;
+		display: inline-block;
+		padding-top: 8px;
+	}
 }
 
 .c-button-supplement-addition {
@@ -1492,4 +1516,9 @@ tr {
 .p-margined-image {
 	margin-top: 30px;
 	margin-bottom: 30px;
+}
+
+.shortened-input {
+	display: inline-block;
+	width: 50%;
 }
