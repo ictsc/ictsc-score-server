@@ -144,7 +144,7 @@ export class Problem {
     if((changeTeam || changeId) && this.team){  // answer
       this.getCurrentProblemsAnswer()
         .concatMap(a => {
-          if(!a.score_id) return Observable.of(undefined);
+          if(!a || !a.score_id) return Observable.of(undefined);
           return this.api.scores.item(a.score_id)
         })
         .subscribe(s => {
