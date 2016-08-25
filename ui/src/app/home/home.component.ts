@@ -41,10 +41,12 @@ export class Home extends MiniList {
           case "problem_opened":
           case "problem_updated":
             notif.link = ["problems", notif.resource_id];
+            notif.type = 1;
             break;
           case "new_comment_to_problem":
           case "updated_comment_to_problem":
             notif.link = ["problems", notif.sub_resource_id];
+            notif.type = 2;
             break;
           case "created_comment_to_issue":
           case "updated_comment_to_issue":
@@ -53,6 +55,7 @@ export class Home extends MiniList {
               notif.link = ["issues", issue.problem_id, issue.team_id, issue.id];
             else
               notif.link = [];
+            notif.type = 3;
             break;
         }
         return notif;

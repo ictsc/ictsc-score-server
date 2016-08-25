@@ -8,7 +8,7 @@ h1.sr-only トップ
       .l-row__body
         .l-row-panel(*ngFor="let notic of notices")
           homenotif([model]="notic", (modelChange)="fetch()", [isAdmin]="isAdmin")
-  .l-row(*ngIf="isAdmin") 
+  .l-row(*ngIf="isAdmin")
     .l-row__body
       .l-row-panel
         section
@@ -84,9 +84,10 @@ h1.sr-only トップ
         h1.c-title 質問・補足のアップデート
       .l-row__body
         a.l-row-panel(*ngFor="let notification of notifications", [routerLink]="notification.link")
-          .l-row-panel__header([ngSwitch]="notification.resource")
-            span.p-notification-label.p-notification-label_type_supplement(*ngSwitchCase="'Problem'") 問題
-            span.p-notification-label.p-notification-label_type_question(*ngSwitchCase="'Comment'") 質問・補足
+          .l-row-panel__header([ngSwitch]="notification.type")
+            span.p-notification-label.p-notification-label_type_supplement(*ngSwitchCase="1") 問題
+            span.p-notification-label.p-notification-label_type_problem_comment(*ngSwitchCase="2") 補足
+            span.p-notification-label.p-notification-label_type_question(*ngSwitchCase="3") 質問
             span.p-notification-label(*ngSwitchDefault) その他
           .l-row-panel__body {{ notification.resource_id }} {{ notification.text }}
           .l-row-panel__footer.u-cf
