@@ -12,7 +12,8 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/answers" do
-    @answers = Answer.accessible_resources(user_and_method)
+    @answers = Answer.accessible_resources(user_and_method) \
+                     .map{|x| x.attributes.merge(score_id: x&.score&.id) }
     json @answers
   end
 
@@ -23,7 +24,7 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/answers/:id" do
-    json @answer
+    json @answer.attributes.merge(score_id: @answer&.score&.id)
   end
 
   post "/api/answers" do

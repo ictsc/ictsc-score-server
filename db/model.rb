@@ -141,7 +141,7 @@ class Answer < ActiveRecord::Base
   has_many :comments, dependent: :destroy, as: :commentable
 
   belongs_to :problem
-  belongs_to :score
+  has_one :score
   belongs_to :team
 end
 
