@@ -433,14 +433,10 @@ tr {
 	}
 
 	&.p-section--small {
-		margin-top: 0;
+		margin-top: 30px;
 
 		.p-section__title {
 			font-size: 17px;
-		}
-
-		&:not(:first-of-type) {
-			margin-top: 30px;
 		}
 	}
 }
