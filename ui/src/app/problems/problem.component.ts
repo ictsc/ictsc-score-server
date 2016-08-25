@@ -75,12 +75,12 @@ export class Problem {
         .subscribe(res => this.ngOnChanges({id: {}} as any));
   }
 
-  score: any;
+  score: any = { point: 0 };
   scoreEdit = false;
   scoreEditSubmit(){
     let src = this.score.id
       ?this.api.scores.modify(this.score.id, this.score)
-      :this.api.scores.add(this.score);
+      :this.api.answersScore(this.answer.id).add(this.score);
     src.subscribe(r => {
         this.ngOnChanges({team: {}} as any);
         this.scoreEdit = false;
