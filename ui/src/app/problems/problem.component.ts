@@ -25,6 +25,8 @@ export class Problem {
   problemComments: any;
   problemCommentsAddEnable = false;
   problemCommentsAddText = "";
+  problemList = [];
+
   issues: any;
   answer: any = [];
   get ansewrIsNotFound(){ return typeof this.answer == 'undefined' }
@@ -103,6 +105,9 @@ export class Problem {
         })
         .subscribe(p => this.problemData = p);
       this.api.problemsComments(this.id).list().subscribe(c => this.problemComments = c);
+
+      // 前後の問題用
+      this.api.problems.list().subscribe(r => this.problemList = r);
     }
 
     if(changeTeam || changeIssue){ // issue
@@ -226,5 +231,28 @@ export class Problem {
 
   getMember(id){
     return this.members.find(m => m.id == id)
+  }
+
+  neiberProbrem(posNext = true){
+    let probs = this.problemList;
+    if(!probs) return undefined;
+
+    let last;
+    let next = false;
+    for(let prob of probs){
+      if(next) return prob;
+      if(""+prob.id == this.id){
+        if(posNext) next = true;
+        else return last;
+      }
+      last = prob;
+    }
+    return undefined;
+  }
+  neiberLink(prob){
+    if(this.team)
+      return ["../../", prob.id, this.team];
+    else
+      return ["../", prob.id]
   }
 }
