@@ -1,6 +1,14 @@
 .c-tab-panel__state-column
-  button.p-state-label.p-state-label__in-progress.center-block 対応中
-  .p-state-supplement 解決したらクリック
+  span([ngSwitch]="issueStatus(issue)")
+    span(*ngSwitchCase="0")
+      button.p-state-label.center-block.p-state-label__resolved((click)="changeStatus()") 解決済み
+      .p-state-supplement やっぱり解決してないい場合はクリック
+    span(*ngSwitchCase="1")
+      button.p-state-label.center-block.p-state-label__no-response((click)="changeStatus()") 未回答
+      .p-state-supplement 解決したらクリック
+    span(*ngSwitchCase="2")
+      button.p-state-label.center-block.p-state-label__in-progress((click)="changeStatus()") 対応中
+      .p-state-supplement 解決したらクリック
   button.center-block.p-state-label(*ngIf="isAdmin", (click)="delete()") 削除
 
 .c-tab-panel__content
@@ -48,3 +56,5 @@
 
   textarea#textarea-question-comment(type='text', name='question-comment', placeholder='コメントを記入してください', [(ngModel)]="comment", simplemde)
   button.p-button.p-button_color_green.pull-right(type='button', (click)="postComment()") 送信
+pre.
+  {{ issue | json }}

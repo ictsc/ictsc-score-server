@@ -11,7 +11,10 @@ export class Problems extends MiniList {
 
   ngOnInit() {
     this.fetch();
+    this.api.isAdmin().subscribe(r => this.isAdmin = r);
   }
+
+  isAdmin = false;
 
   get(){
     return this.api.problems.get().map(problems => {

@@ -34,13 +34,12 @@ export class Issues extends MiniList {
     return 2;  // 対応中
   }
 
-  private getSorted(issue){
-    return issue.comments.sort((a,b) => b.id - a.id)
-  }
   getLastRequest(issue){
-    return this.getSorted(issue).filter(i => i.member.role_id == 4)[0];
+    let res = issue.comments.filter(i => i.member.role_id == 4);
+    return res[res.length - 1];
   }
   getLastResponse(issue){
-    return this.getSorted(issue).filter(i => i.member.role_id == 2 || i.member.role_id == 3)[0];
+    let res = issue.comments.filter(i => i.member.role_id == 2 || i.member.role_id == 3)
+    return res[res.length - 1];
   }
 }

@@ -17,7 +17,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
     //- button.cancel(*ngIf="problemEdit", (click)="problemEditCancel()") 編集キャンセル
     //- button.cancel(*ngIf="problemEdit", (click)="problemEditPost()") 編集確定
 
-  p.c-problem-info.center-block 公開 　{{ problemData?.opened_at | time }}|　締切　{{ problemData?.closed_at | time }}　|　更新　{{ problemData?.updated_at | time }}
+  p.c-problem-info.center-block 公開 　{{ problemData?.opened_at | time }}　|　締切　{{ problemData?.closed_at | time }}　|　更新　{{ problemData?.updated_at | time }}
   dir(*ngIf="problemEdit")
     .input-group
       span.input-group-addon 公開日時

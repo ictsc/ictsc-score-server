@@ -79,7 +79,7 @@ table(*ngFor="let gropu of problems")
 //-         i.fa.fa-fw.fa-arrow-circle-up
 //-         | 01/01 00:00
 
-form(name='create-problem', action='#').p-form-panel.p-form-panel_size_large
+form.p-form-panel.p-form-panel_size_large(name='create-problem', *ngIf="isAdmin")
   .p-form-item
     label(for='input-problem-name') 新規問題タイトル
     input#input-problem-name(type='text', name='problem-name', [(ngModel)]="postObj.title")

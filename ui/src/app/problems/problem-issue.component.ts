@@ -51,4 +51,28 @@ export class ProblemIssue {
         .subscribe(res => this.emitter.emit({}));
     }
   }
+
+  issueStatus(issue){
+    if(!issue.comments) return undefined;
+    if(issue.closed) return 0;  // 解決済み
+    let req = this.getLastRequest(issue);
+    let res = this.getLastResponse(issue);
+    if((req?(req.id):0) > (res?(res.id):0))
+      return 1;  // 未回答
+    return 2;  // 対応中
+  }
+  getLastRequest(issue){
+    let res = issue.comments.filter(i => i.member.role_id == 4);
+    return res[res.length - 1];
+  }
+  getLastResponse(issue){
+    let res = issue.comments.filter(i => i.member.role_id == 2 || i.member.role_id == 3)
+    return res[res.length - 1];
+  }
+
+  changeStatus(){
+    this.api.issues.modify(this.issue.id, {
+      closed: !this.issue.closed
+    }).subscribe(r => this.emitter.emit({}));
+  }
 }
