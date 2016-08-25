@@ -45,6 +45,7 @@ end
 
 class Team < ActiveRecord::Base
   validates :name, presence: true
+  validates :registration_code, presence: true
 
   has_many :members, dependent: :nullify
   has_many :answers, dependent: :destroy
@@ -171,7 +172,6 @@ class Comment < ActiveRecord::Base
 end
 
 class Notice < ActiveRecord::Base
-  validates :name,    presence: true
   validates :title,   presence: true
   validates :text,    presence: true
   validates :pinned, inclusion: { in: [true, false] }
