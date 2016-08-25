@@ -484,6 +484,20 @@ tr {
 			margin-right: 15px;
 		}
 	}
+
+	&.p-form-item--xs {
+		display: inline-block;
+		margin-left: 10px;
+		margin-right: 10px;
+
+		input {
+			display: inline-block;
+			width: 200px;
+			height: 20px;
+			padding: 4px 5px;
+			margin-left: 10px;
+		}
+	}
 }
 
 .p-form-item select {
@@ -773,8 +787,10 @@ tr {
 }
 
 .p-post-meta {
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
 	clear: both;
-	margin-top: 10px;
 	color: #95989a;
 	font-size: 0.8em;
 }
@@ -1026,7 +1042,7 @@ tr {
 
 	.c-problem-panel__supplement {
 		position: relative;
-		padding: 15px;
+		padding: 15px 15px 35px;
 		border-radius: 10px;
 		margin-top: 40px;
 		background-color: #fcf0f0;
