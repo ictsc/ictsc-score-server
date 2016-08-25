@@ -159,12 +159,12 @@ def_perm(Member, :participant, %i(PUT PATCH),
   parameters: "{ id: current_user.id }")
 
 def_perm(Problem, :participant, %i(GET),
-  query: "opened_at <= :now AND :now <= closed_at",
+  query: "opened_at <= :now",
   parameters: "{ now: DateTime.now }")
 
 def_perm(Problem, :participant, %i(GET),
   action: "problems_comments",
-  query: "opened_at <= :now AND :now <= closed_at",
+  query: "opened_at <= :now",
   parameters: "{ now: DateTime.now }")
 
 %i(Issue Answer).each do |resource|
