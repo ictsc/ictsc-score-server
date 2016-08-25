@@ -44,7 +44,7 @@ export class Home extends MiniList {
             break;
           case "new_comment_to_problem":
           case "updated_comment_to_problem":
-            notif.link = ["problems", notif.resource_id];
+            notif.link = ["problems", notif.sub_resource_id];
             break;
           case "created_comment_to_issue":
           case "updated_comment_to_issue":
