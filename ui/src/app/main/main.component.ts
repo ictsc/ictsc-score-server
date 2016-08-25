@@ -46,6 +46,7 @@ export class Main {
   }
 
   logout(){
-    this.api.logout().subscribe(r => this.router.navigate(["login"]));
+    if(window.confirm("ログアウトします"))
+      this.api.logout().subscribe(r => this.router.navigate(["login"]));
   }
 }
