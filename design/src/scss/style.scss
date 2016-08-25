@@ -1067,17 +1067,27 @@ tr {
 		background-color: #e8e8e8;
 	}
 
-	&.p-state-label__no-response {
+	&.p-state-label__no-progress {
 		color: #f00;
 		background-color: #ffb1bc;
 	}
 
 	&.p-state-label__in-progress {
+		color: #c17a07;
+		background-color: #fcf552;
+	}
+
+	&.p-state-label__not-submitted {
 		color: #8da700;
 		background-color: #f1f7a6;
 	}
 
 	&.p-state-label__resolved {
+		color: #00A353;
+		background-color: #91f0c1;
+	}
+
+	&.p-state-label__marked {
 		color: #00A353;
 		background-color: #cbf5e0;
 	}
