@@ -1,83 +1,83 @@
 h1.p-page-title 問題一覧
 
-table
+table(*ngFor="let gropu of problems")
   thead
     tr
-      th.c-group-heading(colspan='2') 1 日目 - 午後問題
+      th.c-group-heading(colspan='2') {{ gropu.title }}
       th 締切
       th 質問
       th 公開
   tbody
-    tr(*ngFor="let item of problem(0)")
+    tr(*ngFor="let item of gropu.items", [ngClass]="{'past-due': compTime(item.closed_at, 3)}")
       th 問題 {{ item.id }}
       td
         a([routerLink]="[item.id]") {{ item.title }}
-      td.c-close-to-due
+      td([ngClass]="{'c-close-to-due': compTime(item.closed_at, 1)}")
         i.fa.fa-fw.fa-hourglass-start
         | {{ item.closed_at | time }}
       td
         i.fa.fa-fw.fa-question-circle
-        | 2 (3 分前)
-      td
+        | todo 2 (3 分前)
+      td([ngClass]="{'c-close-to-due': compTime(item.opened_at, 2)}")
         i.fa.fa-fw.fa-arrow-circle-up
         | {{ item.opened_at | time }}
 
-table
-  thead
-    tr
-      th.c-group-heading(colspan='5') 2 日目 - 午前問題
-  tbody
-    tr
-      th 問題 1
-      td
-        a(href='/problem-detail.html') 普通の長さのタイトル名がついてる問題
-      td
-        i.fa.fa-fw.fa-hourglass-start
-        | 01/01 00:00
-      td
-        i.fa.fa-fw.fa-question-circle
-        | 2 (3 分前)
-      td
-        i.fa.fa-fw.fa-arrow-circle-up
-        | 01/01 00:00
+//- table
+//-   thead
+//-     tr
+//-       th.c-group-heading(colspan='5') 2 日目 - 午前問題
+//-   tbody
+//-     tr
+//-       th 問題 1
+//-       td
+//-         a(href='/problem-detail.html') 普通の長さのタイトル名がついてる問題
+//-       td
+//-         i.fa.fa-fw.fa-hourglass-start
+//-         | 01/01 00:00
+//-       td
+//-         i.fa.fa-fw.fa-question-circle
+//-         | 2 (3 分前)
+//-       td
+//-         i.fa.fa-fw.fa-arrow-circle-up
+//-         | 01/01 00:00
 
-table
-  thead
-    tr
-      th.c-group-heading(colspan='5') 2 日目 - 午後問題
-  tbody
-    tr
-      th 問題 1
-      td
-        a(href='/problem-detail.html') 普通の長さのタイトル名がついてる問題
-      td
-        i.fa.fa-fw.fa-hourglass-start
-        | 01/01 00:00
-      td
-        i.fa.fa-fw.fa-question-circle
-        | 2 (3 分前)
-      td
-        i.fa.fa-fw.fa-arrow-circle-up
-        | 01/01 00:00
+//- table
+//-   thead
+//-     tr
+//-       th.c-group-heading(colspan='5') 2 日目 - 午後問題
+//-   tbody
+//-     tr
+//-       th 問題 1
+//-       td
+//-         a(href='/problem-detail.html') 普通の長さのタイトル名がついてる問題
+//-       td
+//-         i.fa.fa-fw.fa-hourglass-start
+//-         | 01/01 00:00
+//-       td
+//-         i.fa.fa-fw.fa-question-circle
+//-         | 2 (3 分前)
+//-       td
+//-         i.fa.fa-fw.fa-arrow-circle-up
+//-         | 01/01 00:00
 
-table
-  thead
-    tr
-      th.c-group-heading(colspan='5') 1 日目 - 午前問題
-  tbody
-    tr.past-due
-      th 問題 1
-      td
-        a(href='/problem-detail.html') 普通の長さのタイトル名がついてる問題
-      td
-        i.fa.fa-fw.fa-hourglass-start
-        | 01/01 00:00
-      td
-        i.fa.fa-fw.fa-question-circle
-        | 2 (3 分前)
-      td
-        i.fa.fa-fw.fa-arrow-circle-up
-        | 01/01 00:00
+//- table
+//-   thead
+//-     tr
+//-       th.c-group-heading(colspan='5') 1 日目 - 午前問題
+//-   tbody
+//-     tr.past-due
+//-       th 問題 1
+//-       td
+//-         a(href='/problem-detail.html') 普通の長さのタイトル名がついてる問題
+//-       td
+//-         i.fa.fa-fw.fa-hourglass-start
+//-         | 01/01 00:00
+//-       td
+//-         i.fa.fa-fw.fa-question-circle
+//-         | 2 (3 分前)
+//-       td
+//-         i.fa.fa-fw.fa-arrow-circle-up
+//-         | 01/01 00:00
 
 form(name='create-problem', action='#').p-form-panel.p-form-panel_size_large
   .p-form-item
@@ -93,3 +93,6 @@ form(name='create-problem', action='#').p-form-panel.p-form-panel_size_large
     label(for='input-due-datetime') 締切日時
     input#input-due-datetime(type='datetime-local', name='due-datetime', [(ngModel)]="postObj.closed_at")
 button.p-button.p-button_color_green.p-button_size_large.center-block(type='submit', (click)="post()") 問題投稿
+
+pre.
+  {{ problems | json }}
