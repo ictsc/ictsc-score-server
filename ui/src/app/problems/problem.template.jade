@@ -49,7 +49,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
       markdown(*ngIf="!problemEdit", [body]="problemData?.text")
       span.p-post-meta.pull-right 投稿者
         a(href='/member-detail.html') admin
-  div(*ngIf="true")
+  div(*ngIf="false")
     pre.
       @Input() id: string; {{ id }}
       @Input() team: string; {{ team }}
@@ -91,7 +91,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
         div(*ngIf="ansewrIsNotFound") 解答が投稿されていません
         .c-message.c-message_of_general(*ngFor="let comment of answer?.comments")
           .c-message__body.message_type_answer
-            | {{ comment.text }}
+            markdown([body]="comment.text")
           .c-message__footer.u-cf
             .p-post-meta
               a([routerLink]="['/teams', comment.member_id]") {{ teamData?.name }}
