@@ -1522,3 +1522,21 @@ tr {
 	display: inline-block;
 	width: 50%;
 }
+
+.dummy-input {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	height: 42px;
+	max-width: 100%;
+	padding: 8px 10px;
+	border: 1px solid #95989A;
+	border-radius: 3px;
+	margin-right: auto;
+	margin-bottom: 4px;
+	margin-left: auto;
+	color: #7b7c7c;
+	font-weight: bold;
+	line-height: 1.7;
+	background-color: #e7e8e8;
+}
