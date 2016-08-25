@@ -42,7 +42,7 @@
     "server": "npm run server:dev",
     "server:dev": "webpack-dev-server --config config/webpack.dev.js --inline --progress --profile --colors --watch --display-error-details --display-cached --content-base src/",
     "server:dev:hmr": "npm run server:dev -- --hot",
-    "server:prod": "http-server dist --cors",
+    "server:prod": "webpack-dev-server --config config/webpack.prod.js  --inline --progress --profile --colors --watch --display-error-details --display-cached --content-base src/",
     "webdriver:update": "npm run webdriver-manager update",
     "webdriver:start": "npm run webdriver-manager start",
     "lint": "npm run tslint \"src/**/*.ts\"",
