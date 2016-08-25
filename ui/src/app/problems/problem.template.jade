@@ -1,6 +1,8 @@
 div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_expanded': viewExpand == -1}")
-  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="!isProblemOnly", (click)="viewExpand = viewExpand+1")
+  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="!isProblemOnly && viewExpand == -1", (click)="viewExpand = viewExpand+1")
     i.fa.fa-caret-left
+  button.p-button-toggle-width.p-button-toggle-width__left(*ngIf="!isProblemOnly && viewExpand != -1", (click)="viewExpand = viewExpand-1")
+    i.fa.fa-caret-right
   .p-pagination.u-cf
     a.p-pagination__prev(*ngIf="neiberProbrem(false)", [routerLink]="neiberLink(neiberProbrem(false))") {{ neiberProbrem(false).title }}
     a.p-pagination__next(*ngIf="neiberProbrem(true)", [routerLink]="neiberLink(neiberProbrem(true))") {{ neiberProbrem(true).title }}
@@ -72,7 +74,9 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
       neiber-next {{ neiberProbrem(true) | json }}
 
 .l-column.l-column_size_1of2.l-column_type_bordered(*ngIf="!isProblemOnly", [ngClass]="{'l-column_size_expanded': viewExpand == 1}")
-  button.p-button-toggle-width.p-button-toggle-width__right((click)="viewExpand = viewExpand-1")
+  button.p-button-toggle-width.p-button-toggle-width__right(*ngIf="!isProblemOnly && viewExpand != 1", (click)="viewExpand = viewExpand+1")
+    i.fa.fa-caret-left
+  button.p-button-toggle-width.p-button-toggle-width__right(*ngIf="!isProblemOnly && viewExpand == 1", (click)="viewExpand = viewExpand-1")
     i.fa.fa-caret-right
   a.c-tab([routerLink]="['/answers', id, team]", [ngClass]="{'c-tab_state_active': isAnswer}", type='button') 解答
   a.c-tab([routerLink]="['/issues', id, team]", [ngClass]="{'c-tab_state_active': isIssue}", type='button') 質問
