@@ -21,6 +21,8 @@ export class Member extends MiniList {
     });
   }
 
+  edit = false;
+
   ngOnChanges(changes: SimpleChanges){
   }
   id: any;

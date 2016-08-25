@@ -1,14 +1,14 @@
-h1.p-page-title 到着質問
+h1.p-page-title 質問一覧
 .c-filter-list.c-filter-list_type_bordered
-  .c-filter-list__heading ラベルフィルター(未実装)
+  .c-filter-list__heading ラベルフィルター
   .c-filter-list__item
-    button.p-state-label.p-state-label__all 全て
+    button.p-state-label.p-state-label__all((click)="setFilter(1)", [ngClass]="{active: filter.all}") 全て
   .c-filter-list__item
-    button.p-state-label.p-state-label__no-response 未回答
+    button.p-state-label.p-state-label__no-response((click)="setFilter(2)", [ngClass]="{active: filter.noRes}") 未回答
   .c-filter-list__item
-    button.p-state-label.p-state-label__in-progress 対応中
+    button.p-state-label.p-state-label__in-progress((click)="setFilter(3)", [ngClass]="{active: filter.progress}") 対応中
   .c-filter-list__item
-    button.p-state-label.p-state-label__resolved 解決済
+    button.p-state-label.p-state-label__resolved((click)="setFilter(4)", [ngClass]="{active: filter.success}") 解決済
 
 .c-question-list
   .c-question-list__item(*ngFor="let item of filterd_list")

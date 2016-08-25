@@ -10,7 +10,7 @@ npm install
 npm run build:prod
 ```
 
-以上のコマンドで `/dist/ ディレクトリに静的ファイルが生成されます。
+以上のコマンドで `/dist` ディレクトリに静的ファイルが生成されます。
 
 ## Deploy Nginx
 
@@ -30,4 +30,10 @@ server {
     try_files $uri $uri/ /index.html =404;
   }
 }
+```
+
+## Deverop
+
+```
+npm run server:dev
 ```

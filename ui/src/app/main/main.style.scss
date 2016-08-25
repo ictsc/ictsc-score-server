@@ -5,3 +5,7 @@
 span.p-notification-label.p-notification-label_type_problem_comment {
     background-color: #efd5ff;
 }
+
+button.p-state-label.active {
+    border: 3px solid rgba(0,0,0,.25);
+}
