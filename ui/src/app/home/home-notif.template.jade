@@ -18,4 +18,4 @@ section
   button.p-icon-button.p-icon-button_type_delete.fa.fa-times.pull-left(type='button', (click)="delete()", *ngIf="isAdmin && !edit")
     span.p-icon-button__label 削除
   button.p-button.p-button_color_green.pull-right(type='submit', (click)="update()", *ngIf="edit") 更新
-  .p-post-meta.pull-right {{ notic.updated_at | time }}
+  .p-post-meta.pull-right {{ notic.created_at | time }}

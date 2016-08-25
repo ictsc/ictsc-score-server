@@ -61,7 +61,9 @@ export class Home extends MiniList {
         return notif;
       })),
       this.api.issues.list(),
-      this.api.notices.list()
+      this.api.notices.list().map(r =>
+        r.sort((a, b) => a.pinned < b.pinned)
+      )
     );
   }
 
