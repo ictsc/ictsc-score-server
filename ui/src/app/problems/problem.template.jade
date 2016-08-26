@@ -53,8 +53,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
       div(*ngIf="problemEdit")
         textarea(simplemde, [(ngModel)]="problemData.text")
       markdown(*ngIf="!problemEdit", [body]="problemData?.text")
-      span.p-post-meta.pull-right 投稿者
-        a(href='/member-detail.html') admin
+      span.p-post-meta.pull-right 投稿者 admin
   div(*ngIf="false")
     pre.
       @Input() id: string; {{ id }}
