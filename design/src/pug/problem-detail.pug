@@ -19,7 +19,16 @@ block content
 				button(type="submit").p-button.p-button_color_green 保存
 		button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
 
-	p.c-problem-info.center-block 公開 　01/01 00:00　|　更新　01/01 00:00　|　締切　01/01 00:00
+	p.c-problem-info.center-block
+		span.p-form-item.p-form-item--xs
+			| 公開
+			input#input-publish-datetime(type='datetime-local' name='publish-datetime' value='2016-08-27T12:00')
+		span.p-form-item.p-form-item--xs
+			| 更新
+			| 　01/01 00:00
+		span.p-form-item.p-form-item--xs
+			| 締切
+			input#input-due-datetime(type='datetime-local' name='due-datetime' value='2016-08-27T13:00')
 
 	.c-problem-panel
 		.p-item-heading 補足事項:
