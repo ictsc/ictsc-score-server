@@ -26,10 +26,12 @@ export class Home extends MiniList {
 
   isAdmin = false;
   
+  guideLinkEnable = false;
 
   ngOnInit() {
     this.fetch();
     this.api.isAdmin().subscribe(r => this.isAdmin = r);
+    this.guideLinkEnable = new Date("2016-08-27 11:10").valueOf() > new Date().valueOf()
   }
 
   get(){
