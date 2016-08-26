@@ -94,5 +94,5 @@ form.p-form-panel.p-form-panel_size_large(name='create-problem', *ngIf="isAdmin"
     input#input-due-datetime(type='datetime-local', name='due-datetime', [(ngModel)]="postObj.closed_at")
 button.p-button.p-button_color_green.p-button_size_large.center-block(type='submit', (click)="post()") 問題投稿
 
-pre.
+pre(*ngIf="false").
   {{ problems | json }}

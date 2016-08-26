@@ -21,12 +21,14 @@ export class TeamsDetail extends MiniForm {
   private teamsDetail = [];
 
   edit = false;
+  isAdmin;
 
   ngOnInit() {
     this.route.params.subscribe(parms => {
       this.teamId = parms["id"];
     });
     this.fetch();
+    this.api.isAdmin().subscribe(r => this.isAdmin = r);
   }
 
   fetch(){
