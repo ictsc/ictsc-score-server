@@ -5,7 +5,7 @@ table(*ngFor="let gropu of problems")
     tr
       th.c-group-heading(colspan='2') {{ gropu.title }}
       th 締切
-      th 質問
+      //- th 質問
       th 公開
   tbody
     tr(*ngFor="let item of gropu.items", [ngClass]="{'past-due': compTime(item.closed_at, 3)}")
@@ -15,9 +15,9 @@ table(*ngFor="let gropu of problems")
       td([ngClass]="{'c-close-to-due': compTime(item.closed_at, 1)}")
         i.fa.fa-fw.fa-hourglass-start
         | {{ item.closed_at | time }}
-      td
-        i.fa.fa-fw.fa-question-circle
-        | todo 2 (3 分前)
+      //- td
+      //-   i.fa.fa-fw.fa-question-circle
+      //-   | todo 2 (3 分前)
       td([ngClass]="{'c-close-to-due': compTime(item.opened_at, 2)}")
         i.fa.fa-fw.fa-arrow-circle-up
         | {{ item.opened_at | time }}

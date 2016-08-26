@@ -16,14 +16,12 @@ h1.p-page-title.p-page-title_type_bordered.p-page-title_with_button
   a.c-member-list__item(href='/member-detail.html', *ngFor="let member of team?.members")
     .c-member-name {{ member.name }}
     .c-member-id {{ member.login }}
-  button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
 
 .c-score-board.center-block
   p.c-total-score
     | 総スコア
     span.c-total-score__figure  {{ team?.sum }}
     |  点
-    button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
   ul.c-score-list
     li.c-score-list__item(*ngFor="let answer of team?.answers")
       a(href='/problem-detail-mark.html')
