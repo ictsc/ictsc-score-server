@@ -19,7 +19,8 @@ export class MainClock {
         let d = new Date();
         this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;
         // this.datetime.time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
-        this.datetime.time = `${d.getHours()}:${d.getMinutes()}`;
+        let min = d.getMinutes().toString();
+        this.datetime.time = `${d.getHours()}:${min.length==1?"0":""}${min}`;
       });
   }
 }
