@@ -13,9 +13,9 @@ header
       ul.p-list
         li.p-list__item
           a([routerLink]="['guide']") ガイド
-        li.p-list__item(*ngIf="loginMember")
-          a([routerLink]="['members']") メンバー
         li.p-list__item(*ngIf="loginMember && isAdmin")
+          a([routerLink]="['members']") メンバー
+        li.p-list__item(*ngIf="loginMember")
           a([routerLink]="['teams']") チーム
         li.p-list__item(*ngIf="loginMember?.team_id")
           a([routerLink]="['teams', loginMember?.team_id]") ({{ loginMember?.team?.name }})

@@ -7,9 +7,10 @@ import { Signup } from "../login/signup.component";
 })
 export class Teams extends MiniList {
   constructor(private api: ApiService) {super()}
-
+  isAdmin;
   ngOnInit() {
     this.fetch();
+    this.api.isAdmin().subscribe(r => this.isAdmin = r);
   }
 
   get(){

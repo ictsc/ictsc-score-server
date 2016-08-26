@@ -8,9 +8,9 @@ h1.p-page-title 参加チーム
     .team-panel__right
       .c-team-name {{ item.name }}
       .c-school-name {{ item.organization }}
-      .c-total-score 総スコア {{ item.sum }}
+      .c-total-score(*ngIf="isAdmin") 総スコア {{ item.sum }}
 
-form(name='create-team', action='#')
+form(name='create-team', *ngIf="isAdmin")
   .team-panel.team-panel_type_form
     .team-panel__left
       .c-entry-number Entry no.

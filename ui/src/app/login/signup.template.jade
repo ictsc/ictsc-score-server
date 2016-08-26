@@ -3,24 +3,34 @@
   {{ errorMessage }}
 form.p-form-panel(name='form-signup', (ngSubmit)="submit()")
   fieldset([disabled]="disabled")
-    .form-item
+    .form-group
+      label(for='input-name', placeholder='(例: 山田 太郎)') 氏名
+      input.form-control#input-name(name='name', type='text', [(ngModel)]="form.name")
+      span.help-block
+    .p-form-item(*ngIf="!isAdmin")
+      label(for='input-registration-code') 登録コード
+      input#input-registration-code(type='text', name='registration-code', [(ngModel)]="form.registration_code", (ngModelChange)="codeChange()")
+      p.p-supplement ** に記載のコードを入力してください
+    .form-item(*ngIf="!isAdmin")
+      label(for='select-team-name') 所属とチーム
+      p.dummy-input#static-school-name(type="text") {{ selectedTeam?.name }} {{ selectedTeam?.organization }}
+    .form-item(*ngIf="isAdmin")
       label(for='select-team-name') チーム名
       select#select-team-name(name='team-name', [(ngModel)]="selectedTeamId")
         option(value='0') チーム名を選択してください
         option(*ngFor="let team of teamList" value='{{ team.id }}') {{ team.name }}
+    .form-item(*ngIf="isAdmin")
+      label(for='input-role') ロール
+      select#input-role(name='team-role', [(ngModel)]="form.role_id")
+        option(value='2') Admin
+        option(value='3') Writer
+        option(value='4') Participant
+        option(value='5') Viewe
     .form-group
-      label 所属
-      p.form-control-static {{ selectedTeam?selectedTeam.organization:"チーム名が未選択" }}
-        //- span.help-block(hide='{ selected_team }') チーム名を選択すると自動表示されます
-    .form-group
-      label(for='input-name', placeholder='(例: 山田 太郎)') ユーザー名
-      input.form-control#input-name(name='name', type='text', [(ngModel)]="form.name")
-      span.help-block
-    .form-group
-      label(for='input-login') メンバー ID
+      label(for='input-login') ログインID
       input.form-control#input-login(name='login', type='text', [(ngModel)]="form.login")
       span.help-block 半角英数字、ハイフン ("-")、アンダースコア ("_")、ピリオド (".")、xx 〜 xx 文字
-    .form-group(*ngIf="!isEdit")
+    .form-grou
       label(for='input-password') パスワード
       input.form-control#input-password(name='password', type='password', [(ngModel)]="form.password")
     .text-right

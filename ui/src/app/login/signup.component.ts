@@ -5,13 +5,14 @@ import { Response } from '@angular/http';
 import { ApiService } from '../common/api.service'
 import { MiniForm } from "../common"
 
+let sha1 = require("sha1");
+
 @Component({
   selector: 'signup',
   template: require('./signup.template.jade')
 })
 export class Signup extends MiniForm {
   @Input() redirect: boolean = true;
-  @Input() edit: number = undefined;
 
   constructor(
     protected route: Router,
@@ -20,6 +21,7 @@ export class Signup extends MiniForm {
     password: "",
     login: "",
     name: "",
+    registration_code: "",
   }
 
   protected teamList: Array<any> = [];
@@ -28,37 +30,27 @@ export class Signup extends MiniForm {
     return this.teamList.find(t => t.id == parseInt(this.selectedTeamId))
   }
 
+  isAdmin;
+
   ngOnInit() {
     (window as any).login = this;
     this.api.teams.list().subscribe(r => {
       console.log("team list", r);
       this.teamList = (r as Array<any>);
     });
+    this.api.isAdmin().subscribe(r => this.isAdmin = r);
   }
 
   private memberSource: Observable<any[]>;
 
-  get isEdit(){
-    return typeof this.edit !== "undefined"
-  }
-  ngOnChanges(changes: SimpleChanges){
-    // 編集時の処理
-    if(!this.isEdit) return;
-    if(!this.memberSource) this.memberSource = this.api.members.list();
-
-    this.memberSource.combineLatest(Observable.of(this.edit))
-      .subscribe(r => {
-        let [members, id] = r;
-        let member = members.find(m => m.id == id);
-        console.log("editmode", members, id);
-
-        if(!member) return this.errorMessage = "メンバーが見つかりません。";
-        else this.errorMessage = undefined;
-
-        this.selectedTeamId = member.team_id;
-        this.form.login = member.login;
-        this.form.name = member.name;
-      });
+  codeChange(){
+    console.log()
+    let find = this.teamList.find(r => r.hashed_registration_code == sha1(this.form.registration_code));
+    if(find)
+      this.selectedTeamId = find.id;
+    else
+      this.selectedTeamId = undefined;
+    console.log("code change", this.form.registration_code, find);
   }
 
   post(){
@@ -71,6 +63,13 @@ export class Signup extends MiniForm {
     if(this.redirect)
       this.api.login(this.form.login, this.form.password)
         .subscribe(r => this.route.navigate(["/"]));
+    else
+      this.form = {
+        password: "",
+        login: "",
+        name: "",
+        registration_code: "",
+      }
   }
   error(response: Response){
     return "登録に失敗しました。" + response.json().login;
