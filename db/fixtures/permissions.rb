@@ -181,7 +181,7 @@ def_perm(Problem, :participant, %i(GET),
 
   def_perm(Comment, :participant, %i(GET POST PUT PATCH),
     action: action,
-    query: "members.team_id = :team_id AND commentable_type = :commentable_type",
+    query: "commentable_type = :commentable_type",
     parameters: "{ team_id: current_user.team_id, commentable_type: '#{resource.to_s}' }",
     join: "member")
 end
