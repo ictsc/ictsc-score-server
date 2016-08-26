@@ -1,15 +1,15 @@
 h1.p-page-title 解答と採点
 
 .c-filter-list.c-filter-list_type_bordered
-  .c-filter-list__heading ラベルフィルター(todo)
+  .c-filter-list__heading 凡例
+  //- .c-filter-list__item
+  //-   button.p-state-label.p-state-label__all 全て
   .c-filter-list__item
-    button.p-state-label.p-state-label__all 全て
+    button.p-state-label.p-state-label__no-progress 未採点
   .c-filter-list__item
-    button.p-state-label.p-state-label__no-response 未採点
+    button.p-state-label.p-state-label__marked 採点済み
   .c-filter-list__item
-    button.p-state-label.p-state-label__resolved 採点済み
-  .c-filter-list__item
-    button.p-state-label.p-state-label__in-progress 提出なし
+    button.p-state-label.p-state-label__not-submitted 提出なし
 
 .c-problem-state-list
   .c-problem-state-list__item(*ngFor="let problem of list")
@@ -20,55 +20,55 @@ h1.p-page-title 解答と採点
       span {{ problem.closed_at | time }}
     .c-answer-list
       .c-answer-list__item(*ngFor="let team of problem.teams")
-        a.p-state-label([routerLink]="[problem.id, team.id]", [ngClass]="{'p-state-label__in-progress': state(team) == 0, 'p-state-label__no-response': state(team) == 1, 'p-state-label__resolved': state(team) == 2 }")
+        a.p-state-label([routerLink]="[problem.id, team.id]", [ngClass]="{'p-state-label__not-submitted': state(team) == 0, 'p-state-label__no-progress': state(team) == 1, 'p-state-label__marked': state(team) == 2 }")
           i.fa.fa-fw.fa-chevron-right
           | {{ team.id }} {{ team.name }}
           span(*ngIf="state(team) == 2") &nbsp; ({{ team?.answer?.score?.point }}点)
 
-  .c-problem-state-list__item
-    .c-problem-name 問題 1 もんだいタイトル
-    | を採点
-    .c-deadline.pull-right
-      i.fa.fa-fw.fa-hourglass-start
-      span 01/01 00:00
-    .c-answer-list
-      .c-answer-list__item
-        a.p-state-label.p-state-label__no-response(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 1 ○×チーム
-      .c-answer-list__item
-        a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 2 ごらく部
-      .c-answer-list__item
-        a.p-state-label.p-state-label__in-progress(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 3 少しながめのチーム名
-      .c-answer-list__item
-        a.p-state-label.p-state-label__no-response(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 1 ○×チーム
-      .c-answer-list__item
-        a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 2 ごらく部
-      .c-answer-list__item
-        a.p-state-label.p-state-label__no-response(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 1 ○×チーム
-      .c-answer-list__item
-        a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 2 ごらく部
-      .c-answer-list__item
-        a.p-state-label.p-state-label__in-progress(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 3 少しながめのチーム名
-      .c-answer-list__item
-        a.p-state-label.p-state-label__no-response(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 1 ○×チーム
-      .c-answer-list__item
-        a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
-          i.fa.fa-fw.fa-chevron-right
-          | 2 ごらく部
+  //- .c-problem-state-list__item
+  //-   .c-problem-name 問題 1 もんだいタイトル
+  //-   | を採点
+  //-   .c-deadline.pull-right
+  //-     i.fa.fa-fw.fa-hourglass-start
+  //-     span 01/01 00:00
+  //-   .c-answer-list
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__no-progress(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 1 ○×チーム
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 2 ごらく部
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__in-progress(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 3 少しながめのチーム名
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__no-progress(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 1 ○×チーム
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 2 ごらく部
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__no-response(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 1 ○×チーム
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 2 ごらく部
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__in-progress(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 3 少しながめのチーム名
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__no-response(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 1 ○×チーム
+  //-     .c-answer-list__item
+  //-       a.p-state-label.p-state-label__resolved(href='/problem-detail-both.html')
+  //-         i.fa.fa-fw.fa-chevron-right
+  //-         | 2 ごらく部

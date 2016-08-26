@@ -14,7 +14,11 @@ button.p-state-label.active {
     position: relative;
 }
 
-.p-button {
+.u-member-detail .p-button {
     display: inline;
     margin: 10px;
+}
+
+.c-message {
+	min-width: 60%;
 }
