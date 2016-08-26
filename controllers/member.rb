@@ -36,17 +36,6 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/api/login_as" do
-    @member = Member.find_by(id: params[:id])
-
-    if @member
-      login_as(@member.id)
-      json status: "success"
-    else
-      json status: "failed"
-    end
-  end
-
   post "/api/session" do
     halt 403 if logged_in?
 
