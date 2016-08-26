@@ -9,4 +9,12 @@ import { AppState } from '../main/main.service';
   template: require('./guide.template.jade')
 })
 export class Guide {
+
+  isAdmin = false;
+
+  constructor(private api: ApiService) {}
+  ngOnInit() {
+    this.api.isAdmin().subscribe(r => this.isAdmin = r);
+  }
+
 }
