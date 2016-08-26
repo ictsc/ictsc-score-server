@@ -13,6 +13,8 @@ header
       ul.p-list
         li.p-list__item
           a([routerLink]="['guide']") ガイド
+        li.p-list__item
+          a([routerLink]="['caution']") 注意事項
         li.p-list__item(*ngIf="loginMember && isAdmin")
           a([routerLink]="['members']") メンバー
         li.p-list__item(*ngIf="loginMember")

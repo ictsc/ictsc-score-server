@@ -4,7 +4,7 @@ import { Observable, Subscriber } from "rxjs";
 
 @Injectable()
 export class ApiService {
-  constructor(private http: Http) {
+  constructor(public http: Http) {
   }
 
   private session = new RestResources("session", this.http, false);
