@@ -40,7 +40,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
         span.p-icon-button__label 削除
       span.p-post-meta.pull-right {{ comment.updated_at | time }}
     .p-item-heading
-      .c-button-supplement-addition
+      .c-button-supplement-addition(*ngIf="isAdmin")
         button.p-icon-button.p-icon-button_shape_circle.c-opened((click)="problemCommentsAddEnable = !problemCommentsAddEnable")
           i.fa.fa-plus(aria-hidden='true')
         | 補足を追加
@@ -54,7 +54,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
       markdown(*ngIf="!problemEdit", [body]="problemData?.text")
       span.p-post-meta.pull-right 投稿者
         a(href='/member-detail.html') admin
-  div(*ngIf="true")
+  div(*ngIf="false")
     pre.
       @Input() id: string; {{ id }}
       @Input() team: string; {{ team }}
