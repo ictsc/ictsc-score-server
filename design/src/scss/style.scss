@@ -1566,3 +1566,31 @@ tr {
 	line-height: 1.7;
 	background-color: #e7e8e8;
 }
+
+.c-banner-guide {
+	position: relative;
+	display: block;
+	padding: 48px 80px;
+	border-radius: 10px;
+	margin-left: 30px;
+	margin-right: 30px;
+	margin-bottom: 30px;
+	color: #95989a;
+	font-size: 48px;
+	font-weight: bold;
+	text-align: center;
+	background-color: #e5e5e5;
+
+	&:hover {
+		color: #95989a;
+		text-decoration: none;
+	}
+
+	.c-banner-guide__sub {
+		position: absolute;
+		right: 15px;
+		bottom: 10px;
+		font-size: 12px;
+		font-weight: normal;
+	}
+}
