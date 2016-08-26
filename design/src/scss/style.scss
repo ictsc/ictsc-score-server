@@ -1040,7 +1040,6 @@ tr {
 		position: relative;
 		padding: 15px 15px 35px;
 		border-radius: 10px;
-		margin-top: 40px;
 		background-color: #fcf0f0;
 
 		.p-icon-button {
@@ -1250,8 +1249,14 @@ tr {
 		}
 
 		.c-message__footer {
+			position: relative;
+			padding-bottom: 40px;
 			text-align: right;
 		}
+	}
+
+	&.c-message--expired {
+		color: #fd5151;
 	}
 
 	.c-message__body {
@@ -1593,4 +1598,36 @@ tr {
 		font-size: 12px;
 		font-weight: normal;
 	}
+}
+
+.p-alert-time-is-up {
+	display: block;
+	padding: 8px 80px;
+	border-radius: 4px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	color: #fff;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	background-color: #fd5151;
+
+	.fa {
+		opacity: 0.6;
+		margin-right: 6px;
+	}
+
+	&.p-alert-time-is-up--small {
+		padding: 7px 80px;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		font-size: 12px;
+		font-weight: normal;
+	}
+}
+
+.c-chevron-down {
+	width: 32px;
+	color: #fd5151;
+	font-size: 32px;
 }

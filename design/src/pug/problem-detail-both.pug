@@ -18,6 +18,10 @@ block content
 
 		p.c-problem-info.center-block 公開 　01/01 00:00　|　更新　01/01 00:00　|　締切　01/01 00:00
 
+		p.p-alert-time-is-up
+			i.fa.fa-hourglass-end
+			| この問題は回答締切時間が過ぎています。
+
 		.c-problem-panel
 			.p-item-heading 補足事項:
 			p.c-problem-panel__supplement 補足事項誤字脱字がありましたとか。新しい補足に背景色を付けたい
@@ -83,6 +87,20 @@ block content
 								a(href='/member-detail.html') 参加者
 								| 01/01 00:00
 					.c-message.c-message_of_general
+						.c-message__body.message_type_answer
+							| このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。
+						.c-message__footer.u-cf
+							.p-post-meta
+								a(href='/team-detail.html') すこし長めのチーム名
+								a(href='/member-detail.html') 参加者
+								| 01/01 00:00
+
+					p.p-alert-time-is-up.p-alert-time-is-up--small これ以降の解答は時間切れの為、無効です。
+
+					.c-chevron-down.center-block
+						i.fa.fa-chevron-down
+
+					.c-message.c-message_of_general.c-message--expired
 						.c-message__body.message_type_answer
 							| このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。このページのもんだいの解答。古い解答。長い解答の場合はこんな感じで改行。
 						.c-message__footer.u-cf
