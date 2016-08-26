@@ -1,0 +1,53 @@
+extends /extends/_layout
+
+block title
+	+title('スコアサーバの案内')
+
+block content
+
+	h1.p-page-title.p-page-title_type_bordered.p-page-title_size_full.text-left コンテストサイト利用ガイド
+
+	.p-page-description
+		h2.page-description__title コンテストサイトとは：
+		p.page-description__body
+			| 午前、午後のパートに分かれて問題が出題されます。
+			br
+			| 各問題ごとに解答、質問を行ってください。
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h3.p-section__title トップページの用途
+			p お知らせや新着の質問などの通知を掲載しています。逐次目を通すようにしてください。
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h3.p-section__title 解答の仕方
+			ul
+				li 問題を選択し、分かったことはどんどん記入して投稿してください。
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h3.p-section__title 質問の仕方
+			ul
+				li 問題に関する質問があった場合は、その問題の質問フォームより投稿してください。追って運営が回答いたします。
+
+			.p-section.p-section--small
+				h4.p-section__title ・質問ラベルについて
+				.p-section__body
+					p
+						| 質問が解決した場合、ラベルをクリックして表示を切り替えてください。到着質問一覧でラベルの状態が反映されます。
+						br
+						| ラベル切替は参加者と運営側担当者の双方が行えます。
+						br
+						| また、解決ラベルになっていても、引き続き回答を要する場合は再度対応中に戻すことができます。
+						br
+						img.p-margined-image(src="/assets/images/sample-question-label.png", alt="", srcset="/assets/images/sample-question-label.png 1x, /assets/images/sample-question-label@2x.png 2x")
+
+			.p-section.p-section--small
+				h4.p-section__title ・ラベルフィルターの役割
+				.p-section__body
+					p ラベルフィルターは質問の回答状況をフィルタリングすることができます。
+					dl.p-image-dl
+						dt.p-image-dl__term 質問ページのサンプル：
+						dd.p-image-dl__image
+							img(src="/assets/images/sample-label-filter-question.png", alt="", srcset="/assets/images/sample-label-filter-question.png 1x, /assets/images/sample-label-filter-question@2x.png 2x")

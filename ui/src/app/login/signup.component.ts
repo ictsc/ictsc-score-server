@@ -69,7 +69,8 @@ export class Signup extends MiniForm {
   success(response: any){
     console.log("OK");
     if(this.redirect)
-      this.route.navigate(["/"]);
+      this.api.login(this.form.login, this.form.password)
+        .subscribe(r => this.route.navigate(["/"]));
   }
   error(response: Response){
     return "登録に失敗しました。" + response.json().login;

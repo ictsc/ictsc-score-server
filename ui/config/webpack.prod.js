@@ -32,6 +32,29 @@ const METADATA = webpackMerge(commonConfig.metadata, {
 
 module.exports = webpackMerge(commonConfig, {
 
+  devServer: {
+    port: METADATA.port,
+    host: METADATA.host,
+    historyApiFallback: true,
+    watchOptions: {
+      aggregateTimeout: 300,
+      poll: 1000
+    },
+    outputPath: helpers.root('dist'),
+    proxy: {
+      "/api/*": {
+        target: "http://stg.ictsc.pref.yokohama",
+        rewrite: function(req) {
+          req.headers.host = "stg.ictsc.pref.yokohama";
+          delete req.headers.referer;
+          req.headers.origin = "http://stg.ictsc.pref.yokohama";
+          console.log("Proxy: ", req.url, req.headers);
+          // req.url = req.url.replace(/^\/api/, '');
+        }
+      }
+    },
+  },
+
   /**
    * Switch loaders to debug mode.
    *
@@ -59,7 +82,7 @@ module.exports = webpackMerge(commonConfig, {
      *
      * See: http://webpack.github.io/docs/configuration.html#output-path
      */
-    path: helpers.root('../public'),
+    path: helpers.root('dist'),
 
     /**
      * Specifies the name of each output file on disk.
@@ -157,8 +180,26 @@ module.exports = webpackMerge(commonConfig, {
 
 
       beautify: false, //prod
-      mangle: { screw_ie8 : true }, //prod
-      compress: { screw_ie8: true, warnings: false }, //prod
+      mangle: false,
+      compress: {
+        screw_ie8: true,
+        sequences: true,
+        properties: true,
+        dead_code: true,
+        drop_debugger: true,
+        comparisons: true,
+        conditionals: true,
+        evaluate: true,
+        booleans: true,
+        loops: true,
+        unused: true,
+        hoist_funs: true,
+        if_return: true,
+        join_vars: true,
+        // cascade: true,
+        // negate_iife: true,
+        drop_console: true
+      }, //prod
       comments: require('uglify-save-license') //prod
     }),
 

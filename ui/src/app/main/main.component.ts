@@ -1,38 +1,52 @@
-/*
- * Angular 2 decorators and services
- */
+import { Router } from '@angular/router';
 import { Component, ViewEncapsulation } from '@angular/core';
-import { AppState } from './main.service';
+import { ApiService } from '../common';
 import 'bootstrap/dist/css/bootstrap.css';
-
-
+import { Observable } from "rxjs";
+import { MainClock } from "./main-clock.component";
 
 @Component({
   selector: 'main',
   encapsulation: ViewEncapsulation.None,
-  styles: [ require('./main.style.scss') ],
-  template: require("./main.template.jade")
+  styles: [
+    require('../../../../design/src/scss/style.scss'),
+    require('./main.style.scss'),
+    `body { font-family: "游ゴシック Medium", "メイリオ", meiryo, "Helvetica Neue", Helvetica, Arial, sans-serif; }`
+  ],
+  template: require("./main.template.jade"),
+  directives: [ MainClock ],
 })
 export class Main {
-  angularclassLogo = 'assets/img/angularclass-avatar.png';
-  name = 'Angular 2 Webpack Starter';
-  url = 'https://twitter.com/AngularClass';
+  constructor(public router: Router, public api: ApiService) {}
 
-  constructor(
-    public appState: AppState) {
+  isAdmin = false;
+  loginMember;
 
-  }
+  datetime = {date: "", time: ""};
 
   ngOnInit() {
-    console.log('Initial App State', this.appState.state);
+    this.api.changeUser.subscribe(r => {
+      console.warn("change user", r);
+      this.api.isAdmin().subscribe(r => this.isAdmin = r);
+
+      this.api.getLoginMember()
+        .concatMap(m => {
+          if(!m.team_id) return Observable.of(m);
+          return this.api.teams.item(m.team_id)
+            .map(t => { m.team = t; return m; });
+        })
+        .subscribe(a => this.loginMember = a);
+    });
+    // Observable.timer(0, 1000)
+    //   .subscribe(_ => {
+    //     let d = new Date();
+    //     this.datetime.date = `${d.getMonth()+1}/${d.getDate()}`;
+    //     this.datetime.time = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+    //   });
   }
 
+  logout(){
+    if(window.confirm("ログアウトします"))
+      this.api.logout().subscribe(r => this.router.navigate(["login"]));
+  }
 }
-
-/*
- * Please review the https://github.com/AngularClass/angular2-examples/ repo for
- * more angular app examples that you may copy/paste
- * (The examples may not be updated as quickly. Please open an issue on github for us to update it)
- * For help or questions please contact us at @AngularClass on twitter
- * or our chat on Slack at https://AngularClass.com/slack-join
- */

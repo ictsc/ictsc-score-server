@@ -13,6 +13,23 @@ export class Teams extends MiniList {
   }
 
   get(){
-    return this.api.teams.get();
+    return this.api.teamsDetail();
+  }
+
+  teamNo: number;
+  teamName = "";
+  teamOrg = "";
+
+  post(){
+    return this.api.teams.add({
+      id: this.teamNo,
+      name: this.teamName,
+      organization: this.teamOrg,
+    }).subscribe(r => {
+      this.teamName = "";
+      this.teamOrg = "";
+      this.teamNo = undefined;
+      this.fetch();
+    });
   }
 }

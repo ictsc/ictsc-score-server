@@ -1,6 +1,6 @@
-var gulp = require('gulp')
-var config = require('../config')
-var $ = require('gulp-load-plugins')()
+var gulp = require('gulp');
+var config = require('../config');
+var $ = require('gulp-load-plugins')();
 
 var sass = function() {
 	return gulp.src(config.src + 'scss/style.scss')
@@ -9,11 +9,11 @@ var sass = function() {
 		}))
 		.pipe($.sourcemaps.init())
 		.pipe($.sass().on('error', function(e) {
-			console.log(e)
+			console.log(e);
 			this.emit('end')
 		}))
 		.pipe($.sourcemaps.write('./'))
 		.pipe(gulp.dest(config.dest + 'css/'))
-}
+};
 
-gulp.task('sass', sass)
+gulp.task('sass', sass);

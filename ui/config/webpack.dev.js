@@ -50,7 +50,7 @@ module.exports = webpackMerge(commonConfig, {
    * See: http://webpack.github.io/docs/configuration.html#devtool
    * See: https://github.com/webpack/docs/wiki/build-performance#sourcemaps
    */
-  devtool: 'source-map',
+  devtool: 'cheap-module-eval-source-map',
 
   /**
    * Options affecting the output of the compilation.
@@ -151,6 +151,7 @@ module.exports = webpackMerge(commonConfig, {
         rewrite: function(req) {
           req.headers.host = "stg.ictsc.pref.yokohama";
           delete req.headers.referer;
+          req.headers.origin = "http://stg.ictsc.pref.yokohama";
           console.log("Proxy: ", req.url, req.headers);
           // req.url = req.url.replace(/^\/api/, '');
         }

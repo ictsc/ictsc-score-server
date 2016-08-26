@@ -1,0 +1,37 @@
+extends /extends/_layout
+
+block title
+	+title('CloudStack Web Console の使用方法')
+
+block content
+
+	h1.p-page-title.p-page-title_type_bordered.p-page-title_size_full.text-left CloudStack Web Console の使用方法
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h2.p-section__title ログイン
+			p CloudStackにアクセスし、以下のように情報を入力してください。
+
+			.p-section.p-section--small
+				.p-section__body
+					ul
+						li Username : team[team番号]-user
+						li Pass : 配布したteamコード
+						li Domain : team[team番号]
+					p
+						img.p-margined-image(src="/assets/images/guide-cloudstack-01.png", width='800')
+					p ログインすると、以下のような画面に遷移するので、赤い枠で示している「Instances」をクリックしてください。
+						img.p-margined-image(src="/assets/images/guide-cloudstack-02.png", width='800')
+					p Instances一覧画面から、コンソールを使いたいVMをクリックしてください。
+						img.p-margined-image(src="/assets/images/guide-cloudstack-03.png", width='800')
+					p 以下の画面の赤い枠のところをクリックしてください。
+						img.p-margined-image(src="/assets/images/guide-cloudstack-04.png", width='800')
+					p 以下のようにWebコンソールが開けます。もしもエラーが出た場合などは運営へご連絡ください。
+						img.p-margined-image(src="/assets/images/guide-cloudstack-05.png", width='800')
+
+	.p-section.p-section--large.p-section--with-icon
+		.p-section__body
+			h2.p-section__title 注意事項
+			ul
+				li Webコンソールはやや動きが遅いため、ご注意ください。
+				li 他の画面も見ることは可能ですが、問題の不具合が起きる場合があるためなるべく他の操作は行わないようにお願い致します。

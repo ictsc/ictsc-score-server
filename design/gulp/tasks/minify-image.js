@@ -1,10 +1,10 @@
-var gulp = require('gulp')
-var config = require('../config')
-var $ = require('gulp-load-plugins')()
-var imageminPngquant = require('imagemin-pngquant')
+var gulp = require('gulp');
+var config = require('../config');
+var $ = require('gulp-load-plugins')();
+var imageminPngquant = require('imagemin-pngquant');
 
 var minifyImage = function() {
-	return gulp.src(config.src + 'images/*.{png,svg}')
+	return gulp.src(config.src + 'images/*.!(ai)')
 		.pipe($.imagemin({
 			'plugins': [
 				imageminPngquant({
@@ -17,6 +17,6 @@ var minifyImage = function() {
 			]
 		}))
 		.pipe(gulp.dest(config.dest + 'images/'))
-}
+};
 
-gulp.task('minify-image', minifyImage)
+gulp.task('minify-image', minifyImage);

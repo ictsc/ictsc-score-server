@@ -2,19 +2,26 @@
 signin-form
   .row
     .col-sm-4.col-sm-offset-1
-      h2 サインイン
+      h1.p-page-title.p-page-title_type_bordered ログイン
       .alert.alert-warning(*ngIf="errorMessage")
-        {{errorMessage}}
-      form(onsubmit='', name='form-signin', (ngSubmit)="submit()")
-        fieldset([disabled]="disabled")
-          .form-group
-            label(for='input-login') メンバー ID
-            input.form-control#input-login(name='login', type='text', [(ngModel)]="form.user")
-          .form-group
-            label(for='input-password') パスワード
-            input.form-control#input-password(name='password', type='password', [(ngModel)]="form.password" )
-          .text-right
-            button.btn.btn-primary(type='submit') サインイン
+        {{ errorMessage }}
+      form.p-form-panel(onsubmit='', name='form-signin', (ngSubmit)="submit()")
+
+        .p-form-item
+          label(for='input-member-id') メンバー ID
+          input#input-member-id(type='text', name='member-id', [(ngModel)]="form.user")
+          p.p-supplement 半角英数字、ハイフン("-")、アンダースコア("_")、ピリオド(".")、xx 〜 xx 文字
+
+        .p-form-item
+          label(for='input-password') パスワード
+          input#input-password(type='password', name='password', [(ngModel)]="form.password")
+
+        button.p-button.p-button_color_green.p-button_size_large.p-button_of_signin.center-block(type='submit', (ngSubmit)="submit()")
+          | サインイン
+
+        a.alternative-link(href='/signup.html') サインアップはこちら todo
+
     .col-sm-5.col-sm-offset-1
-      h2 サインアップ
+      h1.p-page-title.p-page-title_type_bordered サインアップ
       signup
+

@@ -1,0 +1,64 @@
+extends /extends/_layout
+
+block title
+	+title('もんだいタイトル')
+
+block content
+
+	.p-pagination.u-cf
+		a.p-pagination__prev ちょーーーーーーーーーーながいタイトルがついてる前の問題
+		a.p-pagination__next 普通の長さのタイトル名がついてる次の問題
+
+	h1.p-page-title.p-page-title_type_bordered.p-page-title_size_large.p-page-title_with_button
+		.c-problem-number 問題 2:
+		.c-problem-name もんだいタイトル
+		.c-editorial-buttons
+			.c-button-wrapper
+				button(type="submit").p-button.p-button_color_gray.p-button_size_small 編集取消
+			.c-button-wrapper
+				button(type="submit").p-button.p-button_color_green 保存
+		button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集')
+
+	p.c-problem-info.center-block
+		span.p-form-item.p-form-item--xs
+			| 公開
+			input#input-publish-datetime(type='datetime-local' name='publish-datetime' value='2016-08-27T12:00')
+		span.p-form-item.p-form-item--xs
+			| 更新
+			| 　01/01 00:00
+		span.p-form-item.p-form-item--xs
+			| 締切
+			input#input-due-datetime(type='datetime-local' name='due-datetime' value='2016-08-27T13:00')
+
+	.c-problem-panel
+		.p-item-heading 補足事項:
+			.c-button-supplement-addition
+				button.p-icon-button.p-icon-button_shape_circle.c-opened
+					i.fa.fa-plus(aria-hidden='true')
+				| 補足を追加
+		
+		p.c-problem-panel__supplement 補足事項誤字脱字がありましたとか。新しい補足に背景色を付けたい
+			button.p-icon-button.p-icon-button_type_delete.fa.fa-times(type='button')
+				span.p-icon-button__label 削除
+			span.p-post-meta.pull-right 01/01 00:00
+		.p-item-heading 問題:
+		p.u-cf
+			| 問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。
+			br
+			br
+			| 問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。
+			| 問題文はこんな感じに表示されます。
+			br
+			br
+			| 問題文はこんな感じに表示されます。
+			| 「問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。」
+			| 問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。
+			br
+			br
+			| 問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。
+			br
+			br
+			| 問題文はこんな感じに表示されます。問題文はこんな感じに表示されます。
+			| 問題文はこんな感じに表示されます。
+			span.p-post-meta.pull-right 投稿者
+				a(href='/member-detail.html') admin

@@ -1,0 +1,37 @@
+extends /extends/_layout
+
+block title
+	+title('サインアップ')
+
+block content
+
+	h1.p-page-title.p-page-title_type_bordered サインアップ
+
+	form.p-form-panel(name='form-signin', action='/dashboard.html')
+
+		.p-form-item
+			label(for='input-member-name') 氏名
+			input#input-member-name(type='text', name='member-name')
+			p.p-supplement フルネームで入力してください
+
+		.p-form-item
+			label(for='input-registration-code') 登録コード
+			input#input-registration-code(type='text', name='registration-code')
+			p.p-supplement ** に記載のコードを入力してください
+
+		.p-form-item
+			label(for='static-school-name') 所属とチーム
+			p.dummy-input#static-school-name 登録コードを入力すると自動表示されます
+
+		.p-form-item
+			label(for='input-member-id') メンバー ID
+			input#input-member-id(type='text', name='member-id')
+			p.p-supplement 任意のメンバー ID を入力してください。(半角英数字、ハイフン("-")、アンダースコア("_")、ピリオド(".")、xx 〜 xx 文字)
+
+		.p-form-item
+			label(for='input-password') パスワード
+			input#input-password(type='password', name='password')
+
+		button.p-button.p-button_color_green.p-button_size_large.p-button_of_signup.center-block(type='submit') サインアップ
+
+		a.alternative-link(href='/signin.html') サインインはこちら

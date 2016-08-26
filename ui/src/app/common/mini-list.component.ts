@@ -26,7 +26,7 @@ export class MiniList {
     console.log("OK");
   }
   error(response: any) {
-    console.log("NG");
+    console.error("NG", response);
     this.errorMessage = "通信が失敗しました";
   }
   get(): Observable<any> {
