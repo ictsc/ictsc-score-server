@@ -2,7 +2,7 @@ section
 .l-row-panel__header
   h1.c-title
     i.fa.fa-fw.fa-thumb-tack(aria-hidden='true', *ngIf="notic.pinned")
-    span([editable]="edit", [(editableModel)]="notic.title")
+    div([editable]="edit", [(editableModel)]="notic.title")
   button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集', *ngIf="isAdmin && !edit", (click)="edit = true")
   button.p-text-button.p-text-button_type_cancel.pull-right(type='button', *ngIf="edit", (click)="edit = false; change()") キャンセル
   .p-form-item(*ngIf="edit")

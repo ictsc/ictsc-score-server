@@ -1,24 +1,29 @@
+
 h1.p-page-title.p-page-title_type_bordered.p-page-title_with_button
   .p-page-title__left
     .p-page-title__entry-number
       i.fa.fa-fw.fa-user
       | Member no.
-      .c-figure  1
+      .c-figure  {{ list?.id }}
   .p-page-title__right
-    span.c-member-name {{ list?.name }}
-  button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集', (click)="edit = true")
+    div.c-member-name(*ngIf="list", [editable]="edit", [(editableModel)]="list.name")
+  button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', *ngIf="!edit", (click)="edit = true")
 
 .form-horizontal.u-member-detail.center-block
   .form-group
     label.col-xs-2.control-label メンバー ID
     .col-xs-10
       p.form-control-static(*ngIf="!edit") {{ list?.login }}
-      input.form-control(type="text", name="", *ngIf="edit")
-  .form-group
+      input.shortened-input#input-member-id(type='text', name='member-id', *ngIf="edit", [(ngModel)]="list.login")
+  .form-group(*ngIf="isAdmin")
     label.col-xs-2.control-label ロール
     .col-xs-10
-      p.form-control-static {{ list?.role_id }}
-      input.form-control(type="text", name="", *ngIf="edit")
+      p.form-control-static(*ngIf="!edit") {{ list?.role_id }}
+      select.shortened-input#input-role(name='team-role', *ngIf="edit", [(ngModel)]="list.role_id")
+        option(value='2') Admin
+        option(value='3') Writer
+        option(value='4') Participant
+        option(value='5') Viewe
   .form-group
     label.col-xs-2.control-label.separator
       i.fa.fa-circle
@@ -26,7 +31,22 @@ h1.p-page-title.p-page-title_type_bordered.p-page-title_with_button
     label.col-xs-2.control-label チーム
     .col-xs-10
       p.form-control-static [Entry no.{{ list?.team_id }}] {{ list?.team?.name }}
+      select.shortened-input#input-role(name='team-role', *ngIf="edit", [(ngModel)]="list.team_id")
+        option(*ngFor="let team of teams", value="{{ team.id }}") {{ team.name }} 
   .form-group
     label.col-xs-2.control-label 所属
     .col-xs-10
-      p.form-control-static {{ list?.team?.organization }}
+      p.form-control-static {{ getTeam(list?.team_id)?.organization }}
+
+  .form-group
+    label(for='input-password').col-xs-2.control-label パスワード
+    .col-xs-10
+      .p-form-item
+        p.form-control-static.pull-left(*ngIf="!edit") ******
+        input.shortened-input#input-password(type='text', name='password', *ngIf="edit", [(ngModel)]="list.password")
+        button.p-button.p-button_color_gray((click)="genpass()", *ngIf="edit") パスワード生成
+
+.u-member-detail.center-block(*ngIf="edit")
+  button(type="submit").p-button.p-button_color_gray((click)="cancel()") 編集取消
+  button(type="submit").p-button.p-button_color_green((click)="update()") 保存
+
