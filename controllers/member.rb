@@ -36,17 +36,6 @@ class MemberRoutes < Sinatra::Base
     end
   end
 
-  get "/api/login_as" do
-    @member = Member.find_by(id: params[:id])
-
-    if @member
-      login_as(@member.id)
-      json status: "success"
-    else
-      json status: "failed"
-    end
-  end
-
   post "/api/session" do
     halt 403 if logged_in?
 
@@ -107,7 +96,7 @@ class MemberRoutes < Sinatra::Base
 
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
 
-    if not Role.where(name: ["Admin", "Writer"]).ids.include? current_user.role_id
+    if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
       @team = Team.find_by(registration_code: params[:registration_code])
       if @team.nil?
         error = { "registration_code" => ["を入力してください"] }
