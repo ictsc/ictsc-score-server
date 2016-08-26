@@ -1,11 +1,11 @@
 
 .alert.alert-warning(*ngIf="errorMessage")
   {{ errorMessage }}
-form(name='form-signup', (ngSubmit)="submit()")
+form.p-form-panel(name='form-signup', (ngSubmit)="submit()")
   fieldset([disabled]="disabled")
-    .form-group
+    .form-item
       label(for='select-team-name') チーム名
-      select.form-control#select-team-name(name='team-name', [(ngModel)]="selectedTeamId")
+      select#select-team-name(name='team-name', [(ngModel)]="selectedTeamId")
         option(value='0') チーム名を選択してください
         option(*ngFor="let team of teamList" value='{{ team.id }}') {{ team.name }}
     .form-group
@@ -24,4 +24,4 @@ form(name='form-signup', (ngSubmit)="submit()")
       label(for='input-password') パスワード
       input.form-control#input-password(name='password', type='password', [(ngModel)]="form.password")
     .text-right
-      button.button.button_color_green.button_size_large.button_of_signup.center-block(type='submit') サインアップ
+      button.p-button.p-button_color_green.p-button_size_large.p-button_of_signup.center-block(type='submit') サインアップ
