@@ -1375,7 +1375,6 @@ tr {
 }
 
 .c-problem-state-list {
-	max-width: 890px;
 	margin-right: auto;
 	margin-left: auto;
 
@@ -1404,6 +1403,9 @@ tr {
 }
 
 .c-answer-list {
+	max-width: 890px;
+	margin-left: auto;
+	margin-right: auto;
 
 	.c-answer-list__item {
 		display: inline-block;
