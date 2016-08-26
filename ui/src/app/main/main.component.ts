@@ -35,7 +35,7 @@ export class Main {
           return this.api.teams.item(m.team_id)
             .map(t => { m.team = t; return m; });
         })
-        .subscribe(a => this.loginMember = a);
+        .subscribe(a => this.loginMember = a, err => this.loginMember = undefined);
     });
     // Observable.timer(0, 1000)
     //   .subscribe(_ => {

@@ -17,8 +17,7 @@ export class ApiService {
   });
   private lastUser = null;
   private changeUserNext(user){
-    console.log("aaa", user, this.lastUser);
-    let memberid = user.member_id;
+    let memberid = user && user.member_id;
     if(this.changeUserObserver && this.lastUser !== memberid){
       console.log("user changed");
       this.lastUser = memberid;
@@ -42,8 +41,12 @@ export class ApiService {
     });
   }
   logout(){
+    console.log("logout!!!!!!!!!!");
     TempStorage.clear();
-    return this.session.delete();
+    return this.session.delete().map(r => {
+      this.changeUserNext(undefined);
+      return r;
+    });
   }
   private cachedLoginStatus: LoginStatus;
   private lastCacheTime: Date = new Date(0);

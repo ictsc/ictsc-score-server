@@ -13,10 +13,10 @@ header
       ul.p-list
         li.p-list__item
           a([routerLink]="['guide']") ガイド
-        li.p-list__item
+        li.p-list__item(*ngIf="loginMember")
           a([routerLink]="['members']") メンバー
-        li.p-list__item
-          a([routerLink]="['teams']", *ngIf="isAdmin") チーム
+        li.p-list__item(*ngIf="loginMember && isAdmin")
+          a([routerLink]="['teams']") チーム
         li.p-list__item(*ngIf="loginMember?.team_id")
           a([routerLink]="['teams', loginMember?.team_id]") ({{ loginMember?.team?.name }})
     .p-header__right
@@ -24,13 +24,13 @@ header
         li.p-list__item
           a([routerLink]="['/']") トップ
             //- .notification-badge
-        li.p-list__item
+        li.p-list__item(*ngIf="loginMember")
           a([routerLink]="['problems']") 問題
-        li.p-list__item
+        li.p-list__item(*ngIf="loginMember")
           a([routerLink]="['issues']") 質問
-        li.p-list__item
+        li.p-list__item(*ngIf="loginMember")
           a([routerLink]="['answers']", *ngIf="isAdmin") 解答
-        li.p-list__item
+        li.p-list__item(*ngIf="loginMember")
           a((click)="logout()") ログアウト
     //- .c-clock
     //-   .c-clock__date {{ datetime.date }}
