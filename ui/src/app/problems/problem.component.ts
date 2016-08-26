@@ -33,6 +33,8 @@ export class Problem {
   members = [];
   teamData: any;
 
+  rimitSecond = 100000000;
+
   private role: number;
   get isParticipant(){ return this.role == Roles.Participant }
   get isAdmin(){ return this.role == Roles.Admin || this.role == Roles.Writer }
@@ -89,6 +91,12 @@ export class Problem {
 
   ngOnInit() {
     this.api.getLoginMember().subscribe(mem => this.role = mem.role_id);
+
+    // 残り時間
+    Observable.interval(1000).subscribe(r => {
+      if(this.problemData)
+        this.rimitSecond = Math.floor((new Date(this.problemData.closed_at.replace("T"," ")).valueOf() - new Date().valueOf()) / 1000);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -254,5 +262,15 @@ export class Problem {
       return ["../../", prob.id, this.team];
     else
       return ["../", prob.id]
+  }
+
+
+  get firstDisableAnswer(){
+    if(!this.answer || !this.answer.comments) return undefined;
+    return this.answer.comments.filter(a => {
+      let ansCreate = new Date(a.created_at);
+      let probClose = new Date(this.problemData.closed_at);
+      return ansCreate.valueOf() > probClose.valueOf(); 
+    })[0];
   }
 }

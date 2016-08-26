@@ -7,6 +7,7 @@ cd ~
 git clone ***
 cd ui
 npm install
+npm run typings-install
 npm run build:prod
 ```
 
