@@ -96,7 +96,7 @@ class MemberRoutes < Sinatra::Base
 
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
 
-    if not Role.where(name: ["Admin", "Writer"]).ids.include? current_user.role_id
+    if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
       @team = Team.find_by(registration_code: params[:registration_code])
       if @team.nil?
         error = { "registration_code" => ["を入力してください"] }
