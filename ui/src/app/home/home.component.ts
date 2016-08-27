@@ -42,8 +42,8 @@ export class Home extends MiniList {
         this.api.notifications.list(),
         this.api.problems.list()
       ).map(aa => {
-        let [issues, a, problems] = aa;
-        return a.map(n => {
+        let [issues, notifs, problems] = aa;
+        return notifs.slice(0, 20).map(n => {
         let notif = Object.assign({}, n);
         let prob = id => problems.find(p => p.id == id);
         switch(notif.type){
