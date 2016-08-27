@@ -1621,10 +1621,10 @@ tr {
 
 .p-alert-time-is-up {
 	display: block;
+	max-width: 1000px;
 	padding: 8px 80px;
 	border-radius: 4px;
-	margin-top: 30px;
-	margin-bottom: 30px;
+	margin: 30px auto;
 	color: #fff;
 	font-size: 18px;
 	font-weight: bold;
