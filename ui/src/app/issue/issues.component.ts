@@ -25,7 +25,7 @@ export class Issues extends MiniList {
       this.filter.all || 
       (this.filter.noRes && this.issueStatus(r) == 1) ||
       (this.filter.progress && this.issueStatus(r) == 2) ||
-      (this.filter.success && this.issueStatus(r) == 3)
+      (this.filter.success && this.issueStatus(r) == 0)
     );
   }
 
