@@ -102,9 +102,10 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
         div(*ngIf="ansewrIsNotFound") 解答が投稿されていません
         .c-message.c-message_of_general(*ngFor="let comment of answer?.comments")
 
-          .p-alert-time-is-up.p-alert-time-is-up--small(*ngIf="firstDisableAnswer?.id == comment.id") これ以降の解答は時間切れの為、無効です。
-          .c-chevron-down.center-block
-            i.fa.fa-chevron-down
+          div(*ngIf="firstDisableAnswer?.id == comment.id")
+            .p-alert-time-is-up.p-alert-time-is-up--small これ以降の解答は時間切れの為、無効です。
+            .c-chevron-down.center-block
+              i.fa.fa-chevron-down
           .c-message__body.message_type_answer
             markdown([body]="comment.text")
           .c-message__footer.u-cf

@@ -4,7 +4,7 @@
       button.p-state-label.center-block.p-state-label__resolved((click)="changeStatus()") 解決済み
       .p-state-supplement やっぱり解決してないい場合はクリック
     span(*ngSwitchCase="1")
-      button.p-state-label.center-block.p-state-label__no-response((click)="changeStatus()") 未回答
+      button.p-state-label.center-block.p-state-label__no-progress((click)="changeStatus()") 未回答
       .p-state-supplement 解決したらクリック
     span(*ngSwitchCase="2")
       button.p-state-label.center-block.p-state-label__in-progress((click)="changeStatus()") 対応中
