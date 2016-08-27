@@ -1041,6 +1041,11 @@ tr {
 		margin-left: 10px;
 	}
 
+	p {
+		position: relative;
+		padding-bottom: 35px;
+	}
+
 	.c-problem-panel__supplement {
 		position: relative;
 		padding: 15px 15px 35px;
@@ -1285,7 +1290,10 @@ tr {
 }
 
 .c-filter-list {
+	max-width: 1100px;
 	padding-bottom: 20px;
+	margin-right: auto;
+	margin-left: auto;
 	text-align: center;
 
 	&.c-filter-list_type_bordered {
@@ -1393,6 +1401,7 @@ tr {
 }
 
 .c-problem-state-list {
+	max-width: 1100px;
 	margin-right: auto;
 	margin-left: auto;
 
@@ -1412,7 +1421,7 @@ tr {
 		}
 
 		.p-state-label {
-			width: 165px;
+			width: 200px;
 			padding-right: 10px;
 			padding-left: 10px;
 			text-align: left;
@@ -1421,13 +1430,14 @@ tr {
 }
 
 .c-answer-list {
-	max-width: 890px;
+	margin-top: 10px;
 	margin-left: auto;
 	margin-right: auto;
 
 	.c-answer-list__item {
 		display: inline-block;
-		margin-right: 5px;
+		margin-right: 2px;
+		margin-left: 2px;
 		vertical-align: top;
 
 		.p-state-label {
@@ -1616,10 +1626,10 @@ tr {
 
 .p-alert-time-is-up {
 	display: block;
+	max-width: 1000px;
 	padding: 8px 80px;
 	border-radius: 4px;
-	margin-top: 30px;
-	margin-bottom: 30px;
+	margin: 30px auto;
 	color: #fff;
 	font-size: 18px;
 	font-weight: bold;
