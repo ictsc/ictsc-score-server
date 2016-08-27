@@ -18,12 +18,12 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
     button.p-icon-button.p-icon-button_type_edit.fa.fa-pencil(type='button', aria-label='編集', *ngIf="isAdmin && !problemEdit", (click)="problemEdit = true")
     //- button.cancel(*ngIf="problemEdit", (click)="problemEditCancel()") 編集キャンセル
     //- button.cancel(*ngIf="problemEdit", (click)="problemEditPost()") 編集確定
+  p.c-problem-info.center-block 公開 　{{ problemData?.opened_at | time }}　|　締切　{{ problemData?.closed_at | time }}　|　更新　{{ problemData?.updated_at | time }}
 
   p.p-alert-time-is-up(*ngIf="rimitSecond < 300")
     i.fa.fa-hourglass-end(*ngIf="0 < rimitSecond") 解答締め切り時間は残り {{ rimitSecond }} 秒です。
     i.fa.fa-hourglass-end(*ngIf="rimitSecond < 1") この問題は解答締切時間が過ぎています。
 
-  p.c-problem-info.center-block 公開 　{{ problemData?.opened_at | time }}　|　締切　{{ problemData?.closed_at | time }}　|　更新　{{ problemData?.updated_at | time }}
   dir(*ngIf="problemEdit")
     .input-group
       span.input-group-addon 公開日時
