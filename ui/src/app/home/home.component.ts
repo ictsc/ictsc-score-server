@@ -37,31 +37,48 @@ export class Home extends MiniList {
   get(){
     return Observable.combineLatest(
       this.api.problems.list(),
-      this.api.notifications.list().map(a => a.map(n => {
+      Observable.combineLatest(
+        this.api.issues.list(),
+        this.api.notifications.list(),
+        this.api.problems.list()
+      ).map(aa => {
+        let [issues, a, problems] = aa;
+        return a.map(n => {
         let notif = Object.assign({}, n);
+        let prob = id => problems.find(p => p.id == id);
         switch(notif.type){
           case "problem_opened":
           case "problem_updated":
+            let prob1 = prob(notif.resource_id);
+            if(prob1)
+              notif.text = prob1.title + " " + notif.text;
             notif.link = ["problems", notif.resource_id];
             notif.type = 1;
             break;
           case "new_comment_to_problem":
           case "updated_comment_to_problem":
             notif.link = ["problems", notif.sub_resource_id];
+            let prob2 = prob(notif.sub_resource_id);
+            if(prob2)
+              notif.text = prob2.title + " " + notif.text;
             notif.type = 2;
             break;
           case "created_comment_to_issue":
           case "updated_comment_to_issue":
-            let issue = this.list[2].find(i => i.id == notif.sub_resource_id);
+            let prob3 = prob(notif.sub_resource_id);
+            let issue = issues.find(i => i.id == notif.sub_resource_id);
             if(issue)
               notif.link = ["issues", issue.problem_id, issue.team_id, issue.id];
             else
               notif.link = [];
+            if(prob3)
+              notif.text = prob3.title + " " + notif.text;
             notif.type = 3;
             break;
         }
         return notif;
-      })),
+      })
+    }),
       this.api.issues.list(),
       this.api.notices.list().map(r =>
         r.sort((a, b) => a.pinned < b.pinned)

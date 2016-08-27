@@ -93,7 +93,7 @@ h1.sr-only トップ
               span.p-notification-label.p-notification-label_type_problem_comment(*ngSwitchCase="2") 補足
               span.p-notification-label.p-notification-label_type_question(*ngSwitchCase="3") 質問
               span.p-notification-label(*ngSwitchDefault) その他
-            .l-row-panel__body {{ notification.resource_id }} {{ notification.text }}
+            .l-row-panel__body {{ notification.resource_id }}. {{ notification.text }}
             .l-row-panel__footer.u-cf
               .p-post-meta.pull-right {{ notification.created_at | time }}
           //- .l-row-panel
