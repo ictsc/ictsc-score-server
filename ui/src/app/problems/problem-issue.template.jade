@@ -24,7 +24,7 @@
         a([routerLink]="['/members', issue.comments[0].member.id]") {{ issue.comments[0]?.member.name }}
       .p-posted-at(*ngIf="issue.comments[0].created_at") 投稿　{{ issue.comments[0].created_at | time }}　|　更新　{{ issue.comments[0].updated_at | time }}
 
-    //- .c-message(*ngFor="let comment of issue?.comments?.slice(1)", [ngClass]="{'c-message_of_others':comment.member?.role_id == 4, 'c-message_of_own': comment.member?.role_id != 4}")
+    .c-message(*ngFor="let comment of issue?.comments?.slice(1)", [ngClass]="{'c-message_of_others':comment.member?.role_id == 4, 'c-message_of_own': comment.member?.role_id != 4}")
       .c-message__body
         markdown([body]="comment.text")
       .c-message__footer.u-cf
