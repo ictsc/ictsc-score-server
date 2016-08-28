@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Observable } from "rxjs";
 import { MainClock } from "./main-clock.component";
 
+require("github-markdown-css/github-markdown.css");
+
 @Component({
   selector: 'main',
   encapsulation: ViewEncapsulation.None,

@@ -4,7 +4,7 @@ import * as showdown from "showdown";
 
 @Component({
   selector: 'markdown',
-  template: `<div [innerHTML]="htmlText"></div>`,
+  template: `<div [innerHTML]="htmlText" class="markdown-body"></div>`,
 })
 export class Markdown {
   constructor(private sanitizer: DomSanitizationService) {
