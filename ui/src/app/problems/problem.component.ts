@@ -121,7 +121,7 @@ export class Problem {
     if(changeTeam || changeIssue){ // issue
       let src = this.isSingleIssue?
         this.api.issues.item(this.issue).map(a => [a])
-        :this.api.issues.list().map(iss => iss.filter(i => i.team_id == this.team));
+        :this.api.issues.list().map(iss => iss.filter(i => i.team_id == this.team && i.problem_id == this.id));
 
       Observable.combineLatest(
         src,
@@ -137,6 +137,11 @@ export class Problem {
                 ic.member.team = temas.find(t => t.id == ic.member.team_id);
                 return ic;
               });
+              if(!a.comments[0] || !a.comments[0].member.team_id)
+                a.comments.unshift({
+                  "id": 0,
+                  "text": "（空白）"
+                });
             });
         }
         this.issues = issues;

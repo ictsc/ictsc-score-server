@@ -62,11 +62,11 @@ export class ProblemIssue {
     return 2;  // 対応中
   }
   getLastRequest(issue){
-    let res = issue.comments.filter(i => i.member.role_id == 4);
+    let res = issue.comments.filter(i => i.member && i.member.role_id == 4);
     return res[res.length - 1];
   }
   getLastResponse(issue){
-    let res = issue.comments.filter(i => i.member.role_id == 2 || i.member.role_id == 3)
+    let res = issue.comments.filter(i => i.member && (i.member.role_id == 2 || i.member.role_id == 3))
     return res[res.length - 1];
   }
 
