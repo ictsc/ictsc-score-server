@@ -9,16 +9,20 @@ import { Observable } from "rxjs";
 })
 export class Issues extends MiniList {
   constructor(private api: ApiService) {super()}
+  intervalCount = undefined;
 
   ngOnInit() {
     this.fetch();
     Observable.interval(10000)
-      .subscribe(r => this.fetch());
+      .subscribe(r => {
+        this.intervalCount = r;
+        this.fetch();
+      });
   }
 
   get(){
     // return this.api.issues.get();
-    return this.api.issueDetail().do(r => console.warn(r)).map(i => i.sort((a,b) => b.id - a.id));
+    return this.api.issueDetail(this.intervalCount).do(r => console.warn(r)).map(i => i.sort((a,b) => b.id - a.id));
   }
 
   dateFormat(input: any){ return Time.dateFormat(input); }

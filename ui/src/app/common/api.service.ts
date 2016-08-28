@@ -160,7 +160,7 @@ export class ApiService {
     });
   }
 
-  public issueDetail(){
+  public issueDetail(cacheCount?: number, nonCacheCount = 5){
     return Observable.combineLatest(
       this.issues.list(),
       this.problems.list(),
@@ -168,8 +168,16 @@ export class ApiService {
       this.teams.list()
     ).concatMap(r => {
       let [issues, problems, members, teams] = r as any;
+      
+      let allowCache = (id: number) => {
+        console.log(cacheCount, nonCacheCount, id, (cacheCount + id) % nonCacheCount == 0);
+        if(typeof cacheCount == 'undefined')
+          return false;
+        return ((cacheCount + id) % nonCacheCount) != 0;
+      }
+        
       return Observable.combineLatest(
-        issues.map(i => this.issueComments(i.id).list().map(r => ({
+        issues.map(i => this.issueComments(i.id).list(true, allowCache(i.id)).map(r => ({
           id:i.id,
           arr: r.map(ic => {
             ic.member = members.find(m => m.id == ic.member_id);
@@ -254,7 +262,7 @@ class RestResources<T1> {
       this.httpOption
     ).map(this.responseFilter);
   }
-  private httpGet(path: string, cacheResponse?: boolean){
+  private httpGet(path: string, cacheResponse?: boolean, cacheOnly = false){
     if(typeof cacheResponse == "undefined") cacheResponse = this.cacheResponseDefault;
     let getReq = (cacheContent?) => this.http.get(
       this.url(path),
@@ -270,7 +278,10 @@ class RestResources<T1> {
 
     if(!cacheResponse || !cache) return getReq();
     console.log("cache response", path, cache);
-    return Observable.concat(Observable.of(cache), getReq(cache));
+    if(cache && cacheOnly)
+      return Observable.concat(Observable.of(cache));
+    else
+      return Observable.concat(Observable.of(cache), getReq(cache));
   }
   private httpDelete(path: string){
     return this.http.delete(
@@ -279,15 +290,15 @@ class RestResources<T1> {
     );
   }
 
-  list(cacheResponse?: boolean){
-    return this.get(cacheResponse);
+  list(cacheResponse?: boolean, cacheOnly = false){
+    return this.get(cacheResponse, cacheOnly);
   }
-  get(cacheResponse?: boolean){
-    return this.httpGet(`${this.resourcesName}`, cacheResponse);
+  get(cacheResponse?: boolean, cacheOnly = false){
+    return this.httpGet(`${this.resourcesName}`, cacheResponse, cacheOnly);
   }
 
-  item(id: string, cacheResponse?: boolean){
-    return this.httpGet(`${this.resourcesName}/${id}`, cacheResponse);
+  item(id: string, cacheResponse?: boolean, cacheOnly = false){
+    return this.httpGet(`${this.resourcesName}/${id}`, cacheResponse, cacheOnly);
   }
 
   add(content: T1){  // todo: type
