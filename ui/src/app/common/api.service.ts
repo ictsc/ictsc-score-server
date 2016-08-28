@@ -162,7 +162,7 @@ export class ApiService {
 
   public issueDetail(cacheCount?: number, nonCacheCount = 5){
     return Observable.combineLatest(
-      this.issues.list(),
+      this.issues.list().map(i => i.sort((a,b) => b.id - a.id).slice(50)),
       this.problems.list(),
       this.members.list(),
       this.teams.list()
