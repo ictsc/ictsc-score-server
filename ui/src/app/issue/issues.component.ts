@@ -15,7 +15,7 @@ export class Issues extends MiniList {
 
   get(){
     // return this.api.issues.get();
-    return this.api.issueDetail().do(r => console.warn(r)).map(i => i.sort((a,b) => a.id < b.id));
+    return this.api.issueDetail().do(r => console.warn(r)).map(i => i.sort((a,b) => b.id - a.id));
   }
 
   dateFormat(input: any){ return Time.dateFormat(input); }
