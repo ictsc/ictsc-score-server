@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService, MiniList } from "../common";
 import { Time } from "../common";
+import { Observable } from "rxjs";
 
 @Component({
   selector: Issues.name.toLowerCase(),
@@ -10,7 +11,9 @@ export class Issues extends MiniList {
   constructor(private api: ApiService) {super()}
 
   ngOnInit() {
-    this.fetch();;
+    this.fetch();
+    Observable.interval(3000)
+      .subscribe(r => this.fetch());
   }
 
   get(){
