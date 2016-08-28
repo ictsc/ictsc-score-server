@@ -170,6 +170,7 @@ export class ApiService {
       let [issues, problems, members, teams] = r as any;
       
       let allowCache = (id: number, closed) => {
+        return true;
         console.log("AllowCache", cacheCount, nonCacheCount, id, (cacheCount + id) % nonCacheCount == 0, closed);
         if(typeof cacheCount == 'undefined')
           return false;
