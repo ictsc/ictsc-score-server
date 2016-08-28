@@ -38,5 +38,5 @@
 
   textarea#textarea-question-comment(type='text', name='question-comment', placeholder='コメントを記入してください', [(ngModel)]="comment", simplemde)
   button.p-button.p-button_color_green.pull-right(type='button', (click)="postComment()") 送信
-pre(*ngIf="true").
+pre(*ngIf="false").
   {{ issue | json }}
