@@ -13,7 +13,7 @@ export class Issues extends MiniList {
 
   ngOnInit() {
     this.fetch();
-    Observable.interval(10000)
+    Observable.interval(5000)
       .subscribe(r => {
         this.intervalCount = r;
         this.fetch();

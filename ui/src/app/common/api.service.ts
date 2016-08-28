@@ -169,15 +169,15 @@ export class ApiService {
     ).concatMap(r => {
       let [issues, problems, members, teams] = r as any;
       
-      let allowCache = (id: number) => {
-        console.log(cacheCount, nonCacheCount, id, (cacheCount + id) % nonCacheCount == 0);
+      let allowCache = (id: number, closed) => {
+        console.log("AllowCache", cacheCount, nonCacheCount, id, (cacheCount + id) % nonCacheCount == 0, closed);
         if(typeof cacheCount == 'undefined')
           return false;
-        return ((cacheCount + id) % nonCacheCount) != 0;
+        return ((cacheCount + id) % nonCacheCount * (close?2:1)) != 0;
       }
         
       return Observable.combineLatest(
-        issues.map(i => this.issueComments(i.id).list(true, allowCache(i.id)).map(r => ({
+        issues.map(i => this.issueComments(i.id).list(true, allowCache(i.id, i.closed)).map(r => ({
           id:i.id,
           arr: r.map(ic => {
             ic.member = members.find(m => m.id == ic.member_id);
