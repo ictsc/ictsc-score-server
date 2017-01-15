@@ -1,14 +1,11 @@
 source "https://rubygems.org"
 
-gem "sinatra", require: "sinatra/base"
-gem "sinatra-param", require: "sinatra/param"
-gem "sinatra-rocketio", require: "sinatra/rocketio"
+gem "sinatra",          require: "sinatra/base"
+gem "sinatra-param",    require: "sinatra/param"
 
-gem "rack-contrib", require: "rack/contrib"
-gem "rack-protection", require: "rack/protection"
-gem "redis-rack", require: "rack/session/redis"
-
-gem "hamlit"
+gem "rack-contrib",     require: "rack/contrib"
+gem "rack-protection",  require: "rack/protection"
+gem "redis-rack",       require: "rack/session/redis"
 
 gem "sqlite3"
 gem "sinatra-activerecord", require: "sinatra/activerecord"
@@ -20,10 +17,10 @@ gem "dotenv"
 gem "thin", require: false
 
 group :development do
-	gem "pry"
-	gem "shotgun", require: false
-	gem "better_errors"
-	gem "binding_of_caller", require: false
+  gem "pry"
+  gem "shotgun",            require: false
+  gem "better_errors"
+  gem "binding_of_caller",  require: false
 end
 
 group :test do
