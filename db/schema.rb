@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160825105806) do
+ActiveRecord::Schema.define(version: 20170116044604) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -34,9 +33,8 @@ ActiveRecord::Schema.define(version: 20160825105806) do
     t.datetime "updated_at",       null: false
     t.integer  "commentable_id",   null: false
     t.string   "commentable_type", null: false
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
   end
-
-  add_index "comments", ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
 
   create_table "issues", force: :cascade do |t|
     t.string   "title",                      null: false
@@ -79,13 +77,14 @@ ActiveRecord::Schema.define(version: 20160825105806) do
   end
 
   create_table "problems", force: :cascade do |t|
-    t.string   "title",      null: false
-    t.string   "text",       null: false
-    t.datetime "opened_at",  null: false
-    t.datetime "closed_at",  null: false
-    t.integer  "creator_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "title",                        null: false
+    t.string   "text",                         null: false
+    t.integer  "creator_id",                   null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.integer  "problem_must_solve_before_id"
+    t.string   "reference_point"
+    t.index ["problem_must_solve_before_id"], name: "index_problems_on_problem_must_solve_before_id"
   end
 
   create_table "roles", force: :cascade do |t|

@@ -89,6 +89,7 @@ class Member < ActiveRecord::Base
   validates :team,            presence: true, if: Proc.new {|member| not member.team_id.nil? }
   validates :team,            presence: true, on: :sign_up
   validates :role,            presence: true
+  validated :reference_point, presence: true
 
   has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :destroy
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
@@ -111,7 +112,9 @@ class Problem < ActiveRecord::Base
   has_many :answers,  dependent: :destroy
   has_many :comments, dependent: :destroy, as: :commentable
   has_many :issues,   dependent: :destroy
+  has_many :next_problems, class_name: self.to_s, foreign_key: "problem_must_solve_before_id"
 
+  belongs_to :problem_must_solve_before, class_name: self.to_s
   belongs_to :creator, foreign_key: "creator_id", class_name: "Member"
 end
 
