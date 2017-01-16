@@ -106,8 +106,6 @@ end
 class Problem < ActiveRecord::Base
   validates :title,     presence: true
   validates :text,      presence: true
-  validates :opened_at, presence: true
-  validates :closed_at, presence: true
   validates :creator,   presence: true
 
   has_many :answers,  dependent: :destroy
