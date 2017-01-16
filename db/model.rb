@@ -90,7 +90,7 @@ class Member < ActiveRecord::Base
   validates :team,            presence: true, if: Proc.new {|member| not member.team_id.nil? }
   validates :team,            presence: true, on: :sign_up
   validates :role,            presence: true
-  validated :reference_point, presence: true
+  validates :reference_point, presence: true
 
   has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :destroy
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
