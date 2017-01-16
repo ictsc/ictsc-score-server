@@ -159,13 +159,31 @@ def_perm(Member, :participant, %i(PUT PATCH),
   parameters: "{ id: current_user.id }")
 
 def_perm(Problem, :participant, %i(GET),
-  query: "opened_at <= :now",
-  parameters: "{ now: DateTime.now }")
+  query: "
+  (problem_must_solve_before_id IS NULL) OR
+  (problem_must_solve_before_id IN
+    (SELECT problem_id FROM answers WHERE id IN
+      (SELECT answer_id FROM scores WHERE answer_id IN
+        (SELECT id FROM answers WHERE team_id = :team_id) AND
+        point >= (SELECT reference_point FROM problems WHERE id = problem_id)
+      )
+    )
+  )",
+  parameters: "{ team_id: current_user.team_id }")
 
 def_perm(Problem, :participant, %i(GET),
   action: "problems_comments",
-  query: "opened_at <= :now",
-  parameters: "{ now: DateTime.now }")
+  query: "
+  (problem_must_solve_before_id IS NULL) OR
+  (problem_must_solve_before_id IN
+    (SELECT problem_id FROM answers WHERE id IN
+      (SELECT answer_id FROM scores WHERE answer_id IN
+        (SELECT id FROM answers WHERE team_id = :team_id) AND
+        point >= (SELECT reference_point FROM problems WHERE id = problem_id)
+      )
+    )
+  )",
+  parameters: "{ team_id: current_user.team_id }")
 
 %i(Issue Answer).each do |resource|
   action = "#{resource.to_s.downcase.pluralize}_comments"
