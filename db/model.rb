@@ -17,6 +17,7 @@ class ActiveRecord::Base
 
   def self.allowed_to_create_by?(user = nil, action: "")
     p = get_permission(user: user, method: "POST", action: action)
+    return false if p.nil?
     return p.query != FORBID_ALL
   end
 
