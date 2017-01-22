@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170116064815) do
+ActiveRecord::Schema.define(version: 20170116154951) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20170116064815) do
     t.datetime "updated_at",                   null: false
     t.integer  "problem_must_solve_before_id"
     t.integer  "reference_point"
+    t.integer  "perfect_point"
     t.index ["problem_must_solve_before_id"], name: "index_problems_on_problem_must_solve_before_id"
   end
 

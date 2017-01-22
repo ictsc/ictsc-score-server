@@ -91,6 +91,7 @@ class Member < ActiveRecord::Base
   validates :team,            presence: true, on: :sign_up
   validates :role,            presence: true
   validates :reference_point, presence: true
+  validates :perfect_point,   presence: true
 
   has_many :marked_scores   , foreign_key: "marker_id" , class_name: "Score"  , dependent: :destroy
   has_many :created_problems, foreign_key: "creator_id", class_name: "Problem", dependent: :destroy
@@ -154,6 +155,15 @@ class Score < ActiveRecord::Base
 
   belongs_to :answer
   belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
+
+  def problem
+    # answer.problem と等価
+    Problem.joins(:answers).where(answers: {id: answer_id}).first
+  end
+
+  def firstblood?
+    self == Score.joins(:answer).where(answers: {problem_id: self.problem.id}).order("answers.created_at").first
+  end
 end
 
 class Comment < ActiveRecord::Base
