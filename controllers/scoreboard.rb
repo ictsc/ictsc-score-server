@@ -59,8 +59,5 @@ class ScoreBoardRoutes < Sinatra::Base
     halt 404 if team.nil?
 
     json scoreboard_for(team: team)
-
-    # @scores = Score.accessible_resources(user_and_method)
-    # json @scores
   end
 end
