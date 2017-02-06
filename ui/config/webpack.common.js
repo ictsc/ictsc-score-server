@@ -11,7 +11,7 @@ const HtmlElementsPlugin = require('./html-elements-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const METADATA = {
-  title: 'ICTSC6 Score Server',
+  title: 'ICTSC7 Score Server',
   baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer()
 };
