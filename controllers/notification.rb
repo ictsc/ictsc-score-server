@@ -9,8 +9,9 @@ class NotificationRoutes < Sinatra::Base
 
   get "/api/notifications" do
     notifications = []
-  	Problem.where("opened_at <= ?", DateTime.now)
-  	       .order(:opened_at) \
+           # .where("opened_at <= ?", DateTime.now)
+           # .order(:opened_at) \
+    Problem.accessible_resources(user_and_method) \
            .map do |x|
               resource_info = {
                 resource: "Problem",
@@ -22,10 +23,10 @@ class NotificationRoutes < Sinatra::Base
               notifications << resource_info.merge({
                 type: "problem_opened",
                 text: "問題が公開されました。",
-                created_at: x.opened_at
+                created_at: DateTime.now # x.opened_at
               })
 
-              if x.created_at != x.updated_at && x.opened_at < x.updated_at
+              if x.created_at != x.updated_at # && x.opened_at < x.updated_at
                 notifications << resource_info.merge({
                   type: "problem_updated",
                   text: "問題が更新されました。",
