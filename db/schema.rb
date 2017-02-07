@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170116154951) do
+ActiveRecord::Schema.define(version: 20170206060422) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
     t.integer  "team_id",    null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_answers_on_id", unique: true
   end
 
   create_table "attachments", force: :cascade do |t|
@@ -76,6 +77,13 @@ ActiveRecord::Schema.define(version: 20170116154951) do
     t.string   "action",     default: "", null: false
   end
 
+  create_table "problem_groups", force: :cascade do |t|
+    t.string   "name",        null: false
+    t.string   "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
   create_table "problems", force: :cascade do |t|
     t.string   "title",                        null: false
     t.string   "text",                         null: false
@@ -85,6 +93,9 @@ ActiveRecord::Schema.define(version: 20170116154951) do
     t.integer  "problem_must_solve_before_id"
     t.integer  "reference_point"
     t.integer  "perfect_point"
+    t.integer  "problem_group_id"
+    t.index ["id"], name: "index_problems_on_id", unique: true
+    t.index ["problem_group_id"], name: "index_problems_on_problem_group_id"
     t.index ["problem_must_solve_before_id"], name: "index_problems_on_problem_must_solve_before_id"
   end
 
@@ -101,6 +112,7 @@ ActiveRecord::Schema.define(version: 20170116154951) do
     t.integer  "marker_id",  null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["answer_id"], name: "index_scores_on_answer_id"
   end
 
   create_table "teams", force: :cascade do |t|

@@ -114,8 +114,15 @@ class Problem < ActiveRecord::Base
   has_many :issues,   dependent: :destroy
   has_many :next_problems, class_name: self.to_s, foreign_key: "problem_must_solve_before_id"
 
+  belongs_to :problem_group
   belongs_to :problem_must_solve_before, class_name: self.to_s
   belongs_to :creator, foreign_key: "creator_id", class_name: "Member"
+end
+
+class ProblemGroup < ActiveRecord::Base
+  validates :name,     presence: true
+
+  has_many :problems, dependent: :nullify
 end
 
 class Issue < ActiveRecord::Base
