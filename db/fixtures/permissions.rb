@@ -92,8 +92,6 @@ def_perm(Comment, :writer, %i(GET),
          query: "commentable_type = :commentable_type",
          parameters: "{ commentable_type: 'Answer' }")
 
-forbid(Comment, :writer, %i(POST PUT PATCH DELETE), action: :answers_comments)
-
 def_perm(Member, :writer, %i(GET POST PUT PATCH DELETE),
   query: "roles.rank >= :rank",
   parameters: "{ rank: role.rank }",
@@ -134,21 +132,9 @@ def_perm(Notice, :writer, %i(PUT PATCH DELETE),
 # Participant
 
 permit(Member,     :participant, %i(GET))
-forbid(Member,     :participant, %i(POST DELETE))
 permit(Notice,     :participant, %i(GET))
-forbid(Notice,     :participant, %i(POST DELETE))
-forbid(Team,       :participant, %i(POST PUT PATCH DELETE))
-forbid(Problem,    :participant, %i(POST PUT PATCH DELETE))
-forbid(Attachment, :participant, %i(POST PUT PATCH DELETE))
 permit(Issue,      :participant, %i(POST))
-forbid(Issue,      :participant, %i(DELETE))
 permit(Answer,     :participant, %i(POST))
-forbid(Answer,     :participant, %i(DELETE))
-forbid(Score,      :participant, %i(GET POST PUT PATCH DELETE))
-forbid(Comment,    :participant, %i(POST PUT PATCH DELETE), action: "problems_comments")
-forbid(Comment,    :participant, %i(DELETE), action: "issues_comments")
-forbid(Answer,     :participant, %i(GET),    action: "answers_comments")
-forbid(Comment,    :participant, %i(DELETE), action: "answers_comments")
 
 def_perm(Attachment, :participant, %i(GET),
   query: "member_id = :id",
@@ -219,19 +205,6 @@ end
   action = "#{resource.to_s.downcase.pluralize}_comments"
   permit(resource, :viewer, %i(GET), action: action)
   permit(Comment,  :viewer, %i(GET),
-         action: action,
-         query: "commentable_type = :commentable_type",
-         parameters: "{ commentable_type: '#{resource.to_s}' }")
-end
-
-%i(Member Team Score Problem Issue Answer Notice Attachment).each do |resource|
-  forbid(resource, :viewer, %i(POST PUT PATCH DELETE))
-end
-
-%i(Problem Issue Answer).each do |resource|
-  action = "#{resource.to_s.downcase.pluralize}_comments"
-  forbid(resource, :viewer, %i(GET), action: action)
-  forbid(Comment,  :viewer, %i(POST PUT PATCH DELETE),
          action: action,
          query: "commentable_type = :commentable_type",
          parameters: "{ commentable_type: '#{resource.to_s}' }")
