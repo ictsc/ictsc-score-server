@@ -75,14 +75,13 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members" do
-    @members = Member.accessible_resources(user_and_method)
+    @members = Member.readables(user: current_user)
     json @members, except: [:hashed_password]
   end
 
   before "/api/members/:id" do
-    @member = Member.accessible_resources(user_and_method) \
-                    .find_by(id: params[:id])
-    halt 404 if not @member
+    @member = Member.find_by(id: params[:id])
+    halt 404 if not @member&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/members/:id" do
@@ -92,7 +91,7 @@ class MemberRoutes < Sinatra::Base
   post "/api/members" do
     halt 403 if not Member.allowed_to_create_by?(current_user)
 
-    @permit_role_ids = Role.accessible_resources(user: current_user, method: "GET").ids
+    @permit_role_ids = Role.readables(user: current_user).ids
 
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
 

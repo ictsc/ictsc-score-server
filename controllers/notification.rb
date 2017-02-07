@@ -11,7 +11,7 @@ class NotificationRoutes < Sinatra::Base
     notifications = []
            # .where("opened_at <= ?", DateTime.now)
            # .order(:opened_at) \
-    Problem.accessible_resources(user_and_method) \
+    Problem.readables(user: current_user) \
            .map do |x|
               resource_info = {
                 resource: "Problem",

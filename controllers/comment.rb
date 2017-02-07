@@ -15,20 +15,19 @@ class CommentRoutes < Sinatra::Base
 
       @action = "#{pluralize_name}_comments"
       @commentable_id = params[:commentable_id]
-      @commentable = klass.accessible_resources(user: current_user, method: "GET", action: @action) \
+      @commentable = klass.readables(user: current_user, action: @action) \
                           .find(@commentable_id)
       halt 404 if @commentable.nil?
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments" do
-      json Comment.accessible_resources(user: current_user, method: request.request_method, action: @action) \
+      json Comment.readables(user: current_user, action: @action) \
                   .where(commentable_id: params[:commentable_id].to_i)
     end
 
     before "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
-      @comment = Comment.accessible_resources(user: current_user, method: request.request_method, action: @action) \
-                        .find_by(id: params[:comment_id])
-      halt 404 if not @comment
+      @comment = Comment.find_by(id: params[:comment_id])
+      halt 404 if not @comment&.allowed?(by: current_user, method: request.request_method, action: @action)
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do

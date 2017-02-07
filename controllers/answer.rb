@@ -12,15 +12,14 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/answers" do
-    @answers = Answer.accessible_resources(user_and_method) \
+    @answers = Answer.readables(user: current_user) \
                      .map{|x| x.attributes.merge(score_id: x&.score&.id) }
     json @answers
   end
 
   before "/api/answers/:id" do
-    @answer = Answer.accessible_resources(user_and_method) \
-                    .find_by(id: params[:id])
-    halt 404 if not @answer
+    @answer = Answer.find_by(id: params[:id])
+    halt 404 if not @answer&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/answers/:id" do
@@ -76,14 +75,13 @@ class AnswerRoutes < Sinatra::Base
   end
 
   before "/api/problems/:id/answers" do
-    @problem = Problem.accessible_resources(user: current_user, method: "GET") \
-                      .find_by(id: params[:id])
-    halt 404 if not @problem
+    @problem = Problem.find_by(id: params[:id])
+    halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/problems/:id/answers" do
-    @answers = Answer.accessible_resources(user_and_method) \
-                     .where(problem_id: @problem.id)
+    @answers = Answer.readables(user: current_user) \
+                     .where(problem: @problem)
     json @answers
   end
 

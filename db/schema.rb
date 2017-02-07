@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170206060422) do
+ActiveRecord::Schema.define(version: 20170207192218) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id", null: false
@@ -63,18 +63,6 @@ ActiveRecord::Schema.define(version: 20170206060422) do
     t.integer  "member_id",                  null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
-  end
-
-  create_table "permissions", force: :cascade do |t|
-    t.string   "resource",                null: false
-    t.string   "method",                  null: false
-    t.string   "query",                   null: false
-    t.string   "parameters"
-    t.integer  "role_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.string   "join",       default: "", null: false
-    t.string   "action",     default: "", null: false
   end
 
   create_table "problem_groups", force: :cascade do |t|

@@ -12,14 +12,13 @@ class ScoreRoutes < Sinatra::Base
   end
 
   get "/api/scores" do
-    @scores = Score.accessible_resources(user_and_method)
+    @scores = Score.readables(user: current_user)
     json @scores
   end
 
   before "/api/scores/:id" do
-    @score = Score.accessible_resources(user_and_method) \
-                  .find_by(id: params[:id])
-    halt 404 if not @score
+    @score = Score.find_by(id: params[:id])
+    halt 404 if not @score&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/scores/:id" do
@@ -75,15 +74,14 @@ class ScoreRoutes < Sinatra::Base
   end
 
   before "/api/answers/:id/score" do
-    @answer = Answer.accessible_resources(user: current_user, method: "GET") \
-                    .find_by(id: params[:id])
-    halt 404 if @answer.nil?
+    @answer = Answer.find_by(id: params[:id])
+    halt 404 if @answer&.allowed?(by: current_user, method: "GET")
   end
 
   get "/api/answers/:id/score" do
     halt 404 if @answer.score.nil?
-    @score = Score.accessible_resources(user_and_method) \
-                  .find_by(id: @answer.score.id)
+    @score = Score.find_by(id: @answer.score.id)
+    halt 404 if @score&.allowed?(by: current_user, method: request.request_method)
 
     status 303
     headers "Location" => to("/api/scores/#{@score.id}")

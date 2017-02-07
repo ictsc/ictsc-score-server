@@ -11,14 +11,13 @@ class ProblemGroupRoutes < Sinatra::Base
   end
 
   get "/api/problem_groups" do
-    @problem_groups = ProblemGroup.accessible_resources(user_and_method)
+    @problem_groups = ProblemGroup.readables(user: current_user)
     json @problem_groups
   end
 
   before "/api/problem_groups/:id" do
-    @problem_group = ProblemGroup.accessible_resources(user_and_method) \
-                      .find_by(id: params[:id])
-    halt 404 if not @problem_group
+    @problem_group = ProblemGroup.find_by(id: params[:id])
+    halt 404 if not @problem_group&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/problem_groups/:id" do

@@ -12,14 +12,13 @@ class NoticeRoutes < Sinatra::Base
   end
 
   get "/api/notices" do
-    @notices = Notice.accessible_resources(user_and_method)
+    @notices = Notice.readables(user: current_user)
     json @notices
   end
 
   before "/api/notices/:id" do
-    @notice = Notice.accessible_resources(user_and_method) \
-                      .find_by(id: params[:id])
-    halt 404 if not @notice
+    @notice = Notice.find_by(id: params[:id])
+    halt 404 if not @notice&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/notices/:id" do

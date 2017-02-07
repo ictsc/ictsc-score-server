@@ -12,7 +12,7 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams" do
-    @teams = Team.accessible_resources(user_and_method) \
+    @teams = Team.readables(user: current_user) \
       .map do |x|
         r = x.attributes
         r["hashed_registration_code"] = Digest::SHA1.hexdigest(r["registration_code"])
@@ -23,14 +23,11 @@ class TeamRoutes < Sinatra::Base
   end
 
   before "/api/teams/:id" do
-    @team = Team.accessible_resources(user_and_method) \
-                .find_by(id: params[:id])
-    halt 404 if not @team
+    @team = Team.find_by(id: params[:id])
+    halt 404 if not @team&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/teams/:id" do
-    @team = Team.accessible_resources(user_and_method) \
-                .find_by(id: params[:id])
     @return = @team.attributes
     @return["hashed_registration_code"] = Digest::SHA1.hexdigest(@return["registration_code"])
     @return.delete("registration_code") if not Role.where(name: ["Participant", "Admin", "Writer"]).ids.include? current_user.role_id
