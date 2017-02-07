@@ -146,7 +146,6 @@ end
 class Answer < ActiveRecord::Base
   validates :problem, presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer&.score&.id.nil? }
-  validates :team,    presence: true, uniqueness: { scope: :problem }
 
   has_many :comments, dependent: :destroy, as: :commentable
 
