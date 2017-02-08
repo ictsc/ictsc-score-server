@@ -74,9 +74,8 @@ class IssueRoutes < Sinatra::Base
   end
 
   before "/api/problems/:id/issues" do
-    @problem = Problem.readables(user: current_user) \
-                      .find_by(id: params[:id])
-    halt 404 if not @problem
+    @problem = Problem.find_by(id: params[:id])
+    halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/problems/:id/issues" do
