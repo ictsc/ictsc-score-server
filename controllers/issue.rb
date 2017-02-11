@@ -9,20 +9,28 @@ class IssueRoutes < Sinatra::Base
 
   before "/api/issues*" do
     I18n.locale = :en if request.xhr?
+
+    @json_options = {
+      include: {
+        comments: { except: [:commentable_id, :commentable_type] }
+      }
+    }
   end
 
   get "/api/issues" do
-    @issues = Issue.readables(user: current_user)
-    json @issues
+    @issues = Issue.includes(:comments) \
+                   .readables(user: current_user)
+    json @issues, @json_options
   end
 
   before "/api/issues/:id" do
-    @issue = Issue.find_by(id: params[:id])
+    @issue = Issue.includes(:comments) \
+                  .find_by(id: params[:id])
     halt 404 if not @issue&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/issues/:id" do
-    json @issue
+    json @issue, @json_options
   end
 
   post "/api/issues" do

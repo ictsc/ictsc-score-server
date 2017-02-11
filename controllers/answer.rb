@@ -9,21 +9,35 @@ class AnswerRoutes < Sinatra::Base
 
   before "/api/answers*" do
     I18n.locale = :en if request.xhr?
+
+    @json_options = {
+      include: {
+        comments: { except: [:commentable_id, :commentable_type] }
+      }
+    }
+
+    if %w(Admin Writer).include? current_user&.role&.name
+      @json_options[:include].merge!({ score: { except: [ :answer_id ] } })
+    end
   end
 
   get "/api/answers" do
     @answers = Answer.readables(user: current_user) \
+                     .includes(:comments, :score) \
                      .map{|x| x.attributes.merge(score_id: x&.score&.id) }
-    json @answers
+
+    json @answers, @json_options
   end
 
   before "/api/answers/:id" do
-    @answer = Answer.find_by(id: params[:id])
+    @answer = Answer.includes(:comments, :score) \
+                    .find_by(id: params[:id])
+
     halt 404 if not @answer&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/answers/:id" do
-    json @answer.attributes.merge(score_id: @answer&.score&.id)
+    json @answer, @json_options
   end
 
   post "/api/answers" do
