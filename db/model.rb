@@ -1,3 +1,15 @@
+require "sinatra/config_file"
+
+# Make settings could be read via `Setting.hogefuga`
+class Setting < Sinatra::Base
+  register Sinatra::ConfigFile
+  config_file Pathname(settings.root).parent + "config.yml"
+
+  def self.method_missing(method_name, *args)
+    settings.send(method_name)
+  end
+end
+
 ROLE_ID = {
   admin: 2,
   writer: 3,
@@ -452,7 +464,7 @@ class Score < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      parameters = { team_id: 3, time: DateTime.now - 1200.seconds } # TODO: read from config
+      parameters = { team_id: user.team.id, time: DateTime.now - Setting.answer_reply_delay_sec.seconds }
       joins(:answer).where("answers.team_id = :team_id AND scores.updated_at <= :time", parameters)
     else # nologin, ...
       none
