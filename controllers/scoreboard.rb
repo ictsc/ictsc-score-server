@@ -20,24 +20,27 @@ class ScoreBoardRoutes < Sinatra::Base
 
   helpers do
     def scoreboard_for(team: nil, all: false)
-      # [[team_id, 1st_score], [team_id, 2nd_score], [team_id, 3rd_score], ...]
+      # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
       all_scores = Score.all.joins(:answer).group("answers.team_id").sum(:point).to_a.sort_by(&:last).reverse
       team_rank = all_scores.index{|(team_id, score)| team_id == team.id } if not all # beginning 0
 
-      viewable_scores = all_scores.map.with_index do |(team_id, score), i|
-        if all || i < 3 || team_id == team.id || (i + 1) == team_rank
-          score_info = { score: score, rank: i+1 }
-          if all || i < 3 || team_id == team.id
-            t = Team.find_by(id: team_id)
-            next score_info.merge(id: t.id, name: t.name)
-          else
-            # 参加者 かつ 自分の1つ上のチームの場合は、チーム名に関する情報を含まない
-            next score_info
-          end
-        else
-          nil
+      viewable_scores = all_scores.each_with_index.inject([]) do |acc, ((team_id, score), rank)|
+        score_info = {
+          score: score,
+          rank: rank+1
+        }
+
+        if all || rank < 3 || team_id == team&.id
+          t = Team.find_by(id: team_id)
+          score_info[:team] = t.as_json(only: [:id, :name, :organization])
+
+          acc << score_info
+        elsif (rank + 1) == team_rank
+          acc << score_info
         end
-      end.compact
+
+        acc
+      end
     end
   end
 
@@ -52,12 +55,5 @@ class ScoreBoardRoutes < Sinatra::Base
     else
       halt 400
     end
-  end
-
-  get "/api/scoreboard/as/:team_id" do
-    team = Team.find_by(id: params[:team_id])
-    halt 404 if team.nil?
-
-    json scoreboard_for(team: team)
   end
 end
