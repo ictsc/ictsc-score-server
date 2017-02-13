@@ -52,13 +52,17 @@ class TeamRoutes < Sinatra::Base
 
   update_team_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Team)
-      halt 400, { required: insufficient_fields(Team) }.to_json
+      status 400
+      next json required: insufficient_fields(Team)
     end
 
     @attrs = attribute_values_of_class(Team)
     @team.attributes = @attrs
 
-    halt 400, json(@team.errors) if not @team.valid?
+    if not @team.valid?
+      status 400
+      next json @team.errors
+    end
 
     if @team.save
       json @team

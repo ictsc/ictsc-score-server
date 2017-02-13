@@ -44,13 +44,17 @@ class NoticeRoutes < Sinatra::Base
 
   update_notice_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Notice)
-      halt 400, { required: insufficient_fields(Notice) }.to_json
+      status 400
+      next json required: insufficient_fields(Notice)
     end
 
     @attrs = attribute_values_of_class(Notice)
     @notice.attributes = @attrs
 
-    halt 400, json(@notice.errors) if not @notice.valid?
+    if not @notice.valid?
+      status 400
+      next json @notice.errors
+    end
 
     if @notice.save
       json @notice

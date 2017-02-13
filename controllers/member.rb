@@ -63,7 +63,8 @@ class MemberRoutes < Sinatra::Base
       logout
       json status: "success"
     else
-      halt 403, { status: "failed"}.to_json
+      status 403
+      json status: "failed"
     end
   end
 
@@ -98,9 +99,8 @@ class MemberRoutes < Sinatra::Base
     if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
       @team = Team.find_by(registration_code: params[:registration_code])
       if @team.nil?
-        error = { "registration_code" => ["を入力してください"] }
-        # status 400
-        halt 400, error.to_json
+        status 400
+        next json registration_code: ["を入力してください"]
       end
 
       @attrs.delete(:registration_code)
@@ -134,7 +134,8 @@ class MemberRoutes < Sinatra::Base
     field_options = { exclude: [:hashed_password], include: [:password] }
 
     if request.put? and not satisfied_required_fields?(Member, field_options)
-      halt 400, { required: insufficient_fields(Member, field_options) }.to_json
+      status 400
+      next json required: insufficient_fields(Member, field_options)
     end
 
     @attrs = attribute_values_of_class(Member, field_options)
@@ -146,7 +147,10 @@ class MemberRoutes < Sinatra::Base
 
     @member.attributes = @attrs
 
-    halt 400, json(@member.errors) if not @member.valid?
+    if not @member.valid?
+      status 400
+      next json @member.errors
+    end
 
     if @member.save
       json @member, except: [:hashed_password]

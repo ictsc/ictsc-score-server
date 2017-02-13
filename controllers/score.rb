@@ -44,13 +44,17 @@ class ScoreRoutes < Sinatra::Base
 
   update_score_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Score)
-      halt 400, { required: insufficient_fields(Score) }.to_json
+      status 400
+      next json required: insufficient_fields(Score)
     end
 
     @attrs = attribute_values_of_class(Score)
     @score.attributes = @attrs
 
-    halt 400, json(@score.errors) if not @score.valid?
+    if not @score.valid?
+      status 400
+      next json @score.errors
+    end
 
     if @score.save
       json @score

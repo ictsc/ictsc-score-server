@@ -52,13 +52,17 @@ class IssueRoutes < Sinatra::Base
 
   update_issue_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Issue)
-      halt 400, { required: insufficient_fields(Issue) }.to_json
+      status 400
+      next json required: insufficient_fields(Issue)
     end
 
     @attrs = attribute_values_of_class(Issue)
     @issue.attributes = @attrs
 
-    halt 400, json(@issue.errors) if not @issue.valid?
+    if not @issue.valid?
+      status 400
+      next json @issue.errors
+    end
 
     if @issue.save
       json @issue

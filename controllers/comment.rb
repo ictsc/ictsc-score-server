@@ -55,13 +55,17 @@ class CommentRoutes < Sinatra::Base
 
     update_comment_block = Proc.new do
       if request.put? and not satisfied_required_fields?(Comment)
-        halt 400, { required: insufficient_fields(Comment) }.to_json
+        status 400
+        next json required: insufficient_fields(Comment)
       end
 
       @attrs = attribute_values_of_class(Comment)
       @comment.attributes = @attrs
 
-      halt 400, json(@comment.errors) if not @comment.valid?
+      if not @comment.valid?
+        status 400
+        next json @comment.errors
+      end
 
       if @comment.save
         json @comment

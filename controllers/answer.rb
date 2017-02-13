@@ -59,13 +59,17 @@ class AnswerRoutes < Sinatra::Base
 
   update_answer_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Answer)
-      halt 400, { required: insufficient_fields(Answer) }.to_json
+      status 400
+      next json required: insufficient_fields(Answer)
     end
 
     @attrs = attribute_values_of_class(Answer)
     @answer.attributes = @attrs
 
-    halt 400, json(@answer.errors) if not @answer.valid?
+    if not @answer.valid?
+      status 400
+      next json @answer.errors
+    end
 
     if @answer.save
       json @answer
