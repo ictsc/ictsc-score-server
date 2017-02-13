@@ -52,7 +52,14 @@ class MemberRoutes < Sinatra::Base
 
   get "/api/session" do
     if logged_in?
-      json status: "logged_in", member_id: current_user.id
+      @json_options = {
+        except: [:hashed_password],
+        include: {
+          team: { except: [:registration_code] }
+        }
+      }
+
+      json status: "logged_in", member: current_user.as_json(@json_options)
     else
       json status: "not_logged_in"
     end

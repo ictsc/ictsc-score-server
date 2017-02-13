@@ -56,7 +56,7 @@ export class ApiService {
     else
       return this.session.get().map(r => {
         let status = new LoginStatus();
-        status.member_id = r.member_id;
+        status.member = r.member;
         status.status = r.status;
         this.cachedLoginStatus = status;
         this.changeUserNext(status);
@@ -200,7 +200,7 @@ export class ApiService {
 
 export class LoginStatus {
   status: string;
-  member_id: number;
+  member: any;
   get isLogin(){
     return this.status == "logged_in";
   }
