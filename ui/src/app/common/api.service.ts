@@ -176,23 +176,18 @@ export class ApiService {
           return false;
         return ((cacheCount + id) % nonCacheCount * (close?2:1)) != 0;
       }
-        
-      return Observable.combineLatest(
-        issues.map(i => this.issueComments(i.id).list(true, allowCache(i.id, i.closed)).map(r => ({
-          id:i.id,
-          arr: r.map(ic => {
-            ic.member = members.find(m => m.id == ic.member_id);
-            return ic;
-          })
-        })))
-      ).map(ics => {
-        for(let issue of issues){
-          issue.comments = (ics.find(r => (r as any).id == issue.id) as any).arr;
-          issue.problem = problems.find(p => p.id == issue.problem_id);
-          issue.team = teams.find(p => p.id == issue.team_id);
-        }
-        return issues;
-      });
+
+      issues.map(issue => {
+        issue.comments.map(ic => {
+          ic.member = members.find(m => m.id == ic.member_id);
+          return ic;
+        });
+        issue.problem = problems.find(p => p.id == issue.problem_id);
+        issue.team = teams.find(p => p.id == issue.team_id);
+        return issue;
+      })
+
+      return [issues];
     });
   }
 }

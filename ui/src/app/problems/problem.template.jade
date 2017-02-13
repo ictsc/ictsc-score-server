@@ -35,7 +35,7 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
 
   .c-problem-panel
     .p-item-heading 補足事項:
-    p.c-problem-panel__supplement(*ngFor="let comment of problemComments")
+    p.c-problem-panel__supplement(*ngFor="let comment of problemData?.comments")
       markdown([body]="comment.text")
       button.p-icon-button.p-icon-button_type_delete.fa.fa-times(type='button', (click)="problemCommentsDelete(comment.id)")
         span.p-icon-button__label 削除
@@ -67,7 +67,6 @@ div([ngClass]="{'l-column l-column_size_1of2': !isProblemOnly, 'l-column_size_ex
       isAnswer: {{ isAnswer?"t":"f" }}
       isIssue: {{ isIssue?"t":"f" }}
       problemData: {{ problemData | json }}
-      problemComments: {{ problemComments | json }}
       answer: {{ answer | json }}
       teamData: {{ teamData | json }}
       score: {{ score | json }}
