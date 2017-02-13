@@ -162,7 +162,7 @@ export class ApiService {
 
   public issueDetail(cacheCount?: number, nonCacheCount = 5){
     return Observable.combineLatest(
-      this.issues.list().map(i => i.sort((a,b) => b.id - a.id).slice(50)),
+      this.issues.list(),
       this.problems.list(),
       this.members.list(),
       this.teams.list()
@@ -170,7 +170,7 @@ export class ApiService {
       let [issues, problems, members, teams] = r as any;
       
       let allowCache = (id: number, closed) => {
-        return true;
+        // return true;
         console.log("AllowCache", cacheCount, nonCacheCount, id, (cacheCount + id) % nonCacheCount == 0, closed);
         if(typeof cacheCount == 'undefined')
           return false;
