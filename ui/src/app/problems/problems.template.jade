@@ -1,26 +1,22 @@
 h1.p-page-title 問題一覧
 
-table(*ngFor="let gropu of problems")
+table(*ngFor="let group of problems")
   thead
     tr
-      th.c-group-heading(colspan='2') {{ gropu.title }}
-      th 締切
+      th.c-group-heading(colspan='2') {{ group.name }}
+      th 基準点
+      th 満点
       //- th 質問
-      th 公開
   tbody
-    tr(*ngFor="let item of gropu.items", [ngClass]="{'past-due': compTime(item.closed_at, 3)}")
-      th 問題 {{ item.id }}
+    tr(*ngFor="let problem of group.problems", [ngClass]="{'past-due': compTime(problem.closed_at, 3)}")
+      th 問題 {{ problem.id }}
       td
-        a([routerLink]="[item.id]") {{ item.title }}
-      td([ngClass]="{'c-close-to-due': compTime(item.closed_at, 1)}")
-        i.fa.fa-fw.fa-hourglass-start
-        | {{ item.closed_at | time }}
+        a([routerLink]="[problem.id]") {{ problem.title }}
+      td {{ problem.reference_point }}
+      td {{ problem.perfect_point }}
       //- td
       //-   i.fa.fa-fw.fa-question-circle
       //-   | todo 2 (3 分前)
-      td([ngClass]="{'c-close-to-due': compTime(item.opened_at, 2)}")
-        i.fa.fa-fw.fa-arrow-circle-up
-        | {{ item.opened_at | time }}
 
 //- table
 //-   thead
