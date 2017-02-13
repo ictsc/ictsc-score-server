@@ -85,11 +85,13 @@ export class ApiService {
   }
 
   public scores = new RestResources("scores", this.http);
+  public scoreboard = new RestResources("scoreboard", this.http);
   public answer = new RestResources("answers", this.http);
   public answerComments = (id: String) => new RestResources(`answers/${id}/comments`, this.http);
   public members = new RestResources("members", this.http);
   public teams = new RestResources("teams", this.http);
   public problems = new RestResources("problems", this.http);
+  public problemGroups = new RestResources("problem_groups", this.http);
   public problemsComments = (id: String) => new RestResources(`problems/${id}/comments`, this.http);
   public issues = new RestResources("issues", this.http);
   public issueComments = (id: String) => new RestResources(`issues/${id}/comments`, this.http);
