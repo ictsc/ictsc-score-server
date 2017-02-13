@@ -67,7 +67,7 @@ export class ApiService {
     return this.getLoginStatus(cache)
       .concatMap(r => {
         if(!r.isLogin) return Observable.throw("not logined");
-        return this.members.item(r.member_id.toString(), cache);
+        return this.members.item(r.member.id.toString(), cache);
       }).map(u => {
         return u;
       });
@@ -170,7 +170,7 @@ export class ApiService {
       this.teams.list()
     ).concatMap(r => {
       let [issues, problems, members, teams] = r as any;
-      
+
       let allowCache = (id: number, closed) => {
         // return true;
         console.log("AllowCache", cacheCount, nonCacheCount, id, (cacheCount + id) % nonCacheCount == 0, closed);
@@ -207,7 +207,7 @@ export enum Roles {
     Admin = 2,
     Writer,
     Participant,
-    Viewe,
+    Viewer,
 }
 
 // enum RestPermission {
