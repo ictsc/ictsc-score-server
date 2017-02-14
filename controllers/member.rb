@@ -52,7 +52,14 @@ class MemberRoutes < Sinatra::Base
 
   get "/api/session" do
     if logged_in?
-      json status: "logged_in", member_id: current_user.id
+      @json_options = {
+        except: [:hashed_password],
+        include: {
+          team: { except: [:registration_code] }
+        }
+      }
+
+      json status: "logged_in", member: current_user.as_json(@json_options)
     else
       json status: "not_logged_in"
     end
@@ -63,7 +70,8 @@ class MemberRoutes < Sinatra::Base
       logout
       json status: "success"
     else
-      halt 403, { status: "failed"}.to_json
+      status 403
+      json status: "failed"
     end
   end
 
@@ -75,14 +83,13 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members" do
-    @members = Member.accessible_resources(user_and_method)
+    @members = Member.readables(user: current_user)
     json @members, except: [:hashed_password]
   end
 
   before "/api/members/:id" do
-    @member = Member.accessible_resources(user_and_method) \
-                    .find_by(id: params[:id])
-    halt 404 if not @member
+    @member = Member.find_by(id: params[:id])
+    halt 404 if not @member&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/members/:id" do
@@ -92,16 +99,15 @@ class MemberRoutes < Sinatra::Base
   post "/api/members" do
     halt 403 if not Member.allowed_to_create_by?(current_user)
 
-    @permit_role_ids = Role.accessible_resources(user: current_user, method: "GET").ids
+    @permit_role_ids = Role.readables(user: current_user).ids
 
     @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
 
     if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
       @team = Team.find_by(registration_code: params[:registration_code])
       if @team.nil?
-        error = { "registration_code" => ["を入力してください"] }
-        # status 400
-        halt 400, error.to_json
+        status 400
+        next json registration_code: ["を入力してください"]
       end
 
       @attrs.delete(:registration_code)
@@ -135,7 +141,8 @@ class MemberRoutes < Sinatra::Base
     field_options = { exclude: [:hashed_password], include: [:password] }
 
     if request.put? and not satisfied_required_fields?(Member, field_options)
-      halt 400, { required: insufficient_fields(Member, field_options) }.to_json
+      status 400
+      next json required: insufficient_fields(Member, field_options)
     end
 
     @attrs = attribute_values_of_class(Member, field_options)
@@ -147,7 +154,10 @@ class MemberRoutes < Sinatra::Base
 
     @member.attributes = @attrs
 
-    halt 400, json(@member.errors) if not @member.valid?
+    if not @member.valid?
+      status 400
+      next json @member.errors
+    end
 
     if @member.save
       json @member, except: [:hashed_password]

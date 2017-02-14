@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService, MiniList } from "../common";
 import { Time } from "../common";
+import { Observable } from "rxjs";
 
 @Component({
   selector: Problems.name,
@@ -17,32 +18,23 @@ export class Problems extends MiniList {
   isAdmin = false;
 
   get(){
-    return this.api.problems.get().map(problems => {
-      let res = [
-        {title: "2日目 - 午後問題", items: []},
-        {title: "2日目 - 午前問題", items: []},
-        {title: "1日目 - 午後問題", items: []},
-        {title: "1日目 - 午前問題", items: []},
-      ];
-      let push = (pos, problem) => {
-        if(!res[pos].items.find(p => p.id == problem.id))
-          res[pos].items.push(problem);
+    return Observable.combineLatest(
+      this.api.problems.get(),
+      this.api.problemGroups.get()
+    ).map(p => {
+      let [problems, problem_groups] = p as any;
+      problem_groups.forEach(pg => pg.problems = []);
+
+      let push = (group_id, problem) => {
+        const pg = problem_groups.find(pg => pg.id == group_id);
+        if(pg)
+          pg.problems.push(problem);
       }
+
       for(let problem of problems){
-        let opened = new Date(problem.opened_at);
-        let closed = new Date(problem.closed_at);
-        for(let date of [opened, closed]){
-          if(date.valueOf() < new Date("2016-08-27 12:30").valueOf())
-            push(3, problem);
-          else if(date.valueOf() < new Date("2016-08-27 23:59:59").valueOf())
-            push(2, problem);
-          else if(date.valueOf() < new Date("2016-08-28 12:30").valueOf())
-            push(1, problem);
-          else
-            push(0, problem);
-        }
+        push(problem.problem_group_id, problem);
       }
-      return res;
+      return problem_groups;
     });
   }
 

@@ -9,21 +9,35 @@ class ProblemRoutes < Sinatra::Base
 
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
+    @json_options = {
+      include: {
+        comments: { except: [:commentable_id, :commentable_type] }
+      }
+    }
   end
 
   get "/api/problems" do
-    @problems = Problem.accessible_resources(user_and_method)
-    json @problems
+    problems = Problem.includes(:comments)
+    readables = problems.readables(user: current_user)
+
+    @problems = if "Participant" != current_user&.role&.name
+      readables
+    else # Participant
+      show_columns = Problem.column_names - %w(title text)
+      (readables + problems.where.not(id: readables.ids).select(show_columns)).sort_by(&:id)
+    end
+
+    json @problems, @json_options
   end
 
   before "/api/problems/:id" do
-    @problem = Problem.accessible_resources(user_and_method) \
+    @problem = Problem.includes(:comments) \
                       .find_by(id: params[:id])
-    halt 404 if not @problem
+    halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/problems/:id" do
-    json @problem
+    json @problem, @json_options
   end
 
   post "/api/problems" do
@@ -45,13 +59,17 @@ class ProblemRoutes < Sinatra::Base
 
   update_problem_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Problem)
-      halt 400, { required: insufficient_fields(Problem) }.to_json
+      status 400
+      next json required: insufficient_fields(Problem)
     end
 
     @attrs = attribute_values_of_class(Problem)
     @problem.attributes = @attrs
 
-    halt 400, json(@problem.errors) if not @problem.valid?
+    if not @problem.valid?
+      status 400
+      next json @problem.errors
+    end
 
     if @problem.save
       json @problem

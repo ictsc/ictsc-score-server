@@ -14,14 +14,13 @@ class AttachmentRoutes < Sinatra::Base
   end
 
   get "/api/attachments" do
-    @attachments = Attachment.accessible_resources(user_and_method)
+    @attachments = Attachment.readables(user: current_user)
     json @attachments
   end
 
   before "/api/attachments/:id" do
-    @attachment = Attachment.accessible_resources(user_and_method) \
-                            .find_by(id: params[:id])
-    halt 404 if not @attachment
+    @attachment = Attachment.find_by(id: params[:id])
+    halt 404 if not @attachment&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/attachments/:id" do
@@ -37,6 +36,8 @@ class AttachmentRoutes < Sinatra::Base
     @attrs[:member_id] = current_user.id
     @attrs[:filename]  = f[:filename]
     @attachment = Attachment.new(@attrs)
+
+    halt 400 if /(\/|\.\.)/ === f[:filename]
 
     if not @attachment.save
       status 400

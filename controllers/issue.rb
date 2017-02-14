@@ -9,21 +9,28 @@ class IssueRoutes < Sinatra::Base
 
   before "/api/issues*" do
     I18n.locale = :en if request.xhr?
+
+    @json_options = {
+      include: {
+        comments: { except: [:commentable_id, :commentable_type] }
+      }
+    }
   end
 
   get "/api/issues" do
-    @issues = Issue.accessible_resources(user_and_method)
-    json @issues
+    @issues = Issue.includes(:comments) \
+                   .readables(user: current_user)
+    json @issues, @json_options
   end
 
   before "/api/issues/:id" do
-    @issue = Issue.accessible_resources(user_and_method) \
+    @issue = Issue.includes(:comments) \
                   .find_by(id: params[:id])
-    halt 404 if not @issue
+    halt 404 if not @issue&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/issues/:id" do
-    json @issue
+    json @issue, @json_options
   end
 
   post "/api/issues" do
@@ -45,13 +52,17 @@ class IssueRoutes < Sinatra::Base
 
   update_issue_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Issue)
-      halt 400, { required: insufficient_fields(Issue) }.to_json
+      status 400
+      next json required: insufficient_fields(Issue)
     end
 
     @attrs = attribute_values_of_class(Issue)
     @issue.attributes = @attrs
 
-    halt 400, json(@issue.errors) if not @issue.valid?
+    if not @issue.valid?
+      status 400
+      next json @issue.errors
+    end
 
     if @issue.save
       json @issue
@@ -75,13 +86,12 @@ class IssueRoutes < Sinatra::Base
   end
 
   before "/api/problems/:id/issues" do
-    @problem = Problem.accessible_resources(user: current_user, method: "GET") \
-                      .find_by(id: params[:id])
-    halt 404 if not @problem
+    @problem = Problem.find_by(id: params[:id])
+    halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/problems/:id/issues" do
-    @issues = Issue.accessible_resources(user_and_method) \
+    @issues = Issue.readables(user: current_user) \
                    .where(problem_id: @problem.id)
     json @issues
   end

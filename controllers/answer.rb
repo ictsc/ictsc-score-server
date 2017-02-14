@@ -9,22 +9,35 @@ class AnswerRoutes < Sinatra::Base
 
   before "/api/answers*" do
     I18n.locale = :en if request.xhr?
+
+    @json_options = {
+      include: {
+        comments: { except: [:commentable_id, :commentable_type] }
+      }
+    }
+
+    if %w(Admin Writer).include? current_user&.role&.name
+      @json_options[:include].merge!({ score: { except: [ :answer_id ] } })
+    end
   end
 
   get "/api/answers" do
-    @answers = Answer.accessible_resources(user_and_method) \
+    @answers = Answer.readables(user: current_user) \
+                     .includes(:comments, :score) \
                      .map{|x| x.attributes.merge(score_id: x&.score&.id) }
-    json @answers
+
+    json @answers, @json_options
   end
 
   before "/api/answers/:id" do
-    @answer = Answer.accessible_resources(user_and_method) \
+    @answer = Answer.includes(:comments, :score) \
                     .find_by(id: params[:id])
-    halt 404 if not @answer
+
+    halt 404 if not @answer&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/answers/:id" do
-    json @answer.attributes.merge(score_id: @answer&.score&.id)
+    json @answer, @json_options
   end
 
   post "/api/answers" do
@@ -46,13 +59,17 @@ class AnswerRoutes < Sinatra::Base
 
   update_answer_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Answer)
-      halt 400, { required: insufficient_fields(Answer) }.to_json
+      status 400
+      next json required: insufficient_fields(Answer)
     end
 
     @attrs = attribute_values_of_class(Answer)
     @answer.attributes = @attrs
 
-    halt 400, json(@answer.errors) if not @answer.valid?
+    if not @answer.valid?
+      status 400
+      next json @answer.errors
+    end
 
     if @answer.save
       json @answer
@@ -76,14 +93,13 @@ class AnswerRoutes < Sinatra::Base
   end
 
   before "/api/problems/:id/answers" do
-    @problem = Problem.accessible_resources(user: current_user, method: "GET") \
-                      .find_by(id: params[:id])
-    halt 404 if not @problem
+    @problem = Problem.find_by(id: params[:id])
+    halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/problems/:id/answers" do
-    @answers = Answer.accessible_resources(user_and_method) \
-                     .where(problem_id: @problem.id)
+    @answers = Answer.readables(user: current_user) \
+                     .where(problem: @problem)
     json @answers
   end
 

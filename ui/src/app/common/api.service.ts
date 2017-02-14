@@ -56,7 +56,7 @@ export class ApiService {
     else
       return this.session.get().map(r => {
         let status = new LoginStatus();
-        status.member_id = r.member_id;
+        status.member = r.member;
         status.status = r.status;
         this.cachedLoginStatus = status;
         this.changeUserNext(status);
@@ -67,7 +67,7 @@ export class ApiService {
     return this.getLoginStatus(cache)
       .concatMap(r => {
         if(!r.isLogin) return Observable.throw("not logined");
-        return this.members.item(r.member_id.toString(), cache);
+        return this.members.item(r.member.id.toString(), cache);
       }).map(u => {
         return u;
       });
@@ -85,11 +85,13 @@ export class ApiService {
   }
 
   public scores = new RestResources("scores", this.http);
+  public scoreboard = new RestResources("scoreboard", this.http);
   public answer = new RestResources("answers", this.http);
   public answerComments = (id: String) => new RestResources(`answers/${id}/comments`, this.http);
   public members = new RestResources("members", this.http);
   public teams = new RestResources("teams", this.http);
   public problems = new RestResources("problems", this.http);
+  public problemGroups = new RestResources("problem_groups", this.http);
   public problemsComments = (id: String) => new RestResources(`problems/${id}/comments`, this.http);
   public issues = new RestResources("issues", this.http);
   public issueComments = (id: String) => new RestResources(`issues/${id}/comments`, this.http);
@@ -162,37 +164,32 @@ export class ApiService {
 
   public issueDetail(cacheCount?: number, nonCacheCount = 5){
     return Observable.combineLatest(
-      this.issues.list().map(i => i.sort((a,b) => b.id - a.id).slice(50)),
+      this.issues.list(),
       this.problems.list(),
       this.members.list(),
       this.teams.list()
     ).concatMap(r => {
       let [issues, problems, members, teams] = r as any;
-      
+
       let allowCache = (id: number, closed) => {
-        return true;
+        // return true;
         console.log("AllowCache", cacheCount, nonCacheCount, id, (cacheCount + id) % nonCacheCount == 0, closed);
         if(typeof cacheCount == 'undefined')
           return false;
         return ((cacheCount + id) % nonCacheCount * (close?2:1)) != 0;
       }
-        
-      return Observable.combineLatest(
-        issues.map(i => this.issueComments(i.id).list(true, allowCache(i.id, i.closed)).map(r => ({
-          id:i.id,
-          arr: r.map(ic => {
-            ic.member = members.find(m => m.id == ic.member_id);
-            return ic;
-          })
-        })))
-      ).map(ics => {
-        for(let issue of issues){
-          issue.comments = (ics.find(r => (r as any).id == issue.id) as any).arr;
-          issue.problem = problems.find(p => p.id == issue.problem_id);
-          issue.team = teams.find(p => p.id == issue.team_id);
-        }
-        return issues;
-      });
+
+      issues.map(issue => {
+        issue.comments.map(ic => {
+          ic.member = members.find(m => m.id == ic.member_id);
+          return ic;
+        });
+        issue.problem = problems.find(p => p.id == issue.problem_id);
+        issue.team = teams.find(p => p.id == issue.team_id);
+        return issue;
+      })
+
+      return [issues];
     });
   }
 }
@@ -200,7 +197,7 @@ export class ApiService {
 
 export class LoginStatus {
   status: string;
-  member_id: number;
+  member: any;
   get isLogin(){
     return this.status == "logged_in";
   }
@@ -210,7 +207,7 @@ export enum Roles {
     Admin = 2,
     Writer,
     Participant,
-    Viewe,
+    Viewer,
 }
 
 // enum RestPermission {

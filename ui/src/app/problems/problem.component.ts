@@ -22,7 +22,6 @@ export class Problem {
   @Input() mode: string;
 
   problemData: any;
-  problemComments: any;
   problemCommentsAddEnable = false;
   problemCommentsAddText = "";
   problemList = [];
@@ -53,8 +52,6 @@ export class Problem {
     this.api.problems.modify(this.id, {
       text: this.problemData.text,
       title: this.problemData.title,
-      closed_at: this.problemData.closed_at,
-      opened_at: this.problemData.opened_at
     }).subscribe(res => {
         this.problemEditCancel();
       }, err => {
@@ -91,12 +88,6 @@ export class Problem {
 
   ngOnInit() {
     this.api.getLoginMember().subscribe(mem => this.role = mem.role_id);
-
-    // 残り時間
-    Observable.interval(1000).subscribe(r => {
-      if(this.problemData)
-        this.rimitSecond = Math.floor((new Date(this.problemData.closed_at.replace("T"," ")).valueOf() - new Date().valueOf()) / 1000);
-    });
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -106,14 +97,8 @@ export class Problem {
 
     if(changeId){
       this.api.problems.item(this.id)
-        .map(p => {
-          p.opened_at = p.opened_at.substr(0,19);
-          p.closed_at = p.closed_at.substr(0,19);
-          return p;
-        })
         .subscribe(p => this.problemData = p);
-      this.api.problemsComments(this.id).list().subscribe(c => this.problemComments = c);
-
+      
       // 前後の問題用
       this.api.problems.list().subscribe(r => this.problemList = r);
     }
@@ -129,19 +114,16 @@ export class Problem {
         this.api.teams.list()
       ).subscribe(p => {
         let [issues, members, temas] = p as any;
-        for(let a of issues){
-          this.api.issueComments(a.id).list()
-            .subscribe(ics => {
-              a.comments = ics.map(ic => {
-                ic.member = members.find(m => m.id == ic.member_id);
-                ic.member.team = temas.find(t => t.id == ic.member.team_id);
-                return ic;
-              });
-              if(!a.comments[0] || !a.comments[0].member.team_id)
-                a.comments.unshift({
-                  "id": 0,
-                  "text": "（空白）"
-                });
+        for(let i of issues){
+          i.comments.map(ic => {
+            ic.member = members.find(m => m.id == ic.member_id);
+            ic.member.team = temas.find(t => t.id == ic.member.team_id);
+            return ic;
+          });
+          if(!i.comments[0] || !i.comments[0].member.team_id)
+            i.comments.unshift({
+              "id": 0,
+              "text": "（空白）"
             });
         }
         this.issues = issues;
@@ -152,7 +134,7 @@ export class Problem {
     if((changeTeam || changeId) && this.team){  // answer
       this.getCurrentProblemsAnswer().concatMap(ans => {
           if(!ans) return Observable.of(undefined);
-          return this.api.answerComments(ans.id).list().map(ac => {ans.comments = ac; return ans});
+          return Observable.of(ans);
         })
         .subscribe(r => this.answer = r);
       this.api.members.list().subscribe(m => this.members = m);
@@ -272,10 +254,11 @@ export class Problem {
 
   get firstDisableAnswer(){
     if(!this.answer || !this.answer.comments) return undefined;
-    return this.answer.comments.filter(a => {
-      let ansCreate = new Date(a.created_at);
-      let probClose = new Date(this.problemData.closed_at);
-      return ansCreate.valueOf() > probClose.valueOf(); 
-    })[0];
+    return undefined;
+    // return this.answer.comments.filter(a => {
+    //   let ansCreate = new Date(a.created_at);
+    //   let probClose = new Date(this.problemData.closed_at);
+    //   return ansCreate.valueOf() > probClose.valueOf();
+    // })[0];
   }
 }

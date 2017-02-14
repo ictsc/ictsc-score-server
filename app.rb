@@ -14,8 +14,11 @@ require_relative "controllers/member"
 require_relative "controllers/notification"
 require_relative "controllers/notice"
 require_relative "controllers/problem"
+require_relative "controllers/problem_group"
 require_relative "controllers/score"
+require_relative "controllers/scoreboard"
 require_relative "controllers/team"
+require_relative "controllers/contest"
 require_relative "controllers/asset"
 
 require_relative "db/model"
@@ -31,8 +34,11 @@ class App < Sinatra::Base
   use NotificationRoutes
   use NoticeRoutes
   use ProblemRoutes
+  use ProblemGroupRoutes
   use ScoreRoutes
+  use ScoreBoardRoutes
   use TeamRoutes
+  use ContestRoutes
   use AssetRoutes
 
   configure :development do
@@ -47,8 +53,6 @@ class App < Sinatra::Base
     def logger
       env['app.logger'] || env['rack.logger']
     end
-
-    register Sinatra::RocketIO
 
     # set :cometio, timeout: 120, post_interval: 2, allow_crossdomain: false
     # set :websocketio, port: 9000
@@ -84,31 +88,6 @@ class App < Sinatra::Base
   get "/?" do
     send_file settings.public_dir + "/index.html"
   end
-
-  # [1] resource     : problems, answers, ...
-  # [3] sub-resource : supplements, questions, ...
-  #       resource   id   sub-resource
-  #         [1]      [2*]      [3*]     (*: optional)
-  get %r{^/(\w+)(?:/(\d+)(?:/(\w+)/\d+)?)?$} do |res, id, subres|
-    path = "#{settings.public_dir}/#{res}/"
-
-    path += if id.nil?
-      "list.html"
-    elsif subres.nil?
-      "detail.html"
-    else
-      "#{subres}/detail.html"
-    end
-
-    # puts res:res, id:id, subres: subres, path: path
-    send_file path
-  end
-
-  # get "/test/:message" do
-  #   Sinatra::RocketIO.push :message, params[:message]
-
-  #   200
-  # end
 
   # get "/notifications" do
 

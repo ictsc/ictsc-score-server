@@ -12,28 +12,25 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams" do
-    @teams = Team.accessible_resources(user_and_method) \
+    @teams = Team.readables(user: current_user) \
       .map do |x|
         r = x.attributes
         r["hashed_registration_code"] = Digest::SHA1.hexdigest(r["registration_code"])
-        r.delete("registration_code") unless current_user && Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
+        r.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
         r
       end
     json @teams
   end
 
   before "/api/teams/:id" do
-    @team = Team.accessible_resources(user_and_method) \
-                .find_by(id: params[:id])
-    halt 404 if not @team
+    @team = Team.find_by(id: params[:id])
+    halt 404 if not @team&.allowed?(by: current_user, method: request.request_method)
   end
 
   get "/api/teams/:id" do
-    @team = Team.accessible_resources(user_and_method) \
-                .find_by(id: params[:id])
     @return = @team.attributes
     @return["hashed_registration_code"] = Digest::SHA1.hexdigest(@return["registration_code"])
-    @return.delete("registration_code") if not Role.where(name: ["Participant", "Admin", "Writer"]).ids.include? current_user.role_id
+    @return.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
     json @return
   end
 
@@ -55,13 +52,17 @@ class TeamRoutes < Sinatra::Base
 
   update_team_block = Proc.new do
     if request.put? and not satisfied_required_fields?(Team)
-      halt 400, { required: insufficient_fields(Team) }.to_json
+      status 400
+      next json required: insufficient_fields(Team)
     end
 
     @attrs = attribute_values_of_class(Team)
     @team.attributes = @attrs
 
-    halt 400, json(@team.errors) if not @team.valid?
+    if not @team.valid?
+      status 400
+      next json @team.errors
+    end
 
     if @team.save
       json @team
