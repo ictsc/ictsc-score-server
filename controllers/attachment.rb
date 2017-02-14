@@ -37,6 +37,8 @@ class AttachmentRoutes < Sinatra::Base
     @attrs[:filename]  = f[:filename]
     @attachment = Attachment.new(@attrs)
 
+    halt 400 if /(\/|\.\.)/ === f[:filename]
+
     if not @attachment.save
       status 400
       json @attachment.errors
