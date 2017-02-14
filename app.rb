@@ -18,6 +18,7 @@ require_relative "controllers/problem_group"
 require_relative "controllers/score"
 require_relative "controllers/scoreboard"
 require_relative "controllers/team"
+require_relative "controllers/contest"
 require_relative "controllers/asset"
 
 require_relative "db/model"
@@ -37,6 +38,7 @@ class App < Sinatra::Base
   use ScoreRoutes
   use ScoreBoardRoutes
   use TeamRoutes
+  use ContestRoutes
   use AssetRoutes
 
   configure :development do
