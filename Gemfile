@@ -11,11 +11,14 @@ gem "redis-rack",       require: "rack/session/redis"
 gem "sqlite3"
 gem "sinatra-activerecord", require: "sinatra/activerecord"
 
+gem "oj"
+gem "oj_mimic_json"
+
 gem "rake"
 gem "seed-fu"
 gem "dotenv"
 
-gem "thin", require: false
+gem "puma", require: false
 
 group :development do
   gem "pry"

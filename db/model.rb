@@ -1,4 +1,6 @@
 require "sinatra/config_file"
+require "oj"
+require "oj_mimic_json"
 
 # Make settings could be read via `Setting.hogefuga`
 class Setting < Sinatra::Base
@@ -19,6 +21,8 @@ ROLE_ID = {
 }
 
 class ActiveRecord::Base
+  serialize :metadata, Oj
+
   def self.required_fields(options = {})
     options[:include] ||= []
     options[:include].map!(&:to_sym)
