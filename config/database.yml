@@ -1,0 +1,9 @@
+development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 10
+  reconnect: false
+production:
+  adapter: sqlite3
+  database: db/production.sqlite3
+
