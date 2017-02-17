@@ -61,11 +61,11 @@ class ProblemRoutes < Sinatra::Base
       .joins(:score) \
       .where(problem_id: @problem.id) \
       .group(:team_id) \
-      .having("SUM(scores.point) >= ?", problem.reference_point) \
+      .having("SUM(scores.point) >= ?", @problem.reference_point) \
       .count \
       .count
 
-    @problem_hash = @problems.as_json(@json_options)
+    @problem_hash = @problem.as_json(@json_options)
     @problem_hash["solved_teams_count"] = solved_teams_count
 
     json @problem_hash
