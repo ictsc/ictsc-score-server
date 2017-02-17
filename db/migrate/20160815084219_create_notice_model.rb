@@ -1,4 +1,4 @@
-class CreateNoticeModel < ActiveRecord::Migration
+class CreateNoticeModel < ActiveRecord::Migration[5.0]
   def change
     create_table :notices do |t|
       t.string :name,    null: false
