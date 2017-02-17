@@ -12,7 +12,8 @@ class AnswerRoutes < Sinatra::Base
 
     @json_options = {
       include: {
-        comments: { except: [:commentable_id, :commentable_type] }
+        comments: { except: [:commentable_id, :commentable_type] },
+        score: {},
       }
     }
 
@@ -23,10 +24,16 @@ class AnswerRoutes < Sinatra::Base
 
   get "/api/answers" do
     @answers = Answer.readables(user: current_user) \
-                     .includes(:comments, :score) \
-                     .map{|x| x.attributes.merge(score_id: x&.score&.id) }
+                     .includes(:comments, :score)
+    @answers_hash = @answers.as_json(@json_options)
 
-    json @answers, @json_options
+    @score_readable_ids = Score.readables(user: current_user).ids
+
+    @answers_hash.each do |answer_hash|
+      answer_hash.delete("score") if not @score_readable_ids.include? answer_hash.dig("score", "id")
+    end
+
+    json @answers_hash
   end
 
   before "/api/answers/:id" do
@@ -37,7 +44,13 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/answers/:id" do
-    json @answer, @json_options
+    @answer_hash = @answer.as_json(@json_options)
+
+    @score_readable_ids = Score.readables(user: current_user).ids
+
+    @answer_hash.delete("score") if not @score_readable_ids.include? @answer_hash.dig("score", "id")
+
+    json @answer_hash
   end
 
   post "/api/answers" do
