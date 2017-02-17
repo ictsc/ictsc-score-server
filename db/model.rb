@@ -5,11 +5,7 @@ require "oj_mimic_json"
 # Make settings could be read via `Setting.hogefuga`
 class Setting < Sinatra::Base
   register Sinatra::ConfigFile
-  config_file Pathname(settings.root).parent + "config.yml"
-
-  def self.method_missing(method_name, *args)
-    settings.send(method_name)
-  end
+  config_file Pathname(settings.root).parent + "config/contest.yml"
 end
 
 ROLE_ID = {

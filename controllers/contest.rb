@@ -7,7 +7,7 @@ class ContestRoutes < Sinatra::Base
 	register Sinatra::ConfigFile
 	helpers Sinatra::JSONHelpers
 
-	config_file Pathname(settings.root).parent + "config.yml"
+	config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/scoreboard*" do
     I18n.locale = :en if request.xhr?
