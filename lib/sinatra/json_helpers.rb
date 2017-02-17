@@ -1,11 +1,13 @@
 require "sinatra/base"
-require "json"
+require "oj"
+
+Oj.default_options = { mode: :compat, nan: :huge }
 
 module Sinatra
   module JSONHelpers
     def json(object, options = {})
       content_type :json, charset: "utf-8"
-      object.to_json(options)
+      Oj.dump(object.as_json(options))
     end
   end
 
