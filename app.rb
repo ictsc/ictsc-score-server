@@ -61,7 +61,6 @@ class App < Sinatra::Base
     enable :prefixed_redirects
     set :haml, { escape_html: false, format: :html5 }
     set :scss, style: :expanded
-    set :database, { adapter: "sqlite3", database: "db/#{settings.environment}.sqlite3" }
 
     # I18n.enforce_available_locales = false
     I18n.load_path = Dir[File.join(settings.root, "locales", "*.yml")]
