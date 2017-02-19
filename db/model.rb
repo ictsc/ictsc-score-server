@@ -428,7 +428,43 @@ class Score < ActiveRecord::Base
   end
 
   def firstblood?
-    self == Score.joins(:answer).where(answers: {problem_id: self.problem.id}).order("answers.created_at").first
+    self.class.firstbloods(only_ids: true).include? self.id
+  end
+
+  alias_method :is_firstblood, :firstblood?
+
+  # return all firstblood scores
+  def self.firstbloods(only_ids: false)
+    join_table = Arel::Table.new("table") # "table" doesn't mean anything
+    scores     = Score.arel_table
+    answers    = Answer.arel_table
+    problems   = Problem.arel_table
+    a_before   = Answer.arel_table.alias("a_before")
+    s_before   = Score.arel_table.alias("s_before")
+
+    join_tables = [
+      join_table.join(a_before).on(
+        a_before[:problem_id].eq(problems[:id]),
+        a_before[:team_id].eq(answers[:team_id]),
+        a_before[:updated_at].lteq(answers[:updated_at])
+      ),
+      join_table.join(s_before).on(s_before[:answer_id].eq(a_before[:id])),
+      scores.join(answers).join(problems).on(scores[:answer_id].eq(answers[:id]), answers[:problem_id].eq(problems[:id]))
+    ].map(&:join_sources)
+
+    ids_by_problem_id = Score \
+      .joins(*join_tables) \
+      .group(answers[:id]) \
+      .having(problems[:reference_point].lteq(s_before[:point].sum)) \
+      .order(answers[:updated_at]) \
+      .pluck("answers.problem_id", "scores.id") \
+      .inject({}){|acc, (p_id, id)| acc[p_id] ||= id; acc }
+
+    if only_ids
+      ids_by_problem_id.values
+    else
+      Score.where(id: ids_by_problem_id.values)
+    end
   end
 
   # method: POST
