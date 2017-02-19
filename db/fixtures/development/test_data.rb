@@ -110,14 +110,18 @@ Team.all.each do |team|
 
     problems.each do |p|
       next if Problem.readables(user: team.members.first).where(id: p.id).empty?
+      last_answer = nil if (p.id % 10).zero?
+
+      answer_id = 5 * (p.id * 100 + team.id)
 
       last_answer = Answer.seed(:id) do |a|
-        a.id         = 5 * (p.id * 100 + team.id)
+        a.id         = answer_id
         a.problem_id = p.id
         a.team_id    = team.id
         if last_answer
-          a.created_at = last_answer.created_at + 20.minutes + rand(900).seconds
-          a.updated_at = last_answer.created_at
+          date = last_answer.created_at + 20.minutes + rand(900).seconds
+          a.created_at = date
+          a.updated_at = date
         end
       end.first
 
@@ -130,13 +134,13 @@ Team.all.each do |team|
         c.updated_at  = last_answer.updated_at
       end
 
-      comment = Comment.seed(:id) do |c|
+      last_comment = Comment.seed(:id) do |c|
         c.id          = 10 * last_answer.id + 1
         c.text        = hiragana[20]
         c.member_id   = team.members.ids.sample
         c.commentable = last_answer
 
-        datetime = last_answer.created_at + rand(300).seconds
+        datetime = last_answer.created_at + rand(600).seconds
         c.created_at  = datetime
         c.updated_at  = datetime
       end.first
@@ -156,8 +160,9 @@ Team.all.each do |team|
         s.point      = point
         s.answer_id  = last_answer.id
         s.marker     = admin
-        s.created_at = comment.created_at
-        s.updated_at = comment.updated_at
+        date = last_comment.created_at + rand(1200).seconds
+        s.created_at = date
+        s.updated_at = date
       end
 
       next if is_rabbithouse
@@ -166,30 +171,30 @@ Team.all.each do |team|
       point = p.perfect_point * (rand(8) / 10.0)
 
       last_answer = Answer.seed(:id) do |a|
-        a.id         = 5 * (p.id * 100 + team.id) + 1
+        a.id         = answer_id + 1
         a.problem_id = p.id
         a.team_id    = team.id
-        a.created_at = last_answer.created_at + 20.minutes + rand(900).seconds
-        a.updated_at = last_answer.created_at
+        date = last_comment.created_at + 20.minutes + rand(900).seconds
+        a.created_at = date
+        a.updated_at = date
       end.first
 
-      comment = Comment.seed(:id) do |c|
+      last_comment = Comment.seed(:id) do |c|
         c.id          = last_answer.id * 10
         c.text        = hiragana[20]
         c.member_id   = team.members.ids.sample
         c.commentable = last_answer
-
-        datetime = last_answer.created_at + rand(300).seconds
-        c.created_at  = datetime
-        c.updated_at  = datetime
+        c.created_at  = last_answer.created_at
+        c.updated_at  = last_answer.updated_at
       end.first
 
       Score.seed(:answer_id) do |s|
         s.point      = point
         s.answer_id  = last_answer.id
         s.marker     = admin
-        s.created_at = comment.created_at
-        s.updated_at = comment.updated_at
+        date = last_comment.created_at + rand(1200).seconds
+        s.created_at = date
+        s.updated_at = date
       end
     end
   end
