@@ -467,6 +467,18 @@ class Score < ActiveRecord::Base
     end
   end
 
+  def bonus_point
+    if firstblood?
+      (point * Setting.first_blood_bonus_percentage / 100.0).to_i
+    else
+      0
+    end
+  end
+
+  def subtotal_point
+    point + bonus_point
+  end
+
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     case user&.role_id

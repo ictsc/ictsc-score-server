@@ -1,11 +1,15 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/config_file"
 require_relative "../services/account_service"
 
 class ScoreRoutes < Sinatra::Base
+  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+
+  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/scores*" do
     I18n.locale = :en if request.xhr?
@@ -13,7 +17,15 @@ class ScoreRoutes < Sinatra::Base
 
   get "/api/scores" do
     @scores = Score.readables(user: current_user)
-    json @scores
+    firstblood_ids = Score.firstbloods(only_ids: true)
+    @scores_array = @scores.as_json
+    @scores_array.each do |score_array|
+      score_array["is_firstblood"]  = firstblood_ids.include? score_array["id"]
+      score_array["bonus_point"]    = score_array["is_firstblood"] ? (score_array["point"] * settings.first_blood_bonus_percentage / 100.0).to_i : 0
+      score_array["subtotal_point"] = score_array["point"] + score_array["bonus_point"]
+    end
+
+    json @scores_array
   end
 
   before "/api/scores/:id" do
@@ -22,7 +34,7 @@ class ScoreRoutes < Sinatra::Base
   end
 
   get "/api/scores/:id" do
-    json @score
+    json @score, { methods: [:is_firstblood, :bonus_point, :subtotal_point] }
   end
 
   post "/api/scores" do
