@@ -17,6 +17,10 @@ class ScoreRoutes < Sinatra::Base
 
   get "/api/scores" do
     @scores = Score.readables(user: current_user)
+
+    # NOTE: Score#is_firstblood, Score#bonus_point, Score#subtotal_point is too slow for fetching multiple scores
+    # So, fetch firstblood problem ids first, and calculate each entities using it.
+    # Entities are same as included in `GET "/api/scores/:id"`
     firstblood_ids = Score.firstbloods(only_ids: true)
     @scores_array = @scores.as_json
     @scores_array.each do |score_array|
