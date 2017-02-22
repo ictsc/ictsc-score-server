@@ -1,39 +1,55 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/config_file"
 require_relative "../services/account_service"
 
 class AnswerRoutes < Sinatra::Base
+  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+
+  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/answers*" do
     I18n.locale = :en if request.xhr?
 
     @json_options = {
       include: {
-        comments: { except: [:commentable_id, :commentable_type] },
-        score: {},
+        comments: {
+          except: [:commentable_id, :commentable_type]
+        },
+        score: {
+          methods: [:is_firstblood, :bonus_point, :subtotal_point],
+          except: [ :answer_id ]
+        },
       }
     }
-
-    if %w(Admin Writer).include? current_user&.role&.name
-      @json_options[:include].merge!({ score: { except: [ :answer_id ] } })
-    end
   end
 
   get "/api/answers" do
     @answers = Answer.readables(user: current_user) \
                      .includes(:comments, :score)
-    @answers_hash = @answers.as_json(@json_options)
 
-    @score_readable_ids = Score.readables(user: current_user).ids
+    @json_options[:include][:score].delete(:methods) # for performance reasons (ref: controllers/score.rb)
 
-    @answers_hash.each do |answer_hash|
-      answer_hash.delete("score") if not @score_readable_ids.include? answer_hash.dig("score", "id")
+    @answers_array = @answers.as_json(@json_options)
+
+    score_readable_ids = Score.readables(user: current_user).ids
+    firstblood_ids = Score.firstbloods(only_ids: true)
+
+    @answers_array.each do |answer_hash|
+      answer_hash.delete("score") if not score_readable_ids.include? answer_hash.dig("score", "id")
+
+      if score = answer_hash["score"]
+        score["is_firstblood"]  = firstblood_ids.include? score["id"]
+        score["bonus_point"]    = score["is_firstblood"] ? (score["point"] * settings.first_blood_bonus_percentage / 100.0).to_i : 0
+        score["subtotal_point"] = score["point"] + score["bonus_point"]
+        answer_hash[:score] = score
+      end
     end
 
-    json @answers_hash
+    json @answers_array
   end
 
   before "/api/answers/:id" do
@@ -46,9 +62,9 @@ class AnswerRoutes < Sinatra::Base
   get "/api/answers/:id" do
     @answer_hash = @answer.as_json(@json_options)
 
-    @score_readable_ids = Score.readables(user: current_user).ids
+    score_readable_ids = Score.readables(user: current_user).ids
 
-    @answer_hash.delete("score") if not @score_readable_ids.include? @answer_hash.dig("score", "id")
+    @answer_hash.delete("score") if not score_readable_ids.include? @answer_hash.dig("score", "id")
 
     json @answer_hash
   end
