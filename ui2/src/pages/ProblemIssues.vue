@@ -7,8 +7,17 @@
       <div class="col-6">
         <h3>質問</h3>
         <!--<pre>{{ currentIssues }}</pre>-->
+        <div class="new-issue">
+          <input v-model="issueTitle" type="text" class="form-control"
+            placeholder="タイトルは具体的かつ端的に記入してください">
+          <simple-markdown-editor v-model="issueText"></simple-markdown-editor>
+          <div class="tools">
+            <button v-on:click="postNewIssue()" class="btn btn-success">質問投稿</button>
+          </div>
+        </div>
+
         <template v-for="issue in currentIssues">
-          <issue :value="issue"></issue>
+          <issue :value="issue" :reload="reload"></issue>
         </template>
       </div>
     </div>
@@ -24,15 +33,25 @@ import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import Problem from '../components/Problem'
 import Issue from '../components/Issue'
+import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
+import {
+  Emit,
+  PUSH_NOTIF,
+  REMOVE_NOTIF,
+  RELOAD_SESSION
+} from '../utils/EventBus'
 
 export default {
   name: 'problem-issues',
   components: {
     Problem,
     Issue,
+    SimpleMarkdownEditor,
   },
   data () {
     return {
+      issueTitle: '',
+      issueText: '',
     }
   },
   asyncData: {
@@ -66,6 +85,38 @@ export default {
   destroyed () {
   },
   methods: {
+    postNewIssue () {
+      Emit(REMOVE_NOTIF, msg => msg.key === 'issue');
+
+      API.addIssues(this.problemId, this.issueTitle)
+        .then(res => API.addIssueComment(res.id, this.issueText))
+        .then(res => {
+          this.issueTitle = '';
+          this.issueText = '';
+          this.reload();
+          Emit(PUSH_NOTIF, {
+            type: 'success',
+            icon: 'check',
+            title: '投稿しました',
+            detail: '',
+            key: 'login',
+            autoClose: true,
+          });
+        })
+        .catch(err => {
+          console.log(err)
+          Emit(PUSH_NOTIF, {
+            type: 'error',
+            icon: 'warning',
+            title: '投稿に失敗しました',
+            key: 'login',
+            autoClose: false,
+          });
+        });
+    },
+    reload () {
+      this.asyncReload();
+    }
   },
 }
 </script>

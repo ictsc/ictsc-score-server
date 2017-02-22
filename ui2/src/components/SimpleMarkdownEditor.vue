@@ -53,7 +53,10 @@ export default {
   },
   methods: {
     init () {
-      this.simplemde = new SimpleMDE(this.config);
+      var conf = Object.assign({
+        element: this.$el.querySelector('textarea'),
+      }, this.config)
+      this.simplemde = new SimpleMDE(conf);
       this.simplemde.codemirror.on('change', () => {
         this.$emit('input', this.simplemde.value());
       });

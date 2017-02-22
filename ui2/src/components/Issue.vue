@@ -84,6 +84,7 @@ export default {
   },
   props: {
     value: Object,
+    reload: Function,
   },
   data () {
     return {
@@ -123,6 +124,7 @@ export default {
 
       API.addIssueComment(this.issueId, this.post)
         .then(res => {
+          this.post = '';
           Emit(PUSH_NOTIF, {
             type: 'success',
             icon: 'check',
@@ -131,6 +133,9 @@ export default {
             key: 'issue',
             autoClose: true,
           });
+          if (this.reload.apply) {
+            this.reload();
+          }
         })
         .catch(err => {
           console.log(err)

@@ -92,12 +92,16 @@ export class API {
     return RequestMiddleware(req.get(`issues`))
       .then(res => res.body)
   }
+  static addIssues (problem_id, title, req = superagent) {
+    return RequestMiddleware(
+      req.post(`issues`)
+        .send(JSON.stringify({ problem_id, title }))
+    ).then(res => res.body)
+  }
   static addIssueComment (issueId, text, req = superagent) {
     return RequestMiddleware(
       req.post(`issues/${issueId}/comments`)
-        .send(JSON.stringify({
-          text,
-        }))
+        .send(JSON.stringify({ text }))
     ).then(res => res.body)
   }
 
