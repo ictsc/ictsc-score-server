@@ -24,6 +24,7 @@ module.exports = {
     'quotes': 1,
     'no-unused-vars': 1,
     'no-throw-literal': 0,
+    'camelcase': 0,
   },
 
   "env": {

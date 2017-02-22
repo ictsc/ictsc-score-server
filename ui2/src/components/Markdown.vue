@@ -4,7 +4,7 @@
 
 <style>
 .markdown-body p {
-  white-space: pre;
+  white-space: pre-line;
 }
 </style>
 
@@ -13,7 +13,7 @@ import marked from 'marked';
 require('github-markdown-css/github-markdown.css');
 
 export default {
-  name: 'empty',
+  name: 'markdown',
   props: {
     value: String,
   },
@@ -26,11 +26,13 @@ export default {
   },
   computed: {
     markdown () {
-      return marked(this.text, { sanitize: true })
+      var text = this.text === undefined ? '' : this.text;
+      return marked(text, { sanitize: true });
     },
   },
   watch: {
     value (val) {
+      console.log('watch', this.text)
       if (val === this.text) return;
       this.text = val;
     },

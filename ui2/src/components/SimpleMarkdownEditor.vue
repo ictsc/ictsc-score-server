@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .editor-toolbar.fullscreen {
   z-index: 1100;
 }

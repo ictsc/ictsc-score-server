@@ -1,21 +1,35 @@
 <template>
    <nav class="navbar fixed-top navbar-light navbar-toggleable flex-row">
-    <a class="navbar-brand mr-auto" href="#">
+    <router-link :to="{name: 'dashboard'}" class="navbar-brand">
       ICTSC
-    </a>
+    </router-link>
 
-    <div class="navbar-nav">
+    <div class="navbar-nav  mr-auto">
       <div class="nav-item">
-        <a class="nav-link" href="#">利用手順</a>
+        <a class="nav-link" href="#">注意事項</a>
+      </div>
+      <div class="nav-item">
+        <a class="nav-link" href="#">メンバー</a>
+      </div>
+      <div class="nav-item">
+        <router-link :to="{name: 'teams'}" class="nav-link">チーム</router-link>
       </div>
     </div>
-
-    <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" type="button">
-        displayName
-      </button>
-      <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item">ログアウト</a>
+    <div class="navbar-nav">
+      <div class="nav-item">
+        <router-link :to="{name: 'dashboard'}" class="nav-link" href="#">トップ</router-link>
+      </div>
+      <div class="nav-item">
+        <router-link :to="{ name: 'problems'}" class="nav-link" href="#">問題</router-link>
+      </div>
+      <div class="nav-item">
+        <a class="nav-link" href="#">質問</a>
+      </div>
+      <div class="nav-item">
+        <a class="nav-link" href="#">解答</a>
+      </div>
+      <div class="nav-item">
+        <a v-on:click="logout()" class="nav-link">ログアウト</a>
       </div>
     </div>
   </nav>
@@ -23,7 +37,7 @@
 
 <style scoped>
 .navbar {
-  background: #7B90D2;
+  background: #ed1848;
   right: initial;
   min-width: 100%;
   float: left;
@@ -59,6 +73,13 @@
 
 <script>
 import * as d3 from 'd3';
+import { API } from '../utils/Api'
+import {
+  Emit,
+  PUSH_NOTIF,
+  REMOVE_NOTIF,
+  RELOAD_SESSION
+} from '../utils/EventBus'
 
 export default {
   name: 'header',
@@ -69,6 +90,33 @@ export default {
   computed: {
   },
   methods: {
+    logout () {
+      Emit(REMOVE_NOTIF, msg => msg.key === 'login');
+
+      API.logout()
+        .then(res => {
+          this.$router.push({ name: 'login' })
+          Emit(RELOAD_SESSION)
+          Emit(PUSH_NOTIF, {
+            type: 'success',
+            icon: 'check',
+            title: 'ログアウトしました',
+            detail: '',
+            key: 'login',
+            autoClose: true,
+          });
+        })
+        .catch(err => {
+          console.log(err)
+          Emit(PUSH_NOTIF, {
+            type: 'error',
+            icon: 'warning',
+            title: 'ログアウトに失敗しました',
+            key: 'login',
+            autoClose: false,
+          });
+        })
+    },
   },
   mounted: function () {
     var dropdown = d3

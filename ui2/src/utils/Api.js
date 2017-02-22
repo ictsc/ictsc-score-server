@@ -10,7 +10,9 @@ async function RequestMiddleware (request, ignoreAuthError = false) {
   try {
     return await request;
   } catch (err) {
-    if (err.status === 401 && !ignoreAuthError) Emit(AUTH_ERROR, err);
+    if ((err.status === 401 || err.status === 403) && !ignoreAuthError) {
+      Emit(AUTH_ERROR, err);
+    }
     throw err;
   }
 }
@@ -24,6 +26,9 @@ export class API {
         password,
       })), true
     )
+  }
+  static logout (req = superagent) {
+    return RequestMiddleware(req.del('session'))
   }
   static getSession (req = superagent) {
     return RequestMiddleware(req.get('session'))
@@ -45,9 +50,8 @@ export class API {
     ).then(res => res.body)
   }
   static deleteNotices (id, req = superagent) {
-    return RequestMiddleware(
-      req.del(`notices/${id}`)
-    ).then(res => res.body)
+    return RequestMiddleware(req.del(`notices/${id}`))
+      .then(res => res.body)
   }
   static getNotifications (req = superagent) {
     return RequestMiddleware(req.get('notifications'))
@@ -73,6 +77,15 @@ export class API {
   }
   static getScoreboard (req = superagent) {
     return RequestMiddleware(req.get(`scoreboard`))
+      .then(res => res.body)
+  }
+
+  static getProblemGroups (req = superagent) {
+    return RequestMiddleware(req.get(`problem_groups`))
+      .then(res => res.body)
+  }
+  static getProblem (id, req = superagent) {
+    return RequestMiddleware(req.get(`problems/${id}`))
       .then(res => res.body)
   }
 

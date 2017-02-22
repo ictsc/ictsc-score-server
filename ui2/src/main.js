@@ -16,11 +16,16 @@ import App from './App'
 import { DefaultStore as store } from './store'
 
 
-import Hello from './pages/Hello'
-
 const router = new VueRouter({
   routes: [
-    { path: '/', component: Hello, name: 'home' },
+    { path: '/', component: require('./pages/Dashboard'), name: 'dashboard' },
+    { path: '/login', component: require('./pages/Login'), name: 'login' },
+    { path: '/signup', component: require('./pages/Signup'), name: 'signup' },
+    { path: '/teams', component: require('./pages/Teams'), name: 'teams' },
+    { path: '/teams/:id', component: require('./pages/TeamDetail'), name: 'team-detail' },
+    { path: '/problems', component: require('./pages/Problems'), name: 'problems' },
+    { path: '/problems/:id', component: require('./pages/ProblemDetail'), name: 'problemDetail' },
+    { path: '*', component: require('./pages/NotFound'), name: 'not-found' },
   ]
 })
 
