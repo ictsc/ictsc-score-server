@@ -31,8 +31,8 @@ Team.seed(:id, [
   {id: 6,  name: "Team 6",        organization: "F学校",                        registration_code: "teamf"},
   {id: 20, name: "Daydream Café", organization: "Rabbit house",                 registration_code: "pyonpyon"},
   {id: 21, name: "fourfolium",    organization: "イーグルジャンプ",                registration_code: "zoi"},
-  {id: 22, name: "\u{1F338}",     organization: "ロゴが変わったインターネット会社",   registration_code: "sakura"} 
-  {id: 23, name: "らびりんず",      organization: "棗屋",                         registration_code: "kurou"}
+  {id: 22, name: "\u{1F338}",     organization: "ロゴが変わったインターネット会社",   registration_code: "sakura"},
+  {id: 23, name: "らびりんず",      organization: "棗屋",                         registration_code: "kurou"},
 ])
 
 Member.seed(:login, [
