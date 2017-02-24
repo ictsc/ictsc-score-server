@@ -82,6 +82,8 @@ def create_problem(id, text, creator, must_solve_before, max, group_id = nil)
     p.reference_point              = max * 0.8
     p.perfect_point                = max
     p.problem_group_id             = group_id
+    p.created_at                   = DateTime.now
+    p.updated_at                   = DateTime.now
   end
 end
 
@@ -262,5 +264,19 @@ Problem.all.each do |problem|
         c.updated_at  = issue.created_at + 5 * rand(20).minutes
       end
     end
+  end
+end
+
+10.times do |i|
+  member = Member.joins(:role).where(roles: {name: ["Admin", "Writer"]}).sample
+  Notice.seed(:id) do |n|
+    n.id        = i + 1
+    n.title     = hiragana[10]
+    n.text      = hiragana[50]
+    n.pinned    = rand(3) == 0 # 1/3
+    n.member_id = member.id
+    date = DateTime.now + rand(480).minutes
+    n.created_at = date
+    n.updated_at = date
   end
 end
