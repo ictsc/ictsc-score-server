@@ -30,7 +30,7 @@ class AttachmentRoutes < Sinatra::Base
   post "/api/attachments" do
     halt 403 if not Attachment.allowed_to_create_by?(current_user)
 
-    f = params[:file]
+    f = params[:file] || {}
 
     @attrs = attribute_values_of_class(Attachment)
     @attrs[:member_id] = current_user.id
