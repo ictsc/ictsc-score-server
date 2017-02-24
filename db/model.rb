@@ -368,6 +368,7 @@ end
 
 class Answer < ActiveRecord::Base
   validates :problem, presence: true
+  validates :team,    presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer&.score&.id.nil? }
 
   has_many :comments, dependent: :destroy, as: :commentable
