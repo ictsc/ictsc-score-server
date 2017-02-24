@@ -24,9 +24,17 @@ class ActiveRecord::Base
     options[:exclude].map!(&:to_sym)
 
     fields = self.validators
-                 .select{|x| ActiveRecord::Validations::PresenceValidator === x }
-                 .map(&:attributes)
-                 .flatten
+                 .reject{|x| x.options[:if] }
+                 .flat_map(&:attributes)
+                 .map do |x|
+                   reflection = self.reflections[x.to_s]
+                   if reflection&.kind_of?(ActiveRecord::Reflection::BelongsToReflection)
+                     reflection.foreign_key.to_sym
+                   else
+                     x
+                   end
+                 end
+
     fields - options[:exclude] + options[:include]
   end
 end
