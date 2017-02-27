@@ -1,26 +1,23 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class IssueRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
   before "/api/issues*" do
     I18n.locale = :en if request.xhr?
 
-    @json_options = {
-      include: {
-        comments: { except: [:commentable_id, :commentable_type] }
-      }
-    }
+    @with_param = (params[:with] || "").split(?,) & %w(comments) if request.get?
   end
 
   get "/api/issues" do
-    @issues = Issue.includes(:comments) \
-                   .readables(user: current_user)
-    json @issues, @json_options
+    @issues = generate_nested_hash(klass: Issue, by: current_user, params: @with_param)
+    json @issues
   end
 
   before "/api/issues/:id" do
@@ -30,7 +27,8 @@ class IssueRoutes < Sinatra::Base
   end
 
   get "/api/issues/:id" do
-    json @issue, @json_options
+    @issue = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, id: params[:id])
+    json @issue
   end
 
   post "/api/issues" do

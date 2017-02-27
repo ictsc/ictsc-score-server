@@ -2,10 +2,12 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require "sinatra/config_file"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class ScoreRoutes < Sinatra::Base
   register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
@@ -13,23 +15,25 @@ class ScoreRoutes < Sinatra::Base
 
   before "/api/scores*" do
     I18n.locale = :en if request.xhr?
+
+    @with_param = (params[:with] || "").split(?,) & %w(answer answer-problem) if request.get?
   end
 
   get "/api/scores" do
-    @scores = Score.readables(user: current_user)
+    @scores = generate_nested_hash(klass: Score, by: current_user, params: @with_param)
 
     # NOTE: Score#is_firstblood, Score#bonus_point, Score#subtotal_point is too slow for fetching multiple scores
     # So, fetch firstblood problem ids first, and calculate each entities using it.
     # Entities are same as included in `GET "/api/scores/:id"`
     firstblood_ids = Score.firstbloods(only_ids: true)
-    @scores_array = @scores.as_json
-    @scores_array.each do |score_array|
-      score_array["is_firstblood"]  = firstblood_ids.include? score_array["id"]
-      score_array["bonus_point"]    = score_array["is_firstblood"] ? (score_array["point"] * settings.first_blood_bonus_percentage / 100.0).to_i : 0
-      score_array["subtotal_point"] = score_array["point"] + score_array["bonus_point"]
+    # @scores_array = @scores.as_json
+    @scores.each do |s|
+      s["is_firstblood"]  = firstblood_ids.include? s["id"]
+      s["bonus_point"]    = s["is_firstblood"] ? (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i : 0
+      s["subtotal_point"] = s["point"] + s["bonus_point"]
     end
 
-    json @scores_array
+    json @scores
   end
 
   before "/api/scores/:id" do
@@ -38,7 +42,9 @@ class ScoreRoutes < Sinatra::Base
   end
 
   get "/api/scores/:id" do
-    json @score, { methods: [:is_firstblood, :bonus_point, :subtotal_point] }
+    @as_option = { methods: [:is_firstblood, :bonus_point, :subtotal_point] }
+    @score = generate_nested_hash(klass: Score, by: current_user, params: @with_param, id: params[:id], as_option: @as_option)
+    json @score #, { methods: [:is_firstblood, :bonus_point, :subtotal_point] }
   end
 
   post "/api/scores" do

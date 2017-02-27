@@ -2,10 +2,12 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require "sinatra/config_file"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class AnswerRoutes < Sinatra::Base
   register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
@@ -14,42 +16,23 @@ class AnswerRoutes < Sinatra::Base
   before "/api/answers*" do
     I18n.locale = :en if request.xhr?
 
-    @json_options = {
-      include: {
-        comments: {
-          except: [:commentable_id, :commentable_type]
-        },
-        score: {
-          methods: [:is_firstblood, :bonus_point, :subtotal_point],
-          except: [ :answer_id ]
-        },
-      }
-    }
+    @with_param = (params[:with] || "").split(?,) & %w(score comments) if request.get?
   end
 
   get "/api/answers" do
-    @answers = Answer.readables(user: current_user) \
-                     .includes(:comments, :score)
-
-    @json_options[:include][:score].delete(:methods) # for performance reasons (ref: controllers/score.rb)
-
-    @answers_array = @answers.as_json(@json_options)
-
-    score_readable_ids = Score.readables(user: current_user).ids
+    @answers = generate_nested_hash(klass: Answer, by: current_user, params: @with_param)
     firstblood_ids = Score.firstbloods(only_ids: true)
 
-    @answers_array.each do |answer_hash|
-      answer_hash.delete("score") if not score_readable_ids.include? answer_hash.dig("score", "id")
-
-      if score = answer_hash["score"]
+    @answers.each do |a|
+      if score = a["score"]
         score["is_firstblood"]  = firstblood_ids.include? score["id"]
         score["bonus_point"]    = score["is_firstblood"] ? (score["point"] * settings.first_blood_bonus_percentage / 100.0).to_i : 0
         score["subtotal_point"] = score["point"] + score["bonus_point"]
-        answer_hash[:score] = score
+        a[:score] = score
       end
     end
 
-    json @answers_array
+    json @answers
   end
 
   before "/api/answers/:id" do
@@ -60,13 +43,11 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/answers/:id" do
-    @answer_hash = @answer.as_json(@json_options)
+    @as_option = { include: {} }
+    @as_option[:include][:score] = { methods: [:is_firstblood, :bonus_point, :subtotal_point] } if @with_param.include?("score")
+    @answer = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, id: params[:id], as_option: @as_option)
 
-    score_readable_ids = Score.readables(user: current_user).ids
-
-    @answer_hash.delete("score") if not score_readable_ids.include? @answer_hash.dig("score", "id")
-
-    json @answer_hash
+    json @answer
   end
 
   post "/api/answers" do

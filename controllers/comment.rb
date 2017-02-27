@@ -1,9 +1,11 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class CommentRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
@@ -18,11 +20,15 @@ class CommentRoutes < Sinatra::Base
       @commentable = klass.readables(user: current_user, action: @action) \
                           .find_by(id: @commentable_id)
       halt 404 if @commentable.nil?
+
+      @with_param = (params[:with] || "").split(?,) & %w(member) if request.get?
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments" do
-      json Comment.readables(user: current_user, action: @action) \
-                  .where(commentable_id: params[:commentable_id].to_i)
+      @comments = generate_nested_hash(klass: Comment, by: current_user, params: @with_param).select{|x| x["commentable_id"] == params[:commentable_id] }
+      @comments.map do |c|
+        c["member"]&.delete("hashed_password")
+      end
     end
 
     before "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
@@ -31,6 +37,9 @@ class CommentRoutes < Sinatra::Base
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
+      @comment = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, id: params[:comment_id])
+      @comment["member"]&.delete("hashed_password")
+
       json @comment
     end
 
