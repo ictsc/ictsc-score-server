@@ -1,23 +1,27 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class TeamRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
   before "/api/teams*" do
     I18n.locale = :en if request.xhr?
+
+    @with_param = (params[:with] || "").split(?,) & %w(members) if request.get?
   end
 
   get "/api/teams" do
-    @teams = Team.readables(user: current_user) \
-      .map do |x|
-        r = x.attributes
-        r["hashed_registration_code"] = Digest::SHA1.hexdigest(r["registration_code"])
-        r.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
-        r
+    @teams = generate_nested_hash(klass: Team, by: current_user, params: @with_param) \
+      .map do |t|
+        t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
+        t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
+        t["members"]&.map{|m| m.delete("hashed_password") }
+        t
       end
     json @teams
   end
@@ -28,10 +32,11 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams/:id" do
-    @return = @team.attributes
-    @return["hashed_registration_code"] = Digest::SHA1.hexdigest(@return["registration_code"])
-    @return.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
-    json @return
+    @team = generate_nested_hash(klass: Team, by: current_user, params: @with_param, id: params[:id])
+    @team["hashed_registration_code"] = Digest::SHA1.hexdigest(@team["registration_code"])
+    @team.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
+    @team["members"]&.map{|m| m.delete("hashed_password") }
+    json @team
   end
 
   post "/api/teams" do
