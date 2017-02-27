@@ -18,23 +18,24 @@ class ProblemRoutes < Sinatra::Base
 
   get "/api/problems" do
     problems = Problem.includes(:comments)
-    readables = problems.readables(user: current_user)
+    readables = problems.readables(user: current_user).reject(&:nil?)
 
     @problems = if "Participant" != current_user&.role&.name
       readables
     else # Participant
       show_columns = Problem.column_names - %w(title text)
-      (readables + problems.where.not(id: readables.ids).select(show_columns)).sort_by(&:id)
+      (readables + problems.where.not(id: readables.map(&:id)).select(*show_columns)).sort_by(&:id)
     end
 
     @problems_array = @problems.as_json(@json_options)
 
+    # NOTE select "reference_point" is needed because of used in having clause
     solved_teams_count_by_problem = Problem \
       .all \
       .joins(answers: [:score]) \
       .group(:id, "answers.team_id") \
       .having("SUM(scores.point) >= problems.reference_point") \
-      .select("id", "answers.team_id") \
+      .select("id", "answers.team_id", "reference_point") \
       .inject(Hash.new(0)){|acc, p| acc[p.id] += 1; acc }
 
     @problems_array.each do |p|
