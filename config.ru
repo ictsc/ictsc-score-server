@@ -17,6 +17,8 @@ logger = Logger.new("#{log_path}/#{ENV["RACK_ENV"]}.log", "daily")
 use Rack::LtsvLogger, logger
 use Rack::PostBodyContentTypeParser
 
+use Rack::Lineprof if ENV["RACK_ENV"] == "development"
+
 if ENV["RACK_ENV"] == "production"
   use Rack::Session::Redis, expire_after: 60 * 60 * 24 * 7 # 1 week
 else
