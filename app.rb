@@ -45,8 +45,10 @@ class App < Sinatra::Base
   use AssetRoutes
 
   configure :development do
-    use BetterErrors::Middleware
-    BetterErrors.application_root = settings.root
+    if defined? BetterErrors
+      use BetterErrors::Middleware
+      BetterErrors.application_root = settings.root
+    end
   end
 
   configure do
