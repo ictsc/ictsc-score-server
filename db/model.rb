@@ -24,9 +24,17 @@ class ActiveRecord::Base
     options[:exclude].map!(&:to_sym)
 
     fields = self.validators
-                 .select{|x| ActiveRecord::Validations::PresenceValidator === x }
-                 .map(&:attributes)
-                 .flatten
+                 .reject{|x| x.options[:if] }
+                 .flat_map(&:attributes)
+                 .map do |x|
+                   reflection = self.reflections[x.to_s]
+                   if reflection&.kind_of?(ActiveRecord::Reflection::BelongsToReflection)
+                     reflection.foreign_key.to_sym
+                   else
+                     x
+                   end
+                 end
+
     fields - options[:exclude] + options[:include]
   end
 end
@@ -368,6 +376,7 @@ end
 
 class Answer < ActiveRecord::Base
   validates :problem, presence: true
+  validates :team,    presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer&.score&.id.nil? }
 
   has_many :comments, dependent: :destroy, as: :commentable
