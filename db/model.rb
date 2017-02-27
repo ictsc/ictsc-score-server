@@ -113,7 +113,7 @@ class Role < ActiveRecord::Base
     when nil # nologin
       where("id = ?", ROLE_ID[:participant])
     else # nologin, ...
-      false
+      none
     end
   }
 end
@@ -171,6 +171,7 @@ class Member < ActiveRecord::Base
     when ROLE_ID[:writer], ROLE_ID[:participant], ROLE_ID[:viewer]
       joins(:role).where("roles.rank >= ?", user.role.rank)
     else # nologin, ...
+      none
     end
   }
 end
