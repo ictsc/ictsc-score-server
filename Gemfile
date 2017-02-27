@@ -10,6 +10,7 @@ gem "redis-rack",       require: "rack/session/redis"
 gem "rack-ltsv_logger"
 
 gem "mysql2"
+gem "activerecord-mysql-reconnect"
 gem "sqlite3"
 gem "sinatra-activerecord", require: "sinatra/activerecord"
 
