@@ -75,7 +75,7 @@ export default {
 
           // 未ログインかの判定
           if (res.status === 'logged_in') {
-            setTimeout(() => this.reloadSession(), 1000 * 30);
+            setTimeout(() => this.reloadSession(), 1000 * 60);
           } else {
             Emit(AUTH_ERROR);
           }

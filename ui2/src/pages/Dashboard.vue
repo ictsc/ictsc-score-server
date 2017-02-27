@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-4">
+      <div class="col-4" v-loading="noticesLoading">
         <h3>お知らせ</h3>
         <div class="item-box">
           <div v-for="item in notices" class="item">
@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="col-4 scoreboard">
+      <div class="col-4 scoreboard" v-loading="scoreboardLoading">
         <h3>順位</h3>
         <div class="item-box">
           <div v-for="item in scoreboard" class="item">
@@ -47,7 +47,7 @@
         </div>
         <pre>{{ session }}</pre>
       </div>
-      <div class="col-4">
+      <div class="col-4" v-loading="notificationsLoading">
         <h3>質問・補足のアップデート</h3>
         <div class="item-box">
           <div v-for="item in lastiNotifications" class="item">

@@ -7,7 +7,10 @@
           <div><small>解決したら<br>クリック</small></div>
         </div>
         <div class="content">
-          <h3>{{ value.title }}</h3>
+          <router-link :to="{name: 'problem-issues', params: {id: '' + value.problem_id, team: '' + value.team_id, issue: '' + value.id}}">
+            <h3>{{ value.title }}</h3>
+          </router-link>
+          <pre>{{ value }}</pre>
           <markdown :value="firstComment.text"></markdown>
         </div>
       </div>

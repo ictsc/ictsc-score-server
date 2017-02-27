@@ -128,8 +128,8 @@ export default {
     ]),
   },
   watch: {
-    id (val) {
-      if (val !== undefined) {
+    id (val, old) {
+      if (val !== old && val !== undefined) {
         this.asyncReload();
       }
     },

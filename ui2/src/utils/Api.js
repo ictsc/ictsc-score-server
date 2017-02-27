@@ -18,6 +18,7 @@ async function RequestMiddleware (request, ignoreAuthError = false) {
 }
 
 export class API {
+  // session
   static login (login, password, req = superagent) {
     return RequestMiddleware(req
       .post('session')
@@ -38,6 +39,8 @@ export class API {
     return RequestMiddleware(req.get('notices'))
       .then(res => res.body)
   }
+
+  // notices
   static postNotices (title, text, pinned = false, req = superagent) {
     return RequestMiddleware(
       req.post('notices')
@@ -57,6 +60,8 @@ export class API {
     return RequestMiddleware(req.get('notifications'))
       .then(res => res.body)
   }
+
+  // teams
   static getTeams (req = superagent) {
     return RequestMiddleware(req.get('teams'))
       .then(res => res.body)
@@ -75,19 +80,28 @@ export class API {
     return RequestMiddleware(req.get(`teams/${id}`))
       .then(res => res.body)
   }
+
+  // scoreboard
   static getScoreboard (req = superagent) {
     return RequestMiddleware(req.get(`scoreboard`))
       .then(res => res.body)
   }
 
+  // problems
   static getProblemGroups (req = superagent) {
     return RequestMiddleware(req.get(`problem_groups`))
+      .then(res => res.body)
+  }
+  static getProblems (req = superagent) {
+    return RequestMiddleware(req.get(`problems`))
       .then(res => res.body)
   }
   static getProblem (id, req = superagent) {
     return RequestMiddleware(req.get(`problems/${id}`))
       .then(res => res.body)
   }
+
+  // issues
   static getIssues (req = superagent) {
     return RequestMiddleware(req.get(`issues`))
       .then(res => res.body)
@@ -105,4 +119,9 @@ export class API {
     ).then(res => res.body)
   }
 
+  // answers
+  static getAnswers (req = superagent) {
+    return RequestMiddleware(req.get(`answers`))
+      .then(res => res.body)
+  }
 }

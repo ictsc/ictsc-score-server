@@ -26,6 +26,9 @@ const router = new VueRouter({
     { path: '/problems', component: require('./pages/Problems'), name: 'problems' },
     { path: '/problems/:id', component: require('./pages/ProblemDetail'), name: 'problem-detail' },
     { path: '/problems/:id/:team/issues/:issue?', component: require('./pages/ProblemIssues'), name: 'problem-issues' },
+    { path: '/problems/:id/:team/answers', component: require('./pages/ProblemAnswers'), name: 'problem-answers' },
+    { path: '/issues', component: require('./pages/Issues'), name: 'issues' },
+    { path: '/answers', component: require('./pages/Answers'), name: 'answers' },
     { path: '*', component: require('./pages/NotFound'), name: 'not-found' },
   ]
 })

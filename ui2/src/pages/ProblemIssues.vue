@@ -4,10 +4,13 @@
       <div class="col-6">
         <problem :id="problemId"></problem>
       </div>
-      <div class="col-6">
-        <h3>質問</h3>
-        <!--<pre>{{ currentIssues }}</pre>-->
-        <div class="new-issue">
+      <div class="col-6" v-loading="issuesLoading">
+        <problem-mode-switch :problemId="problemId" :teamId="teamId"></problem-mode-switch>
+        
+        <router-link v-if="isSingleIssue" :to="{name: 'problem-issues', params: {id: problemId, team: teamId }}">
+          質問一覧
+        </router-link>
+        <div v-if="!isSingleIssue" class="new-issue">
           <input v-model="issueTitle" type="text" class="form-control"
             placeholder="タイトルは具体的かつ端的に記入してください">
           <simple-markdown-editor v-model="issueText"></simple-markdown-editor>
@@ -33,6 +36,7 @@ import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import Problem from '../components/Problem'
 import Issue from '../components/Issue'
+import ProblemModeSwitch from '../components/ProblemModeSwitch'
 import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import {
   Emit,
@@ -47,6 +51,7 @@ export default {
     Problem,
     Issue,
     SimpleMarkdownEditor,
+    ProblemModeSwitch,
   },
   data () {
     return {
@@ -69,6 +74,9 @@ export default {
     },
     issueId () {
       return this.$route.params.issue;
+    },
+    isSingleIssue () {
+      return !!this.issueId;
     },
     currentIssues () {
       return this.issues

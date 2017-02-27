@@ -17,16 +17,16 @@
     </div>
     <div class="navbar-nav">
       <div class="nav-item">
-        <router-link :to="{name: 'dashboard'}" class="nav-link" href="#">トップ</router-link>
+        <router-link :to="{name: 'dashboard'}" class="nav-link">トップ</router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{ name: 'problems'}" class="nav-link" href="#">問題</router-link>
+        <router-link :to="{ name: 'problems'}" class="nav-link">問題</router-link>
       </div>
       <div class="nav-item">
-        <a class="nav-link" href="#">質問</a>
+        <router-link :to="{ name: 'issues'}" class="nav-link">質問</router-link>
       </div>
       <div class="nav-item">
-        <a class="nav-link" href="#">解答</a>
+        <router-link :to="{ name: 'answers'}" class="nav-link">解答</router-link>
       </div>
       <div class="nav-item">
         <a v-on:click="logout()" class="nav-link">ログアウト</a>

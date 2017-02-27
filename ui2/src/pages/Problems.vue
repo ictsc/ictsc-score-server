@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="asyncLoading">
     <h1>問題一覧</h1>
     <div class="description">
       <p>出題ルール書いといたほうがよさそう。</p>
