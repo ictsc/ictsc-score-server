@@ -55,6 +55,10 @@ class App < Sinatra::Base
     Time.zone = "Tokyo"
     ActiveRecord::Base.default_timezone = :local
 
+    if defined? Activerecord::Mysql::Reconnect
+      ActiveRecord::Base.enable_retry = true
+      ActiveRecord::Base.execution_tries = 3
+    end
     # set :cometio, timeout: 120, post_interval: 2, allow_crossdomain: false
     # set :websocketio, port: 9000
     # set :rocketio, websocket: true, comet: true # enable WebSocket and Comet
