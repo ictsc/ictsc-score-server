@@ -7,6 +7,7 @@ gem "sinatra-contrib"
 gem "rack-contrib",     require: "rack/contrib"
 gem "rack-protection",  require: "rack/protection"
 gem "redis-rack",       require: "rack/session/redis"
+gem "rack-ltsv_logger"
 
 gem "mysql2"
 gem "sqlite3"
@@ -26,6 +27,7 @@ group :development do
   gem "shotgun",            require: false
   gem "better_errors"
   gem "binding_of_caller",  require: false
+  # gem "rack-lineprof"
 end
 
 group :test do

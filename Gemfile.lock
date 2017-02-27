@@ -45,6 +45,8 @@ GEM
     rack-contrib (1.4.0)
       git-version-bump (~> 0.15)
       rack (~> 1.4)
+    rack-ltsv_logger (0.0.3)
+      rack
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -112,6 +114,7 @@ DEPENDENCIES
   pry
   puma
   rack-contrib
+  rack-ltsv_logger
   rack-protection
   rack-test
   rake
