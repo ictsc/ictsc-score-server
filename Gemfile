@@ -27,7 +27,7 @@ group :development do
   gem "shotgun",            require: false
   gem "better_errors"
   gem "binding_of_caller",  require: false
-  # gem "rack-lineprof"
+  gem "rack-lineprof"
 end
 
 group :test do
