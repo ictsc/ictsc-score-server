@@ -24,9 +24,17 @@ class ActiveRecord::Base
     options[:exclude].map!(&:to_sym)
 
     fields = self.validators
-                 .select{|x| ActiveRecord::Validations::PresenceValidator === x }
-                 .map(&:attributes)
-                 .flatten
+                 .reject{|x| x.options[:if] }
+                 .flat_map(&:attributes)
+                 .map do |x|
+                   reflection = self.reflections[x.to_s]
+                   if reflection&.kind_of?(ActiveRecord::Reflection::BelongsToReflection)
+                     reflection.foreign_key.to_sym
+                   else
+                     x
+                   end
+                 end
+
     fields - options[:exclude] + options[:include]
   end
 end
@@ -226,7 +234,8 @@ class Problem < ActiveRecord::Base
         having(problem_must_solve_before_id: nil).
         or(relation.having(Score.arel_table[:point].sum.gteq(
           Problem.arel_table.alias("problem_must_solve_befores_problems")[:reference_point])
-        ))
+        )).
+        select("problems.*, problem_must_solve_befores_problems.*")
     when ROLE_ID[:viewer]
       all
     else
@@ -368,6 +377,7 @@ end
 
 class Answer < ActiveRecord::Base
   validates :problem, presence: true
+  validates :team,    presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer&.score&.id.nil? }
 
   has_many :comments, dependent: :destroy, as: :commentable
@@ -626,7 +636,7 @@ class Notice < ActiveRecord::Base
   def allowed?(method:, by: nil, action: "")
     return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
 
-    case user&.role_id
+    case by&.role_id
     when ROLE_ID[:admin]
       true
     when ROLE_ID[:writer]

@@ -8,12 +8,13 @@ Bundler.require
 
 require File.expand_path(File.dirname(__FILE__)) + '/app.rb'
 
+::Logger.class_eval { alias :write :<< unless respond_to?(:write) }
+
 log_path = File.dirname(__FILE__) + "/log"
 FileUtils.makedirs(log_path)
 logger = Logger.new("#{log_path}/#{ENV["RACK_ENV"]}.log", "daily")
-logger.instance_eval { alias :write :<< unless respond_to?(:write) }
 
-use Rack::CommonLogger, logger
+use Rack::LtsvLogger, logger
 use Rack::PostBodyContentTypeParser
 
 if ENV["RACK_ENV"] == "production"

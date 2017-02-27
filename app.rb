@@ -26,6 +26,9 @@ require_relative "db/model"
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
+  error_logger = ::File.new("#{File.dirname(__FILE__)}/log/#{ENV["RACK_ENV"]}-error.log", "a+")
+  error_logger.sync = true
+
   use AnswerRoutes
   use AttachmentRoutes
   use CommentRoutes
@@ -42,18 +45,20 @@ class App < Sinatra::Base
   use AssetRoutes
 
   configure :development do
-    use BetterErrors::Middleware
-    BetterErrors.application_root = settings.root
+    if defined? BetterErrors
+      use BetterErrors::Middleware
+      BetterErrors.application_root = settings.root
+    end
   end
 
   configure do
     Time.zone = "Tokyo"
     ActiveRecord::Base.default_timezone = :local
 
-    def logger
-      env['app.logger'] || env['rack.logger']
+    if defined? Activerecord::Mysql::Reconnect
+      ActiveRecord::Base.enable_retry = true
+      ActiveRecord::Base.execution_tries = 3
     end
-
     # set :cometio, timeout: 120, post_interval: 2, allow_crossdomain: false
     # set :websocketio, port: 9000
     # set :rocketio, websocket: true, comet: true # enable WebSocket and Comet
@@ -82,6 +87,10 @@ class App < Sinatra::Base
     response.headers["Access-Control-Allow-Credentials"] = "true"
 
     200
+  end
+
+  before do
+    env["rack.errors"] = error_logger
   end
 
   get "/?" do

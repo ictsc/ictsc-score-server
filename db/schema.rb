@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20170217141728) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_attachments_on_id", unique: true
+    t.index ["member_id"], name: "index_attachments_on_member_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -69,6 +70,7 @@ ActiveRecord::Schema.define(version: 20170217141728) do
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.index ["id"], name: "index_notices_on_id", unique: true
+    t.index ["member_id"], name: "index_notices_on_member_id"
   end
 
   create_table "problem_groups", force: :cascade do |t|
