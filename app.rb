@@ -97,10 +97,6 @@ class App < Sinatra::Base
     send_file settings.public_dir + "/index.html"
   end
 
-  # get "/notifications" do
-
-  # end
-
   not_found do
     if request.xhr?
       { error: "not found" }.to_json
