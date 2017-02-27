@@ -234,7 +234,8 @@ class Problem < ActiveRecord::Base
         having(problem_must_solve_before_id: nil).
         or(relation.having(Score.arel_table[:point].sum.gteq(
           Problem.arel_table.alias("problem_must_solve_befores_problems")[:reference_point])
-        ))
+        )).
+        select("problems.*, problem_must_solve_befores_problems.*")
     when ROLE_ID[:viewer]
       all
     else

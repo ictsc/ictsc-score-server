@@ -111,7 +111,7 @@ Team.all.each do |team|
     last_answer = nil
 
     problems.each do |p|
-      next if Problem.readables(user: team.members.first).where(id: p.id).empty?
+      next if Problem.readables(user: team.members.first).where(id: p.id).to_a.empty?
       last_answer = nil if (p.id % 10).zero?
 
       answer_id = 5 * (p.id * 100 + team.id)
