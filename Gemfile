@@ -8,6 +8,7 @@ gem "rack-contrib",     require: "rack/contrib"
 gem "rack-protection",  require: "rack/protection"
 gem "redis-rack",       require: "rack/session/redis"
 
+gem "mysql2"
 gem "sqlite3"
 gem "sinatra-activerecord", require: "sinatra/activerecord"
 
