@@ -636,7 +636,7 @@ class Notice < ActiveRecord::Base
   def allowed?(method:, by: nil, action: "")
     return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
 
-    case user&.role_id
+    case by&.role_id
     when ROLE_ID[:admin]
       true
     when ROLE_ID[:writer]
