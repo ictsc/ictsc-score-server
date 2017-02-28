@@ -1,17 +1,21 @@
 require "sinatra/activerecord_helpers"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class ProblemGroupRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
   before "/api/problem_groups*" do
     I18n.locale = :en if request.xhr?
+
+    @with_param = (params[:with] || "").split(?,) & %w(problems) if request.get?
   end
 
   get "/api/problem_groups" do
-    @problem_groups = ProblemGroup.readables(user: current_user)
+    @problem_groups = generate_nested_hash(klass: ProblemGroup, by: current_user, params: @with_param)
     json @problem_groups
   end
 
@@ -21,6 +25,7 @@ class ProblemGroupRoutes < Sinatra::Base
   end
 
   get "/api/problem_groups/:id" do
+    @problem_group = generate_nested_hash(klass: ProblemGroup, by: current_user, params: @with_param, id: params[:id])
     json @problem_group
   end
 

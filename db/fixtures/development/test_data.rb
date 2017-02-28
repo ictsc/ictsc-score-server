@@ -30,8 +30,9 @@ Team.seed(:id, [
   {id: 5,  name: "Team 5",        organization: "E学校",                        registration_code: "teame"},
   {id: 6,  name: "Team 6",        organization: "F学校",                        registration_code: "teamf"},
   {id: 20, name: "Daydream Café", organization: "Rabbit house",                 registration_code: "pyonpyon"},
-  {id: 21, name: "fourfolium",    organization: "イーグルジャンプ",               registration_code: "zoi"},
-  {id: 22, name: "\u{1F338}",     organization: "ロゴが変わったインターネット会社", registration_code: "sakura"}
+  {id: 21, name: "fourfolium",    organization: "イーグルジャンプ",                registration_code: "zoi"},
+  {id: 22, name: "\u{1F338}",     organization: "ロゴが変わったインターネット会社",   registration_code: "sakura"},
+  {id: 23, name: "らびりんず",      organization: "棗屋",                         registration_code: "kurou"},
 ])
 
 Member.seed(:login, [
@@ -60,6 +61,10 @@ Member.seed(:login, [
   { name: "yun",     login: "yun",     hashed_password: hash_password("yun"),    team_id: 21, role: Role.find_by(name: "Participant") },
   { name: "kou",     login: "kou",     hashed_password: hash_password("kou"),    team_id: 21, role: Role.find_by(name: "Participant") },
   { name: "sakura",  login: "sakura",  hashed_password: hash_password("sakura"), team_id: 22, role: Role.find_by(name: "Participant") },
+  { name: "chiya",   login: "chiya",   hashed_password: hash_password("chiya"),  team_id: 23, role: Role.find_by(name: "Participant") },
+  { name: "kon",     login: "kon",     hashed_password: hash_password("kon"),    team_id: 23, role: Role.find_by(name: "Participant") },
+  { name: "koume",   login: "koume",   hashed_password: hash_password("koume"),  team_id: 23, role: Role.find_by(name: "Participant") },
+  { name: "nono",    login: "nono",    hashed_password: hash_password("nono"),   team_id: 23, role: Role.find_by(name: "Participant") },
   { name: "viewer",  login: "viewer",  hashed_password: hash_password("viewer"),              role: Role.find_by(name: "Viewer") },
 ])
 
@@ -111,7 +116,7 @@ Team.all.each do |team|
     last_answer = nil
 
     problems.each do |p|
-      next if Problem.readables(user: team.members.first).where(id: p.id).empty?
+      next if Problem.readables(user: team.members.first).where(id: p.id).to_a.empty?
       last_answer = nil if (p.id % 10).zero?
 
       answer_id = 5 * (p.id * 100 + team.id)

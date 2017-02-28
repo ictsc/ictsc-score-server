@@ -1,47 +1,43 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class ProblemRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
-    @json_options = {
-      include: {
-        comments: { except: [:commentable_id, :commentable_type] }
-      }
-    }
+
+    @with_param = (params[:with] || "").split(?,) & %w(answers answers-comments answers-score issues issues-comments creator) if request.get?
   end
 
   get "/api/problems" do
-    problems = Problem.includes(:comments)
-    readables = problems.readables(user: current_user)
+    @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param).uniq
 
-    @problems = if "Participant" != current_user&.role&.name
-      readables
-    else # Participant
+    if "Participant" == current_user&.role&.name
       show_columns = Problem.column_names - %w(title text)
-      (readables + problems.where.not(id: readables.ids).select(show_columns)).sort_by(&:id)
+      @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json).sort_by{|x| x["id"] }
     end
 
-    @problems_array = @problems.as_json(@json_options)
-
+    # NOTE select "reference_point" is needed because of used in having clause
     solved_teams_count_by_problem = Problem \
       .all \
       .joins(answers: [:score]) \
       .group(:id, "answers.team_id") \
       .having("SUM(scores.point) >= problems.reference_point") \
-      .select("id", "answers.team_id") \
+      .select("id", "answers.team_id", "reference_point") \
       .inject(Hash.new(0)){|acc, p| acc[p.id] += 1; acc }
 
-    @problems_array.each do |p|
+    @problems.each do |p|
       p["solved_teams_count"] = solved_teams_count_by_problem[p["id"]]
+      p["creator"]&.delete("hashed_password")
     end
 
-    json @problems_array
+    json @problems
   end
 
   before "/api/problems/:id" do
@@ -65,10 +61,11 @@ class ProblemRoutes < Sinatra::Base
       .count \
       .count
 
-    @problem_hash = @problem.as_json(@json_options)
-    @problem_hash["solved_teams_count"] = solved_teams_count
+    @problem = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, id: params[:id])
+    @problem["solved_teams_count"] = solved_teams_count
+    @problem["creator"]&.delete("hashed_password")
 
-    json @problem_hash
+    json @problem
   end
 
   post "/api/problems" do

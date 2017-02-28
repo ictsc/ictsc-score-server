@@ -3,9 +3,11 @@ require "open3"
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
+require_relative "../services/nested_entity"
 
 class MemberRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
+  helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
@@ -52,16 +54,27 @@ class MemberRoutes < Sinatra::Base
 
   get "/api/session" do
     if logged_in?
-      @json_options = {
-        except: [:hashed_password],
-        include: {
-          team: { except: [:registration_code] }
-        }
+      @with_param = (params[:with] || "").split(?,) & %w(member member-team)
+      @session = {
+        logged_in: true,
+        status: "logged_in"
       }
 
-      json status: "logged_in", member: current_user.as_json(@json_options)
+      if not @with_param.empty?
+        json_options = {
+          except: [:hashed_password]
+        }
+
+        if @with_param.include? "member-team"
+          json_options[:include] = { team: { except: [:registration_code] } }
+        end
+
+        @session[:member] = current_user.as_json(json_options)
+      end
+
+     json @session
     else
-      json status: "not_logged_in"
+      json status: "not_logged_in", logged_in: false
     end
   end
 
@@ -80,11 +93,18 @@ class MemberRoutes < Sinatra::Base
 
   before "/api/members*" do
     I18n.locale = :en if request.xhr?
+
+    @with_param = (params[:with] || "").split(?,) & %w(team) if request.get?
   end
 
   get "/api/members" do
-    @members = Member.readables(user: current_user)
-    json @members, except: [:hashed_password]
+    @members = generate_nested_hash(klass: Member, by: current_user, params: @with_param, as_option: {except: [:hashed_password]})
+    @members.map do |m|
+      next if not m["team"]
+      m["team"]["hashed_registration_code"] = Digest::SHA1.hexdigest(m["team"]["registration_code"])
+      m["team"].delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
+    end
+    json @members
   end
 
   before "/api/members/:id" do
@@ -93,7 +113,12 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members/:id" do
-    json @member, except: [:hashed_password]
+    @member = generate_nested_hash(klass: Member, by: current_user, params: @with_param, id: params[:id], as_option: {except: [:hashed_password]})
+    if t = @member["team"]
+      t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
+      t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
+    end
+    json @member
   end
 
   post "/api/members" do
