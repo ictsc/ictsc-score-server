@@ -124,4 +124,10 @@ export class API {
     return RequestMiddleware(req.get(`answers`))
       .then(res => res.body)
   }
+
+  // scores
+  static getScores (req = superagent) {
+    return RequestMiddleware(req.get(`scores`))
+      .then(res => res.body)
+  }
 }

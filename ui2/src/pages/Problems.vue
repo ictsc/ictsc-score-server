@@ -16,22 +16,27 @@
         </div>
         <div class="col-6">
           <div class="problems">
-            <a href="#" class="problem d-flex">
-              <div class="scores-wrapper">
-                <div class="scores">
-                  <div class="current">40</div>
-                  <div class="max">50点満点</div>
+            <template v-for="problem in problems">
+              <router-link
+                v-if="group.id === problem.problem_group_id"
+                :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
+                class="problem d-flex">
+                <div class="scores-wrapper">
+                  <div class="scores">
+                    <div class="current">{{ problem.reference_point }}</div>
+                    <div class="max">{{ problem.perfect_point }}点満点</div>
+                  </div>
                 </div>
-              </div>
-              <div class="content">
-                <h3>title</h3>
-                <div class="tips">
-                  <span>解答 1件 (1分前)</span>
-                  <span>採点 1件 (1分前)</span>
-                  <span>質問 3件 (1時間前)</span>
+                <div class="content">
+                  <h3>{{ problem.title }}</h3>
+                  <div class="tips">
+                    <span>解答 1件 (1分前)</span>
+                    <span>採点 1件 (1分前)</span>
+                    <span>質問 3件 (1時間前)</span>
+                  </div>
                 </div>
-              </div>
-            </a>
+              </router-link>
+            </template>
             <a class="problem d-flex">
               <div class="overlay">
                 <div class="overlay-message">
@@ -57,6 +62,7 @@
         </div>
       </div>
     </div>
+    <pre>{{problems}}</pre>
   </div>
 </template>
 
@@ -145,6 +151,7 @@
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import Markdown from '../components/Markdown'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'problems',
@@ -159,9 +166,20 @@ export default {
     problemGroupsDefault: [],
     problemGroups () {
       return API.getProblemGroups();
-    }
+    },
+    problemsDefault: [],
+    problems () {
+      return API.getProblems();
+    },
+    answersDefault: [],
+    answers () {
+      return API.getAnswers();
+    },
   },
   computed: {
+    ...mapGetters([
+      'session',
+    ]),
   },
   watch: {
   },
@@ -171,6 +189,8 @@ export default {
   destroyed () {
   },
   methods: {
+    getScore (problem, team) {
+    },
   },
 }
 </script>
