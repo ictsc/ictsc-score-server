@@ -44,10 +44,15 @@ class App < Sinatra::Base
   use ContestRoutes
   use AssetRoutes
 
-  configure :development do
-    if defined? BetterErrors
-      use BetterErrors::Middleware
-      BetterErrors.application_root = settings.root
+  if defined? BetterErrors
+    [self, *Sinatra::Base.descendants].each do |klass|
+      klass.class_eval do
+        configure :development do
+          use BetterErrors::Middleware
+          BetterErrors.application_root = settings.root
+          BetterErrors::Middleware.allow_ip! "0.0.0.0/0"
+        end
+      end
     end
   end
 
