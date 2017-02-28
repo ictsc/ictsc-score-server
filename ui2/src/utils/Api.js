@@ -83,7 +83,7 @@ export class API {
     ).then(res => res.body)
   }
   static getTeam (id, req = superagent) {
-    return RequestMiddleware(req.get(`teams/${id}`))
+    return RequestMiddleware(req.get(`teams/${id}?with=members`))
       .then(res => res.body)
   }
 

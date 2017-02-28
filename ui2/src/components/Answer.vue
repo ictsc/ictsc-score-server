@@ -5,10 +5,10 @@
         {{ scores }}
         <div class="row">
           <div class="col-6">
-            <input type="number" class="form-control">
+            <input v-model="newPoint" type="number" class="form-control">
           </div>
           <div class="col-6">
-            <button type="submit" class="btn btn-primary">採点</button>
+            <button v-on:click="submitPoint()" type="submit" class="btn btn-primary">採点</button>
           </div>
         </div>
       </div>
@@ -88,6 +88,7 @@ export default {
   data () {
     return {
       post: '',
+      newPoint: undefined,
     }
   },
   asyncData: {
@@ -95,6 +96,9 @@ export default {
   computed: {
     issueId () {
       return this.value.id;
+    },
+    firstScore () {
+      return (this.scores[0] && this.scores[0]) || {};
     },
     isScored () {
       if (this.scoresLoading) return undefined;
@@ -112,8 +116,12 @@ export default {
     },
   },
   watch: {
+    scores (val) {
+      this.newPoint = this.firstScore.point;
+    },
   },
   mounted () {
+    this.newPoint = this.firstScore.point;
   },
   destroyed () {
   },
@@ -141,6 +149,44 @@ export default {
             type: 'error',
             icon: 'warning',
             title: '投稿に失敗しました',
+            key: 'issue',
+            autoClose: false,
+          });
+        })
+    },
+    submitPoint () {
+      Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
+
+      var postOrPut;
+      if (this.firstScore.id) {
+        postOrPut = API.putScore(this.firstScore.id, Object.assign({}, this.firstScore, {
+          point: this.newPoint,
+        }))
+      } else {
+        postOrPut = API.postScore(this.value.id, {
+          point: this.newPoint,
+        })
+      }
+
+      postOrPut
+        .then(res => {
+          console.log('Patch OK');
+          Emit(PUSH_NOTIF, {
+            type: 'success',
+            icon: 'check',
+            title: '得点を更新しました',
+            detail: '',
+            key: 'issue',
+            autoClose: true,
+          });
+          if (this.reload.apply) this.reload();
+        })
+        .catch(err => {
+          console.error(err);
+          Emit(PUSH_NOTIF, {
+            type: 'error',
+            icon: 'warning',
+            title: '得点の更新に失敗しました',
             key: 'issue',
             autoClose: false,
           });
