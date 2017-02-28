@@ -41,8 +41,7 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import {
   Emit,
   PUSH_NOTIF,
-  REMOVE_NOTIF,
-  RELOAD_SESSION
+  REMOVE_NOTIF
 } from '../utils/EventBus'
 
 export default {

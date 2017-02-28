@@ -32,7 +32,7 @@ export class API {
     return RequestMiddleware(req.del('session'))
   }
   static getSession (req = superagent) {
-    return RequestMiddleware(req.get('session'))
+    return RequestMiddleware(req.get('session?with=member-team'))
       .then(res => res.body)
   }
   static getNotices (req = superagent) {
@@ -58,6 +58,12 @@ export class API {
   }
   static getNotifications (req = superagent) {
     return RequestMiddleware(req.get('notifications'))
+      .then(res => res.body)
+  }
+
+  // members
+  static getMembers (req = superagent) {
+    return RequestMiddleware(req.get('members'))
       .then(res => res.body)
   }
 
@@ -103,7 +109,7 @@ export class API {
 
   // issues
   static getIssues (req = superagent) {
-    return RequestMiddleware(req.get(`issues`))
+    return RequestMiddleware(req.get(`issues?with=comments`))
       .then(res => res.body)
   }
   static addIssues (problem_id, title, req = superagent) {
@@ -121,13 +127,49 @@ export class API {
 
   // answers
   static getAnswers (req = superagent) {
-    return RequestMiddleware(req.get(`answers`))
+    return RequestMiddleware(req.get(`answers?with=comments`))
+      .then(res => res.body)
+  }
+  static postAnswers (team, problem, req = superagent) {
+    return RequestMiddleware(
+      req.post(`answers`)
+        .send(JSON.stringify({
+          problem_id: +problem,
+          team_id: +team,
+        }))
+    ).then(res => res.body)
+  }
+  static addAnswerComment (answerId, text, req = superagent) {
+    return RequestMiddleware(
+      req.post(`answers/${answerId}/comments`)
+        .send(JSON.stringify({ text }))
+    ).then(res => res.body)
+  }
+  static patchAnswers (id, obj, req = superagent) {
+    return RequestMiddleware(req.patch(`answers/${id}`).send(JSON.stringify(obj)))
       .then(res => res.body)
   }
 
   // scores
   static getScores (req = superagent) {
     return RequestMiddleware(req.get(`scores`))
+      .then(res => res.body)
+  }
+  static getScore (id, req = superagent) {
+    return RequestMiddleware(req.get(`scores/${id}`))
+      .then(res => res.body)
+  }
+  static postScore (answer_id, point, req = superagent) {
+    return RequestMiddleware(
+      req.post(`scores`)
+        .send(JSON.stringify({
+          answer_id,
+          point,
+        }))
+    ).then(res => res.body)
+  }
+  static putScore (id, obj, req = superagent) {
+    return RequestMiddleware(req.put(`scores/${id}`).send(JSON.stringify(obj)))
       .then(res => res.body)
   }
 }

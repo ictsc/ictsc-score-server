@@ -49,6 +49,9 @@
         <p>補足事項</p>
         <div class="meta">01/01 00:00</div>
       </div>
+      <div class="new-comment">
+        <simple-markdown-editor v-if="edit" v-model="newComment"></simple-markdown-editor>
+      </div>
     </aside>
     <article>
       <h3><span class="sub">問題:</span></h3>
@@ -114,6 +117,7 @@ export default {
   data () {
     return {
       edit: false,
+      newComment: '',
     }
   },
   asyncData: {

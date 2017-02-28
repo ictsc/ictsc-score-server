@@ -40,10 +40,12 @@
       <div class="col-4 scoreboard" v-loading="scoreboardLoading">
         <h3>順位</h3>
         <div class="item-box">
-          <div v-for="item in scoreboard" class="item">
-            <h4>{{ item.rank }}位 <span class="score">{{ item.score }}点</span></h4>
-            <div v-if="item.team">{{ item.team.name }}</div>
-          </div>
+          <template v-for="item in scoreboard">
+            <router-link :to="{name: 'team-detail', params: {id: item.team.id}}" class="item">
+              <h4>{{ item.rank }}位 <span class="score">{{ item.score }}点</span></h4>
+              <div v-if="item.team">{{ item.team.name }}</div>
+            </router-link>
+          </template>
         </div>
         <pre>{{ session }}</pre>
       </div>
@@ -169,10 +171,6 @@ export default {
 h1, h2 {
   font-weight: normal;
 }
-
-a {
-  color: #42b983;
-}
 .item-box {
   padding: 1.5rem;
   border: 1px solid #fdbbcc;
@@ -188,5 +186,9 @@ a {
   text-align: right;
   display: block;
   float: right;
+}
+.scoreboard .item {
+  display: block;
+  color: inherit;
 }
 </style>

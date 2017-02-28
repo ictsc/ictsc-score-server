@@ -6,9 +6,8 @@
       </div>
       <div class="col-6" v-loading="answersLoading">
         <problem-mode-switch :problemId="problemId" :teamId="teamId"></problem-mode-switch>
-
         <template v-for="answer in currentAnswers">
-          <answer :value="answer" :reload="reload"></answer>
+          <answer :value="answer" :scores="currentScores(answer.id)" :reload="reload"></answer>
         </template>
 
         <div class="new-issue">
@@ -57,7 +56,11 @@ export default {
     answersDefault: [],
     answers () {
       return API.getAnswers();
-    }
+    },
+    scoresDefault: [],
+    scores () {
+      return API.getScores();
+    },
   },
   computed: {
     problemId () {
@@ -81,39 +84,52 @@ export default {
   destroyed () {
   },
   methods: {
-    // postNewIssue () {
-    //   Emit(REMOVE_NOTIF, msg => msg.key === 'issue');
+    currentScores (answer) {
+      return this.scores.filter(s => s.answer_id === answer)
+    },
+    async postNewIssue () {
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 
-    //   API.addIssues(this.problemId, this.issueTitle)
-    //     .then(res => API.addIssueComment(res.id, this.issueText))
-    //     .then(res => {
-    //       this.issueTitle = '';
-    //       this.issueText = '';
-    //       this.reload();
-    //       Emit(PUSH_NOTIF, {
-    //         type: 'success',
-    //         icon: 'check',
-    //         title: '投稿しました',
-    //         detail: '',
-    //         key: 'login',
-    //         autoClose: true,
-    //       });
-    //     })
-    //     .catch(err => {
-    //       console.log(err)
-    //       Emit(PUSH_NOTIF, {
-    //         type: 'error',
-    //         icon: 'warning',
-    //         title: '投稿に失敗しました',
-    //         key: 'login',
-    //         autoClose: false,
-    //       });
-    //     });
-    // },
+        var answers = await API.getAnswers();
+        var filteredAnswer = answers
+          .filter(i => '' + i.problem_id === this.problemId)
+          .filter(i => '' + i.team_id === this.teamId);
+
+        // 解答が無い・最後の解答がcompletedである場合、新規作成
+        var answer;
+        if (filteredAnswer.length === 0 || filteredAnswer[filteredAnswer.length - 1].completed) {
+          answer = await API.postAnswers(this.teamId, this.problemId);
+        } else {
+          answer = filteredAnswer[filteredAnswer.length - 1]
+        }
+
+        var addRes = await API.addAnswerComment(answer.id, this.newAnswer);
+
+        this.newAnswer = '';
+        this.reload();
+        Emit(PUSH_NOTIF, {
+          type: 'success',
+          icon: 'check',
+          title: '投稿しました',
+          detail: '',
+          key: 'answer',
+          autoClose: true,
+        });
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          icon: 'warning',
+          title: '投稿に失敗しました',
+          key: 'answer',
+          autoClose: false,
+        });
+      }
+    },
     reload () {
       this.asyncReload();
     }
   },
 }
 </script>
-
