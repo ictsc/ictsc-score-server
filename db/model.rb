@@ -204,7 +204,7 @@ class Problem < ActiveRecord::Base
 
   # method: GET, PUT, PATCH, DELETE
   def allowed?(by: nil, method:, action: "")
-    return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
+    return self.class.readables(user: by, action: action).to_a.one?{|x| x.id == id } if method == "GET"
 
     case by&.role_id
     when ROLE_ID[:admin]
@@ -236,7 +236,7 @@ class Problem < ActiveRecord::Base
         or(relation.having(Score.arel_table[:point].sum.gteq(
           Problem.arel_table.alias("problem_must_solve_befores_problems")[:reference_point])
         )).
-        select("problems.*, problem_must_solve_befores_problems.*")
+        select("problem_must_solve_befores_problems.*, problems.*")
     when ROLE_ID[:viewer]
       all
     else

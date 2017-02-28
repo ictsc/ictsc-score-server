@@ -16,7 +16,7 @@ class ProblemRoutes < Sinatra::Base
   end
 
   get "/api/problems" do
-    @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param)
+    @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param).uniq
 
     if "Participant" == current_user&.role&.name
       show_columns = Problem.column_names - %w(title text)
