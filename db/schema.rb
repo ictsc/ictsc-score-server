@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301032343) do
+ActiveRecord::Schema.define(version: 20170301044239) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id",                 null: false
@@ -32,12 +32,12 @@ ActiveRecord::Schema.define(version: 20170301032343) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string   "text",             null: false
-    t.integer  "member_id",        null: false
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.string   "commentable_type", null: false
-    t.integer  "commentable_id",   null: false
+    t.string   "text",             limit: 1000, null: false
+    t.integer  "member_id",                     null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "commentable_type",              null: false
+    t.integer  "commentable_id",                null: false
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
   end
 
