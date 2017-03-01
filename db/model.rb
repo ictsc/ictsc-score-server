@@ -454,18 +454,19 @@ class Score < ActiveRecord::Base
     s_before   = Score.arel_table.alias("s_before")
 
     join_tables = [
+      join_table.join(answers).on(scores[:answer_id].eq(answers[:id])),
+      join_table.join(problems).on(answers[:problem_id].eq(problems[:id])),
       join_table.join(a_before).on(
         a_before[:problem_id].eq(problems[:id]),
         a_before[:team_id].eq(answers[:team_id]),
         a_before[:updated_at].lteq(answers[:updated_at])
       ),
-      join_table.join(s_before).on(s_before[:answer_id].eq(a_before[:id])),
-      scores.join(answers).join(problems).on(scores[:answer_id].eq(answers[:id]), answers[:problem_id].eq(problems[:id]))
+      join_table.join(s_before).on(s_before[:answer_id].eq(a_before[:id]))
     ].map(&:join_sources)
 
     ids_by_problem_id = Score \
       .joins(*join_tables) \
-      .group(answers[:id]) \
+      .group(answers[:id], "problems.reference_point") \
       .having(problems[:reference_point].lteq(s_before[:point].sum)) \
       .order(answers[:updated_at]) \
       .pluck("answers.problem_id", "scores.id") \
