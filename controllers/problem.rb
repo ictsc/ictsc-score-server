@@ -12,7 +12,7 @@ class ProblemRoutes < Sinatra::Base
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(?,) & %w(answers answers-comments answers-score answers-team issues issues-comments creator) if request.get?
+    @with_param = (params[:with] || "").split(?,) & %w(answers answers-comments answers-score answers-team issues issues-comments creator comments) if request.get?
   end
 
   get "/api/problems" do
