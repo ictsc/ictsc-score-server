@@ -9,31 +9,31 @@ class NotificationRoutes < Sinatra::Base
 
   get "/api/notifications" do
     notifications = []
-           # .where("opened_at <= ?", DateTime.now)
-           # .order(:opened_at) \
-    Problem.readables(user: current_user) \
-           .map do |x|
-              resource_info = {
-                resource: "Problem",
-                resource_id: x.id,
-                sub_resource: nil,
-                sub_resource_id: nil
-              }
+    # Problem.readables(user: current_user) \
+    #        .where("opened_at <= ?", DateTime.now)
+    #        .order(:opened_at) \
+    #        .map do |x|
+    #           resource_info = {
+    #             resource: "Problem",
+    #             resource_id: x.id,
+    #             sub_resource: nil,
+    #             sub_resource_id: nil
+    #           }
 
-              notifications << resource_info.merge({
-                type: "problem_opened",
-                text: "問題が公開されました。",
-                created_at: DateTime.now # x.opened_at
-              })
+    #           notifications << resource_info.merge({
+    #             type: "problem_opened",
+    #             text: "問題が公開されました。",
+    #             created_at: DateTime.now # x.opened_at
+    #           })
 
-              if x.created_at != x.updated_at # && x.opened_at < x.updated_at
-                notifications << resource_info.merge({
-                  type: "problem_updated",
-                  text: "問題が更新されました。",
-                  created_at: x.updated_at
-                })
-              end
-            end
+    #           if x.created_at != x.updated_at # && x.opened_at < x.updated_at
+    #             notifications << resource_info.merge({
+    #               type: "problem_updated",
+    #               text: "問題が更新されました。",
+    #               created_at: x.updated_at
+    #             })
+    #           end
+    #         end
 
   	Comment.where(commentable_type: "Problem") \
   	       .order(:updated_at) \
@@ -63,7 +63,7 @@ class NotificationRoutes < Sinatra::Base
   	comments = Comment.where(commentable_type: "Issue") \
   	                  .joins("INNER JOIN issues ON issues.id = comments.commentable_id") \
 
-    if current_user.team_id
+    if current_user&.team_id
     	comments = comments.where(issues: {team_id: current_user.team_id }) \
     end
 
