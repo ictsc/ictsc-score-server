@@ -35,7 +35,7 @@ class ProblemRoutes < Sinatra::Base
     @problems.each do |p|
       p["solved_teams_count"] = solved_teams_count_by_problem[p["id"]]
       p.dig("creator")&.delete("hashed_password")
-      p.dig("answers").each do |a|
+      p.dig("answers")&.each do |a|
         a.dig("team")&.delete("registration_code")
       end
     end
