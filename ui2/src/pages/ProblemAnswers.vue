@@ -35,8 +35,7 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import {
   Emit,
   PUSH_NOTIF,
-  REMOVE_NOTIF,
-  RELOAD_SESSION
+  REMOVE_NOTIF
 } from '../utils/EventBus'
 
 export default {
@@ -104,7 +103,7 @@ export default {
           answer = filteredAnswer[filteredAnswer.length - 1]
         }
 
-        var addRes = await API.addAnswerComment(answer.id, this.newAnswer);
+        await API.addAnswerComment(answer.id, this.newAnswer);
 
         this.newAnswer = '';
         this.reload();

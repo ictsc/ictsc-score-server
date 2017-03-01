@@ -9,7 +9,7 @@
         <a class="nav-link" href="#">注意事項</a>
       </div>
       <div class="nav-item">
-        <a class="nav-link" href="#">メンバー</a>
+        <router-link :to="{name: 'members'}" class="nav-link">メンバー</router-link>
       </div>
       <div class="nav-item">
         <router-link :to="{name: 'teams'}" class="nav-link">チーム</router-link>

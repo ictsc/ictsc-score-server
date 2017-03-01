@@ -21,6 +21,7 @@ const router = new VueRouter({
     { path: '/', component: require('./pages/Dashboard'), name: 'dashboard' },
     { path: '/login', component: require('./pages/Login'), name: 'login' },
     { path: '/signup', component: require('./pages/Signup'), name: 'signup' },
+    { path: '/members', component: require('./pages/Members'), name: 'members' },
     { path: '/teams', component: require('./pages/Teams'), name: 'teams' },
     { path: '/teams/:id', component: require('./pages/TeamDetail'), name: 'team-detail' },
     { path: '/problems', component: require('./pages/Problems'), name: 'problems' },
