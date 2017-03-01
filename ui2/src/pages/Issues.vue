@@ -11,9 +11,9 @@
             <button v-else class="btn btn-warning">対応中</button>
           </div>
           <div class="title">
-            <h4>問題タイトル</h4>
+            <h4>{{ item.problem.title }}</h4>
             <h3>{{ item.title }}</h3>
-            <p>team: {{ item.team }}</p>
+            <p>{{ item.team.id }}. {{ item.team.name }}</p>
           </div>
           <div class="comments head">
             <div class="content">{{ firstComment(item.comments).text }}</div>

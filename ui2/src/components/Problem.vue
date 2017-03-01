@@ -41,13 +41,9 @@
     </header>
     <aside>
       <h3><span class="sub">補足事項:</span></h3>
-      <div class="comment">
-        <p>補足事項</p>
-        <div class="meta">01/01 00:00</div>
-      </div>
-      <div class="comment">
-        <p>補足事項</p>
-        <div class="meta">01/01 00:00</div>
+      <div v-for="comment in problem.comments" class="comment">
+        <p>{{ comment.text }}</p>
+        <div class="meta">{{ comment.created_at }}</div>
       </div>
       <div class="new-comment">
         <simple-markdown-editor v-if="edit" v-model="newComment"></simple-markdown-editor>
@@ -106,7 +102,7 @@ import Markdown from '../components/Markdown'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'empty',
+  name: 'problem',
   props: {
     id: String,
   },

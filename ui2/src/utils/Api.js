@@ -107,13 +107,13 @@ export class API {
       .then(res => res.body)
   }
   static getProblem (id, req = superagent) {
-    return RequestMiddleware(req.get(`problems/${id}`))
+    return RequestMiddleware(req.get(`problems/${id}?with=comments`))
       .then(res => res.body)
   }
 
   // issues
   static getIssues (req = superagent) {
-    return RequestMiddleware(req.get(`issues?with=comments`))
+    return RequestMiddleware(req.get(`issues?with=comments-member-team,team,problem`))
       .then(res => res.body)
   }
   static addIssues (problem_id, title, req = superagent) {
