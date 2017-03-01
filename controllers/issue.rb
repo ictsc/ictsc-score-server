@@ -17,6 +17,13 @@ class IssueRoutes < Sinatra::Base
 
   get "/api/issues" do
     @issues = generate_nested_hash(klass: Issue, by: current_user, params: @with_param)
+    @issues.each do |i|
+      i.dig("team")&.delete("registration_code")
+      i.dig("comments")&.each do |c|
+        c.dig("member")&.delete("hashed_password")
+        c.dig("member", "team")&.delete("registration_code")
+      end
+    end
     json @issues
   end
 
@@ -28,6 +35,12 @@ class IssueRoutes < Sinatra::Base
 
   get "/api/issues/:id" do
     @issue = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, id: params[:id])
+    @issue.dig("team")&.delete("registration_code")
+    @issue.dig("comments")&.each do |c|
+      c.dig("member")&.delete("hashed_password")
+      c.dig("member", "team")&.delete("registration_code")
+    end
+
     json @issue
   end
 
