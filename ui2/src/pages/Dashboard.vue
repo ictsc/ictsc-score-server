@@ -41,7 +41,7 @@
         <h3>順位</h3>
         <div class="item-box">
           <template v-for="item in scoreboard">
-            <router-link :to="{name: 'team-detail', params: {id: item.team.id}}" class="item">
+            <router-link :to="{name: 'team-detail', params: {id: item.team ? item.team.id : ''}}" class="item">
               <h4>{{ item.rank }}位 <span class="score">{{ item.score }}点</span></h4>
               <div v-if="item.team">{{ item.team.name }}</div>
             </router-link>
