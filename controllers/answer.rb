@@ -54,7 +54,12 @@ class AnswerRoutes < Sinatra::Base
     halt 403 if not Answer.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Answer)
-    @attrs[:team_id] = current_user.team_id
+    @attrs[:team_id] = current_user.team_id if not is_admin?
+    if %w(true 1).include? @attrs[:completed].to_s
+      status 400
+      next json completed: "can't be true on created"
+    end
+
     @answer = Answer.new(@attrs)
 
     if @answer.save
@@ -75,6 +80,18 @@ class AnswerRoutes < Sinatra::Base
 
     @attrs = attribute_values_of_class(Answer)
     @answer.attributes = @attrs
+
+    if "Participant" == current_user&.role&.name
+      if @attrs.keys != [:completed]
+        status 400
+        next json @attrs.map{|k, v| [k, "participant can't edit"] }.to_h
+      end
+
+      if %w(false 0).include? @attrs[:completed].to_s
+        status 400
+        next json completed: "participant can't make answer to not completed"
+      end
+    end
 
     if not @answer.valid?
       status 400

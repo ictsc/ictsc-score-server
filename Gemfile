@@ -25,8 +25,8 @@ gem "puma", require: false
 
 group :development do
   gem "pry"
-  gem "shotgun",            require: false
-  gem "better_errors"
+  gem "pry-byebug"
+  gem "better_errors", git: "https://github.com/grekko/better_errors.git"
   gem "binding_of_caller",  require: false
   gem "rack-lineprof"
 end

@@ -12,20 +12,16 @@ class ProblemRoutes < Sinatra::Base
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(?,) & %w(answers answers-comments answers-score issues issues-comments creator) if request.get?
+    @with_param = (params[:with] || "").split(?,) & %w(answers answers-comments answers-score answers-team issues issues-comments creator comments) if request.get?
   end
 
   get "/api/problems" do
-    # problems = Problem.includes(:comments)
-    # readables = problems.readables(user: current_user).reject(&:nil?)
+    @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param).uniq
 
-    @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param)
     if "Participant" == current_user&.role&.name
       show_columns = Problem.column_names - %w(title text)
-      @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns)).sort_by(&:id)
+      @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json).sort_by{|x| x["id"] }
     end
-
-    # @problems_array = @problems.as_json(@json_options)
 
     # NOTE select "reference_point" is needed because of used in having clause
     solved_teams_count_by_problem = Problem \

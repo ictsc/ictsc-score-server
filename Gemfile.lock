@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/grekko/better_errors.git
+  revision: c557196a2602f2186fa5ed3f52de97f074ebb4ed
+  specs:
+    better_errors (2.1.1)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
+      rack (>= 0.9.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -17,12 +26,9 @@ GEM
       tzinfo (~> 1.1)
     arel (7.1.4)
     backports (3.6.8)
-    better_errors (2.1.1)
-      coderay (>= 1.0.0)
-      erubis (>= 2.6.6)
-      rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    byebug (9.0.6)
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
     debug_inspector (0.0.2)
@@ -44,6 +50,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (3.4.2)
+      byebug (~> 9.0)
+      pry (~> 0.10)
     puma (3.7.1)
     rack (1.6.5)
     rack-contrib (1.4.0)
@@ -84,8 +93,6 @@ GEM
     seed-fu (2.3.6)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
-    shotgun (0.9.2)
-      rack (>= 1.0)
     sinatra (1.4.8)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -117,7 +124,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-mysql-reconnect
-  better_errors
+  better_errors!
   binding_of_caller
   dotenv
   factory_girl
@@ -126,6 +133,7 @@ DEPENDENCIES
   oj
   oj_mimic_json
   pry
+  pry-byebug
   puma
   rack-contrib
   rack-lineprof
@@ -136,7 +144,6 @@ DEPENDENCIES
   redis-rack
   rspec
   seed-fu
-  shotgun
   sinatra
   sinatra-activerecord
   sinatra-contrib
