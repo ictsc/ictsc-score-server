@@ -3,7 +3,7 @@
     <div class="answers">
       <div class="scoring">
         {{ scores }}
-        <div class="row">
+        <div v-if="value.completed" class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
           </div>
@@ -163,9 +163,7 @@ export default {
           point: this.newPoint,
         }))
       } else {
-        postOrPut = API.postScore(this.value.id, {
-          point: this.newPoint,
-        })
+        postOrPut = API.postScore(this.value.id, this.newPoint)
       }
 
       postOrPut

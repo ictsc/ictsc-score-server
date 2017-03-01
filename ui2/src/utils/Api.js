@@ -98,6 +98,10 @@ export class API {
     return RequestMiddleware(req.get(`problem_groups`))
       .then(res => res.body)
   }
+  static getProblemsWithScore (req = superagent) {
+    return RequestMiddleware(req.get(`problems?with=answers-score`))
+      .then(res => res.body)
+  }
   static getProblems (req = superagent) {
     return RequestMiddleware(req.get(`problems`))
       .then(res => res.body)
