@@ -21,9 +21,14 @@
                 v-if="group.id === problem.problem_group_id"
                 :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
                 class="problem d-flex">
+                <div v-if="problem.title === undefined" class="overlay">
+                  <div class="overlay-message">
+                    採点基準クリアで解禁
+                  </div>
+                </div>
                 <div class="scores-wrapper">
                   <div class="scores">
-                    <div class="current">{{ problem.reference_point }}</div>
+                    <div class="current">{{ getScore(problem.answers) }}</div>
                     <div class="max">{{ problem.perfect_point }}点満点</div>
                   </div>
                 </div>
@@ -37,32 +42,10 @@
                 </div>
               </router-link>
             </template>
-            <a class="problem d-flex">
-              <div class="overlay">
-                <div class="overlay-message">
-                  採点基準クリアで解禁
-                </div>
-              </div>
-              <div class="scores-wrapper">
-                <div class="scores">
-                  <div class="current">40</div>
-                  <div class="max">50点満点</div>
-                </div>
-              </div>
-              <div class="content">
-                <h3>titletitletitletitltitletitletitletitltitletitletitletitltitletitletitletitltitletitletitletitltitletitletitletitl</h3>
-                <div class="tips">
-                  <span>解答 1件 (1分前)</span>
-                  <span>採点 1件 (1分前)</span>
-                  <span>質問 3件 (1時間前)</span>
-                </div>
-              </div>
-            </a>
           </div>
         </div>
       </div>
     </div>
-    <pre>{{problems}}</pre>
   </div>
 </template>
 
@@ -169,12 +152,12 @@ export default {
     },
     problemsDefault: [],
     problems () {
-      return API.getProblems();
+      return API.getProblemsWithScore();
     },
-    answersDefault: [],
-    answers () {
-      return API.getAnswers();
-    },
+    // answersDefault: [],
+    // answers () {
+    //   return API.getAnswers();
+    // },
   },
   computed: {
     ...mapGetters([
@@ -189,7 +172,11 @@ export default {
   destroyed () {
   },
   methods: {
-    getScore (problem, team) {
+    getScore (answers) {
+      if (!answers) return 0;
+      return answers
+        .filter(ans => ans.team_id === this.session.member.team_id)
+        .reduce((p, n) => p + n.score.point, 0);
     },
   },
 }
