@@ -10,6 +10,7 @@
 <script>
 import { SET_TITLE } from '../store/'
 import Problem from '../components/Problem'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'problem-detail',
@@ -26,11 +27,24 @@ export default {
     id () {
       return this.$route.params.id;
     },
+    ...mapGetters([
+      'session',
+    ]),
   },
   watch: {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '問題詳細');
+    console.log(this.session);
+    if (this.session.member && this.session.member.team_id !== null) {
+      this.$router.replace({
+        name: 'problem-issues',
+        params: {
+          id: this.id,
+          team: this.session.member.team_id,
+        }
+      });
+    }
   },
   destroyed () {
   },
