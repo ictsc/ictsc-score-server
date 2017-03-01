@@ -28,6 +28,7 @@ GEM
     backports (3.6.8)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    byebug (9.0.6)
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
     debug_inspector (0.0.2)
@@ -49,6 +50,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (3.4.2)
+      byebug (~> 9.0)
+      pry (~> 0.10)
     puma (3.7.1)
     rack (1.6.5)
     rack-contrib (1.4.0)
@@ -129,6 +133,7 @@ DEPENDENCIES
   oj
   oj_mimic_json
   pry
+  pry-byebug
   puma
   rack-contrib
   rack-lineprof
