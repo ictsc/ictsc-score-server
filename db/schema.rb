@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170227224937) do
+ActiveRecord::Schema.define(version: 20170301032343) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id",                 null: false
@@ -83,11 +83,11 @@ ActiveRecord::Schema.define(version: 20170227224937) do
   end
 
   create_table "problems", force: :cascade do |t|
-    t.string   "title",                        null: false
-    t.string   "text",                         null: false
-    t.integer  "creator_id",                   null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.string   "title",                                     null: false
+    t.string   "text",                         limit: 1000, null: false
+    t.integer  "creator_id",                                null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.integer  "problem_must_solve_before_id"
     t.integer  "reference_point"
     t.integer  "perfect_point"
