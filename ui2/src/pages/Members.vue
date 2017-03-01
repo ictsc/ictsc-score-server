@@ -1,7 +1,6 @@
 <template>
   <div>
-    <pre>
-    </pre>
+    <pre>{{ members }}</pre>
   </div>
 </template>
 
@@ -11,6 +10,7 @@
 
 <script>
 import { SET_TITLE } from '../store/'
+import { API } from '../utils/Api'
 
 export default {
   name: 'members',
@@ -19,6 +19,9 @@ export default {
     }
   },
   asyncData: {
+    members () {
+      return API.getMembers();
+    }
   },
   computed: {
   },
