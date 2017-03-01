@@ -110,20 +110,16 @@ export default {
         this.reload();
         Emit(PUSH_NOTIF, {
           type: 'success',
-          icon: 'check',
           title: '投稿しました',
           detail: '',
           key: 'answer',
-          autoClose: true,
         });
       } catch (err) {
         console.error(err);
         Emit(PUSH_NOTIF, {
           type: 'error',
-          icon: 'warning',
           title: '投稿に失敗しました',
           key: 'answer',
-          autoClose: false,
         });
       }
     },

@@ -5,11 +5,11 @@
         <h1>サインアップ</h1>
           <div class="form-group">
             <label for="input-name">氏名</label>
-            <input type="text" class="form-control form-control-lg" id="input-name">
+            <input v-model="name" type="text" class="form-control form-control-lg" id="input-name">
           </div>
           <div class="form-group">
             <label for="input-register-code">登録コード</label>
-            <input type="text" class="form-control form-control-lg" id="input-register-code">
+            <input v-model="registration_code" type="text" class="form-control form-control-lg" id="input-register-code">
           </div>
           <div class="form-group">
             <label for="input-org">所属とチーム</label>
@@ -17,18 +17,19 @@
           </div>
           <div class="form-group">
             <label for="input-member-id">メンバーID</label>
-            <input type="text" class="form-control form-control-lg" id="input-member-id">
+            <input v-model="login" type="text" class="form-control form-control-lg" id="input-member-id">
           </div>
           <div class="form-group">
             <label for="input-password">パスワード</label>
-            <input type="password" class="form-control form-control-lg" id="input-password">
+            <input v-model="password" type="password" class="form-control form-control-lg" id="input-password">
           </div>
           <div class="form-group">
-            <button type="button" class="btn btn-success btn-lg btn-block">サインアップ</button>
+            <button v-on:click="submit()" type="button" class="btn btn-success btn-lg btn-block">サインアップ</button>
           </div>
-          <p class="text-center"><a href="">サインアップはこちら</a></p>
+          <p class="text-center"><router-link :to="{ name: 'login' }">ログインはこちら</router-link></p>
       </div>
     </div>
+    <pre>{{ teams }}</pre>
   </div>
 </template>
 
@@ -38,14 +39,23 @@
 
 <script>
 import { SET_TITLE } from '../store/'
+import { API } from '../utils/Api'
+import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 
 export default {
   name: 'empty',
   data () {
     return {
+      login: '',
+      name: '',
+      password: '',
+      registration_code: '',
     }
   },
   asyncData: {
+    teams () {
+      return API.getTeams();
+    },
   },
   computed: {
   },
@@ -57,6 +67,26 @@ export default {
   destroyed () {
   },
   methods: {
+    async submit () {
+      Emit(REMOVE_NOTIF, msg => msg.key === 'login');
+      try {
+        await API.postMembers(this.login, this.name, this.password, this.registration_code);
+        Emit(PUSH_NOTIF, {
+          type: 'success',
+          title: 'アカウントを作成しました',
+          detail: '',
+          key: 'login',
+        });
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: 'アカウント作成に失敗しました',
+          detail: '',
+          key: 'login',
+        });
+      }
+    }
   },
 }
 </script>

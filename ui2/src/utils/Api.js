@@ -66,6 +66,11 @@ export class API {
     return RequestMiddleware(req.get('members'))
       .then(res => res.body)
   }
+  static postMembers (login, name, password, registration_code, req = superagent) {
+    return RequestMiddleware(
+      req.post('members')
+    ).then(res => res.body)
+  }
 
   // teams
   static getTeams (req = superagent) {

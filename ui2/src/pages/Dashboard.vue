@@ -73,21 +73,17 @@ import Markdown from '../components/Markdown'
 let successNotif = (title, detail) => {
   Emit(PUSH_NOTIF, {
     type: 'success',
-    icon: 'check',
     title,
     detail,
     key: 'notif',
-    autoClose: true,
   });
 }
 let errorNotif = (title, detail) => {
   Emit(PUSH_NOTIF, {
     type: 'error',
-    icon: 'warning',
     title,
     detail,
     key: 'notif',
-    autoClose: false,
   });
 }
 

@@ -135,11 +135,9 @@ export default {
           console.log('Patch OK');
           Emit(PUSH_NOTIF, {
             type: 'success',
-            icon: 'check',
             title: '投稿しました',
             detail: '',
             key: 'issue',
-            autoClose: true,
           });
           if (this.reload.apply) this.reload();
         })
@@ -147,10 +145,8 @@ export default {
           console.error(err);
           Emit(PUSH_NOTIF, {
             type: 'error',
-            icon: 'warning',
             title: '投稿に失敗しました',
             key: 'issue',
-            autoClose: false,
           });
         })
     },

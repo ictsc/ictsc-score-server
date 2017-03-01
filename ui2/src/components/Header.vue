@@ -99,21 +99,17 @@ export default {
           Emit(RELOAD_SESSION)
           Emit(PUSH_NOTIF, {
             type: 'success',
-            icon: 'check',
             title: 'ログアウトしました',
             detail: '',
             key: 'login',
-            autoClose: true,
           });
         })
         .catch(err => {
           console.log(err)
           Emit(PUSH_NOTIF, {
             type: 'error',
-            icon: 'warning',
             title: 'ログアウトに失敗しました',
             key: 'login',
-            autoClose: false,
           });
         })
     },

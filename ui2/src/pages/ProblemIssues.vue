@@ -103,21 +103,17 @@ export default {
           this.reload();
           Emit(PUSH_NOTIF, {
             type: 'success',
-            icon: 'check',
             title: '投稿しました',
             detail: '',
             key: 'login',
-            autoClose: true,
           });
         })
         .catch(err => {
           console.log(err)
           Emit(PUSH_NOTIF, {
             type: 'error',
-            icon: 'warning',
             title: '投稿に失敗しました',
             key: 'login',
-            autoClose: false,
           });
         });
     },

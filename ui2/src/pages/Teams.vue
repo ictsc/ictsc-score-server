@@ -120,22 +120,18 @@ export default {
           this.asyncReload();
           Emit(PUSH_NOTIF, {
             type: 'success',
-            icon: 'check',
             title: '追加しました。',
             detail: '',
             key: 'teams',
-            autoClose: true,
           })
         })
         .catch(err => {
           console.warn(err);
           Emit(PUSH_NOTIF, {
             type: 'error',
-            icon: 'warning',
             title: '追加に失敗しました。',
             detail: '',
             key: 'teams',
-            autoClose: false,
           });
         })
     }
