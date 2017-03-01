@@ -13,7 +13,7 @@
           </div>
           <div class="form-group">
             <label for="input-org">所属とチーム</label>
-            <input type="text" class="form-control form-control-lg" id="input-org" readonly>
+            <input type="text" class="form-control form-control-lg" id="input-org" readonly :value="teamName">
           </div>
           <div class="form-group">
             <label for="input-member-id">メンバーID</label>
@@ -41,6 +41,7 @@
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
+import sha1 from 'sha1'
 
 export default {
   name: 'empty',
@@ -53,11 +54,17 @@ export default {
     }
   },
   asyncData: {
+    teamsDefault: [],
     teams () {
       return API.getTeams();
     },
   },
   computed: {
+    teamName () {
+      var team = this.teams.find(t => t.hashed_registration_code === sha1(this.registration_code));
+      if (team) return team.name;
+      else return '-----';
+    },
   },
   watch: {
   },

@@ -69,6 +69,7 @@ export class API {
   static postMembers (login, name, password, registration_code, req = superagent) {
     return RequestMiddleware(
       req.post('members')
+        .send(JSON.stringify({ login, name, password, registration_code }))
     ).then(res => res.body)
   }
 
