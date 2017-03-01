@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301044239) do
+ActiveRecord::Schema.define(version: 20170301053432) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "problem_id",                 null: false
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20170301044239) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string   "text",             limit: 1000, null: false
+    t.string   "text",             limit: 4000, null: false
     t.integer  "member_id",                     null: false
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
