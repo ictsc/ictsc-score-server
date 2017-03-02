@@ -24,7 +24,8 @@ module Sinatra
 
         case r[entity]
         when Array
-          r[entity].select!{|rr| k.readables(user: member, action: action).ids.include?(rr["id"]) }
+          r_entity_readable_ids = k.readables(user: member, action: action).ids
+          r[entity].select!{|rr| r_entity_readable_ids.include?(rr["id"]) }
           filter_entities(member: member, resource: r[entity], entities: entities[(i+1)..-1], parent_entity: entity) if 1 < entities.size
           return
         when Hash
