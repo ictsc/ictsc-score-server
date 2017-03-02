@@ -26,10 +26,20 @@ class ScoreRoutes < Sinatra::Base
     # So, fetch firstblood problem ids first, and calculate each entities using it.
     # Entities are same as included in `GET "/api/scores/:id"`
     firstblood_ids = Score.firstbloods(only_ids: true)
+
+    # NOTE: Calculate each Score#cleared_problem_group? is too slow
+    # So, doing same way doing upper (firstbloods).
+    cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user.team_id)
+
     # @scores_array = @scores.as_json
     @scores.each do |s|
       s["is_firstblood"]  = firstblood_ids.include? s["id"]
-      s["bonus_point"]    = s["is_firstblood"] ? (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i : 0
+
+      bonus_point = 0
+      bonus_point += (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
+      bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
+
+      s["bonus_point"]    = bonus_point
       s["subtotal_point"] = s["point"] + s["bonus_point"]
     end
 
