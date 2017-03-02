@@ -1,5 +1,47 @@
 <template>
-  <div v-loading="asyncLoading">
+  <div>
+    <div class="fixed-tool-tips">
+      <div v-on:click="showAdd = true" class="add"><i class="fa fa-plus"></i></div>
+    </div>
+    <message-box v-model="showAdd">
+      <span slot="title">新規問題</span>
+      <div slot="body">
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">グループ</label>
+          <div class="col-sm-10">
+            <select class="form-control" v-model="newObj.problem_group_id">
+              <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Title</label>
+          <div class="col-sm-10">
+            <input v-model="newObj.title" type="text" class="form-control" placeholder="タイトル">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">基準点</label>
+          <div class="col-sm-10">
+            <input v-model="newObj.reference_point" type="number" class="form-control">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">満点</label>
+          <div class="col-sm-10">
+            <input v-model="newObj.perfect_point" type="number" class="form-control">
+          </div>
+        </div>
+        
+        <simple-markdown-editor v-model="newObj.text"></simple-markdown-editor>
+      </div>
+      <template slot="buttons" scope="props">
+        <button v-on:click="addProblem()" class="btn btn-lg btn-success">
+          <i class="fa fa-plus"></i> 問題を追加する
+        </button>
+      </template>
+    </message-box>
+
     <h1>問題一覧</h1>
     <div class="description">
       <p>出題ルール書いといたほうがよさそう。</p>
@@ -33,7 +75,7 @@
       </div>
     </div>
 
-    <div class="groups">
+    <div v-loading="asyncLoading" class="groups">
       <div v-for="group in problemGroups" class="group row">
         <div class="col-6">
           <div class="detail">
@@ -77,7 +119,24 @@
 </template>
 
 <style scoped>
+.fixed-tool-tips {
+  position: fixed;
+  top: 5rem;
+  right: 3rem;
+  z-index: 1;
+}
+.fixed-tool-tips > * {
+  cursor: pointer;
+  padding: 1rem;
+  background: #888;
+  color: white;
+  line-height: 1;
+  border-radius: 50%;
+  font-size: 2rem;
+}
+
 .groups {
+  min-height: 15rem;
 }
 .group {
   border-top: 1px solid #FDBBCC;
@@ -186,15 +245,28 @@
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import Markdown from '../components/Markdown'
+import MessageBox from '../components/MessageBox'
+import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import { mapGetters } from 'vuex'
+import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 
 export default {
   name: 'problems',
   components: {
     Markdown,
+    MessageBox,
+    SimpleMarkdownEditor,
   },
   data () {
     return {
+      showAdd: false,
+      newObj: {
+        title: '',
+        text: '',
+        reference_point: 0,
+        perfect_point: 0,
+        problem_group_id: '',
+      },
     }
   },
   asyncData: {
@@ -217,6 +289,12 @@ export default {
     ]),
   },
   watch: {
+    problemGroups (val) {
+      try {
+        this.newObj.problem_group_id = val[0].id;
+      } catch (e) {
+      }
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '問題一覧');
@@ -229,6 +307,28 @@ export default {
       return answers
         .filter(ans => ans.team_id === this.session.member.team_id)
         .reduce((p, n) => p + n.score.point, 0);
+    },
+    async addProblem () {
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
+        await API.postProblems(this.newObj);
+        this.newObj.title = '';
+        this.newObj.text = '';
+        Emit(PUSH_NOTIF, {
+          type: 'success',
+          title: '投稿しました',
+          detail: '',
+          key: 'problem',
+        });
+      } catch (err) {
+        console.log(err)
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '投稿に失敗しました失敗しました',
+          detail: '',
+          key: 'problem',
+        });
+      }
     },
   },
 }
