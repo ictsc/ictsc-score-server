@@ -4,6 +4,33 @@
     <div class="description">
       <p>出題ルール書いといたほうがよさそう。</p>
       <p>A〜F社から各問題が1第ずつ出題されます。採点基準を満たす解答をすると、次の問題が解答できるようになります。とか。</p>
+
+      <div class="steps d-flex">
+        <div class="item">
+          <h4>各社から問題を選んで解答</h4>
+          <p>解禁されている問題を選択し、解答を行ってください。</p>
+        </div>
+        <div class="item">
+          <h4>採点依頼</h4>
+          <p>解答を送信後、採点依頼ボタンをクリックして運営に送信してください。</p>
+        </div>
+        <div class="item">
+          <h4>運営が採点 (20分間)</h4>
+          <p>運営が採点中はその会社の問題を解けません。</p>
+        </div>
+        <div class="item">
+          <h4>採点結果を確認</h4>
+          <p>高得点を目指して追加の解答も可能です。</p>
+        </div>
+      </div>
+      <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">問題解答の注意点</h4>
+        <ul>
+          <li>問題に解答して保存しても、「採点依頼」を送信しないと運営に採点されません。</li>
+          <li>採点結果は、採点依頼を送信してから20分後に帰ってきます。</li>
+          <li>採点依頼中はその会社の問題を解くことはできません。</li>
+        </ul>
+      </div>
     </div>
 
     <div class="groups">
@@ -128,6 +155,31 @@
   list-style: none;
 }
 
+.description {
+  margin-bottom: 4rem;
+}
+
+.steps {
+  margin: 2rem 0;
+}
+.steps .item {
+  flex-grow: 1;
+  min-width: 5rem;
+  padding: 1rem;
+  padding-right: 4rem;
+  background: #efefef;
+  position: relative;
+  background-image: url('../assets/img/arrow.svg');
+  background-repeat: repeat-y;
+  background-position: right center;
+}
+.steps .item:last-child {
+  background-image: none;
+  padding-right: 1rem;  
+}
+.steps .item p {
+  margin: 0;
+}
 </style>
 
 <script>

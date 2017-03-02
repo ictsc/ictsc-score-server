@@ -122,6 +122,10 @@ export class API {
     return RequestMiddleware(req.get(`issues?with=comments-member-team,team,problem`))
       .then(res => res.body)
   }
+  static getIssue (id, req = superagent) {
+    return RequestMiddleware(req.get(`issues/${id}?with=comments-member-team,team,problem`))
+      .then(res => res.body)
+  }
   static addIssues (problem_id, title, req = superagent) {
     return RequestMiddleware(
       req.post(`issues`)

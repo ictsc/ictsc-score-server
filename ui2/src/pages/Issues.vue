@@ -11,9 +11,10 @@
             <button v-else class="btn btn-warning">対応中</button>
           </div>
           <div class="title">
-            <h4>{{ item.problem.title }}</h4>
+            <h4>{{ item.problem ? item.problem.title : '???' }}</h4>
             <h3>{{ item.title }}</h3>
-            <p>{{ item.team.id }}. {{ item.team.name }}</p>
+            <p v-if="item.team">{{ item.team.id }}. {{ item.team.name }}</p>
+            <p v-else>???</p>
           </div>
           <div class="comments head">
             <div class="content">{{ firstComment(item.comments).text }}</div>

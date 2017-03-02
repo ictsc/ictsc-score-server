@@ -61,8 +61,9 @@ export default {
   asyncData: {
     issuesDefault: [],
     issues () {
-      return API.getIssues();
-    }
+      if (this.issueId) return API.getIssue(this.issueId).then(r => [r]);
+      else return API.getIssues();
+    },
   },
   computed: {
     problemId () {
@@ -81,10 +82,25 @@ export default {
       return this.issues
         .filter(i => '' + i.problem_id === this.problemId)
         .filter(i => '' + i.team_id === this.teamId)
-        .filter(i => this.issueId === undefined || '' + i.id === this.issueId);
+        // .filter(i => this.issueId === undefined || '' + i.id === this.issueId);
     },
   },
   watch: {
+    problemId (val, old) {
+      if (val !== old) {
+        this.asyncReload('issues');
+      }
+    },
+    teamId (val, old) {
+      if (val !== old) {
+        this.asyncReload('issues');
+      }
+    },
+    issueId (val, old) {
+      if (val !== old) {
+        this.asyncReload('issues');
+      }
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '質問一覧');
