@@ -29,7 +29,7 @@ class ScoreRoutes < Sinatra::Base
 
     # NOTE: Calculate each Score#cleared_problem_group? is too slow
     # So, doing same way doing upper (firstbloods).
-    cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user.team_id)
+    cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
 
     # @scores_array = @scores.as_json
     @scores.each do |s|
