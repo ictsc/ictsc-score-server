@@ -3,7 +3,10 @@
     <div class="head">
       <div class="body d-flex">
         <div class="status">
-          <div><button class="btn btn-secondary">対応中</button></div>
+          <div>
+            <button v-if="value.closed" v-on:click="switchClosed()" class="btn btn-secondary">Closed</button>
+            <button v-else v-on:click="switchClosed()" class="btn btn-secondary">Opened</button>
+          </div>
           <div><small>解決したら<br>クリック</small></div>
         </div>
         <div class="content">
@@ -146,6 +149,23 @@ export default {
             key: 'issue',
           });
         })
+    },
+    async switchClosed () {
+      Emit(REMOVE_NOTIF, msg => msg.key === 'issue');
+      try {
+        var newState = !this.value.closed;
+        await API.patchIssues(this.value.id, {
+          closed: newState,
+        });
+        this.value.closed = newState;
+      } catch (err) {
+        console.log(err)
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: 'ステータスの変更に失敗しました',
+          key: 'issue',
+        });
+      }
     },
   },
 }
