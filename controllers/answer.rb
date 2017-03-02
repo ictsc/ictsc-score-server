@@ -79,7 +79,6 @@ class AnswerRoutes < Sinatra::Base
     end
 
     @attrs = attribute_values_of_class(Answer)
-    @answer.attributes = @attrs
 
     if "Participant" == current_user&.role&.name
       if @attrs.keys != [:completed]
@@ -91,7 +90,11 @@ class AnswerRoutes < Sinatra::Base
         status 400
         next json completed: "participant can't make answer to not completed"
       end
+
+      @attrs[:completed_at] = DateTime.now
     end
+
+    @answer.attributes = @attrs
 
     if not @answer.valid?
       status 400

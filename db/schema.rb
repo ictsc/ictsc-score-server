@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301053432) do
+ActiveRecord::Schema.define(version: 20170302053734) do
 
   create_table "answers", force: :cascade do |t|
-    t.integer  "problem_id",                 null: false
-    t.integer  "team_id",                    null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.boolean  "completed",  default: false, null: false
+    t.integer  "problem_id",                   null: false
+    t.integer  "team_id",                      null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "completed",    default: false, null: false
+    t.datetime "completed_at"
     t.index ["id"], name: "index_answers_on_id", unique: true
     t.index ["team_id"], name: "index_answers_on_team_id"
   end
