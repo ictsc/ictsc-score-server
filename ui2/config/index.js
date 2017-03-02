@@ -27,7 +27,7 @@ module.exports = {
         target: 'http://localhost:9292/',
         changeOrigin: true,
         logLevel: 'debug',
-        proxyTimeout: 5000,
+        proxyTimeout: 10 * 000,
         onProxyReq (proxyReq, req, res) {
           delete proxyReq._headers.referer;
           proxyReq._headers.origin = 'http://localhost:9292';

@@ -136,6 +136,10 @@ h6, .h6 {
   font-size: .8rem;
 }
 
+.el-loading-mask {
+    z-index: 1;
+}
+
 .form-group label {
     font-weight: bold;
     margin-bottom: 0.2rem;
