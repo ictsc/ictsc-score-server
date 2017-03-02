@@ -16,7 +16,7 @@
           <th>{{ member.id }}</th>
           <td>{{ member.name }}</td>
           <td>{{ member.login }}</td>
-          <td>{{ member.team_id }}</td>
+          <td>{{ member.team ? member.team.name : '--- None ---' }}</td>
           <td>{{ member.role_id }}</td>
         </tr>
       </tbody>
