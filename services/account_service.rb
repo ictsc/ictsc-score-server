@@ -34,23 +34,19 @@ module Sinatra
     end
 
     def is_admin?
-      return false if current_user.nil?
-      return current_user.role.name == "Admin"
+      return current_user&.role&.name == "Admin"
     end
 
     def is_viewer?
-      return false if current_user.nil?
-      return current_user.role.name == "Viewer"
+      return current_user&.role&.name == "Viewer"
     end
 
     def is_participant?
-      return false if current_user.nil?
-      return current_user.role.name == "Participant"
+      return current_user&.role&.name == "Participant"
     end
 
     def is_writer?
-      return false if current_user.nil?
-      return current_user.role.name == "Writer"
+      return current_user&.role&.name == "Writer"
     end
 
   end
