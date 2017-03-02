@@ -1,5 +1,6 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/config_file"
 require_relative "../services/account_service"
 
 # https://wiki.icttoracon.net/ictsc7/rules/public
@@ -10,9 +11,12 @@ require_relative "../services/account_service"
 # - 各問題が何チームに解かれたか
 
 class ScoreBoardRoutes < Sinatra::Base
+  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+
+  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/scoreboard*" do
     I18n.locale = :en if request.xhr?
@@ -60,6 +64,7 @@ class ScoreBoardRoutes < Sinatra::Base
     when is_admin?, is_writer?, is_viewer?
       json scoreboard_for(all: true)
     when is_participant?
+      halt 403 if settings.scoreboard_hide_at <= DateTime.now
       team = current_user.team
       halt 400 if team.nil?
       json scoreboard_for(team: team)
