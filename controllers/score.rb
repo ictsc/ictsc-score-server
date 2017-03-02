@@ -22,7 +22,7 @@ class ScoreRoutes < Sinatra::Base
   get "/api/scores" do
     @scores = generate_nested_hash(klass: Score, by: current_user, params: @with_param)
 
-    # NOTE: Score#is_firstblood, Score#bonus_point, Score#subtotal_point is too slow for fetching multiple scores
+    # NOTE: Calculate each Score#is_firstblood, Score#bonus_point, Score#subtotal_point is too slow
     # So, fetch firstblood problem ids first, and calculate each entities using it.
     # Entities are same as included in `GET "/api/scores/:id"`
     firstblood_ids = Score.firstbloods(only_ids: true)

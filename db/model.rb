@@ -459,7 +459,7 @@ class Score < ActiveRecord::Base
       join_table.join(a_before).on(
         a_before[:problem_id].eq(problems[:id]),
         a_before[:team_id].eq(answers[:team_id]),
-        a_before[:updated_at].lteq(answers[:updated_at])
+        a_before[:completed_at].lteq(answers[:completed_at])
       ),
       join_table.join(s_before).on(s_before[:answer_id].eq(a_before[:id]))
     ].map(&:join_sources)
@@ -468,7 +468,7 @@ class Score < ActiveRecord::Base
       .joins(*join_tables) \
       .group(answers[:id], "problems.reference_point") \
       .having(problems[:reference_point].lteq(s_before[:point].sum)) \
-      .order(answers[:updated_at]) \
+      .order(answers[:completed_at]) \
       .pluck("answers.problem_id", "scores.id") \
       .inject({}){|acc, (p_id, id)| acc[p_id] ||= id; acc }
 
