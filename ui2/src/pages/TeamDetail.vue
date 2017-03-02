@@ -14,11 +14,11 @@
           class="d-flex item">
           <div class="id">{{ problem.id }}</div>
           <div class="title">{{ problem.title }}</div>
-          <div class="score">XXX 点</div>
+          <div class="score">{{ point(problem.id) }} 点</div>
         </router-link>
       </template>
     </div>
-    <pre>{{ team }}</pre>
+    <!--<pre>{{ team }}</pre>-->
   </div>
 </template>
 
@@ -91,6 +91,15 @@ export default {
   destroyed () {
   },
   methods: {
+    point (problemId) {
+      try {
+        return this.team.answers
+          .filter(ans => ans.problem_id === problemId)
+          .reduce((p, n) => p + n.score.point, 0);
+      } catch (e) {
+        return '---'
+      }
+    }
   },
 }
 </script>

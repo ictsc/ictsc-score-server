@@ -2,7 +2,6 @@
   <div>
     <div class="answers">
       <div class="scoring">
-        {{ scores }}
         <div v-if="value.completed" class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
@@ -20,11 +19,11 @@
       </div>
       <div class="status">
         <template v-if="value.completed">
-          <div v-if="isScored === true" class="result">
-            得点: {{ point }} + ボーナス: {{ bonusPoint }}
-            <span v-if="isFirstBlood">FirstBlood!</span>
+          <div v-if="value.score" class="result">
+            得点: {{ value.score.point }} + ボーナス: ??? <!-- {{ value.score.bonus_point }} -->
+            <span v-if="value.score.is_firstblood">FirstBlood!</span>
           </div>
-          <div v-if="isScored === false" class="pending">採点依頼中...</div>
+          <div v-if="!value.score" class="pending">採点依頼中...</div>
         </template>
         <div v-else class="send">
           <button v-on:click="sendRequest()" class="btn btn-block btn-secondary">採点依頼を送る</button>
@@ -82,7 +81,6 @@ export default {
   },
   props: {
     value: Object,
-    scores: Array,
     reload: Function,
   },
   data () {
@@ -97,31 +95,14 @@ export default {
     issueId () {
       return this.value.id;
     },
-    firstScore () {
-      return (this.scores[0] && this.scores[0]) || {};
-    },
-    isScored () {
-      if (this.scoresLoading) return undefined;
-      else if (this.scores.length === 0) return false;
-      else return true
-    },
-    point () {
-      return this.scores.reduce((p, n) => p + n.point, 0);
-    },
-    bonusPoint () {
-      return this.scores.reduce((p, n) => p + n.bonus_point, 0);
-    },
-    isFirstBlood () {
-      return this.scores.reduce((p, n) => p || n.is_firstblood, false);
-    },
   },
   watch: {
-    scores (val) {
-      this.newPoint = this.firstScore.point;
+    value (val) {
+      this.newPoint = (this.value.score && this.value.score.point) || 0;
     },
   },
   mounted () {
-    this.newPoint = this.firstScore.point;
+    this.newPoint = (this.value.score && this.value.score.point) || 0;
   },
   destroyed () {
   },

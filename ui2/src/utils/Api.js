@@ -92,6 +92,14 @@ export class API {
     return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score`))
       .then(res => res.body)
   }
+  static getTeamWithAnswers (id, req = superagent) {
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+      .then(res => res.body)
+  }
+  static getTeamWithIssues (id, req = superagent) {
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+      .then(res => res.body)
+  }
 
   // scoreboard
   static getScoreboard (req = superagent) {
@@ -130,6 +138,11 @@ export class API {
     return RequestMiddleware(
       req.post(`issues`)
         .send(JSON.stringify({ problem_id, title }))
+    ).then(res => res.body)
+  }
+  static patchIssues (id, obj, req = superagent) {
+    return RequestMiddleware(
+      req.patch(`issues/${id}`).send(JSON.stringify(obj))
     ).then(res => res.body)
   }
   static addIssueComment (issueId, text, req = superagent) {

@@ -7,7 +7,7 @@
       <div class="col-6" v-loading="answersLoading">
         <problem-mode-switch :problemId="problemId" :teamId="teamId"></problem-mode-switch>
         <template v-for="answer in currentAnswers">
-          <answer :value="answer" :scores="currentScores(answer.id)" :reload="reload"></answer>
+          <answer :value="answer" :reload="reload"></answer>
         </template>
 
         <div class="new-issue">
@@ -54,11 +54,7 @@ export default {
   asyncData: {
     answersDefault: [],
     answers () {
-      return API.getAnswers();
-    },
-    scoresDefault: [],
-    scores () {
-      return API.getScores();
+      return API.getTeamWithAnswers(this.teamId).then(res => res.answers)
     },
   },
   computed: {
@@ -76,6 +72,9 @@ export default {
     },
   },
   watch: {
+    teamId () {
+      this.asyncReload('answers');
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '解答一覧');
@@ -83,9 +82,6 @@ export default {
   destroyed () {
   },
   methods: {
-    currentScores (answer) {
-      return this.scores.filter(s => s.answer_id === answer)
-    },
     async postNewIssue () {
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'answer');

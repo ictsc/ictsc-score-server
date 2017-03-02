@@ -13,7 +13,7 @@
           <router-link :to="{name: 'problem-issues', params: {id: '' + value.problem_id, team: '' + value.team_id, issue: '' + value.id}}">
             <h3>{{ value.title }}</h3>
           </router-link>
-          <pre>{{ value }}</pre>
+          <!--<pre>{{ value }}</pre>-->
           <markdown :value="firstComment.text"></markdown>
         </div>
       </div>
@@ -22,11 +22,11 @@
       </div>
     </div>
     <div class="tail">
-      <div v-for="item in tailComment" class="item">
+      <div v-for="item in tailComment" class="item" :class="{ admin: item.member.role_id === 2 }">
         <div class="comment">
           <markdown :value="item.text"></markdown>
         </div>
-        <div class="meta">by {{ item.member_id }} | {{item.created_at}}</div>
+        <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
       </div>
     </div>
     <div class="post">
@@ -62,13 +62,20 @@
 }
 
 .tail .item {
-  margin: 0 0 2rem;
+  margin: 0 0 2rem 5rem;
 }
 .tail .item .comment {
-  background: #D8D8D8;
-  margin: 0 5rem 0 0;
+  background: #F0F0F0;
+  /*margin: 0 0 0 5rem;*/
   padding: .7rem;
   border-radius: 10px;
+}
+.tail .item.admin {
+  margin-right: 5rem;
+  margin-left: 0;
+}
+.tail .item.admin .comment {
+  background: #D8D8D8;
 }
 
 .post .tools {
