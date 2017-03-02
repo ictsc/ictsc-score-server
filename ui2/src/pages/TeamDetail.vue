@@ -7,11 +7,23 @@
         <div class="login">{{ member.login }}</div>
       </div>
     </div>
+    <div class="problems">
+      <template v-for="problem in problems" class="item">
+        <router-link
+          :to="{ name: 'problem-answers', params: { team: id, id: problem.id} }"
+          class="d-flex item">
+          <div class="id">{{ problem.id }}</div>
+          <div class="title">{{ problem.title }}</div>
+          <div class="score">XXX 点</div>
+        </router-link>
+      </template>
+    </div>
+    <pre>{{ team }}</pre>
   </div>
 </template>
 
 <style scoped>
-.item {
+.members .item {
   width: 10rem;
   height: 10rem;
   margin: 2rem;
@@ -20,9 +32,29 @@
   border-radius: 50%;
   font-size: 1.2rem;
 }
-.item .name {
+.members  .item .name {
   font-size: 1.1em;
   font-weight: bold;
+}
+
+.problems {
+  max-width: 600px;
+  margin: auto;
+}
+.problems .item {
+  border-bottom: 1px solid #FDBBCC;
+  color: inherit;
+  padding: .5rem;
+}
+.problems .item > * {
+  flex-grow: 1;
+}
+.problems .item .id {
+  flex-basis: 3rem;
+  flex-grow: 0;
+}
+.problems .item .score {
+  text-align: right;
 }
 </style>
 
@@ -40,7 +72,11 @@ export default {
     teamDefault: {},
     team () {
       return API.getTeam(this.id);
-    }
+    },
+    problemsDefault: {},
+    problems () {
+      return API.getProblems();
+    },
   },
   computed: {
     id () {

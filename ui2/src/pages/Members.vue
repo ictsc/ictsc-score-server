@@ -1,6 +1,26 @@
 <template>
   <div>
-    <pre>{{ members }}</pre>
+    <h1>メンバー一覧</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Login</th>
+          <th>TeamID</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="member in members">
+          <th>{{ member.id }}</th>
+          <td>{{ member.name }}</td>
+          <td>{{ member.login }}</td>
+          <td>{{ member.team_id }}</td>
+          <td>{{ member.role_id }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
