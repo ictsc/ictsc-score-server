@@ -60,10 +60,10 @@ class ScoreBoardRoutes < Sinatra::Base
   end
 
   get "/api/scoreboard" do
-    case true
-    when is_admin?, is_writer?, is_viewer?
+    case current_user&.role&.name
+    when "Admin", "Writer", "Viewer"
       json scoreboard_for(all: true)
-    when is_participant?
+    when "Participant"
       halt 403 if settings.scoreboard_hide_at <= DateTime.now
       team = current_user.team
       halt 400 if team.nil?
