@@ -124,14 +124,16 @@ Team.all.each do |team|
       is_completed = is_rabbithouse || (rand(8) != 4) # 7/8
 
       last_answer = Answer.seed(:id) do |a|
-        a.id         = answer_id
-        a.problem_id = p.id
-        a.team_id    = team.id
-        a.completed  = is_completed
+        a.id           = answer_id
+        a.problem_id   = p.id
+        a.team_id      = team.id
+        a.completed    = is_completed
+        a.completed_at = DateTime.now if is_completed
         if last_answer
           date = last_answer.created_at + 20.minutes + rand(900).seconds
           a.created_at = date
           a.updated_at = date
+          a.completed  = date if is_completed
         end
       end.first
 
@@ -190,6 +192,7 @@ Team.all.each do |team|
         date = last_comment.created_at + 20.minutes + rand(900).seconds
         a.created_at = date
         a.updated_at = date
+        a.completed_at = date if is_completed
       end.first
 
       last_comment = Comment.seed(:id) do |c|
