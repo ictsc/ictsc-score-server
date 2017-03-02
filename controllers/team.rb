@@ -12,7 +12,7 @@ class TeamRoutes < Sinatra::Base
   before "/api/teams*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(?,) & %w(members answers answers-score) if request.get?
+    @with_param = (params[:with] || "").split(?,) & %w(members answers answers-score answers-comments answers-comments-member issues issues-comments issues-comments-member) if request.get?
   end
 
   get "/api/teams" do
@@ -20,7 +20,9 @@ class TeamRoutes < Sinatra::Base
       .map do |t|
         t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
         t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
-        t["members"]&.map{|m| m.delete("hashed_password") }
+        t["members"]&.each {|m| m.delete("hashed_password") }
+        t["answers"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
+        t["issues"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
         t
       end
     json @teams
@@ -36,6 +38,8 @@ class TeamRoutes < Sinatra::Base
     @team["hashed_registration_code"] = Digest::SHA1.hexdigest(@team["registration_code"])
     @team.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
     @team["members"]&.map{|m| m.delete("hashed_password") }
+    @team["answers"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
+    @team["issues"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
     json @team
   end
 
