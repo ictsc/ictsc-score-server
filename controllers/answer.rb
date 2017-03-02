@@ -22,13 +22,18 @@ class AnswerRoutes < Sinatra::Base
   get "/api/answers" do
     @answers = generate_nested_hash(klass: Answer, by: current_user, params: @with_param)
     firstblood_ids = Score.firstbloods(only_ids: true)
+    cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
 
     @answers.each do |a|
       if score = a["score"]
-        score["is_firstblood"]  = firstblood_ids.include? score["id"]
-        score["bonus_point"]    = score["is_firstblood"] ? (score["point"] * settings.first_blood_bonus_percentage / 100.0).to_i : 0
+        score["is_firstblood"] = firstblood_ids.include? score["id"]
+
+        bonus_point = 0
+        bonus_point += (score["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if score["is_firstblood"]
+        bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? score["id"]
+
+        score["bonus_point"]    = bonus_point
         score["subtotal_point"] = score["point"] + score["bonus_point"]
-        a[:score] = score
       end
     end
 
