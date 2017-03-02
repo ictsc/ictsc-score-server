@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301032343) do
+ActiveRecord::Schema.define(version: 20170302053734) do
 
   create_table "answers", force: :cascade do |t|
-    t.integer  "problem_id",                 null: false
-    t.integer  "team_id",                    null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.boolean  "completed",  default: false, null: false
+    t.integer  "problem_id",                   null: false
+    t.integer  "team_id",                      null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "completed",    default: false, null: false
+    t.datetime "completed_at"
     t.index ["id"], name: "index_answers_on_id", unique: true
     t.index ["team_id"], name: "index_answers_on_team_id"
   end
@@ -32,12 +33,12 @@ ActiveRecord::Schema.define(version: 20170301032343) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string   "text",             null: false
-    t.integer  "member_id",        null: false
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.string   "commentable_type", null: false
-    t.integer  "commentable_id",   null: false
+    t.string   "text",             limit: 4000, null: false
+    t.integer  "member_id",                     null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "commentable_type",              null: false
+    t.integer  "commentable_id",                null: false
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
   end
 

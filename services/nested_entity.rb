@@ -12,7 +12,7 @@ module Sinatra
       end
 
       r = resource
-      entities.each do |entity|
+      entities.each.with_index do |entity, i|
         begin
           k = entity.singularize.capitalize.constantize
         rescue NameError
@@ -22,18 +22,19 @@ module Sinatra
 
         action = (entity == "comments") ? "#{parent_entity}_#{entity}" : ""
 
-        # binding.pry
         case r[entity]
         when Array
-          r[entity].select!{|rr| k.readables(user: member, action: action).ids.include?(rr["id"]) }
-          filter_entities(member: member, resource: r[entity], entities: entities[1..-1], parent_entity: entity) if 1 < entities.size
+          r_entity_readable_ids = k.readables(user: member, action: action).ids
+          r[entity].select!{|rr| r_entity_readable_ids.include?(rr["id"]) }
+          filter_entities(member: member, resource: r[entity], entities: entities[(i+1)..-1], parent_entity: entity) if 1 < entities.size
           return
         when Hash
-          if not k.readables(user: member, action: action).exists?(id: r[entity]["id"])
+          if not k.readables(user: member, action: action).to_a.any?{|x| x.id = r[entity]["id"] }
             r.delete(entity)
             return
           end
           r = r[entity]
+          parent_entity = entity
         else
           return
           # raise "Entity not exist: #{entity}"

@@ -1,13 +1,17 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/config_file"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
 class ProblemRoutes < Sinatra::Base
+  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+
+  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
@@ -23,6 +27,9 @@ class ProblemRoutes < Sinatra::Base
       @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json).sort_by{|x| x["id"] }
     end
 
+    firstblood_ids = Score.firstbloods(only_ids: true)
+    cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
+
     # NOTE select "reference_point" is needed because of used in having clause
     solved_teams_count_by_problem = Problem \
       .all \
@@ -35,6 +42,19 @@ class ProblemRoutes < Sinatra::Base
     @problems.each do |p|
       p["solved_teams_count"] = solved_teams_count_by_problem[p["id"]]
       p["creator"]&.delete("hashed_password")
+      p["answers"]&.each do |a|
+        a["team"]&.delete("registration_code")
+        if score = a["score"]
+          score["is_firstblood"] = firstblood_ids.include? score["id"]
+
+          bonus_point = 0
+          bonus_point += (score["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if score["is_firstblood"]
+          bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? score["id"]
+
+          score["bonus_point"]    = bonus_point
+          score["subtotal_point"] = score["point"] + score["bonus_point"]
+        end
+      end
     end
 
     json @problems
@@ -64,6 +84,16 @@ class ProblemRoutes < Sinatra::Base
     @problem = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, id: params[:id])
     @problem["solved_teams_count"] = solved_teams_count
     @problem["creator"]&.delete("hashed_password")
+    @problem["answers"]&.each do |a|
+      a["team"]&.delete("registration_code")
+      if score = a["score"]
+        s = Score.find(score["id"])
+
+        score["is_firstblood"] = s.is_firstblood
+        score["bonus_point"]    = s.bonus_point
+        score["subtotal_point"] = s.subtotal_point
+      end
+    end
 
     json @problem
   end
