@@ -34,10 +34,8 @@ class ProblemRoutes < Sinatra::Base
 
     @problems.each do |p|
       p["solved_teams_count"] = solved_teams_count_by_problem[p["id"]]
-      p.dig("creator")&.delete("hashed_password")
-      p.dig("answers")&.each do |a|
-        a.dig("team")&.delete("registration_code")
-      end
+      p["creator"]&.delete("hashed_password")
+      p["answers"]&.each {|a| a["team"]&.delete("registration_code") }
     end
 
     json @problems
@@ -66,9 +64,9 @@ class ProblemRoutes < Sinatra::Base
 
     @problem = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, id: params[:id])
     @problem["solved_teams_count"] = solved_teams_count
-    @problem.dig("creator")&.delete("hashed_password")
-    @problem.dig("answers")&.each do |a|
-      a.dig("team")&.delete("registration_code")
+    @problem["creator"]&.delete("hashed_password")
+    @problem["answers"]&.each do |a|
+      a["team"]&.delete("registration_code")
     end
 
     json @problem
