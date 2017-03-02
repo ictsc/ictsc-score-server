@@ -86,9 +86,24 @@ class AnswerRoutes < Sinatra::Base
         next json @attrs.map{|k, v| [k, "participant can't edit"] }.to_h
       end
 
+      # 参加者は completed を false にすることができない
       if %w(false 0).include? @attrs[:completed].to_s
         status 400
         next json completed: "participant can't make answer to not completed"
+      end
+
+      # 参加者は同一の問題に対し、 settings.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
+      last_answer_completed_at = Answer.where(
+          team_id: current_user&.team_id,
+          problem_id: @answer.problem_id
+        ) \
+        .order(:completed_at) \
+        .select(:completed_at) \
+        .last.completed_at
+
+      if last_answer_completed_at && DateTime.now <= (last_answer_completed_at + settings.answer_reply_delay_sec.seconds)
+        status 400
+        next json completed: "participant can't make multiple answers of one problem completed within #{settings.answer_reply_delay_sec} seconds"
       end
 
       @attrs[:completed_at] = DateTime.now
