@@ -6,7 +6,7 @@
 
     <div class="navbar-nav  mr-auto">
       <div class="nav-item">
-        <a class="nav-link" href="#">注意事項</a>
+        <router-link :to="{name: 'guide'}" class="nav-link">ガイド</router-link>
       </div>
       <div class="nav-item">
         <router-link :to="{name: 'members'}" class="nav-link">メンバー</router-link>
