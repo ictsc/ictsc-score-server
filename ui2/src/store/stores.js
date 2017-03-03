@@ -24,6 +24,11 @@ export const DefaultStore = new Vuex.Store({
         state.session.member &&
         state.session.member.role_id === 2;
     },
+    isMember: state => {
+      return state.session &&
+        state.session.member &&
+        state.session.member.role_id === 4;
+    },
   },
   mutations: {
     [_SET_STATE_TITLE]: (state, title) => { state.title = title },

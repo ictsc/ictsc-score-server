@@ -285,7 +285,16 @@ export default {
     },
     problemsDefault: [],
     problems () {
-      return API.getProblemsWithScore();
+      console.log('problems', this.session, this.isMember)
+      if (this.session.member) {
+        if (this.isMember) {
+          return API.getProblemsWithScore();
+        } else {
+          return API.getProblems();
+        }
+      } else {
+        return new Promise((resolve) => resolve([]));
+      }
     },
     // answersDefault: [],
     // answers () {
@@ -300,6 +309,7 @@ export default {
       }], this.problems);
     },
     ...mapGetters([
+      'isMember',
       'session',
     ]),
   },
@@ -309,6 +319,9 @@ export default {
         this.newObj.problem_group_id = val[0].id;
       } catch (e) {
       }
+    },
+    session (val) {
+      if (val.member) this.asyncReload('problems');
     },
   },
   mounted () {
@@ -320,7 +333,7 @@ export default {
     getScore (answers) {
       if (!answers) return 0;
       return answers
-        .filter(ans => ans.team_id === this.session.member.team_id)
+        .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
         .reduce((p, n) => p + n.score.point, 0);
     },
     async addProblem () {
