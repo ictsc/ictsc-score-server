@@ -382,6 +382,7 @@ export default {
       }
     },
     getScoreText (answers) {
+      if (!this.session.member.team) return '---';
       if (!answers) return 0;
       if (this.contest && (new Date(this.contest.competition_end_time) < Date.now())) return '---';
       return answers
