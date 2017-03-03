@@ -112,7 +112,7 @@
                 </div>
                 <div class="scores-wrapper">
                   <div class="scores">
-                    <div class="current">{{ getScore(problem.answers) }}</div>
+                    <div class="current">{{ getScoreText(problem.answers) }}</div>
                     <div class="max">{{ problem.perfect_point }}点満点</div>
                   </div>
                 </div>
@@ -381,8 +381,9 @@ export default {
         return dateRelative(publishAt);
       }
     },
-    getScore (answers) {
+    getScoreText (answers) {
       if (!answers) return 0;
+      if (this.contest && (new Date(this.contest.competition_end_time) < Date.now())) return '---';
       return answers
         .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
         .reduce((p, n) => p + ((n.score && n.score.point) || 0), 0);
