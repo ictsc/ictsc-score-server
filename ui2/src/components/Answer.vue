@@ -20,8 +20,8 @@
       <div class="status">
         <template v-if="value.completed">
           <div v-if="value.score" class="result">
-            得点: {{ value.score.point }} + ボーナス: ??? <!-- {{ value.score.bonus_point }} -->
-            <span v-if="value.score.is_firstblood">FirstBlood!</span>
+            得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
+            <span v-if="value.score.is_firstblood">最初の回答者です！</span>
           </div>
           <div v-if="!value.score" class="pending">採点依頼中...</div>
         </template>
@@ -135,8 +135,8 @@ export default {
       Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 
       var postOrPut;
-      if (this.firstScore.id) {
-        postOrPut = API.putScore(this.firstScore.id, Object.assign({}, this.firstScore, {
+      if (this.value.score && this.value.score.id) {
+        postOrPut = API.putScore(this.value.score.id, Object.assign({}, this.value.score, {
           point: this.newPoint,
         }))
       } else {

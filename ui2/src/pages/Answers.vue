@@ -1,6 +1,11 @@
 <template>
   <div v-loading="asyncLoading">
     <h1>解答と採点</h1>
+    <div class="tools">
+      <div class="team status-0">未提出</div>
+      <div class="team status-1">未採点</div>
+      <div class="team status-2">採点済</div>
+    </div>
     <div class="problems">
       <div v-for="problem in problems" class="problem">
         <h3>{{ problem.title }}</h3>
@@ -13,8 +18,9 @@
           <div v-for="team in teams" class="col-3">
             <router-link
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
-              :class="'team status-' + status(problem.answers, team.id)">
-              {{ team.id }}. {{ team.name }}
+              :class="'team status-' + status(problem.answers, team.id, problem.id)">
+              {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
+              <span v-if="isFirstBrad(problem.answers, team.id, problem.id)">!!!</span>
               <!--status: {{ status(problem.answers, team.id) }}
               {{ teamAnswers(problem.answers, team.id) }}-->
             </router-link>
@@ -49,6 +55,15 @@
   background: #CBF5E0;
   color: #00A353;
 }
+
+.tools {
+  text-align: center;
+}
+.tools > * {
+  display: inline-block;
+  padding-right: 5rem;
+  padding-left: 5rem;
+}
 </style>
 
 <script>
@@ -81,15 +96,23 @@ export default {
   destroyed () {
   },
   methods: {
-    teamAnswers (answers, teamId) {
-      return answers.filter(ans => ans.team_id === teamId);
+    teamAnswers (answers, teamId, problemId) {
+      return answers.filter(ans => ans.team_id === teamId && ans.problem_id === problemId);
     },
-    status (answers, teamId) {
+    status (answers, teamId, problemId) {
       // 0 未回答  1 未採点  2 採点済み
-      var teamAnswers = this.teamAnswers(answers, teamId).filter(ans => ans.completed);
+      var teamAnswers = this.teamAnswers(answers, teamId, problemId).filter(ans => ans.completed);
       if (teamAnswers.length === 0) return 0;
       return teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 2 : 1), 2);
+    },
+    isFirstBrad (answers, teamId, problemId) {
+      return this.teamAnswers(answers, teamId, problemId)
+        .filter(ans => ans.is_firstblood).length !== 0;
+    },
+    score (answers, teamId, problemId) {
+      return this.teamAnswers(answers, teamId, problemId)
+        .reduce((p, n) => Math.max(p, n.score ? n.score.subtotal_point : 0), 0)
     },
   },
 }

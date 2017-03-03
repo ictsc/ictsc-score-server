@@ -112,9 +112,9 @@
                 <div class="content">
                   <h3>{{ problem.title }}</h3>
                   <div class="tips">
-                    <span>解答 1件 (1分前)</span>
-                    <span>採点 1件 (1分前)</span>
-                    <span>質問 3件 (1時間前)</span>
+                    <span><i class="fa fa-pencil-square-o"></i> 解答 {{ answerCount(problem.id) }}件</span>
+                    <span v-if="isMember"><i class="fa fa-check-circle"></i> 採点: {{ scoringTime(problem.answers) }} </span>
+                    <span><i class="fa fa-question-circle"></i> 質問 {{ issueCount(problem.id) }}件</span>
                   </div>
                 </div>
               </router-link>
@@ -220,6 +220,10 @@
 }
 .problem .content .tips {
   list-style: none;
+  color: #D19696;
+}
+.problem .content .tips > * {
+  margin-right: .7rem;
 }
 
 .description {
@@ -257,6 +261,7 @@ import MessageBox from '../components/MessageBox'
 import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import { mapGetters } from 'vuex'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
+import { dateRelative } from '../utils/Filters'
 
 export default {
   name: 'problems',
@@ -264,6 +269,9 @@ export default {
     Markdown,
     MessageBox,
     SimpleMarkdownEditor,
+  },
+  filters: {
+    dateRelative,
   },
   data () {
     return {
@@ -296,10 +304,18 @@ export default {
         return new Promise((resolve) => resolve([]));
       }
     },
-    // answersDefault: [],
-    // answers () {
-    //   return API.getAnswers();
-    // },
+    answersDefault: [],
+    answers () {
+      return API.getAnswers();
+    },
+    issuesDefault: [],
+    issues () {
+      return API.getIssues();
+    },
+    contentDefault: {},
+    contest () {
+      return API.getContest();
+    }
   },
   computed: {
     problemSelect () {
@@ -330,6 +346,28 @@ export default {
   destroyed () {
   },
   methods: {
+    answerCount (problemId) {
+      return this.answers
+        .filter(a => a.problem_id === problemId)
+        .reduce((p, n) => p + 1, 0);
+    },
+    issueCount (problemId) {
+      return this.issues
+        .filter(a => a.problem_id === problemId)
+        .reduce((p, n) => p + 1, 0);
+    },
+    scoringTime (answers) {
+      if (!answers || answers.length === 0) {
+        return '採点依頼無し'
+      } else if (answers.filter(ans => !ans.completed).length !== 0) {
+        return '採点依頼無し';
+      } else {
+        var completedAt = answers[answers.length - 1].completed_at;
+        var publishAt = new Date(completedAt).valueOf() +
+          (this.contest ? this.contest.answer_reply_delay_sec * 1000 : 0);
+        return dateRelative(publishAt);
+      }
+    },
     getScore (answers) {
       if (!answers) return 0;
       return answers
