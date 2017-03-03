@@ -4,10 +4,18 @@
       <div class="body d-flex">
         <div class="status">
           <div>
-            <button v-if="value.closed" v-on:click="switchClosed()" class="btn btn-secondary">Closed</button>
-            <button v-else v-on:click="switchClosed()" class="btn btn-secondary">Opened</button>
+            <template v-if="status == 3">
+              <!-- 解決済 -->
+              <button v-on:click="switchClosed()" class="btn btn-success">解決済み</button>
+            </template>
+            <template v-else-if="status == 2">
+              <button v-on:click="switchClosed()" class="btn btn-warning">対応中</button>
+            </template>
+            <template v-else-if="status == 1">
+              <button v-on:click="switchClosed()" class="btn btn-danger">未回答</button>
+            </template>
           </div>
-          <div><small>解決したら<br>クリック</small></div>
+          <div v-if="status != 3"><small>解決したら<br>クリック</small></div>
         </div>
         <div class="content">
           <router-link :to="{name: 'problem-issues', params: {id: '' + value.problem_id, team: '' + value.team_id, issue: '' + value.id}}">
@@ -22,18 +30,21 @@
       </div>
     </div>
     <div class="tail">
-      <div v-for="item in tailComment" class="item" :class="{ admin: item.member.role_id === 2 }">
+      <div v-for="item in tailComment" class="item" :class="{ admin: item.member.role_id != 4 }">
         <div class="comment">
           <markdown :value="item.text"></markdown>
         </div>
         <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
       </div>
     </div>
-    <div class="post">
+    <div v-if="status != 3" class="post">
       <simple-markdown-editor v-model="post"></simple-markdown-editor>
       <div class="tools">
         <button v-on:click="postComment()" class="btn btn-success">投稿</button>
       </div>
+    </div>
+    <div v-else class="post done">
+      <i class="fa fa-check"></i> 解決済み
     </div>
   </div>
 </template>
@@ -81,6 +92,12 @@
 .post .tools {
   text-align: right;
 }
+.post.done {
+  border: 2px solid #D8D8D8;
+  padding: .5rem;
+  text-align: center;
+  color: #449d44;
+}
 </style>
 
 <script>
@@ -88,6 +105,7 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { API } from '../utils/Api'
+import { issueStatus } from '../utils/Filters'
 
 export default {
   name: 'issue',
@@ -123,7 +141,10 @@ export default {
     },
     issueId () {
       return this.value.id;
-    }
+    },
+    status () {
+      return issueStatus(this.value);
+    },
   },
   watch: {
   },

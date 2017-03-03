@@ -1,6 +1,6 @@
 <template>
   <div v-loading="asyncLoading">
-    <h1>到着質問</h1>
+    <h1>質問一覧</h1>
     <div class="issue-list">
       <template v-for="item in issues" class="">
         <router-link
@@ -79,6 +79,7 @@
 <script>
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
+import { issueStatus } from '../utils/Filters'
 
 export default {
   name: 'issues',
@@ -92,7 +93,7 @@ export default {
       return API.getIssues()
         .then(res => {
           return res.map(issue => {
-            issue.status = this.issueStatus(issue);
+            issue.status = issueStatus(issue);
             return issue;
           });
         });
@@ -116,16 +117,6 @@ export default {
       var notWriterComment = comments.filter(c => c.member.role_id !== 4);
       if (notWriterComment.length === 0) return {};
       return notWriterComment[notWriterComment.length - 1];
-    },
-    issueStatus (issue) {
-      // 未回答: 1  対応中: 2  解決済: 3
-      if (issue.closed) return 3;
-      if (!issue.comments) return 0;
-      if (issue.comments.length < 2) return 1;
-
-      var lastComment = issue.comments[issue.comments.length - 1];
-      if (lastComment.member.role_id === 2) return 2;
-      return 1;
     },
   },
 }
