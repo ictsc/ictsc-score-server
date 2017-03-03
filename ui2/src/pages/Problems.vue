@@ -391,6 +391,7 @@ export default {
     problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);
       if (found && found.title) return `${found.title} で ${found.reference_point}点以上`;
+      if (found) return `??? で ${found.reference_point}点以上`;
       else return '???';
     },
     async addProblem () {
