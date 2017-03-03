@@ -41,9 +41,9 @@
           </div>
         </template>
         <template v-else>
-          満点: {{ problem.perfect_point }}
-          基準点: {{ problem.reference_point }}
-          通過チーム数: {{ problem.solved_teams_count }}
+          基準点: {{ problem.reference_point }} /
+          満点: {{ problem.perfect_point }} /
+          通過チーム数: {{ problem.solved_teams_count }} /
           依存: {{ dependenceProblem.title }}
         </template>
       </div>
@@ -148,7 +148,8 @@ export default {
       }], this.problems);
     },
     dependenceProblem () {
-      return this.problems.find(p => p.id === this.problem.problem_must_solve_before_id) || {};
+      return this.problems.find(p => p.id === this.problem.problem_must_solve_before_id) ||
+        { title: 'なし' };
     },
     ...mapGetters([
       'isAdmin',
