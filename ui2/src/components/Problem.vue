@@ -20,9 +20,11 @@
       <div class="point">
         <template v-if="edit">
           <div class="form-group row">
-            <label class="col-2 col-form-label">満点</label>
+            <label class="col-2 col-form-label">依存問題</label>
             <div class="col-10">
-              <input v-model="problem.perfect_point" class="form-control" type="number">
+              <select class="form-control" v-model="problem.problem_must_solve_before_id">
+                <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
+              </select>
             </div>
           </div>
           <div class="form-group row">
@@ -31,11 +33,18 @@
               <input v-model="problem.reference_point" class="form-control" type="number">
             </div>
           </div>
+          <div class="form-group row">
+            <label class="col-2 col-form-label">満点</label>
+            <div class="col-10">
+              <input v-model="problem.perfect_point" class="form-control" type="number">
+            </div>
+          </div>
         </template>
         <template v-else>
           満点: {{ problem.perfect_point }}
           基準点: {{ problem.reference_point }}
           通過チーム数: {{ problem.solved_teams_count }}
+          依存: {{ dependenceProblem.title }}
         </template>
       </div>
     </header>
@@ -100,6 +109,11 @@ import { API } from '../utils/Api'
 import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
 import { mapGetters } from 'vuex'
+import {
+  Emit,
+  PUSH_NOTIF,
+  REMOVE_NOTIF,
+} from '../utils/EventBus'
 
 export default {
   name: 'problem',
@@ -121,8 +135,21 @@ export default {
     problem () {
       return API.getProblem(this.id);
     },
+    problemsDefault: [],
+    problems () {
+      return API.getProblems();
+    },
   },
   computed: {
+    problemSelect () {
+      return Array.concat([{
+        id: null,
+        title: 'Null',
+      }], this.problems);
+    },
+    dependenceProblem () {
+      return this.problems.find(p => p.id === this.problem.problem_must_solve_before_id) || {};
+    },
     ...mapGetters([
       'isAdmin',
     ]),
@@ -147,8 +174,20 @@ export default {
       this.asyncReload();
       this.edit = false;
     },
-    editSubmit () {
-      // todo
+    async editSubmit () {
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
+        await API.patchProblem(this.id, this.problem);
+        this.edit = false;
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '更新に失敗しました',
+          detail: '',
+          key: 'problem',
+        });
+      }
     },
   },
 }

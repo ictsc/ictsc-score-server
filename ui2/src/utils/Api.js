@@ -130,6 +130,12 @@ export class API {
     return RequestMiddleware(req.get(`problems/${id}?with=comments`))
       .then(res => res.body)
   }
+  static patchProblem (id, obj, req = superagent) {
+    return RequestMiddleware(
+      req.patch(`problems/${id}`)
+        .send(JSON.stringify(obj))
+    ).then(res => res.body)
+  }
 
   // issues
   static getIssues (req = superagent) {
