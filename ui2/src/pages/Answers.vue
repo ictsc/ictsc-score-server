@@ -8,19 +8,22 @@
     </div>
     <div class="problems">
       <div v-for="problem in problems" class="problem">
-        <h3>{{ problem.title }}</h3>
-        <p><small>
-          {{ problem.reference_point }} - 
-          {{ problem.perfect_point }} - 
-          {{ problem.solved_teams_count }}
-        </small></p>
+        <h3>{{ problem.title }}
+          <small>
+            基準点: {{ problem.reference_point }} /
+            満点: {{ problem.perfect_point }} /
+            正解チーム数: {{ problem.solved_teams_count }}
+            </small>
+        </h3>
         <div class="teams row">
           <div v-for="team in teams" class="col-3">
             <router-link
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
               :class="'team status-' + status(problem.answers, team.id, problem.id)">
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
-              <span v-if="isFirstBrad(problem.answers, team.id, problem.id)">!!!</span>
+              <span v-if="isFirstBrad(problem.answers, team.id, problem.id)" class="first-brad">
+                First <i class="fa fa-flag"></i>
+              </span>
               <!--status: {{ status(problem.answers, team.id) }}
               {{ teamAnswers(problem.answers, team.id) }}-->
             </router-link>
@@ -33,7 +36,14 @@
 
 <style scoped>
 .problem {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+}
+.problems h3 {
+  margin-bottom: 1rem;
+}
+.problems h3 small {
+  font-size: .7em;
+  margin-left: 2rem;
 }
 .team {
   padding: .3rem;
@@ -54,6 +64,9 @@
 .team.status-2 {
   background: #CBF5E0;
   color: #00A353;
+}
+.team .first-brad {
+  margin-left: 1rem;
 }
 
 .tools {
@@ -108,11 +121,11 @@ export default {
     },
     isFirstBrad (answers, teamId, problemId) {
       return this.teamAnswers(answers, teamId, problemId)
-        .filter(ans => ans.is_firstblood).length !== 0;
+        .filter(ans => ans.score && ans.score.is_firstblood).length !== 0;
     },
     score (answers, teamId, problemId) {
       return this.teamAnswers(answers, teamId, problemId)
-        .reduce((p, n) => Math.max(p, n.score ? n.score.subtotal_point : 0), 0)
+        .reduce((p, n) => p + (n.score ? n.score.subtotal_point : 0), 0)
     },
   },
 }

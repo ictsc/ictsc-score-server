@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <router-link :to="{name: 'problem-issues', params: {id: problemId, team: teamId}}" class="nav-link" active-class="active">
@@ -57,7 +56,7 @@ export default {
     },
     point () {
       return this.currentAnswers
-        .reduce((p, n) => p + n.score ? n.score.point : 0, 0);
+        .reduce((p, n) => p + (n.score ? n.score.subtotal_point : 0), 0);
     },
   },
   watch: {
