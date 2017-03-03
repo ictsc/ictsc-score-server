@@ -16,7 +16,7 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams" do
-    @teams = generate_nested_hash(klass: Team, by: current_user, params: @with_param) \
+    @teams = generate_nested_hash(klass: Team, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?)) \
       .map do |t|
         t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
         t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
@@ -34,7 +34,7 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams/:id" do
-    @team = generate_nested_hash(klass: Team, by: current_user, params: @with_param, id: params[:id])
+    @team = generate_nested_hash(klass: Team, by: current_user, params: @with_param, id: params[:id], apply_filter: !(is_admin? || is_viewer?))
     @team["hashed_registration_code"] = Digest::SHA1.hexdigest(@team["registration_code"])
     @team.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
     @team["members"]&.map{|m| m.delete("hashed_password") }

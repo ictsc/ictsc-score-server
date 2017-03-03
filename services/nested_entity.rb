@@ -59,7 +59,6 @@ module Sinatra
         [includes, as]
       end
 
-      # binding.pry
       as_param.deep_merge!(as_option)
 
       resources = klass.readables(user: by).includes(includes_param)
@@ -77,17 +76,17 @@ module Sinatra
         .map{|x| x.split(?-).map(&:to_sym) }
     end
 
-    def generate_nested_hash(klass:, by:, params:, id: nil, as_option: {})
+    def generate_nested_hash(klass:, by:, params:, id: nil, as_option: {}, apply_filter: true)
       np = params || []
       np = np.split(?,) if np.is_a? String
       np = nested_params_from_flat_array(np) if np.is_a? Array
 
-      # binding.pry
       resources = as_json_of(klass, nested_params: np, by: by, as_option: as_option, id: id&.to_i)
-      # binding.pry
 
-      np.map{|x| x.map(&:to_s) }.each do |entities|
-        filter_entities(member: by, resource: resources, entities: entities, parent_entity: klass.to_s.downcase.pluralize)
+      if apply_filter
+        np.map{|x| x.map(&:to_s) }.each do |entities|
+          filter_entities(member: by, resource: resources, entities: entities, parent_entity: klass.to_s.downcase.pluralize)
+        end
       end
 
       return resources.first if id

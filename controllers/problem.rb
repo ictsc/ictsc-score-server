@@ -20,7 +20,7 @@ class ProblemRoutes < Sinatra::Base
   end
 
   get "/api/problems" do
-    @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param).uniq
+    @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?)).uniq
 
     if "Participant" == current_user&.role&.name
       show_columns = Problem.column_names - %w(title text)
@@ -81,7 +81,7 @@ class ProblemRoutes < Sinatra::Base
       .count \
       .count
 
-    @problem = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, id: params[:id])
+    @problem = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, id: params[:id], apply_filter: !(is_admin? || is_viewer?))
     @problem["solved_teams_count"] = solved_teams_count
     @problem["creator"]&.delete("hashed_password")
     @problem["answers"]&.each do |a|
