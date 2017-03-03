@@ -106,7 +106,7 @@
                   <div class="overlay-message">
                     <div>採点基準クリアで解禁</div>
                     <div><small>
-                      依存問題: {{ problemTitle(problem.problem_must_solve_before_id) }}
+                      条件: {{ problemUnlockConditionTitle(problem.problem_must_solve_before_id) }}
                     </small></div>
                   </div>
                 </div>
@@ -387,9 +387,9 @@ export default {
         .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
         .reduce((p, n) => p + ((n.score && n.score.point) || 0), 0);
     },
-    problemTitle (id) {
+    problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);
-      if (found && found.title) return `${found.title} ${found.reference_point}点`;
+      if (found && found.title) return `${found.title} で ${found.reference_point}点以上`;
       else return '???';
     },
     async addProblem () {
