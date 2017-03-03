@@ -7,8 +7,9 @@
           :to="{name: 'problem-issues', params: {id: '' + item.problem_id, team: '' + item.team_id, issue: '' + item.id}}"
           class="item d-flex align-items-center">
           <div class="status">
-            <button v-if="item.closed" class="btn btn-success">解決済</button>
-            <button v-else class="btn btn-warning">対応中</button>
+            <button v-if="item.status === 3" class="btn btn-success">解決済</button>
+            <button v-else-if="item.status === 2" class="btn btn-warning">対応中</button>
+            <button v-else-if="item.status === 1" class="btn btn-danger">未回答</button>
           </div>
           <div class="title">
             <h4>{{ item.problem ? item.problem.title : '???' }}</h4>
@@ -18,12 +19,18 @@
           </div>
           <div class="comments head">
             <div class="content">{{ firstComment(item.comments).text }}</div>
-            <div class="meta">チーム名 参加者: {{ firstComment(item.comments).member_id }}</div>
+            <div class="meta">チーム名 参加者: {{ firstComment(item.comments).member.name }}</div>
           </div>
-          <div class="comments answer">
-            <div class="content">{{ lastResponseComment(item.comments).text }}</div>
-            <div class="meta">チーム名 参加者</div>
-          </div>
+          <template v-if="lastResponseComment(item.comments).member">
+            <div  class="comments answer">
+              <div class="content">{{ lastResponseComment(item.comments).text }}</div>
+              <div class="meta">チーム名 {{ lastResponseComment(item.comments).member.name }}</div>
+            </div>
+          </template>
+          <template v-else>
+            <div  class="comments answer empty">
+            </div>
+          </template>
         </router-link>
       </template>
     </div>
@@ -59,6 +66,9 @@
   padding: 1rem;
   border-radius: 10px;
 }
+.item .comments.answer {
+  background: #F0F0F0;
+}
 .item .comments .meta {
   color: #aaa;
   text-align: right;
@@ -77,9 +87,15 @@ export default {
     }
   },
   asyncData: {
-    issuesDefault: {},
+    issuesDefault: [],
     issues () {
-      return API.getIssues();
+      return API.getIssues()
+        .then(res => {
+          return res.map(issue => {
+            issue.status = this.issueStatus(issue);
+            return issue;
+          });
+        });
     },
   },
   computed: {
@@ -97,8 +113,19 @@ export default {
     },
     lastResponseComment (comments) {
       // todo admin filter
-      if (comments.length < 2) return {};
-      return comments[comments.length - 1];
+      var notWriterComment = comments.filter(c => c.member.role_id !== 4);
+      if (notWriterComment.length === 0) return {};
+      return notWriterComment[notWriterComment.length - 1];
+    },
+    issueStatus (issue) {
+      // 未回答: 1  対応中: 2  解決済: 3
+      if (issue.closed) return 3;
+      if (!issue.comments) return 0;
+      if (issue.comments.length < 2) return 1;
+
+      var lastComment = issue.comments[issue.comments.length - 1];
+      if (lastComment.member.role_id === 2) return 2;
+      return 1;
     },
   },
 }
