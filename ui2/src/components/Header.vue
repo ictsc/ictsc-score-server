@@ -1,18 +1,18 @@
 <template>
    <nav class="navbar fixed-top navbar-light navbar-toggleable flex-row">
     <router-link :to="{name: 'dashboard'}" class="navbar-brand">
-      ICTSC
+      <img src="../assets/img/logo/ictsc-logo-white.svg" alt="ICTSC">
     </router-link>
 
     <div class="navbar-nav  mr-auto">
       <div class="nav-item">
-        <router-link :to="{name: 'guide'}" class="nav-link">ガイド</router-link>
+        <router-link :to="{name: 'guide'}" active-class="active" class="nav-link">ガイド</router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{name: 'members'}" class="nav-link">メンバー</router-link>
+        <router-link :to="{name: 'members'}" active-class="active" class="nav-link">メンバー</router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{name: 'teams'}" class="nav-link">チーム</router-link>
+        <router-link :to="{name: 'teams'}" active-class="active" class="nav-link">チーム</router-link>
       </div>
     </div>
     <div class="navbar-nav">
@@ -20,13 +20,13 @@
         <router-link :to="{name: 'dashboard'}" class="nav-link">トップ</router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{ name: 'problems'}" class="nav-link">問題</router-link>
+        <router-link :to="{ name: 'problems'}" active-class="active" class="nav-link">問題</router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{ name: 'issues'}" class="nav-link">質問</router-link>
+        <router-link :to="{ name: 'issues'}" active-class="active" class="nav-link">質問</router-link>
       </div>
-      <div class="nav-item">
-        <router-link :to="{ name: 'answers'}" class="nav-link">解答</router-link>
+      <div v-if="!isMember" class="nav-item">
+        <router-link :to="{ name: 'answers'}" active-class="active" class="nav-link">解答</router-link>
       </div>
       <div class="nav-item">
         <a v-on:click="logout()" class="nav-link">ログアウト</a>
@@ -61,6 +61,10 @@
   padding-left: 1rem;
 }
 
+.navbar .navbar-brand img {
+  height: 2rem;
+}
+
 .navbar .navbar-brand,
 .navbar .nav-link {
   color: #fff;
@@ -80,6 +84,7 @@ import {
   REMOVE_NOTIF,
   RELOAD_SESSION
 } from '../utils/EventBus'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'header',
@@ -88,6 +93,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'isMember',
+      'session',
+    ]),
   },
   methods: {
     logout () {
