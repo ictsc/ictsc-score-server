@@ -1,13 +1,17 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/config_file"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
 class TeamRoutes < Sinatra::Base
+  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+
+  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/teams*" do
     I18n.locale = :en if request.xhr?
@@ -25,6 +29,29 @@ class TeamRoutes < Sinatra::Base
         t["issues"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
         t
       end
+
+    if @with_param.include? "answers-score"
+      firstblood_ids = Score.firstbloods(only_ids: true)
+      cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
+
+      @teams.each do |t|
+        t["answers"]&.each do |a|
+          if s = a["score"]
+            s["is_firstblood"]  = firstblood_ids.include? s["id"]
+
+            bonus_point = 0
+            bonus_point += (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
+            bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
+
+            s["bonus_point"]    = bonus_point
+            s["subtotal_point"] = s["point"] + s["bonus_point"]
+
+            a["score"] = s
+          end
+        end
+      end
+    end
+
     json @teams
   end
 
@@ -40,6 +67,27 @@ class TeamRoutes < Sinatra::Base
     @team["members"]&.map{|m| m.delete("hashed_password") }
     @team["answers"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
     @team["issues"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
+
+    if @with_param.include? "answers-score"
+      firstblood_ids = Score.firstbloods(only_ids: true)
+      cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
+
+      @team["answers"]&.each do |a|
+        if s = a["score"]
+          s["is_firstblood"]  = firstblood_ids.include? s["id"]
+
+          bonus_point = 0
+          bonus_point += (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
+          bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
+
+          s["bonus_point"]    = bonus_point
+          s["subtotal_point"] = s["point"] + s["bonus_point"]
+
+          a["score"] = s
+        end
+      end
+    end
+
     json @team
   end
 

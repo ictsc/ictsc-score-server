@@ -42,7 +42,7 @@ module Sinatra
       end
     end
 
-    def as_json_of(klass, nested_params:, by:, as_option: {}, id: nil)
+    def as_json_of(klass, nested_params:, by:, as_option: {}, id: nil, action: "", where: {})
       # includes: { answers: { comments: {}, score: {} }, creator: {}, issues: { comments: {} } }
       #       as: { include: { answers: { include: { comments: {}, score: {} } }, creator: {}, issues: { include: { comments: {} } } } }
       includes_param, as_param = nested_params.inject([{}, {}]) do |(includes, as), nested_entity|
@@ -61,7 +61,7 @@ module Sinatra
 
       as_param.deep_merge!(as_option)
 
-      resources = klass.readables(user: by).includes(includes_param)
+      resources = klass.readables(user: by, action: action).includes(includes_param).where(where)
       resources = resources.where(id: id.to_i) if id
       resources.as_json(as_param).reject{|x| x["id"].nil? }
     end
@@ -76,12 +76,12 @@ module Sinatra
         .map{|x| x.split(?-).map(&:to_sym) }
     end
 
-    def generate_nested_hash(klass:, by:, params:, id: nil, as_option: {}, apply_filter: true)
+    def generate_nested_hash(klass:, by:, params:, id: nil, as_option: {}, apply_filter: true, action: "", where: {})
       np = params || []
       np = np.split(?,) if np.is_a? String
       np = nested_params_from_flat_array(np) if np.is_a? Array
 
-      resources = as_json_of(klass, nested_params: np, by: by, as_option: as_option, id: id&.to_i)
+      resources = as_json_of(klass, nested_params: np, by: by, as_option: as_option, id: id&.to_i, action: action, where: where)
 
       if apply_filter
         np.map{|x| x.map(&:to_s) }.each do |entities|

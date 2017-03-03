@@ -507,7 +507,7 @@ class Score < ActiveRecord::Base
     end
   end
 
-  def self.cleared_problem_group_ids(team_id: nil)
+  def self.cleared_problem_group_ids(team_id: nil, with_tid: false)
     # reference_points[pgid][id] = referenec_point
     reference_points = Problem \
       .all \
@@ -539,6 +539,7 @@ class Score < ActiveRecord::Base
       score_id_cleared_pg[tid][pgid] = x.id if reference_points[pgid].all?{|(pid, ref)| ref <= subtotal_point[tid][pid] }
     end
 
+    return Hash[score_id_cleared_pg.map{|k, v| [k, v.values] }] if with_tid
     return score_id_cleared_pg.values.flat_map(&:values)
   end
 
@@ -585,6 +586,7 @@ class Score < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
+      next none if Setting.competition_end_time <= DateTime.now
       parameters = { team_id: user.team.id, time: DateTime.now - Setting.answer_reply_delay_sec.seconds }
       joins(:answer).where("answers.team_id = :team_id AND answers.updated_at <= :time", parameters)
     else # nologin, ...
