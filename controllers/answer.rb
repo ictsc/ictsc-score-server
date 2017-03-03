@@ -149,6 +149,7 @@ class AnswerRoutes < Sinatra::Base
 
   before "/api/problems/:id/answers" do
     @problem = Problem.find_by(id: params[:id])
+    pass if request.post?
     halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
