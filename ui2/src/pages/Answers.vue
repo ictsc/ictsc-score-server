@@ -21,7 +21,7 @@
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
               :class="'team status-' + status(problem.answers, team.id, problem.id)">
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
-              <span v-if="isFirstBrad(problem.answers, team.id, problem.id)" class="first-brad">
+              <span v-if="isFirstBlood(problem.answers, team.id, problem.id)" class="first-blood">
                 First <i class="fa fa-flag"></i>
               </span>
               <!--status: {{ status(problem.answers, team.id) }}
@@ -65,7 +65,7 @@
   background: #CBF5E0;
   color: #00A353;
 }
-.team .first-brad {
+.team .first-blood {
   margin-left: 1rem;
 }
 
@@ -119,7 +119,7 @@ export default {
       return teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 2 : 1), 2);
     },
-    isFirstBrad (answers, teamId, problemId) {
+    isFirstBlood (answers, teamId, problemId) {
       return this.teamAnswers(answers, teamId, problemId)
         .filter(ans => ans.score && ans.score.is_firstblood).length !== 0;
     },
