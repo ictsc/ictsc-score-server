@@ -110,6 +110,7 @@ export default {
   },
   methods: {
     teamAnswers (answers, teamId, problemId) {
+      if (answers === undefined) return [];
       return answers.filter(ans => ans.team_id === teamId && ans.problem_id === problemId);
     },
     status (answers, teamId, problemId) {

@@ -385,7 +385,7 @@ export default {
       if (!answers) return 0;
       return answers
         .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
-        .reduce((p, n) => p + n.score.point, 0);
+        .reduce((p, n) => p + ((n.score && n.score.point) || 0), 0);
     },
     problemTitle (id) {
       var found = this.problems.find(p => p.id === id);
