@@ -28,7 +28,7 @@ class ScoreBoardRoutes < Sinatra::Base
       all_scores = [
           Score.all.joins(:answer).group("answers.team_id").sum(:point),
           Score.firstbloods.joins(:answer).group("answers.team_id").sum(:point),
-          # NOTE: 全完ボーナスの実装
+          Score.cleared_problem_group_ids(with_tid: true).inject(Hash.new(0)){|acc, (tid, score_ids)| acc[tid] += score_ids.count * settings.bonus_point_for_clear_problem_group; acc },
         ] \
         .map(&:to_a) \
         .flatten(1) \
