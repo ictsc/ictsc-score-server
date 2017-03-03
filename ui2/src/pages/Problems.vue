@@ -15,6 +15,14 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-sm-2 col-form-label">依存問題</label>
+          <div class="col-sm-10">
+            <select class="form-control" v-model="newObj.problem_must_solve_before_id">
+              <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
           <label class="col-sm-2 col-form-label">Title</label>
           <div class="col-sm-10">
             <input v-model="newObj.title" type="text" class="form-control" placeholder="タイトル">
@@ -266,6 +274,7 @@ export default {
         reference_point: 0,
         perfect_point: 0,
         problem_group_id: '',
+        problem_must_solve_before_id: null,
       },
     }
   },
@@ -284,6 +293,12 @@ export default {
     // },
   },
   computed: {
+    problemSelect () {
+      return Array.concat([{
+        id: null,
+        title: 'Null',
+      }], this.problems);
+    },
     ...mapGetters([
       'session',
     ]),
@@ -309,6 +324,7 @@ export default {
         .reduce((p, n) => p + n.score.point, 0);
     },
     async addProblem () {
+      console.log(this.newObj);
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
         await API.postProblems(this.newObj);
@@ -320,6 +336,7 @@ export default {
           detail: '',
           key: 'problem',
         });
+        this.asyncReload('problems');
       } catch (err) {
         console.log(err)
         Emit(PUSH_NOTIF, {

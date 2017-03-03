@@ -123,7 +123,7 @@ export class API {
   static postProblems (obj, req = superagent) {
     return RequestMiddleware(
       req.post(`problems`)
-        .send(JSON.stringify({ obj }))
+        .send(JSON.stringify(obj))
     ).then(res => res.body)
   }
   static getProblem (id, req = superagent) {

@@ -7,6 +7,9 @@
 </template>
 
 <style>
+.markdown-editor {
+  text-align: left;
+}
 .editor-toolbar.fullscreen {
   z-index: 1100;
 }
