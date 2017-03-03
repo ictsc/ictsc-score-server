@@ -52,8 +52,12 @@
 
     <h1>問題一覧</h1>
     <div class="description">
-      <p>出題ルール書いといたほうがよさそう。</p>
-      <p>A〜F社から各問題が1第ずつ出題されます。採点基準を満たす解答をすると、次の問題が解答できるようになります。とか。</p>
+      <p>
+        問題グループごとに複数の問題が有ります。
+      </p>
+      <p>
+        それぞれの問題に設定されて基準点をクリアすると、次の問題が解禁されます。
+      </p>
 
       <div class="steps d-flex">
         <div class="item">
@@ -85,13 +89,13 @@
 
     <div v-loading="asyncLoading" class="groups">
       <div v-for="group in problemGroups" class="group row">
-        <div class="col-6">
+        <div class="col-5">
           <div class="detail">
             <h2>{{ group.name }}</h2>
             <markdown :value="group.description"></markdown>
           </div>
         </div>
-        <div class="col-6">
+        <div class="col-7">
           <div class="problems">
             <template v-for="problem in problems">
               <router-link
@@ -100,7 +104,10 @@
                 class="problem d-flex">
                 <div v-if="problem.title === undefined" class="overlay">
                   <div class="overlay-message">
-                    採点基準クリアで解禁
+                    <div>採点基準クリアで解禁</div>
+                    <div><small>
+                      依存問題: {{ problemTitle(problem.problem_must_solve_before_id) }}
+                    </small></div>
                   </div>
                 </div>
                 <div class="scores-wrapper">
@@ -115,6 +122,7 @@
                     <span><i class="fa fa-pencil-square-o"></i> 解答 {{ answerCount(problem.id) }}件</span>
                     <span v-if="isMember"><i class="fa fa-check-circle"></i> 採点: {{ scoringTime(problem.answers) }} </span>
                     <span><i class="fa fa-question-circle"></i> 質問 {{ issueCount(problem.id) }}件</span>
+                    <span><i class="fa fa-child"></i> {{ problem.solved_teams_count }}チーム正解</span>
                   </div>
                 </div>
               </router-link>
@@ -203,10 +211,14 @@
 .problem .overlay .overlay-message {
   color: white;
   font-size: 2rem;
+  line-height: 1;
   font-weight: bold;
   flex-grow: 1;
   text-align: center;
   margin: auto;
+}
+.problem .overlay .overlay-message small {
+  font-size: .6em;
 }
 
 .problem .content {
@@ -373,6 +385,11 @@ export default {
       return answers
         .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
         .reduce((p, n) => p + n.score.point, 0);
+    },
+    problemTitle (id) {
+      var found = this.problems.find(p => p.id === id);
+      if (found && found.title) return `${found.title} ${found.reference_point}点`;
+      else return '???';
     },
     async addProblem () {
       console.log(this.newObj);
