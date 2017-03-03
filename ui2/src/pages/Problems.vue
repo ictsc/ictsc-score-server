@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="fixed-tool-tips">
+    <div v-if="isAdmin" class="fixed-tool-tips">
       <div v-on:click="showAdd = true" class="add"><i class="fa fa-plus"></i></div>
     </div>
     <message-box v-model="showAdd">
@@ -337,6 +337,7 @@ export default {
       }], this.problems);
     },
     ...mapGetters([
+      'isAdmin',
       'isMember',
       'session',
     ]),

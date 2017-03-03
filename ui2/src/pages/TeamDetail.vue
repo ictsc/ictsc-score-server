@@ -7,7 +7,7 @@
         <div class="login">{{ member.login }}</div>
       </div>
     </div>
-    <div class="problems">
+    <div v-if="isAdmin" class="problems">
       <template v-for="problem in problems" class="item">
         <router-link
           :to="{ name: 'problem-answers', params: { team: id, id: problem.id} }"
@@ -61,6 +61,7 @@
 <script>
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'team-detail',
@@ -82,6 +83,9 @@ export default {
     id () {
       return this.$route.params.id;
     },
+    ...mapGetters([
+      'isAdmin',
+    ]),
   },
   watch: {
   },

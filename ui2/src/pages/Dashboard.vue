@@ -8,13 +8,13 @@
             <h4>{{ item.title }}</h4>
             <markdown :value="item.text"></markdown>
             <div class="tip">
-              <button v-on:click="deleteNotif(item.id)">削除</button>
+              <button v-if="isAdmin" class="btn btn-secondary" v-on:click="deleteNotif(item.id)">削除</button>
               <small>{{ item.created_at }}</small>
             </div>
           </div>
         </div>
 
-        <div class="item-box">
+        <div v-if="isAdmin" class="item-box">
           <h4>お知らせ投稿</h4>
           <div class="form-group">
             <input v-model="notifPinning" id="checkbox-pinning" type="checkbox" class="">
@@ -47,7 +47,6 @@
             </router-link>
           </template>
         </div>
-        <pre>{{ session }}</pre>
       </div>
       <div class="col-4" v-loading="notificationsLoading">
         <h3>質問・補足のアップデート</h3>
@@ -69,6 +68,7 @@ import { API } from '../utils/Api'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
+import { mapGetters } from 'vuex'
 
 let successNotif = (title, detail) => {
   Emit(PUSH_NOTIF, {
@@ -123,7 +123,10 @@ export default {
   computed: {
     lastiNotifications () {
       return this.notifications.filter((v, i) => i < 15)
-    }
+    },
+    ...mapGetters([
+      'isAdmin',
+    ]),
   },
   watch: {
   },

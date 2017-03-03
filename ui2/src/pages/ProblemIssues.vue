@@ -23,7 +23,7 @@
             </div>
             <simple-markdown-editor v-model="issueText"></simple-markdown-editor>
             <div class="tools">
-              <button v-on:click="postNewIssue()" class="btn btn-secondary" :disabled="posting">質問投稿</button>
+              <button v-on:click="postNewIssue()" class="btn btn-secondary btn-block" :disabled="posting">質問投稿</button>
             </div>
           </div>
         </template>

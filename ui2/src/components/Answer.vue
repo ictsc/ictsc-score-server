@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="answers">
-      <div class="scoring">
+      <div v-if="isAdmin" class="scoring">
         <div v-if="value.completed" class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
@@ -72,6 +72,7 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { API } from '../utils/Api'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'answer',
@@ -95,6 +96,9 @@ export default {
     issueId () {
       return this.value.id;
     },
+    ...mapGetters([
+      'isAdmin',
+    ]),
   },
   watch: {
     value (val) {
