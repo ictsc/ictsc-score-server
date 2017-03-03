@@ -46,6 +46,11 @@ class CommentRoutes < Sinatra::Base
     post "/api/#{pluralize_name}/:commentable_id/comments" do
       halt 403 if not Comment.allowed_to_create_by?(current_user, action: @action)
 
+      if klass == Answer && @commentable.completed && is_participant?
+        status 400
+        next json comment: "participant can't add comments to completed answer"
+      end
+
       @attrs = attribute_values_of_class(Comment)
       @attrs[:member_id] = current_user.id
       @attrs[:commentable_type] = klass.to_s
@@ -66,6 +71,11 @@ class CommentRoutes < Sinatra::Base
       if request.put? and not satisfied_required_fields?(Comment)
         status 400
         next json required: insufficient_fields(Comment)
+      end
+
+      if klass == Answer && @commentable.completed && is_participant?
+        status 400
+        next json comment: "participant can't edit comments of completed answer"
       end
 
       @attrs = attribute_values_of_class(Comment)

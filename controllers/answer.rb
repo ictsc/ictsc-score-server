@@ -97,6 +97,11 @@ class AnswerRoutes < Sinatra::Base
         next json completed: "participant can't make answer to not completed"
       end
 
+      if @answer.comments.empty?
+        status 400
+        next json completed: "participant can't make ansewer with no comments completed"
+      end
+
       # 参加者は同一の問題に対し、 settings.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
       last_answer_completed_at = Answer.where(
           team_id: current_user&.team_id,
