@@ -40,12 +40,14 @@ class ScoreBoardRoutes < Sinatra::Base
       team_rank = all_scores.index{|(team_id, score)| team_id == team.id } if not all # beginning 0
 
       viewable_scores = all_scores.each_with_index.inject([]) do |acc, ((team_id, score), rank)|
+        actual_rank = all_scores.index{|s| s[1] == score } + 1
+
         score_info = {
           score: score,
-          rank: rank+1
+          rank: actual_rank
         }
 
-        if all || rank < 3 || team_id == team&.id
+        if all || actual_rank <= 3 || team_id == team&.id
           t = Team.find_by(id: team_id)
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
 
