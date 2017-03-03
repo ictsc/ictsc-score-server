@@ -75,13 +75,13 @@ export default {
   },
   computed: {
     problemId () {
-      return this.$route.params.id;
+      return '' + this.$route.params.id;
     },
     teamId () {
-      return this.$route.params.team;
+      return '' + this.$route.params.team;
     },
     issueId () {
-      return this.$route.params.issue;
+      return '' + this.$route.params.issue;
     },
     isSingleIssue () {
       return !!this.issueId;
