@@ -586,6 +586,7 @@ class Score < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
+      next none if Setting.competition_end_time <= DateTime.now
       parameters = { team_id: user.team.id, time: DateTime.now - Setting.answer_reply_delay_sec.seconds }
       joins(:answer).where("answers.team_id = :team_id AND answers.updated_at <= :time", parameters)
     else # nologin, ...
