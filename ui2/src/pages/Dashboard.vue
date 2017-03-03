@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="col-4 scoreboard" v-loading="scoreboardLoading">
+      <div class="col-4 scoreboard" v-loading="scoreboardLoading" v-if="scoreboard.length">
         <h3>順位</h3>
         <div class="item-box">
           <template v-for="item in scoreboard">
