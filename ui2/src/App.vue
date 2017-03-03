@@ -152,4 +152,39 @@ h6, .h6 {
   padding: 30px 0px 90px 0px;
   overflow: hidden;
 }
+
+
+
+.btn.label-secondary {
+  background: #E8E8E8;
+  color: #95989A;
+  border-color: #95989A;
+}
+.btn.label-danger {
+  background: #FFB1BC;
+  color: #F00000;
+  border-color: #F00000;
+}
+.btn.label-warning {
+  background: #CBF5E0;
+  color: #00A353;
+  border-color: #00A353;
+}
+.btn.label-success {
+  background: #F1F7A6;
+  color: #8DA700;
+  border-color: #8DA700;
+}
+.btn.label-secondary:not(.active),
+.btn.label-danger:not(.active),
+.btn.label-warning:not(.active),
+.btn.label-success:not(.active){
+  border-color: transparent;
+}
+.btn.label-secondary,
+.btn.label-danger,
+.btn.label-warning,
+.btn.label-success {
+  border-width: 2px;
+}
 </style>

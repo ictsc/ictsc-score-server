@@ -73,7 +73,7 @@ export default {
     issuesDefault: [],
     issues () {
       if (this.issueId) return API.getIssue(this.issueId).then(r => [r]);
-      else return API.getIssues();
+      else return API.getIssuesWithComments();
     },
     answersDefault: [],
     answers () {

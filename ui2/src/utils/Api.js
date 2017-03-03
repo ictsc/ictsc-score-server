@@ -146,6 +146,10 @@ export class API {
     return RequestMiddleware(req.get(`issues?with=comments-member-team,team,problem`))
       .then(res => res.body)
   }
+  static getIssuesWithComments (req = superagent) {
+    return RequestMiddleware(req.get(`issues?with=comments-member-team,team,problem`))
+      .then(res => res.body)
+  }
   static getIssue (id, req = superagent) {
     return RequestMiddleware(req.get(`issues/${id}?with=comments-member-team,team,problem`))
       .then(res => res.body)
@@ -170,6 +174,10 @@ export class API {
 
   // answers
   static getAnswers (req = superagent) {
+    return RequestMiddleware(req.get(`answers`))
+      .then(res => res.body)
+  }
+  static getAnswersWithComments (req = superagent) {
     return RequestMiddleware(req.get(`answers?with=comments`))
       .then(res => res.body)
   }

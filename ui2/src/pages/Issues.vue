@@ -1,15 +1,21 @@
 <template>
-  <div v-loading="asyncLoading">
+  <div>
     <h1>質問一覧</h1>
-    <div class="issue-list">
-      <template v-for="item in issues" class="">
+    <div class="tools">
+      <button v-on:click="filterSelect = 0" :class="{ active: filterSelect == 0 }" class="btn label-secondary">全て</button>
+      <button v-on:click="filterSelect ^= 1" :class="{ active: filterSelect & 1 }" class="btn label-danger">未回答</button>
+      <button v-on:click="filterSelect ^= 2" :class="{ active: filterSelect & 2 }" class="btn label-warning">対応中</button>
+      <button v-on:click="filterSelect ^= 4" :class="{ active: filterSelect & 4 }" class="btn label-success">解決済</button>
+    </div>
+    <div v-loading="asyncLoading" class="issue-list">
+      <template v-for="item in currentIssues" class="">
         <router-link
           :to="{name: 'problem-issues', params: {id: '' + item.problem_id, team: '' + item.team_id, issue: '' + item.id}}"
           class="item d-flex align-items-center">
           <div class="status">
-            <button v-if="item.status === 3" class="btn btn-success">解決済</button>
-            <button v-else-if="item.status === 2" class="btn btn-warning">対応中</button>
-            <button v-else-if="item.status === 1" class="btn btn-danger">未回答</button>
+            <button v-if="item.status === 3" class="btn label-success">解決済</button>
+            <button v-else-if="item.status === 2" class="btn label-warning">対応中</button>
+            <button v-else-if="item.status === 1" class="btn label-danger">未回答</button>
           </div>
           <div class="title">
             <h4>{{ item.problem ? item.problem.title : '???' }}</h4>
@@ -74,6 +80,14 @@
   text-align: right;
   font-size: .9em;
 }
+
+.tools {
+  text-align: center;
+  margin: 3rem 0;
+}
+.tools button {
+  margin: .3rem;
+}
 </style>
 
 <script>
@@ -85,12 +99,13 @@ export default {
   name: 'issues',
   data () {
     return {
+      filterSelect: 0,
     }
   },
   asyncData: {
     issuesDefault: [],
     issues () {
-      return API.getIssues()
+      return API.getIssuesWithComments()
         .then(res => {
           return res.map(issue => {
             issue.status = issueStatus(issue);
@@ -100,6 +115,14 @@ export default {
     },
   },
   computed: {
+    currentIssues () {
+      return this.issues.filter(i =>
+        !this.filterSelect ||
+        (this.filterSelect & 1) === i.status ||
+        (this.filterSelect & 2) === i.status ||
+        (this.filterSelect & 4) === i.status + 1
+      )
+    }
   },
   watch: {
   },

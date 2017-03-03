@@ -90,7 +90,7 @@ export default {
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 
-        var answers = await API.getAnswers();
+        var answers = await API.getAnswersWithComments();
         var filteredAnswer = answers
           .filter(i => '' + i.problem_id === this.problemId)
           .filter(i => '' + i.team_id === this.teamId);
