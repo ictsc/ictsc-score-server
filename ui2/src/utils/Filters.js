@@ -1,5 +1,6 @@
 import dateformat from 'dateformat';
 import * as d3 from 'd3';
+import moment from 'moment';
 
 export function fullDateFilter (value) {
   var fmtStr = 'yyyy/mm/dd HH:MM'
@@ -41,4 +42,10 @@ export function issueStatus (issue) {
   var lastComment = issue.comments[issue.comments.length - 1];
   if (lastComment.member.role_id === 4) return 1;
   return 2;
+}
+
+export function dateRelative (date) {
+  return moment(date)
+    .lang('ja')
+    .fromNow();
 }

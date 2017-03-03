@@ -16,6 +16,7 @@
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.5",
     "md5": "^2.2.1",
+    "moment": "^2.17.1",
     "superagent": "^3.2.1",
     "superagent-prefix": "0.0.2",
     "vue": "^2.1.10",
