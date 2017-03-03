@@ -5,7 +5,10 @@
         <problem :id="problemId"></problem>
       </div>
       <div class="col-6" v-loading="answersLoading">
-        <problem-mode-switch :problemId="problemId" :teamId="teamId"></problem-mode-switch>
+        <problem-mode-switch
+          :problemId="problemId"
+          :teamId="teamId"
+          :answers="answers"></problem-mode-switch>
         <template v-for="answer in currentAnswers">
           <answer :value="answer" :reload="reload"></answer>
         </template>
@@ -54,7 +57,7 @@ export default {
   asyncData: {
     answersDefault: [],
     answers () {
-      return API.getTeamWithAnswers(this.teamId).then(res => res.answers)
+      return API.getTeamWithAnswersComments(this.teamId).then(res => res.answers)
     },
   },
   computed: {
@@ -65,6 +68,7 @@ export default {
       return '' + this.$route.params.team;
     },
     currentAnswers () {
+      if (!this.answers) return [];
       return this.answers
         .filter(i => '' + i.problem_id === this.problemId)
         .filter(i => '' + i.team_id === this.teamId)

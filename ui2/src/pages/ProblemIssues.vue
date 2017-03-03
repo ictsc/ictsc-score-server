@@ -5,7 +5,10 @@
         <problem :id="problemId"></problem>
       </div>
       <div class="col-6" v-loading="issuesLoading">
-        <problem-mode-switch :problemId="problemId" :teamId="teamId"></problem-mode-switch>
+        <problem-mode-switch
+          :problemId="problemId"
+          :teamId="teamId"
+          :answers="answers"></problem-mode-switch>
         
         <router-link v-if="isSingleIssue" :to="{name: 'problem-issues', params: {id: problemId, team: teamId }}">
           質問一覧
@@ -71,6 +74,10 @@ export default {
     issues () {
       if (this.issueId) return API.getIssue(this.issueId).then(r => [r]);
       else return API.getIssues();
+    },
+    answersDefault: [],
+    answers () {
+      return API.getTeamWithAnswers(this.teamId).then(res => res.answers)
     },
   },
   computed: {

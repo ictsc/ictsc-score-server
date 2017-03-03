@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <router-link :to="{name: 'problem-issues', params: {id: problemId, team: teamId}}" class="nav-link" active-class="active">
@@ -11,6 +12,9 @@
           解答
         </router-link>
       </li>
+      <li class="score">
+        得点: <span class="point">{{ point }}</span>
+      </li>
     </ul>
   </div>
 </template>
@@ -18,6 +22,14 @@
 <style scoped>
 .nav {
   margin: 1rem 0 3rem;
+}
+.score {
+  margin: 0 0 0 auto;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.score .point {
+  color: #E6003B;
 }
 </style>
 
@@ -29,6 +41,7 @@ export default {
   props: {
     problemId: String,
     teamId: String,
+    answers: Array,
   },
   data () {
     return {
@@ -37,6 +50,15 @@ export default {
   asyncData: {
   },
   computed: {
+    currentAnswers () {
+      return this.answers
+        .filter(i => '' + i.problem_id === this.problemId)
+        .filter(i => '' + i.team_id === this.teamId)
+    },
+    point () {
+      return this.currentAnswers
+        .reduce((p, n) => p + n.score.point, 0);
+    },
   },
   watch: {
   },

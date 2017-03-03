@@ -92,8 +92,12 @@ export class API {
     return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score`))
       .then(res => res.body)
   }
-  static getTeamWithAnswers (id, req = superagent) {
+  static getTeamWithAnswersComments (id, req = superagent) {
     return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+      .then(res => res.body)
+  }
+  static getTeamWithAnswers (id, req = superagent) {
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score`))
       .then(res => res.body)
   }
   static getTeamWithIssues (id, req = superagent) {
