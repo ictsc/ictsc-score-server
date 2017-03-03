@@ -40,7 +40,7 @@
             <input v-model="newObj.perfect_point" type="number" class="form-control">
           </div>
         </div>
-        
+
         <simple-markdown-editor v-model="newObj.text"></simple-markdown-editor>
       </div>
       <template slot="buttons" scope="props">
@@ -258,7 +258,7 @@
 }
 .steps .item:last-child {
   background-image: none;
-  padding-right: 1rem;  
+  padding-right: 1rem;
 }
 .steps .item p {
   margin: 0;
