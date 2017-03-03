@@ -12,11 +12,13 @@
         <template v-for="answer in currentAnswers">
           <answer :value="answer" :reload="reload"></answer>
         </template>
-
         <div class="new-issue">
           <simple-markdown-editor v-model="newAnswer"></simple-markdown-editor>
           <div class="tools">
             <button v-on:click="postNewIssue()" class="btn btn-success">解答投稿</button>
+          </div>
+          <div v-if="!canAnswer" class="overlay">
+            {{ scoringCompleteTime | dateRelative }}に解答送信が可能になります。
           </div>
         </div>
       </div>
@@ -25,6 +27,22 @@
 </template>
 
 <style scoped>
+.new-issue {
+  position: relative;
+  padding: 2rem 0;
+}
+.new-issue .overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, .3);
+  z-index: 1;
+  font-size: 1.5rem;
+  text-align: center;
+  padding-top: 15rem;
+}
 
 </style>
 
@@ -40,6 +58,7 @@ import {
   PUSH_NOTIF,
   REMOVE_NOTIF
 } from '../utils/EventBus'
+import { dateRelative } from '../utils/Filters'
 
 export default {
   name: 'problem-answers',
@@ -49,15 +68,23 @@ export default {
     Answer,
     ProblemModeSwitch,
   },
+  filters: {
+    dateRelative,
+  },
   data () {
     return {
       newAnswer: '',
+      currentDate: new Date(),
     }
   },
   asyncData: {
     answersDefault: [],
     answers () {
       return API.getTeamWithAnswersComments(this.teamId).then(res => res.answers)
+    },
+    contentDefault: {},
+    contest () {
+      return API.getContest();
     },
   },
   computed: {
@@ -74,6 +101,25 @@ export default {
         .filter(i => '' + i.team_id === this.teamId)
         // .filter(i => this.issueId === undefined || '' + i.id === this.issueId);
     },
+    // 採点のディレイタイム(ms)
+    delay () {
+      return ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;  // debug
+    },
+    // 採点中のAnswers
+    scoringAnswers () {
+      return this.answers
+        .filter(ans => ans.completed && !ans.score)
+        .filter(ans => this.currentDate < new Date(ans.completed_at).valueOf() + this.delay)
+    },
+    // 回答可能かどうか
+    canAnswer () {
+      return this.scoringAnswers.length === 0;
+    },
+    // 採点が完了する時間(ms)
+    scoringCompleteTime () {
+      return this.scoringAnswers
+        .reduce((p, n) => Math.max(p, new Date(n.completed_at).valueOf() + this.delay), 0)
+    },
   },
   watch: {
     teamId () {
@@ -82,6 +128,9 @@ export default {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '解答一覧');
+    setInterval(() => {
+      this.currentDate = new Date();
+    }, 200)
   },
   destroyed () {
   },
