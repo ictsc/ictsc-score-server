@@ -111,6 +111,12 @@ export class API {
       .then(res => res.body)
   }
 
+  // contest
+  static getContest (req = superagent) {
+    return RequestMiddleware(req.get(`contest`))
+      .then(res => res.body)
+  }
+
   // problems
   static getProblemGroups (req = superagent) {
     return RequestMiddleware(req.get(`problem_groups`))
@@ -143,7 +149,7 @@ export class API {
 
   // issues
   static getIssues (req = superagent) {
-    return RequestMiddleware(req.get(`issues?with=comments-member-team,team,problem`))
+    return RequestMiddleware(req.get(`issues`))
       .then(res => res.body)
   }
   static getIssuesWithComments (req = superagent) {

@@ -88,7 +88,7 @@ export default {
       return '' + this.$route.params.team;
     },
     issueId () {
-      return '' + this.$route.params.issue;
+      return this.$route.params.issue;
     },
     isSingleIssue () {
       return !!this.issueId;
