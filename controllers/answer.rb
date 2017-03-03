@@ -20,7 +20,7 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/answers" do
-    @answers = generate_nested_hash(klass: Answer, by: current_user, params: @with_param)
+    @answers = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?))
     firstblood_ids = Score.firstbloods(only_ids: true)
     cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
 
@@ -50,7 +50,7 @@ class AnswerRoutes < Sinatra::Base
   get "/api/answers/:id" do
     @as_option = { include: {} }
     @as_option[:include][:score] = { methods: [:is_firstblood, :bonus_point, :subtotal_point] } if @with_param.include?("score")
-    @answer = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, id: params[:id], as_option: @as_option)
+    @answer = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !(is_admin? || is_viewer?))
 
     json @answer
   end
@@ -95,6 +95,11 @@ class AnswerRoutes < Sinatra::Base
       if %w(false 0).include? @attrs[:completed].to_s
         status 400
         next json completed: "participant can't make answer to not completed"
+      end
+
+      if @answer.comments.empty?
+        status 400
+        next json completed: "participant can't make ansewer with no comments completed"
       end
 
       # 参加者は同一の問題に対し、 settings.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
@@ -144,6 +149,7 @@ class AnswerRoutes < Sinatra::Base
 
   before "/api/problems/:id/answers" do
     @problem = Problem.find_by(id: params[:id])
+    pass if request.post?
     halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 

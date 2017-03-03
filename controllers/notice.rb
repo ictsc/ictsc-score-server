@@ -16,7 +16,7 @@ class NoticeRoutes < Sinatra::Base
   end
 
   get "/api/notices" do
-    @notices = generate_nested_hash(klass: Notice, by: current_user, params: @with_param)
+    @notices = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?))
     @notices.map do |n|
       n["member"]&.delete("hashed_password")
     end
@@ -29,7 +29,7 @@ class NoticeRoutes < Sinatra::Base
   end
 
   get "/api/notices/:id" do
-    @notice = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i)
+    @notice = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !(is_admin? || is_viewer?))
     @notice["member"]&.delete("hashed_password")
     json @notice
   end
