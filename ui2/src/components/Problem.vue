@@ -52,10 +52,16 @@
       <h3><span class="sub">補足事項:</span></h3>
       <div v-for="comment in problem.comments" class="comment">
         <p>{{ comment.text }}</p>
-        <div class="meta">{{ comment.created_at }}</div>
+        <div class="meta">
+          {{ comment.created_at }}
+          <i v-on:click="deleteComment(comment.id)" class="fa fa-trash"></i>
+        </div>
       </div>
-      <div class="new-comment">
-        <simple-markdown-editor v-if="edit" v-model="newComment"></simple-markdown-editor>
+      <div v-if="edit" class="new-comment">
+        <simple-markdown-editor v-model="newComment"></simple-markdown-editor>
+        <div class="text-right">
+          <button v-on:click="newCommentSubmit()" class="btn btn-secondary"><i class="fa fa-plus"></i> 補足追加</button>
+        </div>
       </div>
     </aside>
     <article>
@@ -185,6 +191,38 @@ export default {
         Emit(PUSH_NOTIF, {
           type: 'error',
           title: '更新に失敗しました',
+          detail: '',
+          key: 'problem',
+        });
+      }
+    },
+    async newCommentSubmit () {
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
+        await API.postAnswersComments(this.id, this.newComment);
+        this.asyncReload('problem');
+        this.newComment = '';
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '追加に失敗しました',
+          detail: '',
+          key: 'problem',
+        });
+      }
+    },
+    async deleteComment (commentId) {
+      if (!window.confirm('削除していいですか？')) return;
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
+        await API.deleteAnswersComments(this.id, commentId);
+        this.asyncReload('problem');
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '削除に失敗しました',
           detail: '',
           key: 'problem',
         });

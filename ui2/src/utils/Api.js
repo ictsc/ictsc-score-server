@@ -104,6 +104,19 @@ export class API {
     return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
       .then(res => res.body)
   }
+  static postAnswersComments (problemId, text, req = superagent) {
+    return RequestMiddleware(
+      req.post(`problems/${problemId}/comments`)
+        .send(JSON.stringify({
+          text,
+        }))
+    ).then(res => res.body)
+  }
+  static deleteAnswersComments (problemId, id, req = superagent) {
+    return RequestMiddleware(
+      req.del(`problems/${problemId}/comments/${id}`)
+    ).then(res => res.body)
+  }
 
   // scoreboard
   static getScoreboard (req = superagent) {
