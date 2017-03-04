@@ -23,6 +23,8 @@ class ProblemRoutes < Sinatra::Base
     @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?)).uniq
 
     if "Participant" == current_user&.role&.name
+      next json [] if DateTime.now <= settings.competition_start_time
+
       show_columns = Problem.column_names - %w(title text)
       @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json).sort_by{|x| x["id"] }
     end
