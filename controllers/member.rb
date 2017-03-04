@@ -98,7 +98,7 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members" do
-    @members = generate_nested_hash(klass: Member, by: current_user, params: @with_param, as_option: {except: [:hashed_password]})
+    @members = generate_nested_hash(klass: Member, by: current_user, params: @with_param, as_option: {except: [:hashed_password]}, apply_filter: !(is_admin? || is_viewer?))
     @members.map do |m|
       next if not m["team"]
       m["team"]["hashed_registration_code"] = Digest::SHA1.hexdigest(m["team"]["registration_code"])
@@ -113,7 +113,7 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members/:id" do
-    @member = generate_nested_hash(klass: Member, by: current_user, params: @with_param, id: params[:id], as_option: {except: [:hashed_password]})
+    @member = generate_nested_hash(klass: Member, by: current_user, params: @with_param, id: params[:id], as_option: {except: [:hashed_password]}, apply_filter: !(is_admin? || is_viewer?))
     if t = @member["team"]
       t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
       t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
