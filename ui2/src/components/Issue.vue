@@ -6,13 +6,13 @@
           <div>
             <template v-if="status == 3">
               <!-- 解決済 -->
-              <button v-on:click="switchClosed()" class="btn btn-success">解決済み</button>
+              <button v-on:click="switchClosed()" class="btn label-success">解決済み</button>
             </template>
             <template v-else-if="status == 2">
-              <button v-on:click="switchClosed()" class="btn btn-warning">対応中</button>
+              <button v-on:click="switchClosed()" class="btn label-warning">対応中</button>
             </template>
             <template v-else-if="status == 1">
-              <button v-on:click="switchClosed()" class="btn btn-danger">未回答</button>
+              <button v-on:click="switchClosed()" class="btn label-danger">未回答</button>
             </template>
           </div>
           <div v-if="status != 3"><small>解決したら<br>クリック</small></div>
