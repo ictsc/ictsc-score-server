@@ -34,7 +34,6 @@ class NotificationRoutes < Sinatra::Base
       }
     end
 
-
     Problem \
       .readables(user: current_user) \
       .includes(:comments, :answers) \
@@ -147,12 +146,14 @@ class NotificationRoutes < Sinatra::Base
       end
     end
 
-    notifications = notifications.sort_by{|x| x[:created_at] }.reverse
-    if filter_time_after
-      notifications = notifications.select{|x| filter_time_after <= x[:created_at] }
-      json notifications
-    else
-      json notifications
+    if current_user&.role&.name == "Participant"
+      notifications.reject! {|x| settings.competition_end_time < x[:created_at] }
     end
+
+    if filter_time_after
+      notifications = notifications.select!{|x| filter_time_after <= x[:created_at] }
+    end
+
+    json notifications.sort_by{|x| x[:created_at] }.reverse
   end
 end
