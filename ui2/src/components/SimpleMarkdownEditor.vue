@@ -51,6 +51,7 @@ export default {
   },
   mounted () {
     this.init();
+    this.simplemde.value(this.value);
   },
   destroyed () {
   },
