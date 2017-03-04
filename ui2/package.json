@@ -16,6 +16,7 @@
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.5",
     "md5": "^2.2.1",
+    "moment": "^2.17.1",
     "superagent": "^3.2.1",
     "superagent-prefix": "0.0.2",
     "vue": "^2.1.10",
@@ -85,6 +86,7 @@
     "resolve-url-loader": "^1.6.1",
     "selenium-server": "2.53.1",
     "semver": "^5.3.0",
+    "sha1": "^1.1.1",
     "shelljs": "^0.7.4",
     "simplemde": "^1.11.2",
     "sinon": "^1.17.3",

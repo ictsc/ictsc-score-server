@@ -16,7 +16,7 @@
           <div class="form-group">
             <input type="submit" class="btn btn-success btn-lg btn-block" value="サインイン">
           </div>
-          <p class="text-center"><a href="">サインアップはこちら</a></p>
+          <p class="text-center"><router-link :to="{ name: 'signup' }">サインアップはこちら</router-link></p>
         </form>
       </div>
     </div>
@@ -66,33 +66,30 @@ export default {
   destroyed () {
   },
   methods: {
-    submit () {
-      Emit(REMOVE_NOTIF, msg => msg.key === 'login');
+    async submit () {
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'login');
 
-      API.login(this.login, this.pass)
-        .then(res => {
-          this.$router.push({ name: 'dashboard' })
-          Emit(RELOAD_SESSION)
-          Emit(PUSH_NOTIF, {
-            type: 'success',
-            icon: 'check',
-            title: 'ログインしました',
-            detail: '',
-            key: 'login',
-            autoClose: true,
-          });
-        })
-        .catch(err => {
-          console.log(err)
-          Emit(PUSH_NOTIF, {
-            type: 'error',
-            icon: 'warning',
-            title: 'ログインに失敗しました',
-            detail: 'メンバーID・パスワードを確認してください。',
-            key: 'login',
-            autoClose: false,
-          });
-        })
+        var res = await API.login(this.login, this.pass)
+        console.log('login', res);
+        if (res.status === 'failed') throw res;
+        this.$router.push({ name: 'dashboard' })
+        Emit(RELOAD_SESSION)
+        Emit(PUSH_NOTIF, {
+          type: 'success',
+          title: 'ログインしました',
+          detail: '',
+          key: 'login',
+        });
+      } catch (err) {
+        console.log(err)
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: 'ログインに失敗しました',
+          detail: '',
+          key: 'login',
+        });
+      }
     },
   },
 }

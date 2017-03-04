@@ -5,19 +5,28 @@
         <problem :id="problemId"></problem>
       </div>
       <div class="col-6" v-loading="issuesLoading">
-        <problem-mode-switch :problemId="problemId" :teamId="teamId"></problem-mode-switch>
+        <problem-mode-switch
+          :problemId="problemId"
+          :teamId="teamId"
+          :answers="answers"></problem-mode-switch>
         
         <router-link v-if="isSingleIssue" :to="{name: 'problem-issues', params: {id: problemId, team: teamId }}">
           質問一覧
         </router-link>
-        <div v-if="!isSingleIssue" class="new-issue">
-          <input v-model="issueTitle" type="text" class="form-control"
-            placeholder="タイトルは具体的かつ端的に記入してください">
-          <simple-markdown-editor v-model="issueText"></simple-markdown-editor>
-          <div class="tools">
-            <button v-on:click="postNewIssue()" class="btn btn-success">質問投稿</button>
+
+        <template v-if="!isSingleIssue && isMember">
+          <h3>新規質問</h3>
+          <div class="new-issue">
+            <div class="form-group">
+              <input v-model="issueTitle" type="text" class="form-control"
+                placeholder="タイトルは具体的かつ端的に記入してください">
+            </div>
+            <simple-markdown-editor v-model="issueText"></simple-markdown-editor>
+            <div class="tools">
+              <button v-on:click="postNewIssue()" class="btn btn-secondary btn-block" :disabled="posting">質問投稿</button>
+            </div>
           </div>
-        </div>
+        </template>
 
         <template v-for="issue in currentIssues">
           <issue :value="issue" :reload="reload"></issue>
@@ -43,6 +52,7 @@ import {
   PUSH_NOTIF,
   REMOVE_NOTIF
 } from '../utils/EventBus'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'problem-issues',
@@ -56,20 +66,26 @@ export default {
     return {
       issueTitle: '',
       issueText: '',
+      posting: false,
     }
   },
   asyncData: {
     issuesDefault: [],
     issues () {
-      return API.getIssues();
-    }
+      if (this.issueId) return API.getIssue(this.issueId).then(r => [r]);
+      else return API.getIssuesWithComments();
+    },
+    answersDefault: [],
+    answers () {
+      return API.getTeamWithAnswers(this.teamId).then(res => res.answers)
+    },
   },
   computed: {
     problemId () {
-      return this.$route.params.id;
+      return '' + this.$route.params.id;
     },
     teamId () {
-      return this.$route.params.team;
+      return '' + this.$route.params.team;
     },
     issueId () {
       return this.$route.params.issue;
@@ -81,10 +97,29 @@ export default {
       return this.issues
         .filter(i => '' + i.problem_id === this.problemId)
         .filter(i => '' + i.team_id === this.teamId)
-        .filter(i => this.issueId === undefined || '' + i.id === this.issueId);
+        // .filter(i => this.issueId === undefined || '' + i.id === this.issueId);
     },
+    ...mapGetters([
+      'isMember',
+      'session',
+    ]),
   },
   watch: {
+    problemId (val, old) {
+      if (val !== old) {
+        this.asyncReload('issues');
+      }
+    },
+    teamId (val, old) {
+      if (val !== old) {
+        this.asyncReload('issues');
+      }
+    },
+    issueId (val, old) {
+      if (val !== old) {
+        this.asyncReload('issues');
+      }
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '質問一覧');
@@ -92,34 +127,32 @@ export default {
   destroyed () {
   },
   methods: {
-    postNewIssue () {
+    async postNewIssue () {
+      this.posting = true;
       Emit(REMOVE_NOTIF, msg => msg.key === 'issue');
 
-      API.addIssues(this.problemId, this.issueTitle)
-        .then(res => API.addIssueComment(res.id, this.issueText))
-        .then(res => {
-          this.issueTitle = '';
-          this.issueText = '';
-          this.reload();
-          Emit(PUSH_NOTIF, {
-            type: 'success',
-            icon: 'check',
-            title: '投稿しました',
-            detail: '',
-            key: 'login',
-            autoClose: true,
-          });
-        })
-        .catch(err => {
-          console.log(err)
-          Emit(PUSH_NOTIF, {
-            type: 'error',
-            icon: 'warning',
-            title: '投稿に失敗しました',
-            key: 'login',
-            autoClose: false,
-          });
+      try {
+        var res = await API.addIssues(this.problemId, this.issueTitle)
+        await API.addIssueComment(res.id, this.issueText);
+
+        this.issueTitle = '';
+        this.issueText = '';
+        this.reload();
+        Emit(PUSH_NOTIF, {
+          type: 'success',
+          title: '投稿しました',
+          detail: '',
+          key: 'login',
         });
+      } catch (err) {
+        console.log(err)
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '投稿に失敗しました',
+          key: 'login',
+        });
+      }
+      this.posting = false;
     },
     reload () {
       this.asyncReload();

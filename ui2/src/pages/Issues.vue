@@ -1,28 +1,45 @@
 <template>
-  <div v-loading="asyncLoading">
-    <h1>到着質問</h1>
-    <div class="issue-list">
-      <template v-for="item in issues" class="">
+  <div>
+    <h1>質問一覧</h1>
+    <div class="description">
+      <p>このページは質問一覧画面です。下のボタンを切り替えることで、表示される種類が絞り込めます。</p>
+    </div>
+    <div class="tools">
+      <button v-on:click="filterSelect = 0" :class="{ active: filterSelect == 0 }" class="btn label-secondary">全て</button>
+      <button v-on:click="filterSelect ^= 1" :class="{ active: filterSelect & 1 }" class="btn label-danger">未回答</button>
+      <button v-on:click="filterSelect ^= 2" :class="{ active: filterSelect & 2 }" class="btn label-warning">対応中</button>
+      <button v-on:click="filterSelect ^= 4" :class="{ active: filterSelect & 4 }" class="btn label-success">解決済</button>
+    </div>
+    <div v-loading="asyncLoading" class="issue-list">
+      <template v-for="item in currentIssues" class="">
         <router-link
           :to="{name: 'problem-issues', params: {id: '' + item.problem_id, team: '' + item.team_id, issue: '' + item.id}}"
           class="item d-flex align-items-center">
           <div class="status">
-            <button v-if="item.closed" class="btn btn-success">解決済</button>
-            <button v-else class="btn btn-warning">対応中</button>
+            <button v-if="item.status === 3" class="btn label-success">解決済</button>
+            <button v-else-if="item.status === 2" class="btn label-warning">対応中</button>
+            <button v-else-if="item.status === 1" class="btn label-danger">未回答</button>
           </div>
           <div class="title">
-            <h4>{{ item.problem.title }}</h4>
+            <h4>{{ item.problem ? item.problem.title : '???' }}</h4>
             <h3>{{ item.title }}</h3>
-            <p>{{ item.team.id }}. {{ item.team.name }}</p>
+            <p v-if="item.team">{{ item.team.id }}. {{ item.team.name }}</p>
+            <p v-else>???</p>
           </div>
           <div class="comments head">
             <div class="content">{{ firstComment(item.comments).text }}</div>
-            <div class="meta">チーム名 参加者: {{ firstComment(item.comments).member_id }}</div>
+            <div class="meta">チーム名 参加者: {{ firstComment(item.comments).member.name }}</div>
           </div>
-          <div class="comments answer">
-            <div class="content">{{ lastResponseComment(item.comments).text }}</div>
-            <div class="meta">チーム名 参加者</div>
-          </div>
+          <template v-if="lastResponseComment(item.comments).member">
+            <div  class="comments answer">
+              <div class="content">{{ lastResponseComment(item.comments).text }}</div>
+              <div class="meta">チーム名 {{ lastResponseComment(item.comments).member.name }}</div>
+            </div>
+          </template>
+          <template v-else>
+            <div  class="comments answer empty">
+            </div>
+          </template>
         </router-link>
       </template>
     </div>
@@ -58,30 +75,60 @@
   padding: 1rem;
   border-radius: 10px;
 }
+.item .comments.answer {
+  background: #F0F0F0;
+}
 .item .comments .meta {
   color: #aaa;
   text-align: right;
   font-size: .9em;
+}
+
+.description {
+  text-align: center;
+}
+.tools {
+  text-align: center;
+  margin: 3rem 0;
+}
+.tools button {
+  margin: .3rem;
 }
 </style>
 
 <script>
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
+import { issueStatus } from '../utils/Filters'
 
 export default {
   name: 'issues',
   data () {
     return {
+      filterSelect: 0,
     }
   },
   asyncData: {
-    issuesDefault: {},
+    issuesDefault: [],
     issues () {
-      return API.getIssues();
+      return API.getIssuesWithComments()
+        .then(res => {
+          return res.map(issue => {
+            issue.status = issueStatus(issue);
+            return issue;
+          });
+        });
     },
   },
   computed: {
+    currentIssues () {
+      return this.issues.filter(i =>
+        !this.filterSelect ||
+        (this.filterSelect & 1) === i.status ||
+        (this.filterSelect & 2) === i.status ||
+        (this.filterSelect & 4) === i.status + 1
+      )
+    }
   },
   watch: {
   },
@@ -92,12 +139,13 @@ export default {
   },
   methods: {
     firstComment (comments) {
-      return comments[0] || {};
+      return comments[0] || { member: {} };
     },
     lastResponseComment (comments) {
       // todo admin filter
-      if (comments.length < 2) return {};
-      return comments[comments.length - 1];
+      var notWriterComment = comments.filter(c => c.member.role_id !== 4);
+      if (notWriterComment.length === 0) return {};
+      return notWriterComment[notWriterComment.length - 1];
     },
   },
 }

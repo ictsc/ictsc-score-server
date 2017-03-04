@@ -17,7 +17,7 @@
         </a>
       </div>
     </div>
-    <div class="row justify-content-center">
+    <div v-if="isAdmin" class="row justify-content-center">
       <div class="col-4">
         <div class="team d-flex align-items-center">
           <div class="detail">
@@ -87,6 +87,7 @@
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'teams',
@@ -104,6 +105,9 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'isAdmin',
+    ]),
   },
   watch: {
   },
@@ -120,22 +124,18 @@ export default {
           this.asyncReload();
           Emit(PUSH_NOTIF, {
             type: 'success',
-            icon: 'check',
             title: '追加しました。',
             detail: '',
             key: 'teams',
-            autoClose: true,
           })
         })
         .catch(err => {
           console.warn(err);
           Emit(PUSH_NOTIF, {
             type: 'error',
-            icon: 'warning',
             title: '追加に失敗しました。',
             detail: '',
             key: 'teams',
-            autoClose: false,
           });
         })
     }

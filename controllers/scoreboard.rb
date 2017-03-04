@@ -66,7 +66,7 @@ class ScoreBoardRoutes < Sinatra::Base
     when "Admin", "Writer", "Viewer"
       json scoreboard_for(all: true)
     when "Participant"
-      halt 403 if settings.scoreboard_hide_at <= DateTime.now
+      next json [] if settings.scoreboard_hide_at <= DateTime.now
       team = current_user.team
       halt 400 if team.nil?
       json scoreboard_for(team: team)

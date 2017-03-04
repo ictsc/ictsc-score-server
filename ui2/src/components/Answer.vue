@@ -1,8 +1,7 @@
 <template>
   <div>
     <div class="answers">
-      <div class="scoring">
-        {{ scores }}
+      <div v-if="isAdmin" class="scoring">
         <div v-if="value.completed" class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
@@ -20,11 +19,11 @@
       </div>
       <div class="status">
         <template v-if="value.completed">
-          <div v-if="isScored === true" class="result">
-            得点: {{ point }} + ボーナス: {{ bonusPoint }}
-            <span v-if="isFirstBlood">FirstBlood!</span>
+          <div v-if="value.score" class="result">
+            得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
+            <span v-if="value.score.is_firstblood">最初の回答者です！</span>
           </div>
-          <div v-if="isScored === false" class="pending">採点依頼中...</div>
+          <div v-if="!value.score" class="pending">採点依頼中...</div>
         </template>
         <div v-else class="send">
           <button v-on:click="sendRequest()" class="btn btn-block btn-secondary">採点依頼を送る</button>
@@ -73,6 +72,7 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { API } from '../utils/Api'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'answer',
@@ -82,7 +82,6 @@ export default {
   },
   props: {
     value: Object,
-    scores: Array,
     reload: Function,
   },
   data () {
@@ -97,31 +96,17 @@ export default {
     issueId () {
       return this.value.id;
     },
-    firstScore () {
-      return (this.scores[0] && this.scores[0]) || {};
-    },
-    isScored () {
-      if (this.scoresLoading) return undefined;
-      else if (this.scores.length === 0) return false;
-      else return true
-    },
-    point () {
-      return this.scores.reduce((p, n) => p + n.point, 0);
-    },
-    bonusPoint () {
-      return this.scores.reduce((p, n) => p + n.bonus_point, 0);
-    },
-    isFirstBlood () {
-      return this.scores.reduce((p, n) => p || n.is_firstblood, false);
-    },
+    ...mapGetters([
+      'isAdmin',
+    ]),
   },
   watch: {
-    scores (val) {
-      this.newPoint = this.firstScore.point;
+    value (val) {
+      this.newPoint = (this.value.score && this.value.score.point) || 0;
     },
   },
   mounted () {
-    this.newPoint = this.firstScore.point;
+    this.newPoint = (this.value.score && this.value.score.point) || 0;
   },
   destroyed () {
   },
@@ -135,11 +120,9 @@ export default {
           console.log('Patch OK');
           Emit(PUSH_NOTIF, {
             type: 'success',
-            icon: 'check',
             title: '投稿しました',
             detail: '',
             key: 'issue',
-            autoClose: true,
           });
           if (this.reload.apply) this.reload();
         })
@@ -147,10 +130,8 @@ export default {
           console.error(err);
           Emit(PUSH_NOTIF, {
             type: 'error',
-            icon: 'warning',
             title: '投稿に失敗しました',
             key: 'issue',
-            autoClose: false,
           });
         })
     },
@@ -158,8 +139,8 @@ export default {
       Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 
       var postOrPut;
-      if (this.firstScore.id) {
-        postOrPut = API.putScore(this.firstScore.id, Object.assign({}, this.firstScore, {
+      if (this.value.score && this.value.score.id) {
+        postOrPut = API.putScore(this.value.score.id, Object.assign({}, this.value.score, {
           point: this.newPoint,
         }))
       } else {

@@ -5204,6 +5204,11 @@
         }
       }
     },
+    "moment": {
+      "version": "2.17.1",
+      "from": "moment@latest",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.17.1.tgz"
+    },
     "ms": {
       "version": "0.7.2",
       "from": "ms@0.7.2",
@@ -6527,6 +6532,12 @@
       "version": "2.4.8",
       "from": "sha.js@>=2.3.6 <3.0.0",
       "resolved": "https://registry.npmjs.org/sha.js/-/sha.js-2.4.8.tgz",
+      "dev": true
+    },
+    "sha1": {
+      "version": "1.1.1",
+      "from": "sha1@latest",
+      "resolved": "https://registry.npmjs.org/sha1/-/sha1-1.1.1.tgz",
       "dev": true
     },
     "shelljs": {

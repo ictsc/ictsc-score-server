@@ -8,13 +8,13 @@
             <h4>{{ item.title }}</h4>
             <markdown :value="item.text"></markdown>
             <div class="tip">
-              <button v-on:click="deleteNotif(item.id)">削除</button>
+              <button v-if="isAdmin" class="btn btn-secondary" v-on:click="deleteNotif(item.id)">削除</button>
               <small>{{ item.created_at }}</small>
             </div>
           </div>
         </div>
 
-        <div class="item-box">
+        <div v-if="isAdmin" class="item-box">
           <h4>お知らせ投稿</h4>
           <div class="form-group">
             <input v-model="notifPinning" id="checkbox-pinning" type="checkbox" class="">
@@ -37,17 +37,16 @@
           </div>
         </div>
       </div>
-      <div class="col-4 scoreboard" v-loading="scoreboardLoading">
+      <div class="col-4 scoreboard" v-loading="scoreboardLoading" v-if="scoreboard.length">
         <h3>順位</h3>
         <div class="item-box">
           <template v-for="item in scoreboard">
-            <router-link :to="{name: 'team-detail', params: {id: item.team.id}}" class="item">
+            <router-link :to="{name: 'team-detail', params: {id: item.team ? item.team.id : ''}}" class="item">
               <h4>{{ item.rank }}位 <span class="score">{{ item.score }}点</span></h4>
               <div v-if="item.team">{{ item.team.name }}</div>
             </router-link>
           </template>
         </div>
-        <pre>{{ session }}</pre>
       </div>
       <div class="col-4" v-loading="notificationsLoading">
         <h3>質問・補足のアップデート</h3>
@@ -69,25 +68,22 @@ import { API } from '../utils/Api'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
+import { mapGetters } from 'vuex'
 
 let successNotif = (title, detail) => {
   Emit(PUSH_NOTIF, {
     type: 'success',
-    icon: 'check',
     title,
     detail,
     key: 'notif',
-    autoClose: true,
   });
 }
 let errorNotif = (title, detail) => {
   Emit(PUSH_NOTIF, {
     type: 'error',
-    icon: 'warning',
     title,
     detail,
     key: 'notif',
-    autoClose: false,
   });
 }
 
@@ -127,7 +123,10 @@ export default {
   computed: {
     lastiNotifications () {
       return this.notifications.filter((v, i) => i < 15)
-    }
+    },
+    ...mapGetters([
+      'isAdmin',
+    ]),
   },
   watch: {
   },

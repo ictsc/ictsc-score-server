@@ -1,20 +1,29 @@
 <template>
   <div v-loading="asyncLoading">
     <h1>解答と採点</h1>
+    <div class="tools">
+      <div class="team status-0">未提出</div>
+      <div class="team status-1">未採点</div>
+      <div class="team status-2">採点済</div>
+    </div>
     <div class="problems">
       <div v-for="problem in problems" class="problem">
-        <h3>{{ problem.title }}</h3>
-        <p><small>
-          {{ problem.reference_point }} - 
-          {{ problem.perfect_point }} - 
-          {{ problem.solved_teams_count }}
-        </small></p>
+        <h3>{{ problem.title }}
+          <small>
+            基準点: {{ problem.reference_point }} /
+            満点: {{ problem.perfect_point }} /
+            正解チーム数: {{ problem.solved_teams_count }}
+            </small>
+        </h3>
         <div class="teams row">
           <div v-for="team in teams" class="col-3">
             <router-link
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
-              :class="'team status-' + status(problem.answers, team.id)">
-              {{ team.id }}. {{ team.name }}
+              :class="'team status-' + status(problem.answers, team.id, problem.id)">
+              {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
+              <span v-if="isFirstBlood(problem.answers, team.id, problem.id)" class="first-blood">
+                First <i class="fa fa-flag"></i>
+              </span>
               <!--status: {{ status(problem.answers, team.id) }}
               {{ teamAnswers(problem.answers, team.id) }}-->
             </router-link>
@@ -27,7 +36,14 @@
 
 <style scoped>
 .problem {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+}
+.problems h3 {
+  margin-bottom: 1rem;
+}
+.problems h3 small {
+  font-size: .7em;
+  margin-left: 2rem;
 }
 .team {
   padding: .3rem;
@@ -48,6 +64,18 @@
 .team.status-2 {
   background: #CBF5E0;
   color: #00A353;
+}
+.team .first-blood {
+  margin-left: 1rem;
+}
+
+.tools {
+  text-align: center;
+}
+.tools > * {
+  display: inline-block;
+  padding-right: 5rem;
+  padding-left: 5rem;
 }
 </style>
 
@@ -81,15 +109,24 @@ export default {
   destroyed () {
   },
   methods: {
-    teamAnswers (answers, teamId) {
-      return answers.filter(ans => ans.team_id === teamId);
+    teamAnswers (answers, teamId, problemId) {
+      if (answers === undefined) return [];
+      return answers.filter(ans => ans.team_id === teamId && ans.problem_id === problemId);
     },
-    status (answers, teamId) {
+    status (answers, teamId, problemId) {
       // 0 未回答  1 未採点  2 採点済み
-      var teamAnswers = this.teamAnswers(answers, teamId).filter(ans => ans.completed);
+      var teamAnswers = this.teamAnswers(answers, teamId, problemId).filter(ans => ans.completed);
       if (teamAnswers.length === 0) return 0;
       return teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 2 : 1), 2);
+    },
+    isFirstBlood (answers, teamId, problemId) {
+      return this.teamAnswers(answers, teamId, problemId)
+        .filter(ans => ans.score && ans.score.is_firstblood).length !== 0;
+    },
+    score (answers, teamId, problemId) {
+      return this.teamAnswers(answers, teamId, problemId)
+        .reduce((p, n) => p + (n.score ? n.score.subtotal_point : 0), 0)
     },
   },
 }

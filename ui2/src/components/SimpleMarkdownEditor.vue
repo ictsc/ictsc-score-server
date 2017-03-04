@@ -7,6 +7,9 @@
 </template>
 
 <style>
+.markdown-editor {
+  text-align: left;
+}
 .editor-toolbar.fullscreen {
   z-index: 1100;
 }
@@ -48,6 +51,7 @@ export default {
   },
   mounted () {
     this.init();
+    this.simplemde.value(this.value);
   },
   destroyed () {
   },

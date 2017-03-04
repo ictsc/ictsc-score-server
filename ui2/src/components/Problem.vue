@@ -20,9 +20,11 @@
       <div class="point">
         <template v-if="edit">
           <div class="form-group row">
-            <label class="col-2 col-form-label">満点</label>
+            <label class="col-2 col-form-label">依存問題</label>
             <div class="col-10">
-              <input v-model="problem.perfect_point" class="form-control" type="number">
+              <select class="form-control" v-model="problem.problem_must_solve_before_id">
+                <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
+              </select>
             </div>
           </div>
           <div class="form-group row">
@@ -31,11 +33,18 @@
               <input v-model="problem.reference_point" class="form-control" type="number">
             </div>
           </div>
+          <div class="form-group row">
+            <label class="col-2 col-form-label">満点</label>
+            <div class="col-10">
+              <input v-model="problem.perfect_point" class="form-control" type="number">
+            </div>
+          </div>
         </template>
         <template v-else>
-          満点: {{ problem.perfect_point }}
-          基準点: {{ problem.reference_point }}
-          通過チーム数: {{ problem.solved_teams_count }}
+          基準点: {{ problem.reference_point }} /
+          満点: {{ problem.perfect_point }} /
+          通過チーム数: {{ problem.solved_teams_count }} /
+          依存: {{ dependenceProblem.title }}
         </template>
       </div>
     </header>
@@ -43,10 +52,16 @@
       <h3><span class="sub">補足事項:</span></h3>
       <div v-for="comment in problem.comments" class="comment">
         <p>{{ comment.text }}</p>
-        <div class="meta">{{ comment.created_at }}</div>
+        <div class="meta">
+          {{ comment.created_at }}
+          <i v-on:click="deleteComment(comment.id)" class="fa fa-trash"></i>
+        </div>
       </div>
-      <div class="new-comment">
-        <simple-markdown-editor v-if="edit" v-model="newComment"></simple-markdown-editor>
+      <div v-if="edit" class="new-comment">
+        <simple-markdown-editor v-model="newComment"></simple-markdown-editor>
+        <div class="text-right">
+          <button v-on:click="newCommentSubmit()" class="btn btn-secondary"><i class="fa fa-plus"></i> 補足追加</button>
+        </div>
       </div>
     </aside>
     <article>
@@ -100,6 +115,11 @@ import { API } from '../utils/Api'
 import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
 import { mapGetters } from 'vuex'
+import {
+  Emit,
+  PUSH_NOTIF,
+  REMOVE_NOTIF,
+} from '../utils/EventBus'
 
 export default {
   name: 'problem',
@@ -121,8 +141,22 @@ export default {
     problem () {
       return API.getProblem(this.id);
     },
+    problemsDefault: [],
+    problems () {
+      return API.getProblems();
+    },
   },
   computed: {
+    problemSelect () {
+      return Array.concat([{
+        id: null,
+        title: 'Null',
+      }], this.problems);
+    },
+    dependenceProblem () {
+      return this.problems.find(p => p.id === this.problem.problem_must_solve_before_id) ||
+        { title: 'なし' };
+    },
     ...mapGetters([
       'isAdmin',
     ]),
@@ -147,8 +181,52 @@ export default {
       this.asyncReload();
       this.edit = false;
     },
-    editSubmit () {
-      // todo
+    async editSubmit () {
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
+        await API.patchProblem(this.id, this.problem);
+        this.edit = false;
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '更新に失敗しました',
+          detail: '',
+          key: 'problem',
+        });
+      }
+    },
+    async newCommentSubmit () {
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
+        await API.postAnswersComments(this.id, this.newComment);
+        this.asyncReload('problem');
+        this.newComment = '';
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '追加に失敗しました',
+          detail: '',
+          key: 'problem',
+        });
+      }
+    },
+    async deleteComment (commentId) {
+      if (!window.confirm('削除していいですか？')) return;
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
+        await API.deleteAnswersComments(this.id, commentId);
+        this.asyncReload('problem');
+      } catch (err) {
+        console.error(err);
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '削除に失敗しました',
+          detail: '',
+          key: 'problem',
+        });
+      }
     },
   },
 }

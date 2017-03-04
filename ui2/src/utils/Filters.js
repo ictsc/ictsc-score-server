@@ -1,5 +1,6 @@
 import dateformat from 'dateformat';
 import * as d3 from 'd3';
+import moment from 'moment';
 
 export function fullDateFilter (value) {
   var fmtStr = 'yyyy/mm/dd HH:MM'
@@ -29,4 +30,22 @@ export function prefixCountFilter (value) {
 }
 export function percentageFilter (value) {
   return d3.format('.2f')(value) + '%';  // like: 100.00%
+}
+
+export function issueStatus (issue) {
+  // 未回答: 1  対応中: 2  解決済: 3
+  if (!issue) return 0;
+  if (issue.closed) return 3;
+  if (!issue.comments) return 0;
+  if (issue.comments.length < 2) return 1;
+
+  var lastComment = issue.comments[issue.comments.length - 1];
+  if (lastComment.member.role_id === 4) return 1;
+  return 2;
+}
+
+export function dateRelative (date) {
+  return moment(date)
+    .lang('ja')
+    .fromNow();
 }

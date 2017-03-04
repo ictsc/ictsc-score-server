@@ -26,7 +26,7 @@ export class API {
         login,
         password,
       })), true
-    )
+    ).then(res => res.body)
   }
   static logout (req = superagent) {
     return RequestMiddleware(req.del('session'))
@@ -63,8 +63,14 @@ export class API {
 
   // members
   static getMembers (req = superagent) {
-    return RequestMiddleware(req.get('members'))
+    return RequestMiddleware(req.get('members?with=team'))
       .then(res => res.body)
+  }
+  static postMembers (login, name, password, registration_code, req = superagent) {
+    return RequestMiddleware(
+      req.post('members')
+        .send(JSON.stringify({ login, name, password, registration_code }))
+    ).then(res => res.body)
   }
 
   // teams
@@ -83,13 +89,44 @@ export class API {
     ).then(res => res.body)
   }
   static getTeam (id, req = superagent) {
-    return RequestMiddleware(req.get(`teams/${id}?with=members`))
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score`))
       .then(res => res.body)
+  }
+  static getTeamWithAnswersComments (id, req = superagent) {
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+      .then(res => res.body)
+  }
+  static getTeamWithAnswers (id, req = superagent) {
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score`))
+      .then(res => res.body)
+  }
+  static getTeamWithIssues (id, req = superagent) {
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+      .then(res => res.body)
+  }
+  static postAnswersComments (problemId, text, req = superagent) {
+    return RequestMiddleware(
+      req.post(`problems/${problemId}/comments`)
+        .send(JSON.stringify({
+          text,
+        }))
+    ).then(res => res.body)
+  }
+  static deleteAnswersComments (problemId, id, req = superagent) {
+    return RequestMiddleware(
+      req.del(`problems/${problemId}/comments/${id}`)
+    ).then(res => res.body)
   }
 
   // scoreboard
   static getScoreboard (req = superagent) {
     return RequestMiddleware(req.get(`scoreboard`))
+      .then(res => res.body)
+  }
+
+  // contest
+  static getContest (req = superagent) {
+    return RequestMiddleware(req.get(`contest`))
       .then(res => res.body)
   }
 
@@ -106,20 +143,45 @@ export class API {
     return RequestMiddleware(req.get(`problems`))
       .then(res => res.body)
   }
+  static postProblems (obj, req = superagent) {
+    return RequestMiddleware(
+      req.post(`problems`)
+        .send(JSON.stringify(obj))
+    ).then(res => res.body)
+  }
   static getProblem (id, req = superagent) {
     return RequestMiddleware(req.get(`problems/${id}?with=comments`))
       .then(res => res.body)
   }
+  static patchProblem (id, obj, req = superagent) {
+    return RequestMiddleware(
+      req.patch(`problems/${id}`)
+        .send(JSON.stringify(obj))
+    ).then(res => res.body)
+  }
 
   // issues
   static getIssues (req = superagent) {
+    return RequestMiddleware(req.get(`issues`))
+      .then(res => res.body)
+  }
+  static getIssuesWithComments (req = superagent) {
     return RequestMiddleware(req.get(`issues?with=comments-member-team,team,problem`))
+      .then(res => res.body)
+  }
+  static getIssue (id, req = superagent) {
+    return RequestMiddleware(req.get(`issues/${id}?with=comments-member-team,team,problem`))
       .then(res => res.body)
   }
   static addIssues (problem_id, title, req = superagent) {
     return RequestMiddleware(
       req.post(`issues`)
         .send(JSON.stringify({ problem_id, title }))
+    ).then(res => res.body)
+  }
+  static patchIssues (id, obj, req = superagent) {
+    return RequestMiddleware(
+      req.patch(`issues/${id}`).send(JSON.stringify(obj))
     ).then(res => res.body)
   }
   static addIssueComment (issueId, text, req = superagent) {
@@ -131,6 +193,10 @@ export class API {
 
   // answers
   static getAnswers (req = superagent) {
+    return RequestMiddleware(req.get(`answers`))
+      .then(res => res.body)
+  }
+  static getAnswersWithComments (req = superagent) {
     return RequestMiddleware(req.get(`answers?with=comments`))
       .then(res => res.body)
   }

@@ -26,6 +26,7 @@
 <style scoped>
 .modal.show {
   display: block;
+  position: absolute;
 }
 
 .messagebox {

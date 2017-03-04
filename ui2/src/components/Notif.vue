@@ -164,22 +164,26 @@ export default {
   },
   methods: {
     append (message) {
-      var defaultAutoClose;
+      var autoClose;
+      var icon;
       switch (message.type) {
         case 'error':
         case 'warn':
-          defaultAutoClose = false;
+          icon = 'warning';
+          autoClose = false;
           break;
         default:
         case 'success':
-          defaultAutoClose = true;
+          icon = 'check';
+          autoClose = true;
           break;
       }
 
       var includeIdMessage = Object.assign({
         id: this.incr++,
-        autoClose: defaultAutoClose,
+        autoClose: autoClose,
         timestamp: Date.now(),
+        icon,
       }, message)
       this.notifs.push(includeIdMessage);
     },
