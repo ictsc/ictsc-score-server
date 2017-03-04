@@ -23,8 +23,12 @@
           <div class="title">
             <h4>{{ item.problem ? item.problem.title : '???' }}</h4>
             <h3>{{ item.title }}</h3>
-            <p v-if="item.team">{{ item.team.id }}. {{ item.team.name }}</p>
-            <p v-else>???</p>
+            <p>
+              <span v-if="item.team">{{ item.team.id }}. {{ item.team.name }}</span>
+              <span v-if="lastResponseComment(item.comments, false).created_at">
+                / 最終投稿: {{ lastResponseComment(item.comments, false).created_at | dateRelative }}
+              </span>
+            </p>
           </div>
           <div class="comments head">
             <div class="content">{{ firstComment(item.comments).text }}</div>
@@ -99,10 +103,13 @@
 <script>
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
-import { issueStatus } from '../utils/Filters'
+import { issueStatus, dateRelative } from '../utils/Filters'
 
 export default {
   name: 'issues',
+  filters: {
+    dateRelative,
+  },
   data () {
     return {
       filterSelect: 0,
@@ -131,9 +138,16 @@ export default {
     }
   },
   watch: {
+    filterSelect (val) {
+      window.sessionStorage.setItem('last-filter-select', val)
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '到着質問');
+    var lastFilterSelect = window.sessionStorage.getItem('last-filter-select')
+    if (lastFilterSelect) {
+      this.filterSelect = +lastFilterSelect;
+    }
   },
   destroyed () {
   },
@@ -141,9 +155,8 @@ export default {
     firstComment (comments) {
       return comments[0] || { member: {} };
     },
-    lastResponseComment (comments) {
-      // todo admin filter
-      var notWriterComment = comments.filter(c => c.member.role_id !== 4);
+    lastResponseComment (comments, admin = true) {
+      var notWriterComment = comments.filter(c => (c.member.role_id === 4) !== admin);
       if (notWriterComment.length === 0) return {};
       return notWriterComment[notWriterComment.length - 1];
     },
