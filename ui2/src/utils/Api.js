@@ -26,7 +26,7 @@ export class API {
         login,
         password,
       })), true
-    )
+    ).then(res => res.body)
   }
   static logout (req = superagent) {
     return RequestMiddleware(req.del('session'))
