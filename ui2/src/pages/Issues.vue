@@ -131,9 +131,16 @@ export default {
     }
   },
   watch: {
+    filterSelect (val) {
+      window.sessionStorage.setItem('last-filter-select', val)
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '到着質問');
+    var lastFilterSelect = window.sessionStorage.getItem('last-filter-select')
+    if (lastFilterSelect) {
+      this.filterSelect = +lastFilterSelect;
+    }
   },
   destroyed () {
   },
