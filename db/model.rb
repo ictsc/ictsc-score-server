@@ -226,6 +226,8 @@ class Problem < ActiveRecord::Base
       next where(creator: user) if action == "problems_comments"
       none
     when ROLE_ID[:participant]
+      next none if DateTime.now <= Setting.competition_start_time
+
       relation =
         left_outer_joins(problem_must_solve_before: [answers: [:score]]).
         group(:id).
@@ -275,7 +277,10 @@ class ProblemGroup < ActiveRecord::Base
   # method: GET
   scope :readables, ->(user: nil, action: "") {
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:participant], ROLE_ID[:viewer]
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      all
+    when ROLE_ID[:participant]
+      next none if DateTime.now <= Setting.competition_start_time
       all
     else # nologin, ...
       none
