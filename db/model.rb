@@ -551,7 +551,7 @@ class Score < ActiveRecord::Base
   def bonus_point
     bonus = 0
 
-    bonus += (point * Setting.first_blood_bonus_percentage / 100.0).to_i if firstblood?
+    bonus += (self.answer.problem.perfect_point * Setting.first_blood_bonus_percentage / 100.0) if firstblood?
     bonus += Setting.bonus_point_for_clear_problem_group if cleared_problem_group?
 
     bonus
