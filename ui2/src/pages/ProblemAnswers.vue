@@ -17,7 +17,7 @@
           <div class="tools">
             <button v-on:click="postNewIssue()" class="btn btn-success">解答投稿</button>
           </div>
-          <div v-if="!canAnswer" class="overlay">
+          <div v-if="false && !canAnswer" class="overlay">
             {{ scoringCompleteTime | dateRelative }}に解答送信が可能になります。
           </div>
         </div>
