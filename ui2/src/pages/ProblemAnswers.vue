@@ -17,7 +17,7 @@
           <div class="tools">
             <button v-on:click="postNewIssue()" class="btn btn-success">解答投稿</button>
           </div>
-          <div v-if="false && !canAnswer" class="overlay">
+          <div v-if="!canAnswer" class="overlay">
             {{ scoringCompleteTime | dateRelative }}に解答送信が可能になります。
           </div>
         </div>
@@ -103,11 +103,12 @@ export default {
     },
     // 採点のディレイタイム(ms)
     delay () {
-      return ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;  // debug
+      return ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
     },
     // 採点中のAnswers
     scoringAnswers () {
       return this.answers
+        .filter(ans => `${ans.problem_id}` === this.problemId)
         .filter(ans => ans.completed && !ans.score)
         .filter(ans => this.currentDate < new Date(ans.completed_at).valueOf() + this.delay)
     },
