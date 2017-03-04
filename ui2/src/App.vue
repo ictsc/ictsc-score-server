@@ -166,14 +166,14 @@ h6, .h6 {
   border-color: #F00000;
 }
 .btn.label-warning {
-  background: #CBF5E0;
-  color: #00A353;
-  border-color: #00A353;
-}
-.btn.label-success {
   background: #F1F7A6;
   color: #8DA700;
   border-color: #8DA700;
+}
+.btn.label-success {
+  background: #CBF5E0;
+  color: #00A353;
+  border-color: #00A353;
 }
 .btn.label-secondary:not(.active),
 .btn.label-danger:not(.active),
