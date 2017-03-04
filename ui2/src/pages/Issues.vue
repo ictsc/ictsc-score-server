@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     firstComment (comments) {
-      return comments[0] || {};
+      return comments[0] || { member: {} };
     },
     lastResponseComment (comments) {
       // todo admin filter
