@@ -387,7 +387,7 @@ export default {
       if (this.contest && (new Date(this.contest.competition_end_time) < Date.now())) return '---';
       return answers
         .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
-        .reduce((p, n) => p + ((n.score && n.score.point) || 0), 0);
+        .reduce((p, n) => p + ((n.score && n.score.subtotal_point) || 0), 0);
     },
     problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);

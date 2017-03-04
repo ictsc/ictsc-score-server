@@ -99,7 +99,7 @@ export default {
       try {
         return this.team.answers
           .filter(ans => ans.problem_id === problemId)
-          .reduce((p, n) => p + n.score.point, 0);
+          .reduce((p, n) => p + n.score.subtotal_point, 0);
       } catch (e) {
         return '---'
       }
