@@ -27,7 +27,7 @@ class ScoreBoardRoutes < Sinatra::Base
       # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
       all_scores = [
           Score.all.joins(:answer).group("answers.team_id").sum(:point),
-          Score.firstbloods.joins(:answer).group("answers.team_id").sum(:point).map{|tid, score| [tid, score * (settings.first_blood_bonus_percentage / 100.0)] },
+          Score.firstbloods.joins(answer: { problem: {}}).group("answers.team_id").sum("problems.perfect_point").map{|tid, perfect_point| [tid, perfect_point * (settings.first_blood_bonus_percentage / 100.0)] },
           Score.cleared_problem_group_ids(with_tid: true).inject(Hash.new(0)){|acc, (tid, score_ids)| acc[tid] += score_ids.count * settings.bonus_point_for_clear_problem_group; acc },
         ] \
         .map(&:to_a) \

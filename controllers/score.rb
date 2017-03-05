@@ -26,6 +26,13 @@ class ScoreRoutes < Sinatra::Base
     # So, fetch firstblood problem ids first, and calculate each entities using it.
     # Entities are same as included in `GET "/api/scores/:id"`
     firstblood_ids = Score.firstbloods(only_ids: true)
+    firstblood_bonuses = Answer \
+      .joins(:problem, :score) \
+      .where(scores: {id: firstblood_ids} ) \
+      .select("scores.id, problems.perfect_point") \
+      .pluck("scores.id, problems.perfect_point") \
+      .inject(Hash.new(0)){|acc, (sid, perfect_point)| acc[sid] = perfect_point * (settings.first_blood_bonus_percentage / 100.0); acc }
+
 
     # NOTE: Calculate each Score#cleared_problem_group? is too slow
     # So, doing same way doing upper (firstbloods).
@@ -36,7 +43,7 @@ class ScoreRoutes < Sinatra::Base
       s["is_firstblood"]  = firstblood_ids.include? s["id"]
 
       bonus_point = 0
-      bonus_point += (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
+      bonus_point += firstblood_bonuses[s["id"]] if s["is_firstblood"]
       bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
 
       s["bonus_point"]    = bonus_point
