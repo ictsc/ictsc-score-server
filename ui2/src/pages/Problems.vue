@@ -89,13 +89,13 @@
 
     <div v-loading="asyncLoading" class="groups">
       <div v-for="group in problemGroups" class="group row">
-        <div class="col-5">
+        <div class="col-4">
           <div class="detail">
             <h2>{{ group.name }}</h2>
             <markdown :value="group.description"></markdown>
           </div>
         </div>
-        <div class="col-7">
+        <div class="col-8">
           <div class="problems">
             <template v-for="problem in problems">
               <router-link
@@ -112,7 +112,10 @@
                 </div>
                 <div class="scores-wrapper">
                   <div class="scores">
-                    <div class="current">{{ getScoreText(problem.answers) }}</div>
+                    <div class="current">
+                      <span class="pure"></span>{{ getScoreText(problem.answers).pure }}<!--
+                      --><span v-if="getScoreText(problem.answers).bonus" class="bonus">+{{ getScoreText(problem.answers).bonus }}</span>
+                    </div>
                     <div class="max">{{ problem.perfect_point }}点満点</div>
                   </div>
                 </div>
@@ -180,7 +183,7 @@
 .problem .scores-wrapper {
   flex-basis: 8em;
   flex-shrink: 0;
-  flex-grow: 0;
+  flex-grow: 1;
   background: #FDC1D0;
   display: flex;
 }
@@ -194,10 +197,13 @@
 }
 .problem .scores .current {
   color: #E6003B;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   border-bottom: 1px solid #FCEFF2;
   margin: 0 .5rem .3rem;
   line-height: 1.3
+}
+.problem .scores .current .bonus {
+  font-size: .6em;
 }
 .problem .overlay {
   position: absolute;
@@ -387,7 +393,13 @@ export default {
       if (this.contest && (new Date(this.contest.competition_end_time) < Date.now())) return '---';
       return answers
         .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
-        .reduce((p, n) => p + ((n.score && n.score.subtotal_point) || 0), 0);
+        .reduce((p, n) => ({
+          pure: p.pure + ((n.score && n.score.point) || 0),
+          bonus: p.bonus + ((n.score && n.score.bonus_point) || 0),
+        }), {
+          pure: 0,
+          bonus: 0,
+        });
     },
     problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);
