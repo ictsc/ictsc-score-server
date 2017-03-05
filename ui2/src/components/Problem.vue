@@ -12,7 +12,7 @@
         <button v-else v-on:click="editEnter()" class="btn btn-secondary">編集</button>
       </div>
       <h2>
-        <span class="sub">問題2:</span>
+        <span class="sub">問題{{ problem.id }}:</span>
         <input v-if="edit" v-model="problem.title" type="text" class="form-control form-control-lg">
         <span v-else>{{ problem.title }}</span>
       </h2>
