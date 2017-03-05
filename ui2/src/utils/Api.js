@@ -78,6 +78,10 @@ export class API {
     return RequestMiddleware(req.get('teams'))
       .then(res => res.body)
   }
+  static getTeamsWithScore (req = superagent) {
+    return RequestMiddleware(req.get(`teams?with=answers-score`))
+      .then(res => res.body)
+  }
   static addTeams (name, organization, regCode, req = superagent) {
     return RequestMiddleware(
       req.post('teams')
