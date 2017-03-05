@@ -23,6 +23,7 @@
       </template>
     </message-box>
     <notif></notif>
+    <info-panel></info-panel>
 
   </div>
 </template>
@@ -30,6 +31,7 @@
 <script>
 import CustomHeader from './components/Header'
 import MessageBox from './components/MessageBox'
+import InfoPanel from './components/InfoPanel'
 import Notif from './components/Notif'
 import { Emit, Subscribe, AUTH_ERROR } from './utils/EventBus'
 import { API } from './utils/Api'
@@ -42,6 +44,7 @@ export default {
     CustomHeader,
     MessageBox,
     Notif,
+    InfoPanel,
   },
   watch: {
   },

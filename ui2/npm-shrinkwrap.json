@@ -4,14 +4,14 @@
   "dependencies": {
     "@types/d3": {
       "version": "4.5.0",
-      "from": "@types/d3@>=4.4.0 <5.0.0",
+      "from": "https://registry.npmjs.org/@types/d3/-/d3-4.5.0.tgz",
       "resolved": "https://registry.npmjs.org/@types/d3/-/d3-4.5.0.tgz",
       "dev": true
     },
     "@types/d3-array": {
-      "version": "1.0.7",
+      "version": "1.0.8",
       "from": "@types/d3-array@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-array/-/d3-array-1.0.7.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-array/-/d3-array-1.0.8.tgz",
       "dev": true
     },
     "@types/d3-axis": {
@@ -27,9 +27,9 @@
       "dev": true
     },
     "@types/d3-chord": {
-      "version": "1.0.5",
+      "version": "1.0.6",
       "from": "@types/d3-chord@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-chord/-/d3-chord-1.0.5.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-chord/-/d3-chord-1.0.6.tgz",
       "dev": true
     },
     "@types/d3-collection": {
@@ -57,9 +57,9 @@
       "dev": true
     },
     "@types/d3-dsv": {
-      "version": "1.0.29",
+      "version": "1.0.30",
       "from": "@types/d3-dsv@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-dsv/-/d3-dsv-1.0.29.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-dsv/-/d3-dsv-1.0.30.tgz",
       "dev": true
     },
     "@types/d3-ease": {
@@ -135,21 +135,21 @@
       "dev": true
     },
     "@types/d3-scale": {
-      "version": "1.0.6",
+      "version": "1.0.7",
       "from": "@types/d3-scale@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-scale/-/d3-scale-1.0.6.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-scale/-/d3-scale-1.0.7.tgz",
       "dev": true
     },
     "@types/d3-selection": {
-      "version": "1.0.9",
+      "version": "1.0.10",
       "from": "@types/d3-selection@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-selection/-/d3-selection-1.0.9.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-selection/-/d3-selection-1.0.10.tgz",
       "dev": true
     },
     "@types/d3-shape": {
-      "version": "1.0.7",
+      "version": "1.0.8",
       "from": "@types/d3-shape@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-shape/-/d3-shape-1.0.7.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-shape/-/d3-shape-1.0.8.tgz",
       "dev": true
     },
     "@types/d3-time": {
@@ -171,9 +171,9 @@
       "dev": true
     },
     "@types/d3-transition": {
-      "version": "1.0.6",
+      "version": "1.0.7",
       "from": "@types/d3-transition@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-transition/-/d3-transition-1.0.6.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-transition/-/d3-transition-1.0.7.tgz",
       "dev": true
     },
     "@types/d3-voronoi": {
@@ -183,9 +183,9 @@
       "dev": true
     },
     "@types/d3-zoom": {
-      "version": "1.1.0",
+      "version": "1.1.1",
       "from": "@types/d3-zoom@*",
-      "resolved": "https://registry.npmjs.org/@types/d3-zoom/-/d3-zoom-1.1.0.tgz",
+      "resolved": "https://registry.npmjs.org/@types/d3-zoom/-/d3-zoom-1.1.1.tgz",
       "dev": true
     },
     "@types/geojson": {
@@ -1712,7 +1712,7 @@
     },
     "d3": {
       "version": "4.6.0",
-      "from": "d3@>=4.4.2 <5.0.0",
+      "from": "https://registry.npmjs.org/d3/-/d3-4.6.0.tgz",
       "resolved": "https://registry.npmjs.org/d3/-/d3-4.6.0.tgz",
       "dev": true
     },
@@ -7139,7 +7139,7 @@
     },
     "underscore": {
       "version": "1.8.3",
-      "from": "underscore@>=1.8.3 <2.0.0",
+      "from": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",
       "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",
       "dev": true
     },

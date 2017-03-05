@@ -23,7 +23,7 @@
     "vuex": "^2.0.0"
   },
   "devDependencies": {
-    "@types/d3": "^4.4.0",
+    "@types/d3": "https://registry.npmjs.org/@types/d3/-/d3-4.5.0.tgz",
     "@types/jasmine": "^2.5.38",
     "@types/superagent": "^2.0.36",
     "autoprefixer": "^6.4.0",
@@ -42,7 +42,7 @@
     "connect-history-api-fallback": "^1.1.0",
     "cross-spawn": "^4.0.2",
     "css-loader": "^0.25.0",
-    "d3": "^4.4.2",
+    "d3": "https://registry.npmjs.org/d3/-/d3-4.6.0.tgz",
     "dateformat": "https://registry.npmjs.org/dateformat/-/dateformat-1.0.12.tgz",
     "element-ui": "^1.1.6",
     "eslint": "^3.7.1",
@@ -92,7 +92,7 @@
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "superagent-mocker": "^0.5.2",
-    "underscore": "^1.8.3",
+    "underscore": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",
     "url-loader": "^0.5.7",
     "vue-async-data": "git+https://github.com/kamijin-fanta/vue-async-data.git",
     "vue-loader": "^10.3.0",

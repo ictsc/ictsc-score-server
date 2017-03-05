@@ -180,7 +180,8 @@ Team.all.each do |team|
       next if is_rabbithouse
 
       # second answer
-      point = p.perfect_point * (rand(8) / 10.0)
+      second_point = p.perfect_point * (rand(8) / 10.0)
+      second_point = p.perfect_point if p.perfect_point < (point + second_point)
 
       is_completed = is_rabbithouse || (rand(8) != 4) # 7/8
 
@@ -206,7 +207,7 @@ Team.all.each do |team|
 
       next if not is_completed
       Score.seed(:answer_id) do |s|
-        s.point      = point
+        s.point      = second_point
         s.answer_id  = last_answer.id
         s.marker     = admin
         date = last_comment.created_at + rand(1200).seconds

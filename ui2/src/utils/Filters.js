@@ -49,3 +49,8 @@ export function dateRelative (date) {
     .lang('ja')
     .fromNow();
 }
+
+export function tickDate (date) {
+  return moment(date)
+    .format('HH:mm:ss')
+}
