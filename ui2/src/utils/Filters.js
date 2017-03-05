@@ -50,7 +50,7 @@ export function dateRelative (date) {
     .fromNow();
 }
 
-export function tickDate (date) {
-  return moment(date)
+export function tickDuration (date) {
+  return moment.utc(date)
     .format('HH:mm:ss')
 }

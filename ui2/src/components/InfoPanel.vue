@@ -1,6 +1,6 @@
 <template>
   <div class="panel">
-    <span class="limit">{{ limit | tickDate }}</span>
+    <span class="limit">{{ limit | tickDuration }}</span>
     <span v-if="isMember" class="score">
       <span class="label">Progress</span>
       <span class="ratio">{{ ratio }}</span>
@@ -28,14 +28,14 @@
 
 <script>
 import { API } from '../utils/Api'
-import { tickDate } from '../utils/Filters'
+import { tickDuration } from '../utils/Filters'
 import * as d3 from 'd3'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'info-panel',
   filters: {
-    tickDate,
+    tickDuration,
   },
   data () {
     return {
@@ -58,7 +58,7 @@ export default {
     limit () {
       var end = this.contest.competition_end_time;
       if (end) {
-        return new Date(end).valueOf() - this.currentDate;
+        return new Date(end).valueOf() - this.currentDate.valueOf();
       } else {
         return 0
       }
