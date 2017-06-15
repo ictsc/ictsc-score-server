@@ -13,10 +13,10 @@ build:
         MYSQL_PASSWORD: ictsc_score_server
   steps:
     - script:
-        name: npm install
+        name: yarn
         code: |
           cd ui2
-          npm install
+          YARN_CACHE=$WERCKER_CACHE_DIR/yarn yarn
     - script:
         name: webpack build
         code: |
@@ -43,7 +43,7 @@ build:
           MYSQL_HOST=$MARIADB_PORT_3306_TCP_ADDR \
           MYSQL_PASSWORD=ictsc_score_server \
           RACK_ENV=test \
-          bundle exec rspec spec
+          bundle exec rspec
   after-steps:
     - wantedly/pretty-slack-notify:
         webhook_url: $SLACK_WEBHOOK_URL
