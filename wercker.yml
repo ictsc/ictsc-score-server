@@ -13,14 +13,14 @@ build:
         MYSQL_PASSWORD: ictsc_score_server
   steps:
     - script:
-        name: env
-        code: env
+        name: npm install
+        code: |
+          cd ui2
+          npm install
     - script:
         name: webpack build
         code: |
           cd ui2
-
-          npm install
           npm run build
     - bundle-install
     - script:
