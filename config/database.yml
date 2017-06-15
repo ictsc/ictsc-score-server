@@ -1,0 +1,19 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  charset: utf8mb4
+  collation: utf8mb4_general_ci
+  reconnect: true
+  pool: <%= ENV['MYSQL_POOL'] || 20 %>
+  host: <%= ENV['MYSQL_HOST'] || 'localhost' %>
+  port: <%= ENV['MYSQL_PORT'] || 3306 %>
+  username: <%= ENV['MYSQL_USER'] || 'ictsc_score_server' %>
+  password: <%= ENV['MYSQL_PASSWORD'] %>
+  database: <%= ENV['MYSQL_DATABASE'] || 'ictsc_score_server' %>
+
+development:
+  <<: *default
+test:
+  <<: *default
+production:
+  <<: *default
