@@ -1,23 +1,49 @@
-box: kamijin/ruby-nodejs
+box: starefossen/ruby-node:2-6
 
 build:
+  services:
+    - id: mariadb
+      username: $DOCKER_HUB_USERNAME
+      password: $DOCKER_HUB_PASSWORD
+      tag: 10.3
+      env:
+        MYSQL_ROOT_PASSWORD: ictsc_score_server
+        MYSQL_DATABASE: ictsc_score_server
+        MYSQL_USER: ictsc_score_server
+        MYSQL_PASSWORD: ictsc_score_server
   steps:
+    - script:
+        name: env
+        code: env
     - script:
         name: webpack build
         code: |
-          cd ui
-          npm i
+          cd ui2
+
+          npm install
           npm run build
     - bundle-install
     - script:
         name: migrate database
-        code: RACK_ENV=test bundle exec rake db:migrate
+        code: |
+          MYSQL_HOST=$MARIADB_PORT_3306_TCP_ADDR \
+          MYSQL_PASSWORD=ictsc_score_server \
+          RACK_ENV=test \
+          bundle exec rake db:migrate
     - script:
         name: load seed data into database
-        code: RACK_ENV=test bundle exec rake db:seed_fu
+        code: |
+          MYSQL_HOST=$MARIADB_PORT_3306_TCP_ADDR \
+          MYSQL_PASSWORD=ictsc_score_server \
+          RACK_ENV=test \
+          bundle exec rake db:seed_fu
     - script:
         name: run rspec
-        code: RACK_ENV=test bundle exec rspec spec
+        code: |
+          MYSQL_HOST=$MARIADB_PORT_3306_TCP_ADDR \
+          MYSQL_PASSWORD=ictsc_score_server \
+          RACK_ENV=test \
+          bundle exec rspec spec
   after-steps:
     - wantedly/pretty-slack-notify:
         webhook_url: $SLACK_WEBHOOK_URL

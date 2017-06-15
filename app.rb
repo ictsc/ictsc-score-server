@@ -98,10 +98,6 @@ class App < Sinatra::Base
     env["rack.errors"] = error_logger
   end
 
-  get "/?" do
-    send_file settings.public_dir + "/index.html"
-  end
-
   not_found do
     if request.xhr?
       { error: "not found" }.to_json
