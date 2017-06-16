@@ -5,6 +5,7 @@ describe "GET /" do
     get "/"
   end
 
+  # index page is provided by ui component, outside of this app
   context "status is 404" do
     it { expect(response).to be_not_found }
   end
