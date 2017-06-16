@@ -1,23 +1,43 @@
-box: kamijin/ruby-nodejs
+box: starefossen/ruby-node:2-6
 
 build:
+  services:
+    - id: mariadb
+      username: $DOCKER_HUB_USERNAME
+      password: $DOCKER_HUB_PASSWORD
+      tag: 10.3
+      env:
+        MYSQL_ROOT_PASSWORD: ictsc_score_server
+        MYSQL_DATABASE: ictsc_score_server
+        MYSQL_USER: ictsc_score_server
+        MYSQL_PASSWORD: ictsc_score_server
   steps:
     - script:
-        name: webpack build
+        name: set env
         code: |
-          cd ui
-          npm i
-          npm run build
+          export UI_DIR=ui2
+          export YARN_CACHE_DIR=$WERCKER_CACHE_DIR/yarn 
+          export MYSQL_HOST=$MARIADB_PORT_3306_TCP_ADDR
+          export MYSQL_PASSWORD=ictsc_score_server
+          export RACK_ENV=test
+    - script:
+        name: yarn
+        code: |
+          mkdir -p $YARN_CACHE_DIR
+          cd $UI_DIR && HOME=$YARN_CACHE_DIR yarn
+    - script:
+        name: webpack build
+        code: cd $UI_DIR && npm run build
     - bundle-install
     - script:
         name: migrate database
-        code: RACK_ENV=test bundle exec rake db:migrate
+        code: bundle exec rake db:migrate
     - script:
         name: load seed data into database
-        code: RACK_ENV=test bundle exec rake db:seed_fu
+        code: bundle exec rake db:seed_fu
     - script:
         name: run rspec
-        code: RACK_ENV=test bundle exec rspec spec
+        code: bundle exec rspec
   after-steps:
     - wantedly/pretty-slack-notify:
         webhook_url: $SLACK_WEBHOOK_URL

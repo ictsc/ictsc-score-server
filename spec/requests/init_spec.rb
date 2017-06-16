@@ -5,8 +5,9 @@ describe "GET /" do
     get "/"
   end
 
-  context "status is 200" do
-    it { expect(response).to be_ok }
+  # index page is provided by ui component, outside of this app
+  context "status is 404" do
+    it { expect(response).to be_not_found }
   end
 end
 
@@ -18,7 +19,8 @@ describe "Member" do
       name: "user",
       login: "user",
       password: "test",
-      team_id: 1
+      team_id: 1,
+      registration_code: "team1"
     }
   end
 
