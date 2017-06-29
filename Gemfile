@@ -10,8 +10,6 @@ gem "redis-rack",       require: "rack/session/redis"
 gem "rack-ltsv_logger"
 
 gem "mysql2"
-gem "activerecord-mysql-reconnect"
-gem "sqlite3"
 gem "sinatra-activerecord", require: "sinatra/activerecord"
 
 gem "oj"
@@ -22,12 +20,11 @@ gem "seed-fu"
 gem "dotenv"
 
 gem "puma", require: false
+gem "tzinfo-data"
 
 group :development do
   gem "pry"
   gem "pry-byebug"
-  gem "better_errors", git: "https://github.com/grekko/better_errors.git"
-  gem "binding_of_caller",  require: false
   gem "rack-lineprof"
 end
 
@@ -35,5 +32,4 @@ group :test do
   gem "factory_girl"
   gem "rspec"
   gem "rack-test"
-  gem "minitest"
 end
