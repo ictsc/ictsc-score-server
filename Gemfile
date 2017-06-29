@@ -30,4 +30,5 @@ group :test do
   gem "factory_girl"
   gem "rspec"
   gem "rack-test"
+  gem "database_cleaner"
 end
