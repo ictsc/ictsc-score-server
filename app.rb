@@ -48,10 +48,6 @@ class App < Sinatra::Base
     Time.zone = "Tokyo"
     ActiveRecord::Base.default_timezone = :local
 
-    # set :cometio, timeout: 120, post_interval: 2, allow_crossdomain: false
-    # set :websocketio, port: 9000
-    # set :rocketio, websocket: true, comet: true # enable WebSocket and Comet
-
     enable :prefixed_redirects
     set :haml, { escape_html: false, format: :html5 }
     set :scss, style: :expanded
@@ -66,7 +62,6 @@ class App < Sinatra::Base
     def h(text)
       Rack::Utils.escape_html(text)
     end
-
   end
 
   options "*" do
@@ -84,9 +79,10 @@ class App < Sinatra::Base
 
   not_found do
     if request.xhr?
-      { error: "not found" }.to_json
+      content_type :json
+      { error: 'not found' }.to_json
     else
-      "<h1>Not Found</h1>"
+      'Not Found'
     end
   end
 end
