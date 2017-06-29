@@ -41,13 +41,19 @@ class MemberRoutes < Sinatra::Base
   post "/api/session" do
     halt 403 if logged_in?
 
-    halt 401 if not Member.exists?(login: params[:login])
+    if not Member.exists?(login: params[:login])
+      status 401
+      next json status: "failed"
+    end
+
     @member = Member.find_by(login: params[:login])
 
     if compare_password(params[:password], @member.hashed_password)
       login_as(@member.id)
+      status 201
       json status: "success"
     else
+      status 401
       json status: "failed"
     end
   end
