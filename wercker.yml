@@ -1,11 +1,54 @@
-box: starefossen/ruby-node:2-6
+box: busybox
 
-build:
+ui-build:
+  box: node:6-alpine
+  steps:
+    - script:
+      name: install dependencies
+      code: apk add --no-cache git
+    - script:
+        name: set env
+        code: |
+          export UI_DIR=ui2
+          export YARN_CACHE_DIR=$WERCKER_CACHE_DIR/yarn 
+    - script:
+      name: yarn
+      cwd: $UI_DIR
+      code: |
+        mkdir -p $YARN_CACHE_DIR
+        HOME=$YARN_CACHE_DIR yarn
+    - script:
+      name: webpack build
+      cwd: $UI_DIR
+      code: npm run build
+  after-steps:
+    - script:
+      name: remove dependencies
+      code: apk del git
+    - wantedly/pretty-slack-notify:
+        webhook_url: $SLACK_WEBHOOK_URL
+ui-deploy:
+  steps:
+    - script:
+      name: webpack build
+      cwd: $UI_DIR
+      code: |
+        cp -r /pipeline/source/ui2/dist /tmp
+        rm -rf /pipeline/source/*
+        cp -r /tmp/dist/* /pipeline/source/
+    - internal/docker-scratch-push:
+        registry: $REGISTRY_HOST
+        username: $REGISTRY_USERNAME
+        password: $REGISTRY_PASSWORD
+        repository: $REGISTRY_REPOSITORY
+        labels: "maintainer='kyontan <kyontan@monora.me>'"
+        disable-sync: true
+api-spec:
+  box: ruby:2.4.1-alpine
   services:
-    - id: mariadb
+    - id: mariadb:10.3
       username: $DOCKER_HUB_USERNAME
       password: $DOCKER_HUB_PASSWORD
-      tag: 10.3
       env:
         MYSQL_ROOT_PASSWORD: ictsc_score_server
         MYSQL_DATABASE: ictsc_score_server
@@ -13,21 +56,20 @@ build:
         MYSQL_PASSWORD: ictsc_score_server
   steps:
     - script:
+      name: install dependencies
+      code: |
+        apk update
+        apk add --virtual .build-dep build-base mariadb-dev
+        apk add --virtual .running-dep mariadb-client-libs
+    - script:
         name: set env
         code: |
-          export UI_DIR=ui2
-          export YARN_CACHE_DIR=$WERCKER_CACHE_DIR/yarn 
           export MYSQL_HOST=$MARIADB_PORT_3306_TCP_ADDR
+          export MYSQL_ROOT_PASSWORD=ictsc_score_server
           export MYSQL_PASSWORD=ictsc_score_server
+          export MYSQL_DATABASE=ictsc_score_server
           export RACK_ENV=test
-    - script:
-        name: yarn
-        code: |
-          mkdir -p $YARN_CACHE_DIR
-          cd $UI_DIR && HOME=$YARN_CACHE_DIR yarn
-    - script:
-        name: webpack build
-        code: cd $UI_DIR && npm run build
+          rm -rf vendor
     - bundle-install
     - script:
         name: migrate database
@@ -39,15 +81,22 @@ build:
         name: run rspec
         code: bundle exec rspec
   after-steps:
+    - script:
+      name: remove dependencies
+      code: |
+        apk del .build-dep
+        rm -rf /var/cache/apk/*
     - wantedly/pretty-slack-notify:
         webhook_url: $SLACK_WEBHOOK_URL
-deploy:
+api-deploy:
   steps:
     - internal/docker-push:
         registry: $REGISTRY_HOST
         username: $REGISTRY_USERNAME
         password: $REGISTRY_PASSWORD
         repository: $REGISTRY_REPOSITORY
-        ports: "9999"
+        ports: 3000
         working-dir: /pipeline/source
-        cmd: ./wercker-run.sh
+        labels: "maintainer='kyontan <kyontan@monora.me>'"
+        cmd: bundle exec rackup -p 3000 -o 0.0.0.0
+        disable-sync: true
