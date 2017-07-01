@@ -1,23 +1,24 @@
 require_relative '../spec_helper.rb'
 
 describe 'Members' do
-  before :context do
-    Team.create(name: "team1", registration_code: "team1")
-  end
+  include ApiHelpers
 
-  let (:params) do
-    {
-      name: 'user',
-      login: 'user',
-      password: 'test',
-      team_id: 1,
-      registration_code: 'team1'
-    }
-  end
+  context 'Create participant member' do
+    let (:member) { build(:member, :participant) }
+    let (:params) do
+      {
+        name: member.name,
+        login: member.login,
+        password: member.password,
+        team_id: member.team_id,
+        registration_code: member.team.registration_code
+      }
+    end
 
-  let(:response) { post '/api/members', params }
+    let(:response) { post '/api/members', params }
 
-  context 'Create member' do
     it { expect(response).to be_created }
+    it { expect(json_response).to include('id', 'name', 'login', 'team_id', 'created_at', 'updated_at', 'role_id') }
+    it { expect(json_response).not_to include('password') }
   end
 end
