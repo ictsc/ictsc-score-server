@@ -22,7 +22,6 @@ RSpec.describe "Factory Girl" do
           end
         end
       end
-
     end
   end
 end

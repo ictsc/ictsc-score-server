@@ -14,18 +14,17 @@ RSpec.configure do |config|
 
   config.include Rack::Test::Methods
   
-  DatabaseCleaner.strategy = :truncation, {:except => %w[roles]}
+  config.before :suite do
+    DatabaseCleaner.clean_with :truncation
+  end
 
   config.before :each do
+    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.start
   end
  
   config.after :each do
     DatabaseCleaner.clean
-  end
-
-  config.before :suite do
-    SeedFu.seed
   end
 end
 
