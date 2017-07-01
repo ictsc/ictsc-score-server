@@ -23,7 +23,7 @@ ui-build:
       code: npm run build
   after-steps:
     - script:
-      name: remove dependencies
+      name: remove unneeded dependencies
       code: apk del git
     - slack-notifier:
       username: Wercker
@@ -41,7 +41,8 @@ ui-deploy:
         registry: $REGISTRY_HOST
         username: $REGISTRY_USERNAME
         password: $REGISTRY_PASSWORD
-        repository: $REGISTRY_REPOSITORY
+        repository: $REGISTRY_REPOSITORY_UI
+        tag: latest, $WERCKER_GIT_COMMIT
         labels: "maintainer='kyontan <kyontan@monora.me>'"
         disable-sync: true
   after-steps:
@@ -74,7 +75,6 @@ api-spec:
           export MYSQL_PASSWORD=ictsc_score_server
           export MYSQL_DATABASE=ictsc_score_server
           export RACK_ENV=test
-          rm -rf vendor
     - bundle-install
     - script:
         name: migrate database
@@ -87,7 +87,7 @@ api-spec:
         code: bundle exec rspec
   after-steps:
     - script:
-      name: remove dependencies
+      name: remove unneeded dependencies
       code: |
         apk del .build-dep
         rm -rf /var/cache/apk/*
@@ -99,7 +99,8 @@ api-deploy:
         registry: $REGISTRY_HOST
         username: $REGISTRY_USERNAME
         password: $REGISTRY_PASSWORD
-        repository: $REGISTRY_REPOSITORY
+        repository: $REGISTRY_REPOSITORY_API
+        tag: latest, $WERCKER_GIT_COMMIT
         ports: 3000
         working-dir: /pipeline/source
         labels: "maintainer='kyontan <kyontan@monora.me>'"
