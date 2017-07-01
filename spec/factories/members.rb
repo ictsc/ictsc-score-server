@@ -5,7 +5,6 @@ FactoryGirl.define do
     password 'test' # to tell plain password to spec
     hashed_password '$6$yTs.6.WlLAqHM$.r9svSkmd6beXtk9jkn8FZNdWhsxikXob2bTM/oiSubAl6EPG8occUzebA2hF2MHI1lXbNQMBPAyjcSbCeZZM0'
     role
-    team
 
     trait :admin do
       association :role, factory: [:role, :admin]
@@ -17,6 +16,7 @@ FactoryGirl.define do
 
     trait :participant do
       association :role, factory: [:role, :participant]
+      team
     end
 
     trait :viewer do
