@@ -174,6 +174,9 @@ class Member < ActiveRecord::Base
   belongs_to :team
   belongs_to :role
 
+  # For FactoryGirl to pass plain password to spec from factory
+  attr_accessor :password 
+
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     case user&.role_id
