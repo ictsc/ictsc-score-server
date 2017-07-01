@@ -1,4 +1,4 @@
-class AddPolymorphicRelationToComments < ActiveRecord::Migration
+class AddPolymorphicRelationToComments < ActiveRecord::Migration[4.2]
   def change
     change_table :comments do |t|
       t.references :commentable, polymorphic: true, index: true
