@@ -1,6 +1,5 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
-require "sinatra/config_file"
 require_relative "../services/account_service"
 
 # https://wiki.icttoracon.net/ictsc7/rules/public
@@ -11,12 +10,9 @@ require_relative "../services/account_service"
 # - 各問題が何チームに解かれたか
 
 class ScoreBoardRoutes < Sinatra::Base
-  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
-
-  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/scoreboard*" do
     I18n.locale = :en if request.xhr?
@@ -27,8 +23,8 @@ class ScoreBoardRoutes < Sinatra::Base
       # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
       all_scores = [
           Score.all.joins(:answer).group("answers.team_id").sum(:point),
-          Score.firstbloods.joins(answer: { problem: {}}).group("answers.team_id").sum("problems.perfect_point").map{|tid, perfect_point| [tid, perfect_point * (settings.first_blood_bonus_percentage / 100.0)] },
-          Score.cleared_problem_group_ids(with_tid: true).inject(Hash.new(0)){|acc, (tid, score_ids)| acc[tid] += score_ids.count * settings.bonus_point_for_clear_problem_group; acc },
+          Score.firstbloods.joins(answer: { problem: {}}).group("answers.team_id").sum("problems.perfect_point").map{|tid, perfect_point| [tid, perfect_point * (Setting.first_blood_bonus_percentage / 100.0)] },
+          Score.cleared_problem_group_ids(with_tid: true).inject(Hash.new(0)){|acc, (tid, score_ids)| acc[tid] += score_ids.count * Setting.bonus_point_for_clear_problem_group; acc },
         ] \
         .map(&:to_a) \
         .flatten(1) \
@@ -66,7 +62,7 @@ class ScoreBoardRoutes < Sinatra::Base
     when "Admin", "Writer", "Viewer"
       json scoreboard_for(all: true)
     when "Participant"
-      next json [] if settings.scoreboard_hide_at <= DateTime.now
+      next json [] if Setting.scoreboard_hide_at <= DateTime.now
       team = current_user.team
       halt 400 if team.nil?
       json scoreboard_for(team: team)

@@ -1,17 +1,13 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
-require "sinatra/config_file"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
 class AnswerRoutes < Sinatra::Base
-  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
-
-  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/answers*" do
     I18n.locale = :en if request.xhr?
@@ -29,8 +25,8 @@ class AnswerRoutes < Sinatra::Base
         score["is_firstblood"] = firstblood_ids.include? score["id"]
 
         bonus_point = 0
-        bonus_point += (score["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if score["is_firstblood"]
-        bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? score["id"]
+        bonus_point += (score["point"] * Setting.first_blood_bonus_percentage / 100.0).to_i if score["is_firstblood"]
+        bonus_point += Setting.bonus_point_for_clear_problem_group if cleared_pg_ids.include? score["id"]
 
         score["bonus_point"]    = bonus_point
         score["subtotal_point"] = score["point"] + score["bonus_point"]
@@ -102,7 +98,7 @@ class AnswerRoutes < Sinatra::Base
         next json completed: "participant can't make ansewer with no comments completed"
       end
 
-      # 参加者は同一の問題に対し、 settings.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
+      # 参加者は同一の問題に対し、 Setting.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
       last_answer_completed_at = Answer.where(
           team_id: current_user&.team_id,
           problem_id: @answer.problem_id
@@ -111,9 +107,9 @@ class AnswerRoutes < Sinatra::Base
         .select(:completed_at) \
         .last.completed_at
 
-      if last_answer_completed_at && DateTime.now <= (last_answer_completed_at + settings.answer_reply_delay_sec.seconds)
+      if last_answer_completed_at && DateTime.now <= (last_answer_completed_at + Setting.answer_reply_delay_sec.seconds)
         status 400
-        next json completed: "participant can't make multiple answers of one problem completed within #{settings.answer_reply_delay_sec} seconds"
+        next json completed: "participant can't make multiple answers of one problem completed within #{Setting.answer_reply_delay_sec} seconds"
       end
 
       @attrs[:completed_at] = DateTime.now

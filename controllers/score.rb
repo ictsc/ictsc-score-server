@@ -1,17 +1,13 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
-require "sinatra/config_file"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
 class ScoreRoutes < Sinatra::Base
-  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
-
-  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/scores*" do
     I18n.locale = :en if request.xhr?
@@ -31,7 +27,7 @@ class ScoreRoutes < Sinatra::Base
       .where(scores: {id: firstblood_ids} ) \
       .select("scores.id, problems.perfect_point") \
       .pluck("scores.id, problems.perfect_point") \
-      .inject(Hash.new(0)){|acc, (sid, perfect_point)| acc[sid] = perfect_point * (settings.first_blood_bonus_percentage / 100.0); acc }
+      .inject(Hash.new(0)){|acc, (sid, perfect_point)| acc[sid] = perfect_point * (Setting.first_blood_bonus_percentage / 100.0); acc }
 
 
     # NOTE: Calculate each Score#cleared_problem_group? is too slow
@@ -44,7 +40,7 @@ class ScoreRoutes < Sinatra::Base
 
       bonus_point = 0
       bonus_point += firstblood_bonuses[s["id"]] if s["is_firstblood"]
-      bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
+      bonus_point += Setting.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
 
       s["bonus_point"]    = bonus_point
       s["subtotal_point"] = s["point"] + s["bonus_point"]

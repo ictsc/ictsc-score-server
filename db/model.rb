@@ -1,9 +1,47 @@
-require "sinatra/config_file"
-
 # Make settings could be read via `Setting.hogefuga`
-class Setting < Sinatra::Base
-  register Sinatra::ConfigFile
-  config_file Pathname(settings.root).parent + "config/contest.yml"
+class Setting
+  include Singleton
+
+  ENV_PREFIX = 'API_CONTEST_'
+  REQUIRED_KEYS = %w(
+    answer_reply_delay_sec
+    first_blood_bonus_percentage
+    bonus_point_for_clear_problem_group
+    competition_start_at
+    scoreboard_hide_at
+    competition_end_at
+  )
+
+  INTEGER_VALUES = %w(
+    answer_reply_delay_sec
+    first_blood_bonus_percentage
+    bonus_point_for_clear_problem_group
+  )
+
+  DATETIME_VALUES = %w(
+    competition_start_at
+    scoreboard_hide_at
+    competition_end_at
+  )
+
+  REQUIRED_KEYS.each do |key|
+    env_key = ENV_PREFIX + key.upcase
+
+    begin
+      env_value = ENV.fetch(env_key)
+    rescue KeyError
+      STDERR.puts "ENV '#{env_key}' not defined, aborting."
+      exit 1
+    end
+
+    value = case key
+      when *INTEGER_VALUES then env_value.to_i
+      when *DATETIME_VALUES then DateTime.parse(env_value)
+      else env_value
+      end
+
+    define_singleton_method(key.to_sym) { value }
+  end
 end
 
 ROLE_ID = {
@@ -226,7 +264,7 @@ class Problem < ActiveRecord::Base
       next where(creator: user) if action == "problems_comments"
       none
     when ROLE_ID[:participant]
-      next none if DateTime.now <= Setting.competition_start_time
+      next none if DateTime.now <= Setting.competition_start_at
 
       relation =
         left_outer_joins(problem_must_solve_before: [answers: [:score]]).
@@ -280,7 +318,7 @@ class ProblemGroup < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      next none if DateTime.now <= Setting.competition_start_time
+      next none if DateTime.now <= Setting.competition_start_at
       all
     else # nologin, ...
       none
@@ -591,7 +629,7 @@ class Score < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      next none if Setting.competition_end_time <= DateTime.now
+      next none if Setting.competition_end_at <= DateTime.now
       parameters = { team_id: user.team.id, time: DateTime.now - Setting.answer_reply_delay_sec.seconds }
       joins(:answer).where("answers.team_id = :team_id AND answers.updated_at <= :time", parameters)
     else # nologin, ...

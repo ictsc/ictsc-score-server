@@ -1,36 +1,32 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
-require "sinatra/config_file"
 require_relative "../services/account_service"
 
 class NotificationRoutes < Sinatra::Base
-  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  config_file Pathname(settings.root).parent + "config/contest.yml"
-
   get "/api/notifications" do
     notifications = []
 
-    if settings.competition_start_time <= DateTime.now
+    if Setting.competition_start_at <= DateTime.now
       notifications << {
         resource: nil,
         resource_id: nil,
         type: "competition_started",
         text: "競技が開始しました",
-        created_at: settings.competition_start_time
+        created_at: Setting.competition_start_at
       }
     end
 
-    if settings.competition_end_time <= DateTime.now
+    if Setting.competition_end_at <= DateTime.now
       notifications << {
         resource: nil,
         resource_id: nil,
         type: "competition_finished",
         text: "競技が終了しました",
-        created_at: settings.competition_end_time
+        created_at: Setting.competition_end_at
       }
     end
 
@@ -147,7 +143,7 @@ class NotificationRoutes < Sinatra::Base
     end
 
     if current_user&.role&.name == "Participant"
-      notifications.reject! {|x| settings.competition_end_time < x[:created_at] }
+      notifications.reject! {|x| Setting.competition_end_at < x[:created_at] }
     end
 
     if filter_time_after

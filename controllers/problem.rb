@@ -1,17 +1,13 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
-require "sinatra/config_file"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
 class ProblemRoutes < Sinatra::Base
-  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
-
-  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
@@ -23,7 +19,7 @@ class ProblemRoutes < Sinatra::Base
     @problems = generate_nested_hash(klass: Problem, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?)).uniq
 
     if "Participant" == current_user&.role&.name
-      next json [] if DateTime.now <= settings.competition_start_time
+      next json [] if DateTime.now <= Setting.competition_start_at
 
       show_columns = Problem.column_names - %w(title text)
       @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json).sort_by{|x| x["id"] }
@@ -50,8 +46,8 @@ class ProblemRoutes < Sinatra::Base
           score["is_firstblood"] = firstblood_ids.include? score["id"]
 
           bonus_point = 0
-          bonus_point += (score["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if score["is_firstblood"]
-          bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? score["id"]
+          bonus_point += (score["point"] * Setting.first_blood_bonus_percentage / 100.0).to_i if score["is_firstblood"]
+          bonus_point += Setting.bonus_point_for_clear_problem_group if cleared_pg_ids.include? score["id"]
 
           score["bonus_point"]    = bonus_point
           score["subtotal_point"] = score["point"] + score["bonus_point"]
