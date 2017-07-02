@@ -390,7 +390,7 @@ export default {
     getScoreText (answers) {
       if (!this.session.member.team) return '---';
       if (!answers) return 0;
-      if (this.contest && (new Date(this.contest.competition_end_time) < Date.now())) return '---';
+      if (this.contest && (new Date(this.contest.competition_end_at) < Date.now())) return '---';
       return answers
         .filter(ans => ans.team_id === (this.session.member && this.session.member.team_id))
         .reduce((p, n) => ({

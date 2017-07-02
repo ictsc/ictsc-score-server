@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     limit () {
-      var end = this.contest.competition_end_time;
+      var end = this.contest.competition_end_at;
       if (end) {
         return new Date(end).valueOf() - this.currentDate.valueOf();
       } else {

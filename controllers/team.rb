@@ -1,17 +1,13 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
-require "sinatra/config_file"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
 class TeamRoutes < Sinatra::Base
-  register Sinatra::ConfigFile
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
-
-  config_file Pathname(settings.root).parent + "config/contest.yml"
 
   before "/api/teams*" do
     I18n.locale = :en if request.xhr?
@@ -40,8 +36,8 @@ class TeamRoutes < Sinatra::Base
             s["is_firstblood"]  = firstblood_ids.include? s["id"]
 
             bonus_point = 0
-            bonus_point += (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
-            bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
+            bonus_point += (s["point"] * Setting.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
+            bonus_point += Setting.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
 
             s["bonus_point"]    = bonus_point
             s["subtotal_point"] = s["point"] + s["bonus_point"]
@@ -77,8 +73,8 @@ class TeamRoutes < Sinatra::Base
           s["is_firstblood"]  = firstblood_ids.include? s["id"]
 
           bonus_point = 0
-          bonus_point += (s["point"] * settings.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
-          bonus_point += settings.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
+          bonus_point += (s["point"] * Setting.first_blood_bonus_percentage / 100.0).to_i if s["is_firstblood"]
+          bonus_point += Setting.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
 
           s["bonus_point"]    = bonus_point
           s["subtotal_point"] = s["point"] + s["bonus_point"]

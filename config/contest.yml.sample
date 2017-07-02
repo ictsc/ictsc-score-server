@@ -1,8 +1,0 @@
-answer_reply_delay_sec:
-  development: 60
-  production: 1200 # 20 min
-first_blood_bonus_percentage: 99
-competition_start_time: 2000-01-01 00:30:00 +0900
-scoreboard_hide_at:     2050-07-02 23:59:59 +0900
-competition_end_time:   2099-12-31 23:59:59 +0900
-bonus_point_for_clear_problem_group: 999

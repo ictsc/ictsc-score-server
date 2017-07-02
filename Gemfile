@@ -2,7 +2,6 @@ source "https://rubygems.org"
 
 gem "sinatra",          require: "sinatra/base"
 gem "sinatra-param",    require: "sinatra/param"
-gem "sinatra-contrib"
 
 gem "rack-contrib",     require: "rack/contrib"
 gem "rack-protection",  require: "rack/protection"
