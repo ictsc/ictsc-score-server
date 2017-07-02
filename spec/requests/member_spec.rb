@@ -1,11 +1,7 @@
 require_relative '../spec_helper.rb'
 
-describe '/api/members' do
-  include ApiHelpers
-
-  context 'not_logged_in' do
-    include_context 'not_logged_in'
-
+describe 'members' do
+  context 'POST /api/members', by: :nologin do
     context 'Create participant member' do
       let (:member) { build(:member, :participant) }
       let (:params) do
@@ -62,9 +58,7 @@ describe '/api/members' do
     end
   end
 
-  context 'as_participant' do
-    include_context 'as_participant'
-
+  context 'POST /api/members', by: :participant do
     context 'Create participant member' do
       let (:member) { build(:member, :participant) }
       let (:params) do
@@ -102,9 +96,7 @@ describe '/api/members' do
     end
   end
 
-  context 'as_writer' do
-    include_context 'as_writer'
-
+  context 'POST /api/members', by: :writer do
     context 'Create participant member' do
       let (:member) { build(:member, :participant) }
       let (:params) do
@@ -161,9 +153,7 @@ describe '/api/members' do
     end
   end
 
-  context 'as_admin' do
-    include_context 'as_admin'
-
+  context 'POST /api/members', by: :admin do
     context 'Create participant member' do
       let (:member) { build(:member, :participant) }
       let (:params) do
