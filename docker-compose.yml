@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  ui:
+    build:
+      context: ui2
+    image: ictsc-score-server:ui
+    ports:
+       - "3001:80"
+    restart: always
+    links:
+      - api
+    volumes:
+      - "./ui2/:/etc/h2o"
+  api:
+    build:
+      context: .
+    image: ictsc-score-server:api
+    env_file: .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis
+    volumes:
+    - "./:/usr/src/app"
+    stdin_open: true
+    tty: true
+  db:
+    image: mariadb:10.3
+    ports:
+      - "3306:3306"
+    env_file: .env
+    volumes:
+      - "./tmp/db:/var/lib/mysql"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+  redis:
+    image: redis:2.8
+    ports:
+      - "6379:6379"
+    env_file: .env

@@ -44,26 +44,10 @@ class App < Sinatra::Base
   use ContestRoutes
   use AssetRoutes
 
-  if defined? BetterErrors
-    [self, *Sinatra::Base.descendants].each do |klass|
-      klass.class_eval do
-        configure :development do
-          use BetterErrors::Middleware
-          BetterErrors.application_root = settings.root
-          BetterErrors::Middleware.allow_ip! "0.0.0.0/0"
-        end
-      end
-    end
-  end
-
   configure do
     Time.zone = "Tokyo"
     ActiveRecord::Base.default_timezone = :local
 
-    if defined? Activerecord::Mysql::Reconnect
-      ActiveRecord::Base.enable_retry = true
-      ActiveRecord::Base.execution_tries = 3
-    end
     # set :cometio, timeout: 120, post_interval: 2, allow_crossdomain: false
     # set :websocketio, port: 9000
     # set :rocketio, websocket: true, comet: true # enable WebSocket and Comet
