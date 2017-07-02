@@ -10,8 +10,6 @@ services:
     restart: always
     links:
       - api
-    volumes:
-      - "./ui2/:/etc/h2o"
   api:
     build:
       context: .
