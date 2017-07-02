@@ -21,10 +21,8 @@ services:
       - "3000:3000"
     depends_on:
       - db
-      - redis
     links:
       - db
-      - redis
     volumes:
     - "./:/usr/src/app"
     stdin_open: true
@@ -37,8 +35,3 @@ services:
     volumes:
       - "./tmp/db:/var/lib/mysql"
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
-  redis:
-    image: redis:2.8
-    ports:
-      - "6379:6379"
-    env_file: .env
