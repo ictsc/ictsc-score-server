@@ -171,6 +171,11 @@ class MemberRoutes < Sinatra::Base
   update_member_block = Proc.new do
     field_options = { exclude: [:hashed_password], include: [:password] }
 
+    if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
+      field_options[:exclude] << :team_id
+      field_options[:exclude] << :role_id
+    end
+
     if request.put? and not satisfied_required_fields?(Member, field_options)
       status 400
       next json required: insufficient_fields(Member, field_options)
