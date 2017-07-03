@@ -2,10 +2,10 @@ require_relative '../spec_helper.rb'
 
 describe Member do
   describe 'GET /members' do
-    let!(:viewer) { create(:member, :viewer) }
+    let!(:viewer)      { create(:member, :viewer) }
     let!(:participant) { create(:member, :participant) }
-    let!(:writer) { create(:member, :writer) }
-    let!(:admin) { create(:member, :admin) }
+    let!(:writer)      { create(:member, :writer) }
+    let!(:admin)       { create(:member, :admin) }
 
     describe '/api/members' do
       let(:response) { get '/api/members' }
