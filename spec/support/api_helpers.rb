@@ -31,6 +31,10 @@ end
       post '/api/session', { login: current_member.login, password: current_member.password }
     end
   end
+
+  define_method("by_#{role}".to_sym) do |&block|
+    it "by #{role}", by: role.to_sym, &block
+  end
 end
 
 RSpec.shared_context "not_logged_in", by: :nologin do
@@ -38,8 +42,12 @@ RSpec.shared_context "not_logged_in", by: :nologin do
   let!(:current_member) { nil }
 end
 
+def by_nologin(&block)
+  it 'when not logged in', by: :nologin, &block
+end
+
 RSpec.shared_examples 'not logged in' do
   it 'returns unauthorized' do
-    expect(response).to be_unauthorized
+    expect(response.status).to eq 401
   end
 end
