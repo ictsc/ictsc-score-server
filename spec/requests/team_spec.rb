@@ -139,7 +139,7 @@ describe Team do
   end
 
   describe 'DELETE /teams/:id' do
-    let!(:team) { create(:member, :admin) }
+    let!(:team) { create(:team) }
 
     let(:response) { delete "/api/teams/#{team.id}" }
     subject { response.status }
