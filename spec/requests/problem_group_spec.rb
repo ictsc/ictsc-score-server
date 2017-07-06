@@ -119,7 +119,7 @@ describe ProblemGroup do
 
       all_success_block = Proc.new do
         is_expected.to eq 201
-        expect(json_response).to include('id', 'name', 'created_at', 'updated_at')
+        expect(json_response.keys).to match_array %w(id description name created_at updated_at)
       end
 
       by_writer &all_success_block

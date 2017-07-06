@@ -104,7 +104,7 @@ describe Member do
 
       by_nologin do
         is_expected.to eq 201
-        expect(json_response).to include('id', 'name', 'login', 'team_id', 'created_at', 'updated_at', 'role_id')
+        expect(json_response.keys).to match_array %w(id name login team_id created_at updated_at role_id)
         expect(json_response).not_to include('password')
         expect(json_response['role_id']).to eq member.role.id
       end
@@ -114,8 +114,7 @@ describe Member do
 
       all_success_block = Proc.new do
         is_expected.to eq 201
-        expect(json_response).to include('id', 'name', 'login', 'team_id', 'created_at', 'updated_at', 'role_id')
-        expect(json_response).not_to include('password')
+        expect(json_response.keys).to match_array %w(id name login team_id created_at updated_at role_id)
         expect(json_response['role_id']).to eq member.role.id
       end
 
@@ -142,8 +141,7 @@ describe Member do
       by_writer      { is_expected.to eq 403 }
       by_admin do
         is_expected.to eq 201
-        expect(json_response).to include('id', 'name', 'login', 'team_id', 'created_at', 'updated_at', 'role_id')
-        expect(json_response).not_to include('password')
+        expect(json_response.keys).to match_array %w(id name login team_id created_at updated_at role_id)
         expect(json_response['role_id']).to eq admin_role.id
       end
     end
