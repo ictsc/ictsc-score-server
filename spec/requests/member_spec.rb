@@ -1,6 +1,8 @@
 require_relative '../spec_helper.rb'
 
 describe Member do
+  include ApiHelpers
+
   describe 'GET /members' do
     let!(:viewer)      { create(:member, :viewer) }
     let!(:participant) { create(:member, :participant) }
@@ -194,7 +196,7 @@ describe Member do
         by_admin &all_success_block
       end
 
-      context 'PATCH without some fields' do
+      context 'PUT without some fields' do
         let(:response) { put "/api/members/#{current_member.id}", params.except(:name) }
         subject { response.status }
 
@@ -204,7 +206,7 @@ describe Member do
         by_admin       { is_expected.to eq 400 }
       end
 
-      context 'PUT without some fields' do
+      context 'PATCH without some fields' do
         let(:response) { patch "/api/members/#{current_member.id}", params.except(:name) }
         it_behaves_like 'expected results'
       end
@@ -245,7 +247,7 @@ describe Member do
         by_admin &all_success_block
       end
 
-      context 'PATCH without some fields' do
+      context 'PUT without some fields' do
         let(:response) { put "/api/members/#{other_a.id}", params.except(:name) }
         subject { response.status }
 
@@ -255,7 +257,7 @@ describe Member do
         by_admin       { is_expected.to eq 400 }
       end
 
-      context 'PUT without some fields' do
+      context 'PATCH without some fields' do
         let(:response) { patch "/api/members/#{other_a.id}", params.except(:name) }
         it_behaves_like 'expected results'
       end
@@ -293,7 +295,7 @@ describe Member do
         by_admin &all_success_block
       end
 
-      context 'PATCH without some fields' do
+      context 'PUT without some fields' do
         let(:response) { put "/api/members/#{other.id}", params.except(:name) }
         subject { response.status }
 
@@ -303,7 +305,7 @@ describe Member do
         by_admin       { is_expected.to eq 400 }
       end
 
-      context 'PUT without some fields' do
+      context 'PATCH without some fields' do
         let(:response) { patch "/api/members/#{other.id}", params.except(:name) }
         it_behaves_like 'expected results'
       end
@@ -341,7 +343,7 @@ describe Member do
         by_admin &all_success_block
       end
 
-      context 'PATCH without some fields' do
+      context 'PUT without some fields' do
         let(:response) { put "/api/members/#{other.id}", params.except(:name) }
         subject { response.status }
 
@@ -351,7 +353,7 @@ describe Member do
         by_admin       { is_expected.to eq 400 }
       end
 
-      context 'PUT without some fields' do
+      context 'PATCH without some fields' do
         let(:response) { patch "/api/members/#{other.id}", params.except(:name) }
         it_behaves_like 'expected results'
       end
