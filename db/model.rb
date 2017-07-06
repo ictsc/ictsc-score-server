@@ -308,7 +308,7 @@ class ProblemGroup < ActiveRecord::Base
     return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
 
     case by&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:participant], ROLE_ID[:viewer]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       true
     else # nologin, ...
       false
