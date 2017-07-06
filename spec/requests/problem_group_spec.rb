@@ -143,7 +143,8 @@ describe ProblemGroup do
 
       let(:params) do
         {
-          name: new_name
+          name: new_name,
+          description: problem_group.description
         }
       end
 
