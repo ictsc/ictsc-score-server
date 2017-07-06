@@ -38,12 +38,13 @@ describe Team do
     by_admin       { is_expected.to eq 200 }
 
     describe '#keys' do
+      let(:expected_keys_without_registration_code) { %w(id name organization created_at updated_at hashed_registration_code) }
       subject { json_response.keys }
-      by_nologin     { is_expected.to match_array %w(id name organization created_at updated_at hashed_registration_code) }
-      by_viewer      { is_expected.to match_array %w(id name organization created_at updated_at hashed_registration_code) }
-      by_participant { is_expected.to match_array %w(id name organization created_at updated_at hashed_registration_code) }
-      by_writer      { is_expected.to match_array %w(id name organization created_at updated_at hashed_registration_code registration_code) }
-      by_admin       { is_expected.to match_array %w(id name organization created_at updated_at hashed_registration_code registration_code) }
+      by_nologin     { is_expected.to match_array expected_keys_without_registration_code }
+      by_viewer      { is_expected.to match_array expected_keys_without_registration_code }
+      by_participant { is_expected.to match_array expected_keys_without_registration_code }
+      by_writer      { is_expected.to match_array expected_keys_without_registration_code + %w(registration_code) }
+      by_admin       { is_expected.to match_array expected_keys_without_registration_code + %w(registration_code) }
     end
   end
 
@@ -58,8 +59,6 @@ describe Team do
       }
     end
 
-    let(:params_without_name) { params.except(:name) }
-
     describe 'create team' do
       let(:response) { post '/api/teams', params }
       subject { response.status }
@@ -70,7 +69,7 @@ describe Team do
 
       all_success_block = Proc.new do
         is_expected.to eq 201
-        expect(json_response).to include('id', 'name', 'created_at', 'updated_at')
+        expect(json_response.keys).to match_array %w(id name organization created_at updated_at registration_code)
       end
 
       by_writer &all_success_block
@@ -78,6 +77,7 @@ describe Team do
     end
 
     describe 'create team with missing name' do
+      let(:params_without_name) { params.except(:name) }
       let(:response) { post '/api/teams', params_without_name }
       subject { response.status }
 
@@ -87,11 +87,10 @@ describe Team do
   end
 
   describe 'PUT, PATCH /api/teams' do
-  	let!(:team) { create(:team) }
-  	let!(:new_name) { team.name + 'nya-' }
+    let!(:team) { create(:team) }
+    let(:new_name) { team.name + 'nya-' }
 
     describe "edit problem group" do
-
       let(:params) do
         {
           name: new_name,
@@ -125,8 +124,8 @@ describe Team do
         let(:response) { patch "/api/teams/#{team.id}", params.except(:name) }
         it_behaves_like 'expected success statuses'
 
-	      by_writer      { expect(json_response['name']).to eq team.name }
-	      by_admin       { expect(json_response['name']).to eq team.name }
+        by_writer      { expect(json_response['name']).to eq team.name }
+        by_admin       { expect(json_response['name']).to eq team.name }
       end
 
       context 'PUT' do

@@ -107,8 +107,6 @@ describe ProblemGroup do
       }
     end
 
-    let(:params_without_name) { params.except(:name) }
-
     describe 'create problem_group' do
       let(:response) { post '/api/problem_groups', params }
       subject { response.status }
@@ -127,6 +125,7 @@ describe ProblemGroup do
     end
 
     describe 'create problem_group with missing name' do
+      let(:params_without_name) { params.except(:name) }
       let(:response) { post '/api/problem_groups', params_without_name }
       subject { response.status }
 
@@ -136,11 +135,10 @@ describe ProblemGroup do
   end
 
   describe 'PUT, PATCH /api/problem_groups' do
-  	let!(:problem_group) { create(:problem_group) }
-  	let!(:new_name) { problem_group.name + 'nya-' }
+    let!(:problem_group) { create(:problem_group) }
+    let(:new_name) { problem_group.name + 'nya-' }
 
     describe "edit problem group" do
-
       let(:params) do
         {
           name: new_name,
@@ -173,17 +171,17 @@ describe ProblemGroup do
         let(:response) { patch "/api/problem_groups/#{problem_group.id}", params.except(:name) }
         it_behaves_like 'expected success statuses'
 
-	      by_writer      { expect(json_response['name']).to eq problem_group.name }
-	      by_admin       { expect(json_response['name']).to eq problem_group.name }
+        by_writer      { expect(json_response['name']).to eq problem_group.name }
+        by_admin       { expect(json_response['name']).to eq problem_group.name }
       end
 
       context 'PUT' do
-	      let(:response) { put "/api/problem_groups/#{problem_group.id}", params }
-	      it_behaves_like 'expected success statuses'
+        let(:response) { put "/api/problem_groups/#{problem_group.id}", params }
+        it_behaves_like 'expected success statuses'
 
-	      by_writer      { expect(json_response['name']).to eq new_name }
-	      by_admin       { expect(json_response['name']).to eq new_name }
-	    end
+        by_writer      { expect(json_response['name']).to eq new_name }
+        by_admin       { expect(json_response['name']).to eq new_name }
+      end
     end
   end
 

@@ -95,9 +95,6 @@ describe Member do
       }
     end
 
-    let(:params_without_registration_code) { params.except(:registration_code) }
-    let(:params_with_admin_role_id) { params.merge(role_id: admin_role.id) }
-
     describe 'create participant member' do
       let(:response) { post '/api/members', params }
       subject { response.status }
@@ -123,6 +120,7 @@ describe Member do
     end
 
     describe 'create participant member with missing registration_code' do
+      let(:params_without_registration_code) { params.except(:registration_code) }
       let(:response) { post '/api/members', params_without_registration_code }
       subject { response.status }
 
@@ -132,6 +130,7 @@ describe Member do
     end
 
     describe 'create admin member' do
+      let(:params_with_admin_role_id) { params.merge(role_id: admin_role.id) }
       let(:response) { post '/api/members', params_with_admin_role_id }
       subject { response.status }
 
