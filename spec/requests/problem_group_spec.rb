@@ -186,4 +186,17 @@ describe ProblemGroup do
 	    end
     end
   end
+
+  describe 'DELETE /problem_groups/:id' do
+    let!(:problem_group) { create(:problem_group) }
+
+    let(:response) { delete "/api/problem_groups/#{problem_group.id}" }
+    subject { response.status }
+
+    by_nologin     { is_expected.to eq 404 }
+    by_viewer      { is_expected.to eq 404 }
+    by_participant { is_expected.to eq 404 }
+    by_writer      { is_expected.to eq 204 }
+    by_admin       { is_expected.to eq 204 }
+  end
 end

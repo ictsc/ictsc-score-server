@@ -138,4 +138,17 @@ describe Team do
       end
     end
   end
+
+  describe 'DELETE /teams/:id' do
+    let!(:team) { create(:member, :admin) }
+
+    let(:response) { delete "/api/teams/#{team.id}" }
+    subject { response.status }
+
+    by_nologin     { is_expected.to eq 404 }
+    by_viewer      { is_expected.to eq 404 }
+    by_participant { is_expected.to eq 404 }
+    by_writer      { is_expected.to eq 204 }
+    by_admin       { is_expected.to eq 204 }
+  end
 end
