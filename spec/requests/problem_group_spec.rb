@@ -176,11 +176,13 @@ describe ProblemGroup do
 	      by_admin       { expect(json_response['name']).to eq problem_group.name }
       end
 
-      let(:response) { put "/api/problem_groups/#{problem_group.id}", params }
-      it_behaves_like 'expected success statuses'
+      context 'PUT' do
+	      let(:response) { put "/api/problem_groups/#{problem_group.id}", params }
+	      it_behaves_like 'expected success statuses'
 
-      by_writer      { expect(json_response['name']).to eq new_name }
-      by_admin       { expect(json_response['name']).to eq new_name }
+	      by_writer      { expect(json_response['name']).to eq new_name }
+	      by_admin       { expect(json_response['name']).to eq new_name }
+	    end
     end
   end
 end

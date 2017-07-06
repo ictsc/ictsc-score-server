@@ -211,8 +211,10 @@ describe Member do
         it_behaves_like 'expected results'
       end
 
-      let(:response) { put "/api/members/#{current_member.id}", params }
-      it_behaves_like 'expected results'
+      context 'PUT' do
+        let(:response) { put "/api/members/#{current_member.id}", params }
+        it_behaves_like 'expected results'
+      end
     end
 
     describe "edit other participant's login" do
@@ -262,8 +264,10 @@ describe Member do
         it_behaves_like 'expected results'
       end
 
-      let(:response) { put "/api/members/#{other_a.id}", params }
-      it_behaves_like 'expected results'
+      context 'PUT' do
+        let(:response) { put "/api/members/#{other_a.id}", params }
+        it_behaves_like 'expected results'
+      end
     end
 
     describe "edit other writer's login" do
@@ -310,8 +314,10 @@ describe Member do
         it_behaves_like 'expected results'
       end
 
-      let(:response) { put "/api/members/#{other.id}", params }
-      it_behaves_like 'expected results'
+      context 'PUT' do
+        let(:response) { put "/api/members/#{other.id}", params }
+        it_behaves_like 'expected results'
+      end
     end
 
     describe "edit other admin's login" do
@@ -358,8 +364,10 @@ describe Member do
         it_behaves_like 'expected results'
       end
 
-      let(:response) { put "/api/members/#{other.id}", params }
-      it_behaves_like 'expected results'
+      context 'PUT' do
+        let(:response) { put "/api/members/#{other.id}", params }
+        it_behaves_like 'expected results'
+      end
     end
   end
 
