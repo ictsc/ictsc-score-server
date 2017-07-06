@@ -22,6 +22,28 @@ module ApiHelpers
   end
 end
 
+# define shared_context 'as_admin' 'as_writer' 'as_participant' 'as_viewer'
+# For example:
+# ```
+# context do
+#   include_context 'as_admin'
+#   it { ... }
+# end
+# ```
+# can be rewritten:
+# ```
+# context, by: :admin do
+#   it { ... }
+# end
+# ```
+# it also can write ...
+# ```
+# context do
+#   it 'match some', by: :admin { ... }
+# end
+# ```
+# same as ...:
+# `by_participant { ... }`
 %w(admin writer participant viewer).each do |role|
   RSpec.shared_context "as_#{role}", by: role.to_sym do
     include ApiHelpers
@@ -31,7 +53,8 @@ end
       post '/api/session', { login: current_member.login, password: current_member.password }
     end
   end
-
+  
+  # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer'
   define_method("by_#{role}".to_sym) do |&block|
     it "by #{role}", by: role.to_sym, &block
   end
