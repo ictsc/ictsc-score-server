@@ -132,7 +132,7 @@ class MemberRoutes < Sinatra::Base
 
     @permit_role_ids = Role.readables(user: current_user).ids
 
-    @attrs = attribute_values_of_class(Member, exclude: [:hashed_password], include: [:password])
+    @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
 
     if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
       @team = Team.find_by(registration_code: params[:registration_code])
@@ -176,12 +176,12 @@ class MemberRoutes < Sinatra::Base
       field_options[:exclude] << :role_id
     end
 
-    if request.put? and not satisfied_required_fields?(Member, field_options)
+    if request.put? and not filled_all_attributes_of?(klass: Member, **field_options)
       status 400
-      next json required: insufficient_fields(Member, field_options)
+      next json required: insufficient_attribute_names_of(klass: Member, **field_options)
     end
 
-    @attrs = attribute_values_of_class(Member, field_options)
+    @attrs = params_to_attributes_of(klass: Member, **field_options)
 
     if @attrs.key?(:password)
       @attrs[:hashed_password] = crypt(@attrs[:password])

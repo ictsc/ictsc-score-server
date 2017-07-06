@@ -54,7 +54,7 @@ ROLE_ID = {
 
 class ActiveRecord::Base
 
-  def self.required_fields(options = {})
+  def self.required_attribute_names(options = {})
     options[:include] ||= []
     options[:include].map!(&:to_sym)
 

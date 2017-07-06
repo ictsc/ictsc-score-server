@@ -47,7 +47,7 @@ class IssueRoutes < Sinatra::Base
   post "/api/issues" do
     halt 403 if not Issue.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Issue)
+    @attrs = params_to_attributes_of(klass: Issue)
     @attrs[:team_id] = current_user.team_id if not %w(Admin Writer).include? current_user&.role&.name
     @issue = Issue.new(@attrs)
 
@@ -62,12 +62,12 @@ class IssueRoutes < Sinatra::Base
   end
 
   update_issue_block = Proc.new do
-    if request.put? and not satisfied_required_fields?(Issue)
+    if request.put? and not filled_all_attributes_of?(klass: Issue)
       status 400
-      next json required: insufficient_fields(Issue)
+      next json required: insufficient_attribute_names_of(klass: Issue)
     end
 
-    @attrs = attribute_values_of_class(Issue)
+    @attrs = params_to_attributes_of(klass: Issue)
     @issue.attributes = @attrs
 
     if not @issue.valid?
@@ -111,7 +111,7 @@ class IssueRoutes < Sinatra::Base
   post "/api/problems/:id/issues" do
     halt 403 if not Issue.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Issue)
+    @attrs = params_to_attributes_of(klass: Issue)
     @attrs[:team_id] = current_user.team_id if not %w(Admin Writer).include? current_user&.role&.name
     @attrs[:problem_id] = @problem.id
     @issue = Issue.new(@attrs)

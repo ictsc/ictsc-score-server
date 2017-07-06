@@ -52,7 +52,7 @@ class CommentRoutes < Sinatra::Base
         next json comment: "participant can't add comments to completed answer"
       end
 
-      @attrs = attribute_values_of_class(Comment)
+      @attrs = params_to_attributes_of(klass: Comment)
       @attrs[:member_id] = current_user.id if not is_admin? || @attrs[:member_id].nil?
       @attrs[:commentable_type] = klass.to_s
       @attrs[:commentable_id] = @commentable_id
@@ -69,9 +69,9 @@ class CommentRoutes < Sinatra::Base
     end
 
     update_comment_block = Proc.new do
-      if request.put? and not satisfied_required_fields?(Comment)
+      if request.put? and not filled_all_attributes_of?(klass: Comment, exclude: [:commentable_type, :commentable_id])
         status 400
-        next json required: insufficient_fields(Comment)
+        next json required: insufficient_attribute_names_of(klass: Comment)
       end
 
       if klass == Answer && @commentable.completed && is_participant?
@@ -79,7 +79,7 @@ class CommentRoutes < Sinatra::Base
         next json comment: "participant can't edit comments of completed answer"
       end
 
-      @attrs = attribute_values_of_class(Comment)
+      @attrs = params_to_attributes_of(klass: Comment)
       @comment.attributes = @attrs
 
       if not @comment.valid?

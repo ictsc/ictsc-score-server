@@ -90,7 +90,7 @@ class TeamRoutes < Sinatra::Base
   post "/api/teams" do
     halt 403 if not Team.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Team)
+    @attrs = params_to_attributes_of(klass: Team)
     @team = Team.new(@attrs)
 
     if @team.save
@@ -104,12 +104,12 @@ class TeamRoutes < Sinatra::Base
   end
 
   update_team_block = Proc.new do
-    if request.put? and not satisfied_required_fields?(Team)
+    if request.put? and not filled_all_attributes_of?(klass: Team)
       status 400
-      next json required: insufficient_fields(Team)
+      next json required: insufficient_attribute_names_of(klass: Team)
     end
 
-    @attrs = attribute_values_of_class(Team)
+    @attrs = params_to_attributes_of(klass: Team)
     @team.attributes = @attrs
 
     if not @team.valid?

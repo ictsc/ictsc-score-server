@@ -99,7 +99,7 @@ class ProblemRoutes < Sinatra::Base
   post "/api/problems" do
     halt 403 if not Problem.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Problem)
+    @attrs = params_to_attributes_of(klass: Problem)
     @attrs[:creator_id] = current_user.id
     @problem = Problem.new(@attrs)
 
@@ -114,12 +114,12 @@ class ProblemRoutes < Sinatra::Base
   end
 
   update_problem_block = Proc.new do
-    if request.put? and not satisfied_required_fields?(Problem)
+    if request.put? and not filled_all_attributes_of?(klass: Problem)
       status 400
-      next json required: insufficient_fields(Problem)
+      next json required: insufficient_attribute_names_of(klass: Problem)
     end
 
-    @attrs = attribute_values_of_class(Problem)
+    @attrs = params_to_attributes_of(klass: Problem)
     @problem.attributes = @attrs
 
     if not @problem.valid?
