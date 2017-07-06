@@ -4,7 +4,7 @@ describe Team do
   include ApiHelpers
 
   describe 'GET /teams' do
-    let!(:team) { create_list(:team, 2) }
+    let!(:teams) { create_list(:team, 2) }
 
     let(:response) { get '/api/teams' }
     subject { response.status }
