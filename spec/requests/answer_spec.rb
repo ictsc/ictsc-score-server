@@ -3,6 +3,12 @@ require_relative '../spec_helper.rb'
 describe Answer do
   include ApiHelpers
 
+  before(:each) {
+    time = DateTime.parse("2017-07-07T21:00:00+09:00")
+    allow(DateTime).to receive(:now).and_return(time)
+    allow(Setting).to receive(:competition_start_at).and_return(time - 3.year)
+  }
+
   describe 'GET /api/answers' do
     let!(:team) { current_member&.team || create(:team) }
     let!(:answers) { create_list(:answer, 2, team: team) }
@@ -164,8 +170,6 @@ describe Answer do
 
         describe "can make answer completed within completed another answer of same problem in `Setting.answer_reply_delay_sec` seconds" do
           before do
-            time = DateTime.parse("2017-07-07T21:00:00+09:00")
-            allow(DateTime).to receive(:now).and_return(time)
             allow(Setting).to receive(:answer_reply_delay_sec).and_return(60 * 60 * 24 * 365 * 3) # 3 year
           end
 
