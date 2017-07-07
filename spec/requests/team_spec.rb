@@ -3,7 +3,7 @@ require_relative '../spec_helper.rb'
 describe Team do
   include ApiHelpers
 
-  describe 'GET /teams' do
+  describe 'GET /api/teams' do
     let!(:teams) { create_list(:team, 2) }
 
     let(:response) { get '/api/teams' }
@@ -25,7 +25,7 @@ describe Team do
     end
   end
 
-  describe 'GET /teams/:id' do
+  describe 'GET /api/teams/:id' do
     let!(:team) { create(:team) }
 
     let(:response) { get "/api/teams/#{team.id}" }
@@ -138,7 +138,7 @@ describe Team do
     end
   end
 
-  describe 'DELETE /teams/:id' do
+  describe 'DELETE /api/teams/:id' do
     let!(:team) { create(:team) }
 
     let(:response) { delete "/api/teams/#{team.id}" }

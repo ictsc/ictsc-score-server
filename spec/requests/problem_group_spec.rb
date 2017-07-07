@@ -3,7 +3,7 @@ require_relative '../spec_helper.rb'
 describe ProblemGroup do
   include ApiHelpers
 
-  describe 'GET /problem_groups' do
+  describe 'GET /api/problem_groups' do
     let!(:problem_group) { create_list(:problem_group, 2) }
 
     describe 'while competition' do
@@ -59,7 +59,7 @@ describe ProblemGroup do
     end
   end
 
-  describe 'GET /problem_groups/:id' do
+  describe 'GET /api/problem_groups/:id' do
     let!(:problem_group) { create(:problem_group) }
 
     describe 'while competition' do
@@ -186,7 +186,7 @@ describe ProblemGroup do
     end
   end
 
-  describe 'DELETE /problem_groups/:id' do
+  describe 'DELETE /api/problem_groups/:id' do
     let!(:problem_group) { create(:problem_group) }
 
     let(:response) { delete "/api/problem_groups/#{problem_group.id}" }

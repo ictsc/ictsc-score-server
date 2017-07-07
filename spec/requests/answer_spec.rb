@@ -3,7 +3,7 @@ require_relative '../spec_helper.rb'
 describe Answer do
   include ApiHelpers
 
-  describe 'GET /answers' do
+  describe 'GET /api/answers' do
     let!(:team) { current_member&.team || create(:team) }
     let!(:answers) { create_list(:answer, 2, team: team) }
     let!(:answers_by_other_team) { create_list(:answer, 2, team: create(:team)) }
@@ -27,7 +27,7 @@ describe Answer do
     end
   end
 
-  describe 'GET /answers/:id' do
+  describe 'GET /api/answers/:id' do
     let!(:team) { current_member&.team || create(:team) }
     let!(:answer) { create(:answer, team: team) }
 
@@ -219,7 +219,7 @@ describe Answer do
     end
   end
 
-  describe 'DELETE /answers/:id' do
+  describe 'DELETE /api/answers/:id' do
     let!(:answer) { create(:answer) }
 
     let(:response) { delete "/api/answers/#{answer.id}" }

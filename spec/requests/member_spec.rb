@@ -3,7 +3,7 @@ require_relative '../spec_helper.rb'
 describe Member do
   include ApiHelpers
 
-  describe 'GET /members' do
+  describe 'GET /api/members' do
     let!(:viewer)      { create(:member, :viewer) }
     let!(:participant) { create(:member, :participant) }
     let!(:writer)      { create(:member, :writer) }
@@ -30,7 +30,7 @@ describe Member do
     end
   end
 
-  describe 'GET /members/:id' do
+  describe 'GET /api/members/:id' do
     let!(:viewer)      { create(:member, :viewer) }
     let!(:participant) { create(:member, :participant) }
     let!(:writer)      { create(:member, :writer) }
@@ -368,7 +368,7 @@ describe Member do
     end
   end
 
-  describe 'DELETE /members/:id' do
+  describe 'DELETE /api/members/:id' do
     let!(:viewer)      { create(:member, :viewer) }
     let!(:participant) { create(:member, :participant) }
     let!(:writer)      { create(:member, :writer) }

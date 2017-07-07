@@ -3,7 +3,7 @@ require_relative '../spec_helper.rb'
 describe Issue do
   include ApiHelpers
 
-  describe 'GET /issues' do
+  describe 'GET /api/issues' do
     let!(:team) { current_member&.team || create(:team) }
     let!(:issues) { create_list(:issue, 2, team: team) }
     let!(:issues_by_other_team) { create_list(:issue, 2, team: create(:team)) }
@@ -27,7 +27,7 @@ describe Issue do
     end
   end
 
-  describe 'GET /issues/:id' do
+  describe 'GET /api/issues/:id' do
     let!(:team) { current_member&.team || create(:team) }
     let!(:issue) { create(:issue, team: team) }
 
@@ -173,7 +173,7 @@ describe Issue do
     end
   end
 
-  describe 'DELETE /issues/:id' do
+  describe 'DELETE /api/issues/:id' do
     let!(:issue) { create(:issue) }
 
     let(:response) { delete "/api/issues/#{issue.id}" }
