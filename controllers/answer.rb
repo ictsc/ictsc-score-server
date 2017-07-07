@@ -145,7 +145,7 @@ class AnswerRoutes < Sinatra::Base
 
   before "/api/problems/:id/answers" do
     @problem = Problem.find_by(id: params[:id])
-    pass if request.post?
+    pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET')
     halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
@@ -159,7 +159,7 @@ class AnswerRoutes < Sinatra::Base
     halt 403 if not Answer.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Answer)
-    @attrs[:team_id] = current_user.team_id
+    @attrs[:team_id] = current_user.team_id if not is_admin?
     @attrs[:problem_id] = @problem.id
     @answer = Answer.new(@attrs)
 

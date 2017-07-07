@@ -33,6 +33,33 @@ describe Answer do
     end
   end
 
+  describe 'GET /api/problems/:problems_id/answers' do
+    let!(:problem) { create(:problem) }
+    let!(:another_problem) { create(:problem) }
+    let!(:team) { current_member&.team || create(:team) }
+    let!(:answers_t) { create_list(:answer, 2, team: team, problem: problem) }
+    let!(:answers_t_by_other_team) { create_list(:answer, 2, team: create(:team), problem: problem) }
+    let!(:answers_to_another_problem) { create_list(:answer, 2, team: team, problem: another_problem) }
+    let!(:answers_to_another_problem_by_other_team) { create_list(:answer, 2, team: create(:team), problem: another_problem) }
+
+    let(:response) { get "/api/problems/#{problem.id}/answers" }
+    subject { response.status }
+
+    by_nologin     { is_expected.to eq 404 }
+    by_viewer      { is_expected.to eq 200 }
+    by_participant { is_expected.to eq 200 }
+    by_writer      { is_expected.to eq 200 }
+    by_admin       { is_expected.to eq 200 }
+
+    describe '#size' do
+      subject { json_response.size }
+      by_viewer      { is_expected.to eq 4 }
+      by_participant { is_expected.to eq 2 }
+      by_writer      { is_expected.to eq 4 }
+      by_admin       { is_expected.to eq 4 }
+    end
+  end
+
   describe 'GET /api/answers/:id' do
     let!(:team) { current_member&.team || create(:team) }
     let!(:answer) { create(:answer, team: team) }
@@ -102,6 +129,54 @@ describe Answer do
 
       by_participant { is_expected.to eq 400 }
       by_admin       { is_expected.to eq 400 }
+    end
+  end
+
+  describe 'POST /api/problems/#{problem.id}/answers' do
+    let!(:problem) { create(:problem) }
+    let!(:another_problem) { create(:problem) }
+    let!(:other_team) { create(:team) }
+    let(:answer) { build(:answer, problem: problem) }
+
+    let(:params) do
+      {
+        completed: false,
+        problem_id: another_problem.id, # will be ignored
+        team_id: other_team.id
+      }
+    end
+
+    describe 'create answer' do
+      let(:expected_keys) { %w(id problem_id team_id completed completed_at created_at updated_at) }
+      let(:response) { post "/api/problems/#{problem.id}/answers", params }
+      subject { response.status }
+
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 403 }
+      by_writer      { is_expected.to eq 403 }
+
+      by_participant do
+        is_expected.to eq 201
+        expect(json_response.keys).to match_array expected_keys
+        expect(json_response['team_id']).not_to eq other_team.id
+        expect(json_response['problem_id']).to eq problem.id
+      end
+
+      by_admin do
+        is_expected.to eq 201
+        expect(json_response.keys).to match_array expected_keys
+        expect(json_response['team_id']).to eq other_team.id
+        expect(json_response['problem_id']).to eq problem.id
+      end
+    end
+
+    describe 'create answer with missing problem_id' do
+      let(:params_without_problem_id) { params.except(:problem_id) }
+      let(:response) { post "/api/problems/#{problem.id}/answers", params_without_problem_id }
+      subject { response.status }
+
+      by_participant { is_expected.to eq 201 }
+      by_admin       { is_expected.to eq 201 }
     end
   end
 
