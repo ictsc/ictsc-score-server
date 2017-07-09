@@ -6,13 +6,14 @@ describe Score do
   before(:each) {
     time = DateTime.parse("2017-07-07T21:00:00+09:00")
     allow(DateTime).to receive(:now).and_return(time)
-    allow(Setting).to receive(:competition_start_at).and_return(time - 3.year)
-    allow(Setting).to receive(:answer_reply_delay_sec).and_return(1200)
+    allow(Setting).to receive(:competition_start_at).and_return(DateTime.now - 3.year)
+    allow(Setting).to receive(:competition_end_at).and_return(time + 3.year)
+    allow(Setting).to receive(:answer_reply_delay_sec).and_return(120)
   }
 
   describe 'GET /api/scores' do
     let(:team) { current_member&.team || create(:team) }
-    let(:answer) { create(:answer, team: team, completed: true, completed_at: DateTime.now) }
+    let(:answer) { create(:answer, team: team, completed: true, completed_at: DateTime.now - 50.minutes) }
     let!(:score) { create(:score, answer: answer) }
     let!(:score_by_other_team) { create(:score, answer: create(:answer)) }
 
@@ -29,14 +30,21 @@ describe Score do
       subject { json_response.size }
       by_nologin     { is_expected.to eq 0 }
       by_viewer      { is_expected.to eq 2 }
-      by_participant { is_expected.to eq 0 }
+      by_participant { is_expected.to eq 1 }
       by_writer      { is_expected.to eq 2 }
       by_admin       { is_expected.to eq 2 }
 
-      describe 'after Settings.answer_reply_delay_sec' do
+      describe 'before passed Settings.answer_reply_delay_sec' do
         by_participant do
-          allow(DateTime).to receive(:now).and_return(score.answer.completed_at + 1500.seconds)
-          is_expected.to eq 1
+          allow(DateTime).to receive(:now).and_return(score.answer.completed_at + 60.seconds)
+          is_expected.to eq 0
+        end
+      end
+
+      describe 'after competition end' do
+        by_participant do
+          allow(DateTime).to receive(:now).and_return(Setting.competition_end_at + 1.seconds)
+          is_expected.to eq 0
         end
       end
     end
@@ -53,10 +61,10 @@ describe Score do
     let(:problem) { create(:problem, problem_group: problem_group) }
     let!(:last_problem_of_problem_group) { create(:problem, problem_group: problem_group) }
 
-    let(:before_answer) { create(:answer, team: team, problem: problem, completed: true, completed_at: DateTime.now - 1.hour) }
+    let(:before_answer) { create(:answer, team: team, problem: problem, completed: true, completed_at: DateTime.now - 30.minutes) }
     let!(:before_score) { create(:score, point: problem.reference_point - 10, answer: before_answer) }
 
-    let(:answer) { create(:answer, team: team, problem: problem, completed: true, completed_at: DateTime.now) }
+    let(:answer) { create(:answer, team: team, problem: problem, completed: true, completed_at: DateTime.now - 15.minutes) }
     let!(:score) { create(:score, point: problem.reference_point - before_score.point - 1, answer: answer) }
 
     let(:response) { get "/api/scores/#{score.id}" }
@@ -64,38 +72,42 @@ describe Score do
 
     by_nologin     { is_expected.to eq 404 }
     by_viewer      { is_expected.to eq 200 }
-    by_participant { is_expected.to eq 404 }
+    by_participant { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
-    describe 'after Settings.answer_reply_delay_sec' do
-      before { allow(DateTime).to receive(:now).and_return(answer.completed_at + 1500.seconds) }
+    describe '#keys' do
+      let(:expected_keys) { %w(id point bonus_point subtotal_point is_firstblood marker_id answer_id created_at updated_at) }
+      subject { json_response.keys }
 
       by_participant do
-        is_expected.to eq 200
+        is_expected.to match_array expected_keys
       end
+    end
 
-      describe '#keys' do
-        let(:expected_keys) { %w(id point bonus_point subtotal_point is_firstblood marker_id answer_id created_at updated_at) }
-        subject { json_response.keys }
-
-        by_participant do
-          is_expected.to match_array expected_keys
-        end
+    describe '#is_firstblood, #bonus_point, #subtotal_point' do
+      by_participant do
+        expect(json_response['is_firstblood']).to eq false
+        expect(json_response['bonus_point']).to eq 0
+        expect(json_response['subtotal_point']).to eq (json_response['point'] + json_response['bonus_point'])
       end
+    end
 
-      describe '#is_firstblood, #bonus_point, #subtotal_point' do
-        by_participant do
-          expect(json_response['is_firstblood']).to eq false
-          expect(json_response['bonus_point']).to eq 0
-          expect(json_response['subtotal_point']).to eq (json_response['point'] + json_response['bonus_point'])
-        end
+    describe 'before passed Settings.answer_reply_delay_sec' do
+      by_participant do
+        allow(DateTime).to receive(:now).and_return(score.answer.completed_at + 60.seconds)
+        is_expected.to eq 404
+      end
+    end
+
+    describe 'after competition end' do
+      by_participant do
+        allow(DateTime).to receive(:now).and_return(Setting.competition_end_at + 1.seconds)
+        is_expected.to eq 404
       end
     end
 
     describe "firstblood answer's score" do
-      before { allow(DateTime).to receive(:now).and_return(answer.completed_at + 1500.seconds) }
-
       let!(:score) { create(:score, point: problem.reference_point - before_score.point, answer: answer) }
 
       by_participant do
@@ -114,14 +126,12 @@ describe Score do
     end
 
     describe "score completes problem group completed" do
-      let(:answer_to_last_problem) { create(:answer, team: team, problem: last_problem_of_problem_group, completed: true, completed_at: DateTime.now + 5.minute) }
+      let(:answer_to_last_problem) { create(:answer, team: team, problem: last_problem_of_problem_group, completed: true, completed_at: DateTime.now - 5.minute) }
       let!(:score) { create(:score, point: problem.reference_point - before_score.point, answer: answer) }
       let!(:score_of_answer_to_last_problem) { create(:score, point: last_problem_of_problem_group.reference_point, answer: answer_to_last_problem) }
 
       let(:response) { get "/api/scores/#{score_of_answer_to_last_problem.id}" }
       subject { response.status }
-
-      before { allow(DateTime).to receive(:now).and_return(answer_to_last_problem.completed_at + 1500.seconds) }
 
       by_participant do
         is_expected.to eq 200
