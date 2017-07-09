@@ -38,7 +38,7 @@ class NoticeRoutes < Sinatra::Base
     halt 403 if not Notice.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Notice)
-    @attrs[:member_id] = current_user.id
+    @attrs[:member_id] = current_user.id if not is_admin?
     @notice = Notice.new(@attrs)
 
     if @notice.save
@@ -58,6 +58,12 @@ class NoticeRoutes < Sinatra::Base
     end
 
     @attrs = attribute_values_of_class(Notice)
+
+    if (not is_admin?) && @attrs[:member_id] != nil && @attrs[:member_id].to_i != current_user&.id
+      status 400
+      next json member_id: "can't set to other member"
+    end
+
     @notice.attributes = @attrs
 
     if not @notice.valid?
