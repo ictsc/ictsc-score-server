@@ -90,7 +90,7 @@ describe Notice do
 
   describe 'PUT, PATCH /api/notices' do
     let!(:member) do 
-      if current_member&.role == create(:role, :writer)
+      if current_member&.role == build(:role, :writer)
         current_member # writer oneself
       else
         create(:member, :writer)
@@ -164,7 +164,7 @@ describe Notice do
 
   describe 'DELETE /api/notices/:id' do
     let!(:member) do 
-      if current_member&.role == create(:role, :writer)
+      if current_member&.role == build(:role, :writer)
         current_member # writer oneself
       else
         create(:member, :writer)
