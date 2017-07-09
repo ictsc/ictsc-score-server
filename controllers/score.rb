@@ -64,7 +64,7 @@ class ScoreRoutes < Sinatra::Base
     halt 403 if not Score.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Score)
-    @attrs[:marker_id] = current_user.id
+    @attrs[:marker_id] = current_user.id if not is_admin?
     @score = Score.new(@attrs)
 
     if @score.save
@@ -130,7 +130,7 @@ class ScoreRoutes < Sinatra::Base
     halt 403 if not Score.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Score)
-    @attrs[:marker_id] = current_user.id
+    @attrs[:marker_id] = current_user.id if not is_admin?
     @attrs[:answer_id] = @answer.id
     @score = Score.new(@attrs)
 
