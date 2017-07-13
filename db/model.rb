@@ -679,8 +679,8 @@ class Comment < ActiveRecord::Base
     return false if action == "answers_comments"  && commentable_type != "Answer"
     return false if action == "problems_comments" && commentable_type != "Problem"
 
-    return true if %w(issues_comments problems_comments).include? action && ROLE_ID[:writer] == role_id
-    return true if %w(issues_comments answers_comments).include? action && ROLE_ID[:participant] == role_id &&
+    return true if %w(issues_comments problems_comments).include?(action) && ROLE_ID[:writer] == role_id
+    return true if %w(issues_comments answers_comments).include?(action) && ROLE_ID[:participant] == role_id &&
                    member.team == by.team && method != "DELETE"
 
     false
