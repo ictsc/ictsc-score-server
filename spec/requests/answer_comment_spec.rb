@@ -176,10 +176,18 @@ describe "Answer comment" do
 
       context 'PATCH' do
         describe "participant can't change comment's member_id" do
-          let!(:other_member) { create(:member) }
+          let(:other_member) { create(:member) }
           let(:response) { patch "/api/answers/#{answer.id}/comments/#{comment.id}", { member_id: other_member.id } }
 
           by_participant { expect(json_response['text']).not_to eq other_member.id }
+        end
+
+        describe "participant can't edit to completed answer's" do
+          let(:response) { patch "/api/answers/#{answer.id}/comments/#{comment.id}", params }
+          let(:answer) { create(:answer, team: team, completed: true) }
+          subject { response.status }
+
+          by_participant { is_expected.to eq 403 }
         end
       end
 
@@ -195,6 +203,13 @@ describe "Answer comment" do
           let(:response) { put "/api/answers/#{answer.id}/comments/#{comment.id}", params.merge(member_id: other_member.id) }
 
           by_participant { expect(json_response['text']).not_to eq other_member.id }
+        end
+
+        describe "participant can't edit to completed answer's" do
+          let(:answer) { create(:answer, team: team, completed: true) }
+          subject { response.status }
+
+          by_participant { is_expected.to eq 403 }
         end
       end
     end

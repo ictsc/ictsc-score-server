@@ -75,7 +75,7 @@ class CommentRoutes < Sinatra::Base
       end
 
       if klass == Answer && @commentable.completed && is_participant?
-        status 400
+        status 403
         next json comment: "participant can't edit comments of completed answer"
       end
 
