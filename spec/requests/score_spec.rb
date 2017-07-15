@@ -76,15 +76,6 @@ describe Score do
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
-    describe '#keys' do
-      let(:expected_keys) { %w(id point bonus_point subtotal_point is_firstblood marker_id answer_id created_at updated_at) }
-      subject { json_response.keys }
-
-      by_participant do
-        is_expected.to match_array expected_keys
-      end
-    end
-
     describe '#is_firstblood, #bonus_point, #subtotal_point' do
       by_participant do
         expect(json_response['is_firstblood']).to eq false
@@ -158,8 +149,52 @@ describe Score do
       let(:expected_keys) { %w(id point bonus_point subtotal_point is_firstblood marker_id answer_id created_at updated_at) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
+      by_participant { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
+    end
+  end
+
+
+  describe 'GET /api/answers/:answer_id/score' do
+    let(:team) { current_member&.team || create(:team) }
+    let(:answer) { create(:answer, team: team, completed: true, completed_at: DateTime.now - 15.minutes) }
+    let!(:score) { create(:score, answer: answer) }
+
+    let(:response) { get "/api/answers/#{answer.id}/score" }
+    subject { response.status }
+
+    by_nologin     { is_expected.to eq 404 }
+    by_viewer      { is_expected.to eq 303 }
+    by_participant { is_expected.to eq 303 }
+    by_writer      { is_expected.to eq 303 }
+    by_admin       { is_expected.to eq 303 }
+
+    describe 'before passed Settings.answer_reply_delay_sec' do
+      by_participant do
+        allow(DateTime).to receive(:now).and_return(score.answer.completed_at + 60.seconds)
+        is_expected.to eq 404
+      end
+    end
+
+    describe 'after competition end' do
+      by_participant do
+        allow(DateTime).to receive(:now).and_return(Setting.competition_end_at + 1.seconds)
+        is_expected.to eq 404
+      end
+    end
+
+    describe 'score created by other team' do
+      let!(:score) { create(:score, answer: create(:answer)) }
+      by_participant { is_expected.to eq 404 }
+    end
+
+    describe 'location' do
+      subject { response.header['Location'] }
+      by_viewer      { is_expected.to eq "http://#{Rack::Test::DEFAULT_HOST}/api/scores/#{score.id}" }
+      by_participant { is_expected.to eq "http://#{Rack::Test::DEFAULT_HOST}/api/scores/#{score.id}" }
+      by_writer      { is_expected.to eq "http://#{Rack::Test::DEFAULT_HOST}/api/scores/#{score.id}" }
+      by_admin       { is_expected.to eq "http://#{Rack::Test::DEFAULT_HOST}/api/scores/#{score.id}" }
     end
   end
 
@@ -195,6 +230,49 @@ describe Score do
     describe 'create score with missing point' do
       let(:params_without_point) { params.except(:point) }
       let(:response) { post '/api/scores', params_without_point }
+      subject { response.status }
+
+      by_writer      { is_expected.to eq 400 }
+      by_admin       { is_expected.to eq 400 }
+    end
+  end
+
+  describe 'POST /api/answers/:answer_id/score' do
+    let(:team) { current_member&.team || create(:team) }
+    let!(:answer) { create(:answer, team: team) }
+    let(:other_answer) { create(:answer) }
+    let(:score) { build(:score, answer: answer) }
+
+    let(:params) do
+      {
+        point: score.point,
+        answer_id: other_answer.id,
+        marker_id: score.marker_id
+      }
+    end
+
+    describe 'create score' do
+      let(:expected_keys) { %w(id point marker_id answer_id created_at updated_at) }
+      let(:response) { post "/api/answers/#{answer.id}/score", params }
+      subject { response.status }
+
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 403 }
+      by_participant { is_expected.to eq 403 } 
+
+      all_success_block = Proc.new do
+        is_expected.to eq 201
+        expect(response.header['Location']).to match %r{http://#{Rack::Test::DEFAULT_HOST}/api/scores/\d+}
+        expect(json_response.keys).to match_array expected_keys
+      end
+
+      by_writer &all_success_block
+      by_admin &all_success_block
+    end
+
+    describe 'create score with missing point' do
+      let(:params_without_point) { params.except(:point) }
+      let(:response) { post "/api/answers/#{answer.id}/score", params_without_point }
       subject { response.status }
 
       by_writer      { is_expected.to eq 400 }
