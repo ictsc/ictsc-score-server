@@ -32,7 +32,7 @@ class ProblemGroupRoutes < Sinatra::Base
   post "/api/problem_groups" do
     halt 403 if not ProblemGroup.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(ProblemGroup)
+    @attrs = params_to_attributes_of(klass: ProblemGroup)
     @problem_group = ProblemGroup.new(@attrs)
 
     if @problem_group.save
@@ -46,12 +46,12 @@ class ProblemGroupRoutes < Sinatra::Base
   end
 
   update_problem_group_block = Proc.new do
-    if request.put? and not satisfied_required_fields?(ProblemGroup)
+    if request.put? and not filled_all_attributes_of?(klass: ProblemGroup)
       status 400
-      next json required: insufficient_fields(ProblemGroup)
+      next json required: insufficient_attribute_names_of(klass: ProblemGroup)
     end
 
-    @attrs = attribute_values_of_class(ProblemGroup)
+    @attrs = params_to_attributes_of(klass: ProblemGroup)
     @problem_group.attributes = @attrs
 
     if not @problem_group.valid?

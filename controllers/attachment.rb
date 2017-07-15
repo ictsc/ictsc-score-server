@@ -32,7 +32,7 @@ class AttachmentRoutes < Sinatra::Base
 
     f = params[:file] || {}
 
-    @attrs = attribute_values_of_class(Attachment)
+    @attrs = params_to_attributes_of(klass: Attachment)
     @attrs[:member_id] = current_user.id if not is_admin? || @attrs[:member_id].nil?
     @attrs[:filename]  = f[:filename]
     @attachment = Attachment.new(@attrs)

@@ -63,7 +63,7 @@ class ScoreRoutes < Sinatra::Base
   post "/api/scores" do
     halt 403 if not Score.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Score)
+    @attrs = params_to_attributes_of(klass: Score)
     @attrs[:marker_id] = current_user.id if not is_admin?
     @score = Score.new(@attrs)
 
@@ -78,12 +78,12 @@ class ScoreRoutes < Sinatra::Base
   end
 
   update_score_block = Proc.new do
-    if request.put? and not satisfied_required_fields?(Score)
+    if request.put? and not filled_all_attributes_of?(klass: Score)
       status 400
-      next json required: insufficient_fields(Score)
+      next json required: insufficient_attribute_names_of(klass: Score)
     end
 
-    @attrs = attribute_values_of_class(Score)
+    @attrs = params_to_attributes_of(klass: Score)
     @score.attributes = @attrs
 
     if not @score.valid?
@@ -129,7 +129,7 @@ class ScoreRoutes < Sinatra::Base
   post "/api/answers/:id/score" do
     halt 403 if not Score.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Score)
+    @attrs = params_to_attributes_of(klass: Score)
     @attrs[:marker_id] = current_user.id if not is_admin?
     @attrs[:answer_id] = @answer.id
     @score = Score.new(@attrs)

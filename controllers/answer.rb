@@ -54,7 +54,7 @@ class AnswerRoutes < Sinatra::Base
   post "/api/answers" do
     halt 403 if not Answer.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Answer)
+    @attrs = params_to_attributes_of(klass: Answer)
     @attrs[:team_id] = current_user.team_id if not is_admin?
     if %w(true 1).include? @attrs[:completed].to_s
       status 400
@@ -74,12 +74,12 @@ class AnswerRoutes < Sinatra::Base
   end
 
   update_answer_block = Proc.new do
-    if request.put? and not satisfied_required_fields?(Answer)
+    if request.put? and not filled_all_attributes_of?(klass: Answer, exclude: [:completed_at])
       status 400
-      next json required: insufficient_fields(Answer)
+      next json required: insufficient_attribute_names_of(klass: Answer)
     end
 
-    @attrs = attribute_values_of_class(Answer)
+    @attrs = params_to_attributes_of(klass: Answer)
 
     if "Participant" == current_user&.role&.name
       if @attrs.keys != [:completed]
@@ -158,7 +158,7 @@ class AnswerRoutes < Sinatra::Base
   post "/api/problems/:id/answers" do
     halt 403 if not Answer.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Answer)
+    @attrs = params_to_attributes_of(klass: Answer)
     @attrs[:team_id] = current_user.team_id if not is_admin?
     @attrs[:problem_id] = @problem.id
     @answer = Answer.new(@attrs)

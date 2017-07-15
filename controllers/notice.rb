@@ -37,7 +37,7 @@ class NoticeRoutes < Sinatra::Base
   post "/api/notices" do
     halt 403 if not Notice.allowed_to_create_by?(current_user)
 
-    @attrs = attribute_values_of_class(Notice)
+    @attrs = params_to_attributes_of(klass: Notice)
     @attrs[:member_id] = current_user.id if not is_admin?
     @notice = Notice.new(@attrs)
 
@@ -52,12 +52,12 @@ class NoticeRoutes < Sinatra::Base
   end
 
   update_notice_block = Proc.new do
-    if request.put? and not satisfied_required_fields?(Notice)
+    if request.put? and not filled_all_attributes_of?(klass: Notice)
       status 400
-      next json required: insufficient_fields(Notice)
+      next json required: insufficient_attribute_names_of(klass: Notice)
     end
 
-    @attrs = attribute_values_of_class(Notice)
+    @attrs = params_to_attributes_of(klass: Notice)
 
     if (not is_admin?) && @attrs[:member_id] != nil && @attrs[:member_id].to_i != current_user&.id
       status 400

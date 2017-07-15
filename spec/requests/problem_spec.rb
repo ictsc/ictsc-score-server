@@ -174,6 +174,7 @@ describe Problem do
           reference_point: problem.reference_point,
           perfect_point: problem.perfect_point,
           problem_group_id: problem.problem_group_id,
+          problem_must_solve_before_id: problem.problem_must_solve_before_id
         }
       end
 
