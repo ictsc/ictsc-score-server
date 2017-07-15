@@ -1,9 +1,11 @@
 ICTSC スコアサーバー
 ===
 
+[![wercker status](https://app.wercker.com/status/d08ead07412ddde08afbd39fc48505c8/s/master "wercker status")](https://app.wercker.com/project/byKey/d08ead07412ddde08afbd39fc48505c8)
+
 # About
 
-The contest site for [ICTSC](http://icttoracon.net/) (ICT Trouble Shooting).
+The contest site for [ICTSC](http://icttoracon.net/) (ICT Trouble Shooting Contest).
 
 It's called also *score server*.  The main feature of this is to propose problem and marking.
 
