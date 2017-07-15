@@ -81,7 +81,7 @@ api-spec:
         code: bundle exec rake db:migrate
     - script:
         name: run rspec
-        code: bundle exec rspec -fd
+        code: bundle exec rspec
   after-steps:
     - script:
       name: remove unneeded dependencies
