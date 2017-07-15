@@ -13,7 +13,6 @@ class CommentRoutes < Sinatra::Base
     pluralize_name = klass.to_s.downcase.pluralize
     before "/api/#{pluralize_name}/:commentable_id/comments*" do
       I18n.locale = :en if request.xhr?
-      require_login
 
       @action = "#{pluralize_name}_comments"
       @commentable_id = params[:commentable_id]
@@ -54,7 +53,7 @@ class CommentRoutes < Sinatra::Base
       end
 
       @attrs = attribute_values_of_class(Comment)
-      @attrs[:member_id] = current_user.id
+      @attrs[:member_id] = current_user.id if not is_admin? || @attrs[:member_id].nil?
       @attrs[:commentable_type] = klass.to_s
       @attrs[:commentable_id] = @commentable_id
       @comment = Comment.new(@attrs)
@@ -76,7 +75,7 @@ class CommentRoutes < Sinatra::Base
       end
 
       if klass == Answer && @commentable.completed && is_participant?
-        status 400
+        status 403
         next json comment: "participant can't edit comments of completed answer"
       end
 

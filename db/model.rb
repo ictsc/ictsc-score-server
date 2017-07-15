@@ -174,6 +174,9 @@ class Member < ActiveRecord::Base
   belongs_to :team
   belongs_to :role
 
+  # For FactoryGirl to pass plain password to spec from factory
+  attr_accessor :password 
+
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     case user&.role_id
@@ -305,7 +308,7 @@ class ProblemGroup < ActiveRecord::Base
     return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
 
     case by&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:participant], ROLE_ID[:viewer]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       true
     else # nologin, ...
       false
@@ -631,7 +634,7 @@ class Score < ActiveRecord::Base
     when ROLE_ID[:participant]
       next none if Setting.competition_end_at <= DateTime.now
       parameters = { team_id: user.team.id, time: DateTime.now - Setting.answer_reply_delay_sec.seconds }
-      joins(:answer).where("answers.team_id = :team_id AND answers.updated_at <= :time", parameters)
+      joins(:answer).where("answers.team_id = :team_id AND answers.completed_at <= :time", parameters)
     else # nologin, ...
       none
     end
@@ -676,8 +679,8 @@ class Comment < ActiveRecord::Base
     return false if action == "answers_comments"  && commentable_type != "Answer"
     return false if action == "problems_comments" && commentable_type != "Problem"
 
-    return true if %w(issues_comments problems_comments).include? action && ROLE_ID[:writer] == role_id
-    return true if %w(issues_comments answers_comments).include? action && ROLE_ID[:participant] == role_id &&
+    return true if %w(issues_comments problems_comments).include?(action) && ROLE_ID[:writer] == role_id
+    return true if %w(issues_comments answers_comments).include?(action) && ROLE_ID[:participant] == role_id &&
                    member.team == by.team && method != "DELETE"
 
     false

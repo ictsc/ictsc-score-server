@@ -48,7 +48,7 @@ class IssueRoutes < Sinatra::Base
     halt 403 if not Issue.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Issue)
-    @attrs[:team_id] = current_user.team_id
+    @attrs[:team_id] = current_user.team_id if not %w(Admin Writer).include? current_user&.role&.name
     @issue = Issue.new(@attrs)
 
     if @issue.save
@@ -98,6 +98,7 @@ class IssueRoutes < Sinatra::Base
 
   before "/api/problems/:id/issues" do
     @problem = Problem.find_by(id: params[:id])
+    pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET')
     halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
@@ -111,7 +112,7 @@ class IssueRoutes < Sinatra::Base
     halt 403 if not Issue.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Issue)
-    @attrs[:team_id] = current_user.team_id
+    @attrs[:team_id] = current_user.team_id if not %w(Admin Writer).include? current_user&.role&.name
     @attrs[:problem_id] = @problem.id
     @issue = Issue.new(@attrs)
 

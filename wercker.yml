@@ -80,9 +80,6 @@ api-spec:
         name: migrate database
         code: bundle exec rake db:migrate
     - script:
-        name: load seed data into database
-        code: bundle exec rake db:seed_fu
-    - script:
         name: run rspec
         code: bundle exec rspec
   after-steps:

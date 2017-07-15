@@ -21,8 +21,6 @@ services:
       - db
     links:
       - db
-    volumes:
-    - "./:/usr/src/app"
     stdin_open: true
     tty: true
   db:

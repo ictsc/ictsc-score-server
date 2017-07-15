@@ -64,7 +64,7 @@ class ScoreRoutes < Sinatra::Base
     halt 403 if not Score.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Score)
-    @attrs[:marker_id] = current_user.id
+    @attrs[:marker_id] = current_user.id if not is_admin?
     @score = Score.new(@attrs)
 
     if @score.save
@@ -114,13 +114,13 @@ class ScoreRoutes < Sinatra::Base
 
   before "/api/answers/:id/score" do
     @answer = Answer.find_by(id: params[:id])
-    halt 404 if @answer&.allowed?(by: current_user, method: "GET")
+    halt 404 if not @answer&.allowed?(by: current_user, method: "GET")
   end
 
   get "/api/answers/:id/score" do
     halt 404 if @answer.score.nil?
     @score = Score.find_by(id: @answer.score.id)
-    halt 404 if @score&.allowed?(by: current_user, method: request.request_method)
+    halt 404 if not @score&.allowed?(by: current_user, method: request.request_method)
 
     status 303
     headers "Location" => to("/api/scores/#{@score.id}")
@@ -130,7 +130,7 @@ class ScoreRoutes < Sinatra::Base
     halt 403 if not Score.allowed_to_create_by?(current_user)
 
     @attrs = attribute_values_of_class(Score)
-    @attrs[:marker_id] = current_user.id
+    @attrs[:marker_id] = current_user.id if not is_admin?
     @attrs[:answer_id] = @answer.id
     @score = Score.new(@attrs)
 
@@ -139,6 +139,7 @@ class ScoreRoutes < Sinatra::Base
       headers "Location" => to("/api/scores/#{@score.id}")
       json @score
     else
+      status 400
       json @score.errors
     end
   end

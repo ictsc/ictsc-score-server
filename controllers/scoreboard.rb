@@ -33,13 +33,21 @@ class ScoreBoardRoutes < Sinatra::Base
         .sort_by(&:last) \
         .reverse
 
-      team_rank = all_scores.index{|(team_id, score)| team_id == team.id } if not all # beginning 0
+      if not all
+        team_score = all_scores.find{|(team_id, score)| team_id == team.id }&.last
+        team_actual_rank = if team_score
+            all_scores.index{|(team_id, score)| team_score == score } + 1
+          else
+            -1 # may happen when team has nothing score yet
+          end
+      end
 
-      viewable_scores = all_scores.each_with_index.inject([]) do |acc, ((team_id, score), rank)|
-        actual_rank = all_scores.index{|s| s[1] == score } + 1
+      viewable_scores = all_scores.each_with_index.inject([]) do |acc, ((team_id, team_score), rank)|
+        actual_rank = all_scores.index{|(team_id, score)| team_score == score } + 1
+        same_actual_rank_teams_count = all_scores.map(&:last).count(team_score)
 
         score_info = {
-          score: score,
+          score: team_score,
           rank: actual_rank
         }
 
@@ -48,7 +56,7 @@ class ScoreBoardRoutes < Sinatra::Base
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
 
           acc << score_info
-        elsif (rank + 1) == team_rank
+        elsif (actual_rank + same_actual_rank_teams_count) == team_actual_rank
           acc << score_info
         end
 
@@ -62,7 +70,7 @@ class ScoreBoardRoutes < Sinatra::Base
     when "Admin", "Writer", "Viewer"
       json scoreboard_for(all: true)
     when "Participant"
-      next json [] if Setting.scoreboard_hide_at <= DateTime.now
+      halt 400 if Setting.scoreboard_hide_at <= DateTime.now
       team = current_user.team
       halt 400 if team.nil?
       json scoreboard_for(team: team)

@@ -41,13 +41,19 @@ class MemberRoutes < Sinatra::Base
   post "/api/session" do
     halt 403 if logged_in?
 
-    halt 401 if not Member.exists?(login: params[:login])
+    if not Member.exists?(login: params[:login])
+      status 401
+      next json status: "failed"
+    end
+
     @member = Member.find_by(login: params[:login])
 
     if compare_password(params[:password], @member.hashed_password)
       login_as(@member.id)
+      status 201
       json status: "success"
     else
+      status 401
       json status: "failed"
     end
   end
@@ -164,6 +170,11 @@ class MemberRoutes < Sinatra::Base
 
   update_member_block = Proc.new do
     field_options = { exclude: [:hashed_password], include: [:password] }
+
+    if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
+      field_options[:exclude] << :team_id
+      field_options[:exclude] << :role_id
+    end
 
     if request.put? and not satisfied_required_fields?(Member, field_options)
       status 400

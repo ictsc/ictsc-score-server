@@ -1,19 +1,35 @@
-require "bundler"
+require 'bundler'
 Bundler.require
 Bundler.require(:test)
 
-require "rspec"
-require "rack/test"
-require_relative "../app"
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
+require_relative 'support/factory_girl'
+require_relative 'support/api_helpers'
+require_relative '../app'
 
 RSpec.configure do |config|
   config.color = true
   config.tty = true
 
   config.include Rack::Test::Methods
+  
+  # Disable verbose default logger
+  ActiveRecord::Base.logger = nil
 
-  config.after :suite do
-    ActiveRecord::Base.subclasses.each(&:delete_all)
+  config.before :suite do
+    DatabaseCleaner.clean_with :truncation
+  end
+
+  config.before :each do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.start
+  end
+ 
+  config.after :each do
+    DatabaseCleaner.clean
   end
 end
 

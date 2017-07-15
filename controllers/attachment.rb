@@ -33,7 +33,7 @@ class AttachmentRoutes < Sinatra::Base
     f = params[:file] || {}
 
     @attrs = attribute_values_of_class(Attachment)
-    @attrs[:member_id] = current_user.id
+    @attrs[:member_id] = current_user.id if not is_admin? || @attrs[:member_id].nil?
     @attrs[:filename]  = f[:filename]
     @attachment = Attachment.new(@attrs)
 
@@ -46,7 +46,7 @@ class AttachmentRoutes < Sinatra::Base
       # save file
       uploads_dir = Pathname(settings.root) + "../uploads/#{@attachment.id}/"
       file_path = (uploads_dir + f[:filename]).to_s
-      Dir.mkdir uploads_dir.to_s
+      FileUtils.mkdir_p uploads_dir.to_s
       halt 400 unless file_path.start_with? uploads_dir.to_s
 
       File.write(file_path, f[:tempfile].read)
