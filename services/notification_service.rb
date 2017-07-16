@@ -22,7 +22,13 @@ module Sinatra
         end
       end
 
-      redis_client.publish(Setting.redis_realtime_notification_channel, publish_payload(to: to, payload: payload))
+      begin
+        redis_client.publish(Setting.redis_realtime_notification_channel, publish_payload(to: to, payload: payload))
+      rescue
+        # Ignores error on pushing notification (because it's not critical)
+        return false
+      end
+
       true
     end
 
