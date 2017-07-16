@@ -9,18 +9,8 @@ module Sinatra
   module NotificationService
     # @params to: One of [Role, Team, Member]
     # @params payload: Hash
-    def push(to:, payload:)
-      unless to.is_a? String or to.is_a? Symbol
-        raise TypeError, "to don't have a notification_group" if not to.respond_to? :notification_subscriber
-
-        if not to.notification_subscriber
-          # At this time, there's no subscriber because channel not exist.
-          # For the next time, create subscriber
-          to.build_notification_subscriber
-          to.save
-          return false
-        end
-      end
+    def push_nofitication(to:, payload:)
+      return false if not pushable? to
 
       begin
         redis_client.publish(Setting.redis_realtime_notification_channel, publish_payload(to: to, payload: payload))
@@ -33,6 +23,19 @@ module Sinatra
     end
 
     private
+
+    def pushable?(obj)
+      return true if obj.is_a? String or obj.is_a? Symbol
+      raise TypeError, "to don't have a notification_group" if not obj.respond_to? :notification_subscriber
+
+      return true if obj.notification_subscriber
+
+      # At this time, there's no subscriber because channel not exist.
+      # For the next time, create subscriber
+      obj.build_notification_subscriber
+      obj.save
+      false
+    end
 
     def publish_payload(to:, payload:)
       channel_id =
