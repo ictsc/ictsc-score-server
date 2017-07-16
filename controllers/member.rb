@@ -90,7 +90,7 @@ class MemberRoutes < Sinatra::Base
 
      json @session
     else
-      json status: "not_logged_in", logged_in: false
+      json status: "not_logged_in", logged_in: false, notification_channels: notification_channels
     end
   end
 
