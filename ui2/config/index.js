@@ -32,6 +32,14 @@ module.exports = {
           delete proxyReq._headers.referer;
           proxyReq._headers.origin = 'http://localhost:3000';
         },
+      },
+      '/notifications': {
+        target: 'http://localhost:3002/',
+        logLevel: 'debug',
+        proxyTimeout: 10 * 000,
+        pathRewrite: {
+          '^/notifications' : ''
+        }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

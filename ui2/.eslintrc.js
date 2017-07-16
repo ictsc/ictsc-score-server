@@ -31,5 +31,6 @@ module.exports = {
     "jasmine": true
   },
   "globals": {
+    "EventSource": false
   },
 }
