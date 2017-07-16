@@ -10,6 +10,8 @@ gem "rack-ltsv_logger"
 gem "mysql2"
 gem "sinatra-activerecord", require: "sinatra/activerecord"
 
+gem "redis"
+
 gem "oj"
 gem "oj_mimic_json"
 

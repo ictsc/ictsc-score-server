@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170302053734) do
+ActiveRecord::Schema.define(version: 20170716134322) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
@@ -73,6 +73,15 @@ ActiveRecord::Schema.define(version: 20170302053734) do
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_notices_on_id", unique: true
     t.index ["member_id"], name: "index_notices_on_member_id"
+  end
+
+  create_table "notification_subscribers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+    t.string "channel_id", null: false
+    t.string "subscribable_type"
+    t.bigint "subscribable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscribable_type", "subscribable_id"], name: "index_notification_subscribers_on_subscribable", unique: true
   end
 
   create_table "problem_groups", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|

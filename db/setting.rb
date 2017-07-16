@@ -10,6 +10,7 @@ class Setting
     competition_start_at
     scoreboard_hide_at
     competition_end_at
+    redis_realtime_notification_channel
   )
 
   INTEGER_VALUES = %w(
