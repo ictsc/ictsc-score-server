@@ -14,7 +14,7 @@
             <div class="org">{{ item.organization }}</div>
             <!--<div class="score">総スコア</div>-->
           </div>
-        </a>
+        </router-link>
       </div>
     </div>
     <div v-if="isAdmin" class="row justify-content-center">

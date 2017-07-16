@@ -15,8 +15,8 @@
               <i class="fa fa-times" aria-hidden="true"></i>
             </div>
           </div>
-        </transition-group>
-      </div>
+        </div>
+      </transition-group>
     </div>
   </div>
 </template>

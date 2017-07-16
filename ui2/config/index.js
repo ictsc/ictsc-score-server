@@ -24,13 +24,13 @@ module.exports = {
     assetsPublicPath: './',
     proxyTable: {
       '/api/': {
-        target: 'http://localhost:9292/',
+        target: 'http://localhost:3000/',
         changeOrigin: true,
         logLevel: 'debug',
         proxyTimeout: 10 * 000,
         onProxyReq (proxyReq, req, res) {
           delete proxyReq._headers.referer;
-          proxyReq._headers.origin = 'http://localhost:9292';
+          proxyReq._headers.origin = 'http://localhost:3000';
         },
       }
     },
