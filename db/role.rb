@@ -1,5 +1,5 @@
 class Role < ActiveRecord::Base
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validates :rank, presence: true
 
   has_many :members
