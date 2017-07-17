@@ -195,6 +195,7 @@ export default {
         fn = cond
       } else {
         console.warn('[Notif] hide cond must number/function');
+        return;
       }
       this.notifs = this.notifs.filter(s => !fn(s));
     },
