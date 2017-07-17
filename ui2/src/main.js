@@ -1,5 +1,4 @@
 import Vue from 'vue'
-require('babel-polyfill');
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
@@ -15,24 +14,39 @@ Vue.use(AsyncDataPlugin)
 import App from './App'
 import { DefaultStore as store } from './store'
 
+import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import Members from './pages/Members'
+import Teams from './pages/Teams'
+import TeamDetail from './pages/TeamDetail'
+import Problems from './pages/Problems'
+import ProblemDetail from './pages/ProblemDetail'
+import ProblemIssues from './pages/ProblemIssues'
+import ProblemAnswers from './pages/ProblemAnswers'
+import Issues from './pages/Issues'
+import Answers from './pages/Answers'
+import Guide from './pages/Guide'
+import Result from './pages/Result'
+import NotFound from './pages/NotFound'
 
 const router = new VueRouter({
   routes: [
-    { path: '/', component: require('./pages/Dashboard'), name: 'dashboard' },
-    { path: '/login', component: require('./pages/Login'), name: 'login' },
-    { path: '/signup', component: require('./pages/Signup'), name: 'signup' },
-    { path: '/members', component: require('./pages/Members'), name: 'members' },
-    { path: '/teams', component: require('./pages/Teams'), name: 'teams' },
-    { path: '/teams/:id', component: require('./pages/TeamDetail'), name: 'team-detail' },
-    { path: '/problems', component: require('./pages/Problems'), name: 'problems' },
-    { path: '/problems/:id', component: require('./pages/ProblemDetail'), name: 'problem-detail' },
-    { path: '/problems/:id/:team/issues/:issue?', component: require('./pages/ProblemIssues'), name: 'problem-issues' },
-    { path: '/problems/:id/:team/answers', component: require('./pages/ProblemAnswers'), name: 'problem-answers' },
-    { path: '/issues', component: require('./pages/Issues'), name: 'issues' },
-    { path: '/answers', component: require('./pages/Answers'), name: 'answers' },
-    { path: '/guide', component: require('./pages/Guide'), name: 'guide' },
-    { path: '/result', component: require('./pages/Result'), name: 'result' },
-    { path: '*', component: require('./pages/NotFound'), name: 'not-found' },
+    { path: '/', component: Dashboard, name: 'dashboard' },
+    { path: '/login', component: Login, name: 'login' },
+    { path: '/signup', component: Signup, name: 'signup' },
+    { path: '/members', component: Members, name: 'members' },
+    { path: '/teams', component: Teams, name: 'teams' },
+    { path: '/teams/:id', component: TeamDetail, name: 'team-detail' },
+    { path: '/problems', component: Problems, name: 'problems' },
+    { path: '/problems/:id', component: ProblemDetail, name: 'problem-detail' },
+    { path: '/problems/:id/:team/issues/:issue?', component: ProblemIssues, name: 'problem-issues' },
+    { path: '/problems/:id/:team/answers', component: ProblemAnswers, name: 'problem-answers' },
+    { path: '/issues', component: Issues, name: 'issues' },
+    { path: '/answers', component: Answers, name: 'answers' },
+    { path: '/guide', component: Guide, name: 'guide' },
+    { path: '/result', component: Result, name: 'result' },
+    { path: '*', component: NotFound, name: 'not-found' },
   ]
 })
 

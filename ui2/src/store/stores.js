@@ -11,7 +11,8 @@ export const SET_SESSION = 'SET_SESSION'
 
 
 Vue.use(Vuex)
-export const DefaultStore = new Vuex.Store({
+
+export default new Vuex.Store({
   state: {
     title: '',
     session: {},

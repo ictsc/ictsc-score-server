@@ -27,8 +27,8 @@ module.exports = {
     'camelcase': 0,
   },
 
-  "env": {
-    "jasmine": true
+  env: {
+    browser: true,
   },
   "globals": {
   },
