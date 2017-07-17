@@ -4,11 +4,11 @@ LABEL maintainer "kyontan <kyontan@monora.me>"
 
 WORKDIR /usr/src/app
 
-ADD package.json /usr/src/app
-
 # needed because some package refers GitHub.
 RUN apk add --update --no-cache --virtual .build-dep \
         git
+
+ADD package.json yarn.lock /usr/src/app/
 
 RUN yarn
 
