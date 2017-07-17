@@ -35,6 +35,7 @@ import InfoPanel from './components/InfoPanel'
 import Notif from './components/Notif'
 import { Emit, PUSH_NOTIF, Subscribe, AUTH_ERROR } from './utils/EventBus'
 import { API } from './utils/Api'
+import { mapGetters } from 'vuex'
 import { SET_SESSION } from './store/'
 
 
@@ -47,12 +48,19 @@ export default {
     InfoPanel,
   },
   watch: {
+    notificationChannels: function (newChannels, oldChannels) {
+      if (newChannels.length === oldChannels.length &&
+          newChannels.every(c => oldChannels.indexOf(c) !== -1)) {
+        return;
+      }
+
+      this.subscribeNotification(newChannels);
+    }
   },
   data () {
     return {
       authError: Subscribe(AUTH_ERROR, e => this.authErrorHandler(e)),
       visibleAuthError: false,
-      notificationChannels: [],
       notificationEventSource: null
     }
   },
@@ -63,6 +71,9 @@ export default {
     this.authError.off();
   },
   computed: {
+    ...mapGetters([
+      'notificationChannels'
+    ]),
   },
   methods: {
     authErrorHandler (e) {
@@ -80,9 +91,6 @@ export default {
 
           // 未ログインかの判定
           if (res.status === 'logged_in') {
-            let channels = Object.values(res.notification_channels);
-            this.subscribeNotification(channels);
-
             setTimeout(() => this.reloadSession(), 1000 * 60);
           } else {
             this.unsubscribeNotification();
@@ -94,11 +102,12 @@ export default {
         })
     },
     subscribeNotification (channels) {
-      if (this.notificationChannels === channels.sort()) {
+      this.unsubscribeNotification();
+
+      if (channels.length === 0) {
         return;
       }
 
-      this.unsubscribeNotification();
       let src = new EventSource(`/notifications?eventType=${channels.join(',')}`);
 
       // src.addEventListener('open', e => { });
@@ -116,7 +125,6 @@ export default {
         });
       });
 
-      this.notificationChannels = channels.sort();
       this.notificationEventSource = src;
     },
     unsubscribeNotification () {
@@ -124,7 +132,6 @@ export default {
         this.notificationEventSource.close();
       }
 
-      this.notificationChannels = [];
       this.notificationEventSource = null;
     },
   }

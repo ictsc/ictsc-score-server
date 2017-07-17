@@ -82,9 +82,9 @@ import {
   Emit,
   PUSH_NOTIF,
   REMOVE_NOTIF,
-  RELOAD_SESSION
 } from '../utils/EventBus'
 import { mapGetters } from 'vuex'
+import { CLEAR_SESSION } from '../store/'
 
 export default {
   name: 'header',
@@ -105,7 +105,7 @@ export default {
       API.logout()
         .then(res => {
           this.$router.push({ name: 'login' })
-          Emit(RELOAD_SESSION)
+          this.$store.commit(CLEAR_SESSION);
           Emit(PUSH_NOTIF, {
             type: 'success',
             title: 'ログアウトしました',
