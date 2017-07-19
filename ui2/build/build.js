@@ -1,49 +1,35 @@
-// https://github.com/shelljs/shelljs
 require('./check-versions')()
-require('shelljs/global')
 
-switch (process.argv[2]) {
-  case "production":
-  case undefined:
-     env.NODE_ENV = "production";
-    break;
-  case "cloud-test":
-    env.NODE_ENV = "cloud-test";
-    break;
-  default:
-    console.warn("Invalid stage. production / cloud-test");
-    exit(2);
-    break;
-}
+process.env.NODE_ENV = 'production'
 
-var path = require('path')
-var config = require('../config')
 var ora = require('ora')
+var rm = require('rimraf')
+var path = require('path')
+var chalk = require('chalk')
 var webpack = require('webpack')
+var config = require('../config')
 var webpackConfig = require('./webpack.prod.conf')
 
-console.log(
-  '  Tip:\n' +
-  '  Built files are meant to be served over an HTTP server.\n' +
-  '  Opening index.html over file:// won\'t work.\n'
-)
-
-var spinner = ora(`building for ${env.NODE_ENV}...`)
+var spinner = ora('building for production...')
 spinner.start()
 
-var assetsPath = path.join(config.build.assetsRoot, config.build.assetsSubDirectory)
-rm('-rf', assetsPath)
-mkdir('-p', assetsPath)
-cp('-R', 'static/*', assetsPath)
-
-webpack(webpackConfig, function (err, stats) {
-  spinner.stop()
+rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
-  process.stdout.write(stats.toString({
-    colors: true,
-    modules: false,
-    children: false,
-    chunks: false,
-    chunkModules: false
-  }) + '\n')
+  webpack(webpackConfig, function (err, stats) {
+    spinner.stop()
+    if (err) throw err
+    process.stdout.write(stats.toString({
+      colors: true,
+      modules: false,
+      children: false,
+      chunks: false,
+      chunkModules: false
+    }) + '\n\n')
+
+    console.log(chalk.cyan('  Build complete.\n'))
+    console.log(chalk.yellow(
+      '  Tip: built files are meant to be served over an HTTP server.\n' +
+      '  Opening index.html over file:// won\'t work.\n'
+    ))
+  })
 })
