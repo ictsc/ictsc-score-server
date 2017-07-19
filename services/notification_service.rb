@@ -12,6 +12,11 @@ module Sinatra
     def push_nofitication(to:, payload:)
       return false if not pushable? to
 
+      if to.is_a? Array
+        to.each{|t| push_nofitication(to: t, payload: payload) }
+        return
+      end
+
       begin
         redis_client.publish(Setting.redis_realtime_notification_channel, publish_payload(to: to, payload: payload))
       rescue
