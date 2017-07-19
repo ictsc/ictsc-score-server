@@ -36,6 +36,15 @@ class MemberRoutes < Sinatra::Base
 
       return crypt(key, salt) == hash
     end
+
+    def notification_channels
+      {
+        member: current_user&.notification_subscriber&.channel_id,
+        role: current_user&.role&.notification_subscriber&.channel_id,
+        team: current_user&.team&.notification_subscriber&.channel_id,
+        all: "everyone"
+      }.compact
+    end
   end
 
   post "/api/session" do
@@ -51,7 +60,7 @@ class MemberRoutes < Sinatra::Base
     if compare_password(params[:password], @member.hashed_password)
       login_as(@member.id)
       status 201
-      json status: "success"
+      json status: "success", notification_channels: notification_channels
     else
       status 401
       json status: "failed"
@@ -63,7 +72,8 @@ class MemberRoutes < Sinatra::Base
       @with_param = (params[:with] || "").split(?,) & %w(member member-team)
       @session = {
         logged_in: true,
-        status: "logged_in"
+        status: "logged_in",
+        notification_channels: notification_channels
       }
 
       if not @with_param.empty?
@@ -80,7 +90,7 @@ class MemberRoutes < Sinatra::Base
 
      json @session
     else
-      json status: "not_logged_in", logged_in: false
+      json status: "not_logged_in", logged_in: false, notification_channels: notification_channels
     end
   end
 

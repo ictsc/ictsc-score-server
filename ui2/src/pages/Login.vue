@@ -28,13 +28,15 @@
 </style>
 
 <script>
-import { SET_TITLE } from '../store/'
+import {
+  SET_SESSION,
+  SET_TITLE,
+} from '../store/'
 import { API } from '../utils/Api'
 import {
   Emit,
   PUSH_NOTIF,
   REMOVE_NOTIF,
-  RELOAD_SESSION
 } from '../utils/EventBus'
 
 
@@ -74,7 +76,7 @@ export default {
         console.log('login', res);
         if (res.status === 'failed') throw res;
         this.$router.push({ name: 'dashboard' })
-        Emit(RELOAD_SESSION)
+        this.$store.commit(SET_SESSION, res);
         Emit(PUSH_NOTIF, {
           type: 'success',
           title: 'ログインしました',

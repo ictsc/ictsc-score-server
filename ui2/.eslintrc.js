@@ -31,5 +31,6 @@ module.exports = {
     browser: true,
   },
   "globals": {
+    "EventSource": false
   },
 }

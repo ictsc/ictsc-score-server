@@ -8,6 +8,7 @@ export const SET_TITLE = 'SET_TITLE';
 export const _SET_STATE_TITLE = '_SET_STATE_TITLE';
 export const RELOAD_SESSION = 'RELOAD_SESSION'
 export const SET_SESSION = 'SET_SESSION'
+export const CLEAR_SESSION = 'CLEAR_SESSION'
 
 
 Vue.use(Vuex)
@@ -30,10 +31,17 @@ export default new Vuex.Store({
         state.session.member &&
         state.session.member.role_id === 4;
     },
+    notificationChannels: state => {
+      return state.session &&
+             state.session.notification_channels &&
+             Object.values(state.session.notification_channels) ||
+             []
+    },
   },
   mutations: {
     [_SET_STATE_TITLE]: (state, title) => { state.title = title },
     [SET_SESSION]: (state, session) => { state.session = session },
+    [CLEAR_SESSION]: (state) => { state.session = {} },
   },
   actions: {
     [SET_TITLE]: (context, val) => {

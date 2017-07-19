@@ -19,6 +19,23 @@ describe 'Sessions' do
     it { expect(json_response).to eq ({ 'status' => 'failed' }) }
   end
 
+  describe 'when not logged in' do
+    let(:response) { get '/api/session' }
+
+    let (:expected_response) {
+      {
+        'status' => 'not_logged_in',
+        'logged_in' => false,
+        'notification_channels' => {
+          'all' => 'everyone'
+        }
+      }
+    }
+
+    it { expect(response.status).to eq 200 }
+    it { expect(json_response).to eq expected_response }
+  end
+
   context 'Login with correct credential' do
     let (:params) do
       {
@@ -27,9 +44,21 @@ describe 'Sessions' do
       }
     end
 
+    let (:expected_response) {
+      {
+        'status' => 'success',
+        'notification_channels' => {
+          'member' => member&.notification_subscriber&.channel_id,
+          'team' => member&.team&.notification_subscriber&.channel_id,
+          'role' => member&.role&.notification_subscriber&.channel_id,
+          'all' => 'everyone'
+        }.compact
+      }
+    }
+
     let(:response) { post '/api/session', params }
 
     it { expect(response.status).to eq 201 }
-    it { expect(json_response).to eq ({ 'status' => 'success'}) }
+    it { expect(json_response).to eq expected_response }
   end
 end

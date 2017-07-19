@@ -120,6 +120,7 @@ DEPENDENCIES
   rack-protection
   rack-test
   rake
+  redis
   redis-rack
   rspec
   seed-fu

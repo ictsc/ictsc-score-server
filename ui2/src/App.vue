@@ -33,8 +33,9 @@ import CustomHeader from './components/Header'
 import MessageBox from './components/MessageBox'
 import InfoPanel from './components/InfoPanel'
 import Notif from './components/Notif'
-import { Emit, Subscribe, AUTH_ERROR } from './utils/EventBus'
+import { Emit, PUSH_NOTIF, Subscribe, AUTH_ERROR } from './utils/EventBus'
 import { API } from './utils/Api'
+import { mapGetters } from 'vuex'
 import { SET_SESSION } from './store/'
 
 
@@ -47,11 +48,20 @@ export default {
     InfoPanel,
   },
   watch: {
+    notificationChannels: function (newChannels, oldChannels) {
+      if (newChannels.length === oldChannels.length &&
+          newChannels.every(c => oldChannels.indexOf(c) !== -1)) {
+        return;
+      }
+
+      this.subscribeNotification(newChannels);
+    }
   },
   data () {
     return {
       authError: Subscribe(AUTH_ERROR, e => this.authErrorHandler(e)),
       visibleAuthError: false,
+      notificationEventSource: null
     }
   },
   mounted () {
@@ -61,6 +71,9 @@ export default {
     this.authError.off();
   },
   computed: {
+    ...mapGetters([
+      'notificationChannels'
+    ]),
   },
   methods: {
     authErrorHandler (e) {
@@ -80,12 +93,46 @@ export default {
           if (res.status === 'logged_in') {
             setTimeout(() => this.reloadSession(), 1000 * 60);
           } else {
+            this.unsubscribeNotification();
             Emit(AUTH_ERROR);
           }
         })
         .catch(err => {
           console.warn('session reload error', err);
         })
+    },
+    subscribeNotification (channels) {
+      this.unsubscribeNotification();
+
+      if (channels.length === 0) {
+        return;
+      }
+
+      let src = new EventSource(`/notifications?eventType=${channels.join(',')}`);
+
+      // src.addEventListener('open', e => { });
+      // src.addEventListener('error', e => { });
+
+      src.addEventListener('message', e => {
+        let message = JSON.parse(e.data).data;
+
+        Emit(PUSH_NOTIF, {
+          type: 'warn',
+          icon: 'comments',
+          title: 'Notification',
+          detail: message,
+          key: 'realtime',
+        });
+      });
+
+      this.notificationEventSource = src;
+    },
+    unsubscribeNotification () {
+      if (this.notificationEventSource) {
+        this.notificationEventSource.close();
+      }
+
+      this.notificationEventSource = null;
     },
   }
 }

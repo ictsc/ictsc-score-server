@@ -10,6 +10,7 @@ services:
     restart: always
     links:
       - api
+      - plasma
   api:
     build:
       context: .
@@ -19,8 +20,10 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - redis
     links:
       - db
+      - redis
     stdin_open: true
     tty: true
   db:
@@ -31,3 +34,21 @@ services:
     volumes:
       - "./tmp/db:/var/lib/mysql"
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+  plasma:
+    image: openfresh/plasma:latest
+    ports:
+      - 3002:8080
+      # - 50051:50051
+    depends_on:
+      - redis
+    env_file: .env
+    environment:
+      PLASMA_DEBUG: "true"
+      PLASMA_SUBSCRIBER_TYPE: redis
+      PLASMA_SUBSCRIBER_REDIS_OVER_MAX_RETRY_BEHAVIOR: alive
+      PLASMA_SUBSCRIBER_REDIS_MAX_RETRY: 5
+      PLASMA_SUBSCRIBER_REDIS_TIMEOUT: 1s
+      PLASMA_SUBSCRIBER_REDIS_RETRY_INTERBAL: 5s
+      PLASMA_ORIGIN: "*"
+  redis:
+    image: redis:3.2.9-alpine
