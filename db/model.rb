@@ -42,4 +42,13 @@ class ActiveRecord::Base
 
     fields - options[:exclude] + options[:include]
   end
+
+  def notification_payload(state: :created, **data)
+    {
+      resource: self.class.to_s,
+      resource_id: id,
+      state: state,
+      data: data
+    }.compact
+  end
 end
