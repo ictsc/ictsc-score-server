@@ -32,12 +32,12 @@
           </div>
           <div class="comments head">
             <div class="content">{{ firstComment(item.comments).text }}</div>
-            <div class="meta">チーム名 参加者: {{ firstComment(item.comments).member.name }}</div>
+            <div class="meta">{{ firstComment(item.comments).member.name }}</div>
           </div>
           <template v-if="lastResponseComment(item.comments).member">
             <div  class="comments answer">
               <div class="content">{{ lastResponseComment(item.comments).text }}</div>
-              <div class="meta">チーム名 {{ lastResponseComment(item.comments).member.name }}</div>
+              <div class="meta">{{ lastResponseComment(item.comments).member.name }}</div>
             </div>
           </template>
           <template v-else>
