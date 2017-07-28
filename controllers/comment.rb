@@ -53,7 +53,7 @@ class CommentRoutes < Sinatra::Base
       end
 
       @attrs = params_to_attributes_of(klass: Comment)
-      @attrs[:member_id] = current_user.id if not is_admin? || @attrs[:member_id].nil?
+      @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
       @attrs[:commentable_type] = klass.to_s
       @attrs[:commentable_id] = @commentable_id
       @comment = Comment.new(@attrs)
