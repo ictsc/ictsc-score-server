@@ -181,8 +181,8 @@ export default {
 
       var includeIdMessage = Object.assign({
         id: this.incr++,
-        autoClose: autoClose,
         timestamp: Date.now(),
+        autoClose,
         icon,
       }, message)
       this.notifs.push(includeIdMessage);
