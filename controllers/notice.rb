@@ -2,12 +2,14 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
+require_relative "../services/notification_service"
 
 class NoticeRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::NotificationService
 
   before "/api/notices*" do
     I18n.locale = :en if request.xhr?
@@ -44,6 +46,7 @@ class NoticeRoutes < Sinatra::Base
     if @notice.save
       status 201
       headers "Location" => to("/api/notices/#{@notice.id}")
+      push_notification(to: :everyone, payload: @notice.notification_payload)
       json @notice
     else
       status 400
@@ -72,6 +75,7 @@ class NoticeRoutes < Sinatra::Base
     end
 
     if @notice.save
+      push_notification(to: :everyone, payload: @notice.notification_payload(state: :updated))
       json @notice
     else
       status 400

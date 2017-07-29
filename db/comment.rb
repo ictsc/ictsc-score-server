@@ -12,7 +12,7 @@ class Comment < ActiveRecord::Base
     payload[:sub_resouce_id] = payload[:resource_id]
     payload.merge(
       resource: commentable_type,
-      resource_id: commentable_id,  
+      resource_id: commentable_id,
     )
   end
 

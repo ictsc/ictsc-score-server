@@ -6,6 +6,16 @@ class Score < ActiveRecord::Base
   belongs_to :answer
   belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
 
+  def notification_payload(state: nil, **data)
+    payload = super
+    payload[:sub_resouce]    = payload[:resource]
+    payload[:sub_resouce_id] = payload[:resource_id]
+    payload.merge(
+      resource: 'Answer',
+      resource_id: answer_id,
+    )
+  end
+
   def problem
     # answer.problem と等価
     Problem.joins(:answers).where(answers: {id: answer_id}).first

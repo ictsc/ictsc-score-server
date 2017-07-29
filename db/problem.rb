@@ -40,7 +40,7 @@ class Problem < ActiveRecord::Base
   end
 
   # method: GET
-  scope :readables, ->(user: nil, action: "") {
+  scope :readables, ->(user: nil, team: nil, action: "") {
     case user&.role_id
     when ROLE_ID[:admin]
       all
@@ -48,13 +48,13 @@ class Problem < ActiveRecord::Base
       next all if action.empty?
       next where(creator: user) if action == "problems_comments"
       none
-    when ROLE_ID[:participant]
+    when ->(role_id) { role_id == ROLE_ID[:participant] || team }
       next none if DateTime.now <= Setting.competition_start_at
 
       relation =
         left_outer_joins(problem_must_solve_before: [answers: [:score]]).
         group(:id).
-        where(answers: {team: [user.team, nil]})
+        where(answers: {team: [user&.team || team, nil]})
 
       relation.
         having(problem_must_solve_before_id: nil).
@@ -68,4 +68,8 @@ class Problem < ActiveRecord::Base
       none
     end
   }
+
+  def readable_teams
+    Team.select{|team| Problem.readables(team: team).find_by(id: id) }
+  end
 end
