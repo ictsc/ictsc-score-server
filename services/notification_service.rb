@@ -10,7 +10,7 @@ module Sinatra
     # @params to: One of [Role, Team, Member]
     # @params payload: Hash
     def push_notification(to:, payload:)
-      if to.is_a? Array
+      if to.respond_to? :each
         to.each{|t| push_notification(to: t, payload: payload) }
         return
       end
