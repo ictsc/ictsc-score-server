@@ -172,6 +172,10 @@ export default {
           icon = 'warning';
           autoClose = false;
           break;
+        case 'api':
+          icon = 'comments';
+          autoClose = false;
+          break;
         default:
         case 'success':
           icon = 'check';

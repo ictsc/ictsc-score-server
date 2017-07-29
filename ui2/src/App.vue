@@ -117,8 +117,7 @@ export default {
         let message = JSON.parse(e.data).data;
 
         Emit(PUSH_NOTIF, {
-          type: 'warn',
-          icon: 'comments',
+          type: 'api',
           title: 'Notification',
           detail: message,
           key: 'realtime',
