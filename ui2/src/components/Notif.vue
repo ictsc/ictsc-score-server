@@ -141,10 +141,11 @@ export default {
       notifs: [
       ],
       incr: 1,
-      pushSubscriber: Subscribe(PUSH_NOTIF, opt => { this.append(opt) }),
+      pushSubscriber: Subscribe(PUSH_NOTIF, opt => { this.notify(opt) }),
       removeSubscriber: Subscribe(REMOVE_NOTIF, fn => { this.hide(fn) }),
       refreshInterval: setInterval(_ => this.refresh(), 500),
       timeout: 3000, // autoclose ms
+      useBrowserNotification: false,
     }
   },
   asyncData: {
@@ -154,6 +155,13 @@ export default {
   watch: {
   },
   mounted () {
+    if ('Notification' in window) {
+      Notification.requestPermission().then((result) => {
+        if (result === 'granted') {
+          this.useBrowserNotification = true;
+        }
+      });
+    }
   },
   beforeDestroy () {
     this.pushSubscriber.off();
@@ -163,6 +171,23 @@ export default {
   destroyed () {
   },
   methods: {
+    notify (message) {
+      // parse message
+
+      if (this.useBrowserNotification && message.type === 'api') {
+        let notif = new Notification(
+          message.title,
+          {
+            body: message.detail,
+          }
+        );
+        notif.addEventListener('click', () => {
+          // jump to page
+        });
+      } else {
+        this.append(message);
+      }
+    },
     append (message) {
       var autoClose;
       var icon;
