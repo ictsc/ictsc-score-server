@@ -109,7 +109,6 @@ export default {
           Emit(PUSH_NOTIF, {
             type: 'success',
             title: 'ログアウトしました',
-            detail: '',
             key: 'login',
           });
         })
