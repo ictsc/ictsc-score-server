@@ -132,6 +132,7 @@ REMOVE_NOTIFイベントでは、通知のインデックス番号・message => 
 */
 
 
+import { API } from '../utils/Api'
 import { Subscribe, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 
 export default {
@@ -149,6 +150,10 @@ export default {
     }
   },
   asyncData: {
+    contentDefault: {},
+    contest () {
+      return API.getContest();
+    },
   },
   computed: {
   },
@@ -174,18 +179,86 @@ export default {
     notify (message) {
       // parse message
 
+      let notify_delay = 0; // default
+      if (message.type === 'api') {
+        let title = '通知です';
+        let body = '';
+
+        let resource, sub_resource, state, data;
+        ({resource, sub_resource, state, data} = JSON.parse(message.detail));
+
+        const STATE_CREATED = 'created';
+        const STATE_COMPLETED = 'completed';
+        const STATE_UPDATED = 'updated';
+
+        // console.log(`resource: ${resource}, sub_resource: ${sub_resource}, state: ${state}`);
+
+        switch (resource) {
+          case 'Answer':
+            if (sub_resource === 'Score' && state === STATE_CREATED) {
+              console.log(data);
+              let completed_at = new Date(data.completed_at);
+              let notify_delay = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
+              let notify_at = completed_at.valueOf() + notify_delay;
+
+              notify_delay = notify_at - new Date();
+              break;
+            }
+
+            if (state === STATE_COMPLETED) {
+              title = '採点依頼が提出されました';
+            }
+            break;
+          case 'Issue':
+            if (sub_resource === 'Comment' && state === STATE_CREATED) {
+              title = '質問に返信が来ました';
+              break;
+            }
+            break;
+          case 'Problem':
+            if (sub_resource === 'Comment' && state === STATE_CREATED) {
+              title = '問題の補足が追加されました';
+              break;
+            }
+            break;
+          case 'Notice':
+            switch (state) {
+              case STATE_CREATED:
+                title = 'お知らせが公開されました';
+                break;
+              case STATE_UPDATED:
+                title = 'お知らせが更新されました';
+                break;
+            }
+            break;
+          default:
+            break;
+        }
+
+        message.title = title;
+        message.detail = body;
+      }
+
+      if (notify_delay < 0) {
+        notify_delay = 0;
+      }
+
       if (this.useBrowserNotification && message.type === 'api') {
-        let notif = new Notification(
-          message.title,
-          {
-            body: message.detail,
-          }
-        );
-        notif.addEventListener('click', () => {
-          // jump to page
-        });
+        setTimeout(() => {
+          let notif = new Notification(
+            message.title,
+            {
+              body: message.detail,
+            }
+          );
+          notif.addEventListener('click', () => {
+            // jump to page
+          });
+        }, notify_delay);
       } else {
-        this.append(message);
+        setTimeout(() => {
+          this.append(message);
+        }, notify_delay);
       }
     },
     append (message) {
