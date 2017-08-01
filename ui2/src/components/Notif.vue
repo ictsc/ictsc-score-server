@@ -177,7 +177,6 @@ export default {
   },
   methods: {
     notify (message) {
-      // parse message
 
       let notify_delay = 0; // default
       if (message.type === 'api') {
@@ -191,12 +190,9 @@ export default {
         const STATE_COMPLETED = 'completed';
         const STATE_UPDATED = 'updated';
 
-        // console.log(`resource: ${resource}, sub_resource: ${sub_resource}, state: ${state}`);
-
         switch (resource) {
           case 'Answer':
             if (sub_resource === 'Score' && state === STATE_CREATED) {
-              console.log(data);
               let completed_at = new Date(data.completed_at);
               let notify_delay = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
               let notify_at = completed_at.valueOf() + notify_delay;
