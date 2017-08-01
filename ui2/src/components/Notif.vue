@@ -194,8 +194,8 @@ export default {
           case 'Answer':
             if (sub_resource === 'Score' && state === STATE_CREATED) {
               let completed_at = new Date(data.completed_at);
-              let notify_delay = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
-              let notify_at = completed_at.valueOf() + notify_delay;
+              let notify_delay_from_completed_at = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
+              let notify_at = completed_at.valueOf() + notify_delay_from_completed_at;
 
               notify_delay = notify_at - new Date();
               break;
