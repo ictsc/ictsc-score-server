@@ -6,10 +6,10 @@ class Score < ActiveRecord::Base
   belongs_to :answer
   belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
 
-  def notification_payload(state: nil, **data)
+  def notification_payload(state: :created, **data)
     payload = super
-    payload[:sub_resouce]    = payload[:resource]
-    payload[:sub_resouce_id] = payload[:resource_id]
+    payload[:sub_resource]    = payload[:resource]
+    payload[:sub_resource_id] = payload[:resource_id]
     payload.merge(
       resource: 'Answer',
       resource_id: answer_id,
