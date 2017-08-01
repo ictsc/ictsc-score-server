@@ -9,7 +9,7 @@
             </div>
             <div class="body">
               <h5>{{ notif.title }}</h5>
-              <p>{{ notif.detail }}</p>
+              <p>{{ notif.body }}</p>
             </div>
             <div class="x" v-on:click="hide(notif.id)">
               <i class="fa fa-times" aria-hidden="true"></i>
@@ -177,12 +177,13 @@ export default {
   },
   methods: {
     notify (message) {
+      let title, body;
 
       let notify_delay = 0; // default
-      if (message.type === 'api') {
-        let title = '通知です';
-        let body = '';
-
+      if (message.type !== 'api') {
+        title = message.title;
+        body = message.detail;
+      } else {
         let resource, sub_resource, state, data;
         ({resource, sub_resource, state, data} = JSON.parse(message.detail));
 
@@ -230,9 +231,6 @@ export default {
           default:
             break;
         }
-
-        message.title = title;
-        message.detail = body;
       }
 
       if (notify_delay < 0) {
@@ -242,25 +240,26 @@ export default {
       if (this.useBrowserNotification && message.type === 'api') {
         setTimeout(() => {
           let notif = new Notification(
-            message.title,
+            title,
             {
-              body: message.detail,
+              body: body,
             }
           );
+          // reload or refresh screen
           notif.addEventListener('click', () => {
             // jump to page
           });
         }, notify_delay);
       } else {
         setTimeout(() => {
-          this.append(message);
+          this.append(title, body, message.type);
         }, notify_delay);
       }
     },
-    append (message) {
+    append (title, body, type) {
       var autoClose;
       var icon;
-      switch (message.type) {
+      switch (type) {
         case 'error':
         case 'warn':
           icon = 'warning';
@@ -277,12 +276,15 @@ export default {
           break;
       }
 
-      var includeIdMessage = Object.assign({
+      var includeIdMessage = {
+        title,
+        body,
+        type,
         id: this.incr++,
         timestamp: Date.now(),
         autoClose,
         icon,
-      }, message)
+      }
       this.notifs.push(includeIdMessage);
     },
     hide (cond) {
