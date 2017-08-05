@@ -52,7 +52,6 @@ describe Score do
 
   describe 'GET /api/scores/:id' do
     before do
-      allow(Setting).to receive(:first_blood_bonus_percentage).and_return(346)
       allow(Setting).to receive(:bonus_point_for_clear_problem_group).and_return(765)
     end
 
@@ -76,9 +75,8 @@ describe Score do
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
-    describe '#is_firstblood, #bonus_point, #subtotal_point' do
+    describe '#bonus_point, #subtotal_point' do
       by_participant do
-        expect(json_response['is_firstblood']).to eq false
         expect(json_response['bonus_point']).to eq 0
         expect(json_response['subtotal_point']).to eq (json_response['point'] + json_response['bonus_point'])
       end
@@ -98,24 +96,6 @@ describe Score do
       end
     end
 
-    describe "firstblood answer's score" do
-      let!(:score) { create(:score, point: problem.reference_point - before_score.point, answer: answer) }
-
-      by_participant do
-        is_expected.to eq 200
-      end
-
-      describe '#is_firstblood, #bonus_point, #subtotal_point' do
-        by_participant do
-          bonus_point_for_firstblood = problem.perfect_point * Setting.first_blood_bonus_percentage / 100.0
-
-          expect(json_response['is_firstblood']).to eq true
-          expect(json_response['bonus_point']).to eq bonus_point_for_firstblood
-          expect(json_response['subtotal_point']).to eq (json_response['point'] + json_response['bonus_point'])
-        end
-      end
-    end
-
     describe "score completes problem group completed" do
       let(:answer_to_last_problem) { create(:answer, team: team, problem: last_problem_of_problem_group, completed: true, completed_at: DateTime.now - 5.minute) }
       let!(:score) { create(:score, point: problem.reference_point - before_score.point, answer: answer) }
@@ -128,13 +108,11 @@ describe Score do
         is_expected.to eq 200
       end
 
-      describe '#is_firstblood, #bonus_point, #subtotal_point' do
+      describe '#bonus_point, #subtotal_point' do
         by_participant do
-          bonus_point_for_firstblood = problem.perfect_point * Setting.first_blood_bonus_percentage / 100.0
           bonus_point_for_clear_problem_group = Setting.bonus_point_for_clear_problem_group
 
-          expect(json_response['is_firstblood']).to eq true # because there's no other teams
-          expect(json_response['bonus_point']).to eq (bonus_point_for_firstblood + bonus_point_for_clear_problem_group)
+          expect(json_response['bonus_point']).to eq bonus_point_for_clear_problem_group
           expect(json_response['subtotal_point']).to eq (json_response['point'] + json_response['bonus_point'])
         end
       end
@@ -146,7 +124,7 @@ describe Score do
     end
 
     describe '#keys' do
-      let(:expected_keys) { %w(id point bonus_point subtotal_point is_firstblood marker_id answer_id created_at updated_at) }
+      let(:expected_keys) { %w(id point bonus_point subtotal_point marker_id answer_id created_at updated_at) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_participant { is_expected.to match_array expected_keys }

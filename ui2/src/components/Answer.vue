@@ -21,7 +21,6 @@
         <template v-if="value.completed">
           <div v-if="value.score" class="result">
             得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
-            <span v-if="value.score.is_firstblood">最初の回答者です！</span>
           </div>
           <div v-if="!value.score" class="pending">採点依頼中...</div>
         </template>

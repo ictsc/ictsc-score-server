@@ -15,7 +15,6 @@ describe 'Contest' do
       let(:expected_keys) {
         %w(
           answer_reply_delay_sec
-          first_blood_bonus_percentage
           competition_start_at
           scoreboard_hide_at
           competition_end_at

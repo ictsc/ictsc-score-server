@@ -18,31 +18,13 @@ class ScoreRoutes < Sinatra::Base
   get "/api/scores" do
     @scores = generate_nested_hash(klass: Score, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?))
 
-    # NOTE: Calculate each Score#is_firstblood, Score#bonus_point, Score#subtotal_point is too slow
-    # So, fetch firstblood problem ids first, and calculate each entities using it.
-    # Entities are same as included in `GET "/api/scores/:id"`
-    firstblood_ids = Score.firstbloods(only_ids: true)
-    firstblood_bonuses = Answer \
-      .joins(:problem, :score) \
-      .where(scores: {id: firstblood_ids} ) \
-      .select("scores.id, problems.perfect_point") \
-      .pluck("scores.id, problems.perfect_point") \
-      .inject(Hash.new(0)){|acc, (sid, perfect_point)| acc[sid] = perfect_point * (Setting.first_blood_bonus_percentage / 100.0); acc }
-
-
     # NOTE: Calculate each Score#cleared_problem_group? is too slow
-    # So, doing same way doing upper (firstbloods).
+    # So, fetch cleared problem ids first, and calculate each entities using it.
     cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
 
     # @scores_array = @scores.as_json
     @scores.each do |s|
-      s["is_firstblood"]  = firstblood_ids.include? s["id"]
-
-      bonus_point = 0
-      bonus_point += firstblood_bonuses[s["id"]] if s["is_firstblood"]
-      bonus_point += Setting.bonus_point_for_clear_problem_group if cleared_pg_ids.include? s["id"]
-
-      s["bonus_point"]    = bonus_point
+      s["bonus_point"]    = (cleared_pg_ids.include? s["id"]) ? Setting.bonus_point_for_clear_problem_group : 0
       s["subtotal_point"] = s["point"] + s["bonus_point"]
     end
 
@@ -55,9 +37,9 @@ class ScoreRoutes < Sinatra::Base
   end
 
   get "/api/scores/:id" do
-    @as_option = { methods: [:is_firstblood, :bonus_point, :subtotal_point] }
+    @as_option = { methods: [:bonus_point, :subtotal_point] }
     @score = generate_nested_hash(klass: Score, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !(is_admin? || is_viewer?))
-    json @score #, { methods: [:is_firstblood, :bonus_point, :subtotal_point] }
+    json @score #, { methods: [:bonus_point, :subtotal_point] }
   end
 
   post "/api/scores" do

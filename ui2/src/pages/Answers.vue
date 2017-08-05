@@ -21,9 +21,6 @@
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
               :class="'team status-' + status(problem.answers, team.id, problem.id)">
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
-              <span v-if="isFirstBlood(problem.answers, team.id, problem.id)" class="first-blood">
-                First <i class="fa fa-flag"></i>
-              </span>
               <!--status: {{ status(problem.answers, team.id) }}
               {{ teamAnswers(problem.answers, team.id) }}-->
             </router-link>
@@ -64,9 +61,6 @@
 .team.status-2 {
   background: #CBF5E0;
   color: #00A353;
-}
-.team .first-blood {
-  margin-left: 1rem;
 }
 
 .tools {
@@ -119,10 +113,6 @@ export default {
       if (teamAnswers.length === 0) return 0;
       return teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 2 : 1), 2);
-    },
-    isFirstBlood (answers, teamId, problemId) {
-      return this.teamAnswers(answers, teamId, problemId)
-        .filter(ans => ans.score && ans.score.is_firstblood).length !== 0;
     },
     score (answers, teamId, problemId) {
       return this.teamAnswers(answers, teamId, problemId)
