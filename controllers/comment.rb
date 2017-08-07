@@ -47,9 +47,16 @@ class CommentRoutes < Sinatra::Base
     post "/api/#{pluralize_name}/:commentable_id/comments" do
       halt 403 if not Comment.allowed_to_create_by?(current_user, action: @action)
 
-      if klass == Answer && @commentable.completed && is_participant?
-        status 400
-        next json comment: "participant can't add comments to completed answer"
+      if klass == Answer
+        if @commentable.completed && is_participant?
+          status 400
+          next json comment: "participant can't add comments to completed answer"
+        end
+
+        if @commentable.comments.count != 0
+          status 400
+          next json comment: "only one comment is allowed for an answer"
+        end
       end
 
       @attrs = params_to_attributes_of(klass: Comment)
