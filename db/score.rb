@@ -11,10 +11,6 @@ class Score < ActiveRecord::Base
     Problem.joins(:answers).where(answers: {id: answer_id}).first
   end
 
-  def firstblood?
-    self.class.firstbloods(only_ids: true).include? self.id
-  end
-
   # self が、チームにて問題グループ全ての基準を満たした最初の解答かどうか
   def cleared_problem_group?
     answer = self.answer
@@ -41,43 +37,6 @@ class Score < ActiveRecord::Base
     # if this score before than self have solved all problems in pg, return false
     problems_solved_before_self_count = relation_problems_solved.where("scores.id < ?", self.id).to_a.count
     return problems_solved_before_self_count != problems_solved_count
-  end
-
-  alias_method :is_firstblood, :firstblood?
-
-  # return all firstblood scores
-  def self.firstbloods(only_ids: false)
-    join_table = Arel::Table.new("table") # "table" doesn't mean anything
-    scores     = Score.arel_table
-    answers    = Answer.arel_table
-    problems   = Problem.arel_table
-    a_before   = Answer.arel_table.alias("a_before")
-    s_before   = Score.arel_table.alias("s_before")
-
-    join_tables = [
-      join_table.join(answers).on(scores[:answer_id].eq(answers[:id])),
-      join_table.join(problems).on(answers[:problem_id].eq(problems[:id])),
-      join_table.join(a_before).on(
-        a_before[:problem_id].eq(problems[:id]),
-        a_before[:team_id].eq(answers[:team_id]),
-        a_before[:completed_at].lteq(answers[:completed_at])
-      ),
-      join_table.join(s_before).on(s_before[:answer_id].eq(a_before[:id]))
-    ].map(&:join_sources)
-
-    ids_by_problem_id = Score \
-      .joins(*join_tables) \
-      .group(answers[:id], "problems.reference_point") \
-      .having(problems[:reference_point].lteq(s_before[:point].sum)) \
-      .order(answers[:completed_at]) \
-      .pluck("answers.problem_id", "scores.id") \
-      .inject({}){|acc, (p_id, id)| acc[p_id] ||= id; acc }
-
-    if only_ids
-      ids_by_problem_id.values
-    else
-      Score.where(id: ids_by_problem_id.values)
-    end
   end
 
   def self.cleared_problem_group_ids(team_id: nil, with_tid: false)
@@ -117,12 +76,11 @@ class Score < ActiveRecord::Base
   end
 
   def bonus_point
-    bonus = 0
-
-    bonus += (self.answer.problem.perfect_point * Setting.first_blood_bonus_percentage / 100.0) if firstblood?
-    bonus += Setting.bonus_point_for_clear_problem_group if cleared_problem_group?
-
-    bonus
+    if cleared_problem_group?
+      Setting.bonus_point_for_clear_problem_group 
+    else
+      0
+    end
   end
 
   def subtotal_point

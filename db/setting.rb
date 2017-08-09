@@ -5,7 +5,6 @@ class Setting
   ENV_PREFIX = 'API_CONTEST_'
   REQUIRED_KEYS = %w(
     answer_reply_delay_sec
-    first_blood_bonus_percentage
     bonus_point_for_clear_problem_group
     competition_start_at
     scoreboard_hide_at
@@ -15,7 +14,6 @@ class Setting
 
   INTEGER_VALUES = %w(
     answer_reply_delay_sec
-    first_blood_bonus_percentage
     bonus_point_for_clear_problem_group
   )
 

@@ -12,7 +12,6 @@ class ContestRoutes < Sinatra::Base
   get "/api/contest" do
   	@contest_info = {
   	  answer_reply_delay_sec: Setting.answer_reply_delay_sec,
-  	  first_blood_bonus_percentage: Setting.first_blood_bonus_percentage,
   	  competition_start_at: Setting.competition_start_at,
   	  scoreboard_hide_at: Setting.scoreboard_hide_at,
   	  competition_end_at: Setting.competition_end_at

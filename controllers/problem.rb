@@ -25,7 +25,6 @@ class ProblemRoutes < Sinatra::Base
       @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json).sort_by{|x| x["id"] }
     end
 
-    firstblood_ids = Score.firstbloods(only_ids: true)
     cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
 
     # NOTE select "reference_point" is needed because of used in having clause
@@ -43,13 +42,7 @@ class ProblemRoutes < Sinatra::Base
       p["answers"]&.each do |a|
         a["team"]&.delete("registration_code")
         if score = a["score"]
-          score["is_firstblood"] = firstblood_ids.include? score["id"]
-
-          bonus_point = 0
-          bonus_point += (score["point"] * Setting.first_blood_bonus_percentage / 100.0).to_i if score["is_firstblood"]
-          bonus_point += Setting.bonus_point_for_clear_problem_group if cleared_pg_ids.include? score["id"]
-
-          score["bonus_point"]    = bonus_point
+          score["bonus_point"]    = (cleared_pg_ids.include? score["id"]) ? Setting.bonus_point_for_clear_problem_group : 0
           score["subtotal_point"] = score["point"] + score["bonus_point"]
         end
       end
@@ -87,7 +80,6 @@ class ProblemRoutes < Sinatra::Base
       if score = a["score"]
         s = Score.find(score["id"])
 
-        score["is_firstblood"] = s.is_firstblood
         score["bonus_point"]    = s.bonus_point
         score["subtotal_point"] = s.subtotal_point
       end
