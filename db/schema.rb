@@ -114,9 +114,7 @@ ActiveRecord::Schema.define(version: 20170814062427) do
     t.integer "problem_must_solve_before_id"
     t.integer "reference_point"
     t.integer "perfect_point"
-    t.integer "problem_group_id"
     t.index ["id"], name: "index_problems_on_id", unique: true
-    t.index ["problem_group_id"], name: "index_problems_on_problem_group_id"
     t.index ["problem_must_solve_before_id"], name: "index_problems_on_problem_must_solve_before_id"
   end
 

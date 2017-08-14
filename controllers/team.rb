@@ -27,12 +27,12 @@ class TeamRoutes < Sinatra::Base
       end
 
     if @with_param.include? "answers-score"
-      cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
+      cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
       @teams.each do |t|
         t["answers"]&.each do |a|
           if s = a["score"]
-            s["bonus_point"]    = (cleared_pg_ids.include? s["id"]) ? Setting.bonus_point_for_clear_problem_group : 0
+            s["bonus_point"]    = cleared_pg_bonuses[s["id"]] || 0
             s["subtotal_point"] = s["point"] + s["bonus_point"]
 
             a["score"] = s
@@ -58,11 +58,11 @@ class TeamRoutes < Sinatra::Base
     @team["issues"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
 
     if @with_param.include? "answers-score"
-      cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
+      cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
       @team["answers"]&.each do |a|
         if s = a["score"]
-          s["bonus_point"]    = (cleared_pg_ids.include? s["id"]) ? Setting.bonus_point_for_clear_problem_group : 0
+          s["bonus_point"]    = cleared_pg_bonuses[s["id"]] || 0
           s["subtotal_point"] = s["point"] + s["bonus_point"]
 
           a["score"] = s

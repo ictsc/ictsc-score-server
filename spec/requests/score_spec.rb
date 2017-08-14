@@ -51,14 +51,10 @@ describe Score do
   end
 
   describe 'GET /api/scores/:id' do
-    before do
-      allow(Setting).to receive(:bonus_point_for_clear_problem_group).and_return(765)
-    end
-
     let(:team) { current_member&.team || create(:team) }
     let(:problem_group) { create(:problem_group) }
-    let(:problem) { create(:problem, problem_group: problem_group) }
-    let!(:last_problem_of_problem_group) { create(:problem, problem_group: problem_group) }
+    let(:problem) { create(:problem, problem_groups: [problem_group]) }
+    let!(:last_problem_of_problem_group) { create(:problem, problem_groups: [problem_group]) }
 
     let(:before_answer) { create(:answer, team: team, problem: problem, completed: true, completed_at: DateTime.now - 30.minutes) }
     let!(:before_score) { create(:score, point: problem.reference_point - 10, answer: before_answer) }
@@ -110,9 +106,7 @@ describe Score do
 
       describe '#bonus_point, #subtotal_point' do
         by_participant do
-          bonus_point_for_clear_problem_group = Setting.bonus_point_for_clear_problem_group
-
-          expect(json_response['bonus_point']).to eq bonus_point_for_clear_problem_group
+          expect(json_response['bonus_point']).to eq problem_group.completing_bonus_point
           expect(json_response['subtotal_point']).to eq (json_response['point'] + json_response['bonus_point'])
         end
       end
