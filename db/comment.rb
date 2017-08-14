@@ -15,8 +15,6 @@ class Comment < ActiveRecord::Base
     case action
     when "issues_comments"
       return true if [ROLE_ID[:writer], ROLE_ID[:participant]].include? role_id
-    when "answers_comments"
-      return true if ROLE_ID[:participant] == role_id
     when "problems_comments"
       return true if ROLE_ID[:writer] == role_id
     end
@@ -33,11 +31,10 @@ class Comment < ActiveRecord::Base
     return true if role_id == ROLE_ID[:admin]
 
     return false if action == "issues_comments"   && commentable_type != "Issue"
-    return false if action == "answers_comments"  && commentable_type != "Answer"
     return false if action == "problems_comments" && commentable_type != "Problem"
 
     return true if %w(issues_comments problems_comments).include?(action) && ROLE_ID[:writer] == role_id
-    return true if %w(issues_comments answers_comments).include?(action) && ROLE_ID[:participant] == role_id &&
+    return true if action == "issues_comments" && ROLE_ID[:participant] == role_id &&
                    member.team == by.team && method != "DELETE"
 
     false
@@ -50,8 +47,6 @@ class Comment < ActiveRecord::Base
         all
       when "issues_comments"
         where(commentable_type: "Issue")
-      when "answers_comments"
-        where(commentable_type: "Answer")
       when "problems_comments"
         where(commentable_type: "Problem")
       else
@@ -67,8 +62,6 @@ class Comment < ActiveRecord::Base
     case action
     when "issues_comments"
       comments.joins(:member).where(members: { team: [user.team, nil] })
-    when "answers_comments"
-      comments.joins(:member).where(members: { team: user.team })
     when "problems_comments"
       comments
     else
@@ -79,8 +72,8 @@ class Comment < ActiveRecord::Base
   private
     def commentable_type_check
       return if commentable_type.nil?
-      unless %w(Problem Issue Answer).include? commentable_type
-        errors.add(:commentable, "specify one of problems, issues or answers")
+      unless %w(Problem Issue).include? commentable_type
+        errors.add(:commentable, "specify problems or issues")
       end
     end
 end

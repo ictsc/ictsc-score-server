@@ -10,15 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170716134322) do
+ActiveRecord::Schema.define(version: 20170814170559) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
     t.integer "team_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "completed", default: false, null: false
-    t.datetime "completed_at"
+    t.string "text", limit: 4000, null: false
     t.index ["id"], name: "index_answers_on_id", unique: true
     t.index ["team_id"], name: "index_answers_on_team_id"
   end

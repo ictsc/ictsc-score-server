@@ -13,7 +13,7 @@ describe Score do
 
   describe 'GET /api/scores' do
     let(:team) { current_member&.team || create(:team) }
-    let(:answer) { create(:answer, team: team, completed: true, completed_at: DateTime.now - 50.minutes) }
+    let(:answer) { create(:answer, team: team, created_at: DateTime.now - 50.minutes) }
     let!(:score) { create(:score, answer: answer) }
     let!(:score_by_other_team) { create(:score, answer: create(:answer)) }
 
@@ -36,7 +36,7 @@ describe Score do
 
       describe 'before passed Settings.answer_reply_delay_sec' do
         by_participant do
-          allow(DateTime).to receive(:now).and_return(score.answer.completed_at + 60.seconds)
+          allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
           is_expected.to eq 0
         end
       end
@@ -60,10 +60,10 @@ describe Score do
     let(:problem) { create(:problem, problem_group: problem_group) }
     let!(:last_problem_of_problem_group) { create(:problem, problem_group: problem_group) }
 
-    let(:before_answer) { create(:answer, team: team, problem: problem, completed: true, completed_at: DateTime.now - 30.minutes) }
+    let(:before_answer) { create(:answer, team: team, problem: problem, created_at: DateTime.now - 30.minutes) }
     let!(:before_score) { create(:score, point: problem.reference_point - 10, answer: before_answer) }
 
-    let(:answer) { create(:answer, team: team, problem: problem, completed: true, completed_at: DateTime.now - 15.minutes) }
+    let(:answer) { create(:answer, team: team, problem: problem, created_at: DateTime.now - 15.minutes) }
     let!(:score) { create(:score, point: problem.reference_point - before_score.point - 1, answer: answer) }
 
     let(:response) { get "/api/scores/#{score.id}" }
@@ -84,7 +84,7 @@ describe Score do
 
     describe 'before passed Settings.answer_reply_delay_sec' do
       by_participant do
-        allow(DateTime).to receive(:now).and_return(score.answer.completed_at + 60.seconds)
+        allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
         is_expected.to eq 404
       end
     end
@@ -97,7 +97,7 @@ describe Score do
     end
 
     describe "score completes problem group completed" do
-      let(:answer_to_last_problem) { create(:answer, team: team, problem: last_problem_of_problem_group, completed: true, completed_at: DateTime.now - 5.minute) }
+      let(:answer_to_last_problem) { create(:answer, team: team, problem: last_problem_of_problem_group, created_at: DateTime.now - 5.minute) }
       let!(:score) { create(:score, point: problem.reference_point - before_score.point, answer: answer) }
       let!(:score_of_answer_to_last_problem) { create(:score, point: last_problem_of_problem_group.reference_point, answer: answer_to_last_problem) }
 
@@ -136,7 +136,7 @@ describe Score do
 
   describe 'GET /api/answers/:answer_id/score' do
     let(:team) { current_member&.team || create(:team) }
-    let(:answer) { create(:answer, team: team, completed: true, completed_at: DateTime.now - 15.minutes) }
+    let(:answer) { create(:answer, team: team, created_at: DateTime.now - 15.minutes) }
     let!(:score) { create(:score, answer: answer) }
 
     let(:response) { get "/api/answers/#{answer.id}/score" }
@@ -150,7 +150,7 @@ describe Score do
 
     describe 'before passed Settings.answer_reply_delay_sec' do
       by_participant do
-        allow(DateTime).to receive(:now).and_return(score.answer.completed_at + 60.seconds)
+        allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
         is_expected.to eq 404
       end
     end
