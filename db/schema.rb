@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170716134322) do
+ActiveRecord::Schema.define(version: 20170814062427) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
@@ -89,7 +89,20 @@ ActiveRecord::Schema.define(version: 20170716134322) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "visible", default: true, null: false
+    t.integer "completing_bonus_point", null: false
+    t.string "flag_icon_url"
     t.index ["id"], name: "index_problem_groups_on_id", unique: true
+  end
+
+  create_table "problem_groups_problems", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+    t.bigint "problem_id", null: false
+    t.bigint "problem_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_group_id"], name: "index_problem_groups_problems_on_problem_group_id"
+    t.index ["problem_id", "problem_group_id"], name: "index_problem_groups_problems_on_problem_id_and_problem_group_id", unique: true
+    t.index ["problem_id"], name: "index_problem_groups_problems_on_problem_id"
   end
 
   create_table "problems", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
