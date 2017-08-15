@@ -72,7 +72,7 @@ class NotificationRoutes < Sinatra::Base
           end
         end
 
-        p.answers.select{|x| x.completed }.sort_by(&:updated_at).each do |a|
+        p.answers.sort_by(&:updated_at).each do |a|
           resource_info = {
             resource: "Answer",
             resource_id: a.id

@@ -188,27 +188,26 @@ export default {
         ({resource, sub_resource, state, data} = JSON.parse(message.detail));
 
         const STATE_CREATED = 'created';
-        const STATE_COMPLETED = 'completed';
         const STATE_UPDATED = 'updated';
 
         switch (resource) {
           case 'Answer':
             if (sub_resource === 'Score' && state === STATE_CREATED) {
-              let completed_at = new Date(data.completed_at);
-              let notify_delay_from_completed_at = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
-              let notify_at = completed_at.valueOf() + notify_delay_from_completed_at;
+              let created_at = new Date(data.created_at);
+              let notify_delay_from_created_at = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
+              let notify_at = created_at.valueOf() + notify_delay_from_created_at;
 
               notify_delay = notify_at - new Date();
               break;
             }
 
-            if (state === STATE_COMPLETED) {
+            if (state === STATE_CREATED) {
               title = '採点依頼が提出されました';
             }
             break;
           case 'Issue':
             if (sub_resource === 'Comment' && state === STATE_CREATED) {
-              title = '質問に返信が来ました';
+              title = '質問にコメントが投稿されました';
               break;
             }
             break;

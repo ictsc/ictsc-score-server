@@ -54,7 +54,7 @@ class ScoreRoutes < Sinatra::Base
     if @score.save
       status 201
       @answer = @score.answer
-      push_notification(to: @answer.team, payload: @score.notification_payload(completed_at: @answer.completed_at))
+      push_notification(to: @answer.team, payload: @score.notification_payload(created_at: @answer.created_at))
       headers "Location" => to("/api/scores/#{@score.id}")
       json @score
     else
@@ -123,7 +123,7 @@ class ScoreRoutes < Sinatra::Base
     if @score.save
       status 201
       headers "Location" => to("/api/scores/#{@score.id}")
-      push_notification(to: @answer.team, payload: @score.notification_payload(state: :created, completed_at: @answer.completed_at))
+      push_notification(to: @answer.team, payload: @score.notification_payload(state: :created, created_at: @answer.created_at))
       json @score
     else
       status 400

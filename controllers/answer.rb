@@ -89,9 +89,7 @@ class AnswerRoutes < Sinatra::Base
     end
 
     if @answer.save
-      if @answer.completed
-        push_notification(to: Role.where(name: %w(Admin Writer)), payload: @answer.notification_payload(state: :completed))
-      end
+      push_notification(to: Role.where(name: %w(Admin Writer)), payload: @answer.notification_payload(state: :created))
       json @answer
     else
       status 400
