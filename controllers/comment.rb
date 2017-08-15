@@ -2,12 +2,14 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
+require_relative "../services/notification_service"
 
 class CommentRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::NotificationService
 
   [Issue, Problem].each do |klass|
     pluralize_name = klass.to_s.downcase.pluralize
@@ -56,6 +58,21 @@ class CommentRoutes < Sinatra::Base
       if @comment.save
         status 201
         headers "Location" => to("/api/#{pluralize_name}/:commentable_id/comments/#{@comment.id}")
+
+        case @commentable
+        when Issue
+          to =
+            if is_participant? # Participant -> Admin / Writer
+              Role.where(name: %w(Admin Writer))
+            else               # Admin / Writer -> Participant
+              @commentable.team
+            end
+
+          push_notification(to: to, payload: @comment.notification_payload)
+        when Problem
+          push_notification(to: @commentable.readable_teams, payload: @comment.notification_payload)
+        end
+
         json @comment
       else
         status 400

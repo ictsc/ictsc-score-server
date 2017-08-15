@@ -6,6 +6,16 @@ class Comment < ActiveRecord::Base
   belongs_to :member
   belongs_to :commentable, polymorphic: true
 
+  def notification_payload(state: :created, **data)
+    payload = super
+    payload[:sub_resource]    = payload[:resource]
+    payload[:sub_resource_id] = payload[:resource_id]
+    payload.merge(
+      resource: commentable_type,
+      resource_id: commentable_id,
+    )
+  end
+
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     role_id = user&.role_id

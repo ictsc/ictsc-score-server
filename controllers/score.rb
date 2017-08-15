@@ -2,12 +2,14 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
+require_relative "../services/notification_service"
 
 class ScoreRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::NotificationService
 
   before "/api/scores*" do
     I18n.locale = :en if request.xhr?
@@ -51,6 +53,8 @@ class ScoreRoutes < Sinatra::Base
 
     if @score.save
       status 201
+      @answer = @score.answer
+      push_notification(to: @answer.team, payload: @score.notification_payload(created_at: @answer.created_at))
       headers "Location" => to("/api/scores/#{@score.id}")
       json @score
     else
@@ -119,6 +123,7 @@ class ScoreRoutes < Sinatra::Base
     if @score.save
       status 201
       headers "Location" => to("/api/scores/#{@score.id}")
+      push_notification(to: @answer.team, payload: @score.notification_payload(state: :created, created_at: @answer.created_at))
       json @score
     else
       status 400

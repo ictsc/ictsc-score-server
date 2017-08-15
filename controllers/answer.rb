@@ -2,12 +2,14 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
+require_relative "../services/notification_service"
 
 class AnswerRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::NotificationService
 
   before "/api/answers*" do
     I18n.locale = :en if request.xhr?
@@ -87,6 +89,7 @@ class AnswerRoutes < Sinatra::Base
     end
 
     if @answer.save
+      push_notification(to: Role.where(name: %w(Admin Writer)), payload: @answer.notification_payload(state: :created))
       json @answer
     else
       status 400

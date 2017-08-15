@@ -51,10 +51,10 @@ class NotificationRoutes < Sinatra::Base
 
         p.comments.sort_by(&:updated_at).each do |c|
           resource_info = {
-            resource: "Comment",
-            resource_id: c.id,
-            sub_resource: c.commentable_type,
-            sub_resource_id: c.commentable_id
+            resource: c.commentable_type,
+            resource_id: c.commentable_id,
+            sub_resource: "Comment",
+            sub_resource_id: c.id
           }
 
           notifications << resource_info.merge({
@@ -72,7 +72,7 @@ class NotificationRoutes < Sinatra::Base
           end
         end
 
-        p.answers.select{|x| x.completed }.sort_by(&:updated_at).each do |a|
+        p.answers.sort_by(&:updated_at).each do |a|
           resource_info = {
             resource: "Answer",
             resource_id: a.id
@@ -97,10 +97,10 @@ class NotificationRoutes < Sinatra::Base
       .order(:updated_at) \
       .map do |c|
         resource_info = {
-          resource: "Comment",
-          resource_id: c.id,
-          sub_resource: c.commentable_type,
-          sub_resource_id: c.commentable_id
+          resource: c.commentable_type,
+          resource_id: c.commentable_id,
+          sub_resource: "Comment",
+          sub_resource_id: c.id
         }
 
         notifications << resource_info.merge({

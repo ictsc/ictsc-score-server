@@ -9,13 +9,13 @@ module Sinatra
   module NotificationService
     # @params to: One of [Role, Team, Member]
     # @params payload: Hash
-    def push_nofitication(to:, payload:)
-      return false if not pushable? to
-
-      if to.is_a? Array
-        to.each{|t| push_nofitication(to: t, payload: payload) }
+    def push_notification(to:, payload:)
+      if to.respond_to? :each
+        to.each{|t| push_notification(to: t, payload: payload) }
         return
       end
+
+      return false if not pushable? to
 
       begin
         redis_client.publish(Setting.redis_realtime_notification_channel, publish_payload(to: to, payload: payload))

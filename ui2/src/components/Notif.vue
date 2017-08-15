@@ -9,7 +9,7 @@
             </div>
             <div class="body">
               <h5>{{ notif.title }}</h5>
-              <p>{{ notif.detail }}</p>
+              <p>{{ notif.body }}</p>
             </div>
             <div class="x" v-on:click="hide(notif.id)">
               <i class="fa fa-times" aria-hidden="true"></i>
@@ -132,6 +132,7 @@ REMOVE_NOTIFイベントでは、通知のインデックス番号・message => 
 */
 
 
+import { API } from '../utils/Api'
 import { Subscribe, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 
 export default {
@@ -141,19 +142,31 @@ export default {
       notifs: [
       ],
       incr: 1,
-      pushSubscriber: Subscribe(PUSH_NOTIF, opt => { this.append(opt) }),
+      pushSubscriber: Subscribe(PUSH_NOTIF, opt => { this.notify(opt) }),
       removeSubscriber: Subscribe(REMOVE_NOTIF, fn => { this.hide(fn) }),
       refreshInterval: setInterval(_ => this.refresh(), 500),
       timeout: 3000, // autoclose ms
+      useBrowserNotification: false,
     }
   },
   asyncData: {
+    contentDefault: {},
+    contest () {
+      return API.getContest();
+    },
   },
   computed: {
   },
   watch: {
   },
   mounted () {
+    if ('Notification' in window) {
+      Notification.requestPermission().then((result) => {
+        if (result === 'granted') {
+          this.useBrowserNotification = true;
+        }
+      });
+    }
   },
   beforeDestroy () {
     this.pushSubscriber.off();
@@ -163,13 +176,96 @@ export default {
   destroyed () {
   },
   methods: {
-    append (message) {
+    notify (message) {
+      let title, body;
+
+      let notify_delay = 0; // default
+      if (message.type !== 'api') {
+        title = message.title;
+        body = message.detail;
+      } else {
+        let resource, sub_resource, state, data;
+        ({resource, sub_resource, state, data} = JSON.parse(message.detail));
+
+        const STATE_CREATED = 'created';
+        const STATE_UPDATED = 'updated';
+
+        switch (resource) {
+          case 'Answer':
+            if (sub_resource === 'Score' && state === STATE_CREATED) {
+              let created_at = new Date(data.created_at);
+              let notify_delay_from_created_at = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
+              let notify_at = created_at.valueOf() + notify_delay_from_created_at;
+
+              notify_delay = notify_at - new Date();
+              break;
+            }
+
+            if (state === STATE_CREATED) {
+              title = '採点依頼が提出されました';
+            }
+            break;
+          case 'Issue':
+            if (sub_resource === 'Comment' && state === STATE_CREATED) {
+              title = '質問にコメントが投稿されました';
+              break;
+            }
+            break;
+          case 'Problem':
+            if (sub_resource === 'Comment' && state === STATE_CREATED) {
+              title = '問題の補足が追加されました';
+              break;
+            }
+            break;
+          case 'Notice':
+            switch (state) {
+              case STATE_CREATED:
+                title = 'お知らせが公開されました';
+                break;
+              case STATE_UPDATED:
+                title = 'お知らせが更新されました';
+                break;
+            }
+            break;
+          default:
+            break;
+        }
+      }
+
+      if (notify_delay < 0) {
+        notify_delay = 0;
+      }
+
+      if (this.useBrowserNotification && message.type === 'api') {
+        setTimeout(() => {
+          let notif = new Notification(
+            title,
+            {
+              body: body,
+            }
+          );
+          // reload or refresh screen
+          notif.addEventListener('click', () => {
+            // jump to page
+          });
+        }, notify_delay);
+      } else {
+        setTimeout(() => {
+          this.append(title, body, message.type);
+        }, notify_delay);
+      }
+    },
+    append (title, body, type) {
       var autoClose;
       var icon;
-      switch (message.type) {
+      switch (type) {
         case 'error':
         case 'warn':
           icon = 'warning';
+          autoClose = false;
+          break;
+        case 'api':
+          icon = 'comments';
           autoClose = false;
           break;
         default:
@@ -179,12 +275,15 @@ export default {
           break;
       }
 
-      var includeIdMessage = Object.assign({
+      var includeIdMessage = {
+        title,
+        body,
+        type,
         id: this.incr++,
         timestamp: Date.now(),
         autoClose,
         icon,
-      }, message)
+      }
       this.notifs.push(includeIdMessage);
     },
     hide (cond) {
