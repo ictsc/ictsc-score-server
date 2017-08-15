@@ -12,7 +12,7 @@ class AnswerRoutes < Sinatra::Base
   before "/api/answers*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(?,) & %w(score comments) if request.get?
+    @with_param = (params[:with] || "").split(?,) & %w(score) if request.get?
   end
 
   get "/api/answers" do
@@ -30,8 +30,7 @@ class AnswerRoutes < Sinatra::Base
   end
 
   before "/api/answers/:id" do
-    @answer = Answer.includes(:comments, :score) \
-                    .find_by(id: params[:id])
+    @answer = Answer.includes(:score).find_by(id: params[:id])
 
     halt 404 if not @answer&.allowed?(by: current_user, method: request.request_method)
   end
@@ -49,12 +48,19 @@ class AnswerRoutes < Sinatra::Base
 
     @attrs = params_to_attributes_of(klass: Answer)
     @attrs[:team_id] = current_user.team_id if not is_admin?
-    if %w(true 1).include? @attrs[:completed].to_s
-      status 400
-      next json completed: "can't be true on created"
-    end
 
     @answer = Answer.new(@attrs)
+
+    # # 参加者は同一の問題に対し、 Setting.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
+    last_answer_created_at = Answer.where(
+        team_id: current_user&.team_id,
+        problem_id: @answer.problem_id
+      ).maximum(:created_at)
+
+    if last_answer_created_at && DateTime.now <= (last_answer_created_at + Setting.answer_reply_delay_sec.seconds)
+      status 400
+      next json answer: "participant can't submit multiple answers to one problem within #{Setting.answer_reply_delay_sec} seconds"
+    end
 
     if @answer.save
       status 201
@@ -67,47 +73,12 @@ class AnswerRoutes < Sinatra::Base
   end
 
   update_answer_block = Proc.new do
-    if request.put? and not filled_all_attributes_of?(klass: Answer, exclude: [:completed_at])
+    if request.put? and not filled_all_attributes_of?(klass: Answer)
       status 400
       next json required: insufficient_attribute_names_of(klass: Answer)
     end
 
     @attrs = params_to_attributes_of(klass: Answer)
-
-    if "Participant" == current_user&.role&.name
-      if @attrs.keys != [:completed]
-        status 400
-        next json @attrs.map{|k, v| [k, "participant can't edit"] }.to_h
-      end
-
-      # 参加者は completed を false にすることができない
-      if %w(false 0).include? @attrs[:completed].to_s
-        status 400
-        next json completed: "participant can't make answer to not completed"
-      end
-
-      if @answer.comments.empty?
-        status 400
-        next json completed: "participant can't make answer with no comment completed"
-      end
-
-      # 参加者は同一の問題に対し、 Setting.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
-      last_answer_completed_at = Answer.where(
-          team_id: current_user&.team_id,
-          problem_id: @answer.problem_id
-        ) \
-        .order(:completed_at) \
-        .select(:completed_at) \
-        .last.completed_at
-
-      if last_answer_completed_at && DateTime.now <= (last_answer_completed_at + Setting.answer_reply_delay_sec.seconds)
-        status 400
-        next json completed: "participant can't make multiple answers of one problem completed within #{Setting.answer_reply_delay_sec} seconds"
-      end
-    end
-
-    @attrs[:completed_at] = DateTime.now if !@answer.completed && @attrs[:completed]
-
     @answer.attributes = @attrs
 
     if not @answer.valid?

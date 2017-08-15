@@ -137,43 +137,22 @@ Team.all.each do |team|
 
       answer_id = 5 * (p.id * 100 + team.id)
       is_rabbithouse = team.id == 20
-      is_completed = is_rabbithouse || (rand(8) != 4) # 7/8
 
       last_answer = Answer.seed(:id) do |a|
         a.id           = answer_id
         a.problem_id   = p.id
         a.team_id      = team.id
-        a.completed    = is_completed
-        a.completed_at = DateTime.now if is_completed
+        a.text         = hiragana[100]
+
         if last_answer
           date = last_answer.created_at + 20.minutes + rand(900).seconds
           a.created_at = date
           a.updated_at = date
-          a.completed  = date if is_completed
         end
       end.first
 
-      last_comment = Comment.seed(:id) do |c|
-        c.id          = 10 * last_answer.id
-        c.text        = hiragana[20]
-        c.member_id   = team.members.ids.sample
-        c.commentable = last_answer
-        c.created_at  = last_answer.created_at
-        c.updated_at  = last_answer.updated_at
-      end.first
-
-      if rand(2) == 0 # 1/2
-        last_comment = Comment.seed(:id) do |c|
-          c.id          = 10 * last_answer.id + 1
-          c.text        = hiragana[20]
-          c.member_id   = team.members.ids.sample
-          c.commentable = last_answer
-
-          datetime = last_answer.created_at + rand(600).seconds
-          c.created_at  = datetime
-          c.updated_at  = datetime
-        end.first
-      end
+      will_marked = is_rabbithouse || (rand(8) != 4) # 7/8
+      next if not will_marked
 
       point = if is_rabbithouse
         p.perfect_point
@@ -181,14 +160,11 @@ Team.all.each do |team|
         p.perfect_point * (rand(10) / 10.0)
       end
 
-      # 未採点の状態の解答を残す
-      next if not is_completed
-
-      score = Score.seed(:answer_id) do |s|
+      last_score = Score.seed(:answer_id) do |s|
         s.point      = point
         s.answer_id  = last_answer.id
         s.marker     = admin
-        date = last_comment.created_at + rand(1200).seconds
+        date = last_answer.created_at + rand(1200).seconds
         s.created_at = date
         s.updated_at = date
       end.first
@@ -199,34 +175,26 @@ Team.all.each do |team|
       second_point = p.perfect_point * (rand(8) / 10.0)
       second_point = p.perfect_point if p.perfect_point < (point + second_point)
 
-      is_completed = is_rabbithouse || (rand(8) != 4) # 7/8
+      is_marked = is_rabbithouse || (rand(8) != 4) # 7/8
 
       last_answer = Answer.seed(:id) do |a|
         a.id         = answer_id + 1
         a.problem_id = p.id
         a.team_id    = team.id
-        a.completed  = is_completed
-        date = score.created_at + 20.minutes + rand(900).seconds
+        a.text         = hiragana[100]
+        date = last_score.created_at + 20.minutes + rand(900).seconds
         a.created_at = date
         a.updated_at = date
-        a.completed_at = date if is_completed
       end.first
 
-      last_comment = Comment.seed(:id) do |c|
-        c.id          = last_answer.id * 10
-        c.text        = hiragana[20]
-        c.member_id   = team.members.ids.sample
-        c.commentable = last_answer
-        c.created_at  = last_answer.created_at
-        c.updated_at  = last_answer.updated_at
-      end.first
+      will_marked = rand(8) != 4 # 7/8
+      next if not will_marked
 
-      next if not is_completed
       Score.seed(:answer_id) do |s|
         s.point      = second_point
         s.answer_id  = last_answer.id
         s.marker     = admin
-        date = last_comment.created_at + rand(1200).seconds
+        date = last_answer.created_at + rand(1200).seconds
         s.created_at = date
         s.updated_at = date
       end

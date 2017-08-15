@@ -1,9 +1,8 @@
 class Answer < ActiveRecord::Base
   validates :problem, presence: true
   validates :team,    presence: true
+  validates :text,    presence: true
   validates :score,   presence: true, if: Proc.new {|answer| not answer&.score&.id.nil? }
-
-  has_many :comments, dependent: :destroy, as: :commentable
 
   belongs_to :problem
   has_one :score
@@ -26,9 +25,6 @@ class Answer < ActiveRecord::Base
     case by&.role_id
     when ROLE_ID[:admin]
       true
-    when ROLE_ID[:participant]
-      return false if method != "PATCH"
-      team_id == by.team_id
     else # nologin, ...
       false
     end
