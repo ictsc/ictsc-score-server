@@ -10,7 +10,8 @@ class Problem < ActiveRecord::Base
   has_many :issues,   dependent: :destroy
   has_many :next_problems, class_name: self.to_s, foreign_key: "problem_must_solve_before_id"
 
-  belongs_to :problem_group
+  has_and_belongs_to_many :problem_groups, dependent: :nullify
+
   belongs_to :problem_must_solve_before, class_name: self.to_s
   belongs_to :creator, foreign_key: "creator_id", class_name: "Member"
 

@@ -1,7 +1,9 @@
 class ProblemGroup < ActiveRecord::Base
-  validates :name,     presence: true
+  validates :name, presence: true
+  validates :visible, presence: true
+  validates :completing_bonus_point, presence: true
 
-  has_many :problems, dependent: :nullify
+  has_and_belongs_to_many :problems, dependent: :nullify
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")

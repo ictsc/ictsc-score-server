@@ -17,11 +17,11 @@ class AnswerRoutes < Sinatra::Base
 
   get "/api/answers" do
     @answers = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, apply_filter: !(is_admin? || is_viewer?))
-    cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
+    cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
     @answers.each do |a|
       if score = a["score"]
-        score["bonus_point"]    = (cleared_pg_ids.include? score["id"]) ? Setting.bonus_point_for_clear_problem_group : 0
+        score["bonus_point"]    = cleared_pg_bonuses[s["id"]] || 0
         score["subtotal_point"] = score["point"] + score["bonus_point"]
       end
     end

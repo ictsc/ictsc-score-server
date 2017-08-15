@@ -88,7 +88,20 @@ ActiveRecord::Schema.define(version: 20170814170559) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "visible", default: true, null: false
+    t.integer "completing_bonus_point", null: false
+    t.string "flag_icon_url"
     t.index ["id"], name: "index_problem_groups_on_id", unique: true
+  end
+
+  create_table "problem_groups_problems", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+    t.bigint "problem_id", null: false
+    t.bigint "problem_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_group_id"], name: "index_problem_groups_problems_on_problem_group_id"
+    t.index ["problem_id", "problem_group_id"], name: "index_problem_groups_problems_on_problem_id_and_problem_group_id", unique: true
+    t.index ["problem_id"], name: "index_problem_groups_problems_on_problem_id"
   end
 
   create_table "problems", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
@@ -100,9 +113,7 @@ ActiveRecord::Schema.define(version: 20170814170559) do
     t.integer "problem_must_solve_before_id"
     t.integer "reference_point"
     t.integer "perfect_point"
-    t.integer "problem_group_id"
     t.index ["id"], name: "index_problems_on_id", unique: true
-    t.index ["problem_group_id"], name: "index_problems_on_problem_group_id"
     t.index ["problem_must_solve_before_id"], name: "index_problems_on_problem_must_solve_before_id"
   end
 

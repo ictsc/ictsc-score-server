@@ -77,7 +77,7 @@ writers = Role.find_by(name: "Writer").members
 # Problem (12, 22, ... 10n+2) を作成
 # Problem (15, 25, ... 10n+5) を作成
 
-def create_problem(id, text, creator, must_solve_before, max, group_id = nil)
+def create_problem(id, text, creator, must_solve_before, max, group_id = [])
   Problem.seed(:id) do |p|
     p.id                           = id
     p.title                        = "問題#{id}"
@@ -86,7 +86,7 @@ def create_problem(id, text, creator, must_solve_before, max, group_id = nil)
     p.problem_must_solve_before_id = must_solve_before
     p.reference_point              = max * 0.8
     p.perfect_point                = max
-    p.problem_group_id             = group_id
+    p.problem_group_ids            = group_id
     p.created_at                   = DateTime.now
     p.updated_at                   = DateTime.now
   end
@@ -100,13 +100,29 @@ n.times do |i|
     pg.id          = i+1
     pg.name        = "問題グループ#{i+1}"
     pg.description = hiragana[120]
+    pg.completing_bonus_point = rand(10) * 10
   end.first
 
-  create_problem(x,     hiragana[20], writers.sample, nil, rand(5) * 30 + 100, group.id)
-  create_problem(x + 1, hiragana[20], writers.sample, x,   rand(5) * 40 + 200, group.id)
-  create_problem(x + 2, hiragana[20], writers.sample, x+1, rand(5) * 60 + 300, group.id)
-  create_problem(x + 3, hiragana[20], writers.sample, x+2, rand(5) * 50 + 500, group.id)
-  create_problem(x + 5, hiragana[20], writers.sample, x,   rand(11) * 5 + 38 , group.id)
+  create_problem(x,     hiragana[20], writers.sample, nil, rand(5) * 30 + 100, [group.id])
+  create_problem(x + 1, hiragana[20], writers.sample, x,   rand(5) * 40 + 200, [group.id])
+  create_problem(x + 2, hiragana[20], writers.sample, x+1, rand(5) * 60 + 300, [group.id])
+  create_problem(x + 3, hiragana[20], writers.sample, x+2, rand(5) * 50 + 500, [group.id])
+  create_problem(x + 5, hiragana[20], writers.sample, x,   rand(11) * 5 + 38 , [group.id])
+end
+
+n = 5
+n.times do |i|
+  group = ProblemGroup.seed(:id) do |pg|
+    pg.id          = i+n+1
+    pg.name        = "問題グループ#{i+n+1} (non-visible)"
+    pg.description = hiragana[120]
+    pg.completing_bonus_point = rand(10) * 10
+    pg.visible     = false
+  end.first
+
+  Problem.all.shuffle.take(3).each do |problem|
+    problem.problem_groups << group
+  end
 end
 
 Team.all.each do |team|

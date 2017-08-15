@@ -23,6 +23,7 @@ gem "puma", require: false
 gem "tzinfo-data"
 
 group :development do
+  gem "racksh", require: false
   gem "pry"
   gem "pry-byebug"
   gem "rack-lineprof"

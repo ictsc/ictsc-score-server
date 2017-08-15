@@ -104,7 +104,8 @@ describe ProblemGroup do
     let(:params) do
       {
         name: problem_group.name,
-        description: problem_group.description
+        description: problem_group.description,
+        completing_bonus_point: 42
       }
     end
 
@@ -118,7 +119,7 @@ describe ProblemGroup do
 
       all_success_block = Proc.new do
         is_expected.to eq 201
-        expect(json_response.keys).to match_array %w(id description name created_at updated_at)
+        expect(json_response.keys).to match_array %w(id description name completing_bonus_point flag_icon_url visible created_at updated_at)
       end
 
       by_writer &all_success_block
@@ -143,7 +144,10 @@ describe ProblemGroup do
       let(:params) do
         {
           name: new_name,
-          description: problem_group.description
+          description: problem_group.description,
+          completing_bonus_point: problem_group.completing_bonus_point,
+          visible: problem_group.visible,
+          flag_icon_url: problem_group.flag_icon_url
         }
       end
 
