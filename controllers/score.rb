@@ -20,11 +20,11 @@ class ScoreRoutes < Sinatra::Base
 
     # NOTE: Calculate each Score#cleared_problem_group? is too slow
     # So, fetch cleared problem ids first, and calculate each entities using it.
-    cleared_pg_ids = Score.cleared_problem_group_ids(team_id: current_user&.team_id)
+    cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
     # @scores_array = @scores.as_json
     @scores.each do |s|
-      s["bonus_point"]    = (cleared_pg_ids.include? s["id"]) ? Setting.bonus_point_for_clear_problem_group : 0
+      s["bonus_point"]    = cleared_pg_bonuses[s["id"]] || 0
       s["subtotal_point"] = s["point"] + s["bonus_point"]
     end
 

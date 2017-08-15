@@ -32,7 +32,7 @@ describe Problem do
       by_admin       { is_expected.to eq 2 }
     end
 
-    let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_id) }
+    let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids) }
     describe '#keys for problem' do
       let(:json_response_problem) { json_response.find{|p| p['id'] == problem.id } }
       subject { json_response_problem.keys }
@@ -93,7 +93,7 @@ describe Problem do
     end
 
     describe '#keys' do
-      let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_id) }
+      let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
@@ -122,12 +122,12 @@ describe Problem do
         creator_id: problem.creator_id,
         reference_point: problem.reference_point,
         perfect_point: problem.perfect_point,
-        problem_group_id: problem.problem_group_id,
+        problem_group_ids: problem.problem_group_ids,
       }
     end
 
     describe 'create problem' do
-      let(:expected_keys) { %w(id title text creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_id) }
+      let(:expected_keys) { %w(id title text creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids) }
       let(:response) { post '/api/problems', params }
       subject { response.status }
 
@@ -173,7 +173,7 @@ describe Problem do
           creator_id: problem.creator_id,
           reference_point: problem.reference_point,
           perfect_point: problem.perfect_point,
-          problem_group_id: problem.problem_group_id,
+          problem_group_ids: problem.problem_group_ids,
           problem_must_solve_before_id: problem.problem_must_solve_before_id
         }
       end

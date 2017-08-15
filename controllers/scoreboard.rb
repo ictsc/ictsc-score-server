@@ -23,14 +23,13 @@ class ScoreBoardRoutes < Sinatra::Base
       # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
       all_scores = [
           Score.all.joins(:answer).group("answers.team_id").sum(:point),
-          Score.cleared_problem_group_ids(with_tid: true).inject(Hash.new(0)){|acc, (tid, score_ids)| acc[tid] += score_ids.count * Setting.bonus_point_for_clear_problem_group; acc },
+          Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
         ] \
-        .map(&:to_a) \
-        .flatten(1) \
+        .flat_map(&:to_a) \
         .inject(Hash.new(0)){|acc, (team_id, score)| acc[team_id] += score; acc } \
         .to_a \
         .sort_by(&:last) \
-        .reverse
+        .reverse # 1st, 2nd, ..., last
 
       if not all
         team_score = all_scores.find{|(team_id, score)| team_id == team.id }&.last

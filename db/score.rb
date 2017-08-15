@@ -12,36 +12,42 @@ class Score < ActiveRecord::Base
   end
 
   # self が、チームにて問題グループ全ての基準を満たした最初の解答かどうか
-  def cleared_problem_group?
+  def cleared_problem_group_bonus
     answer = self.answer
-    problem_group_id = answer.problem.problem_group_id
+    problem_groups = answer.problem.problem_groups
 
-    return false if problem_group_id.nil?
+    return 0 if problem_groups.empty?
 
-    # pg: problem_group
+    problem_groups.map do |problem_group|
+      # pg: problem_group
+      problems_count_in_pg = problem_group.problems.count
 
-    problems_count_in_pg = Problem.where(problem_group_id: problem_group_id).count
+      relation_problems_solved = Score \
+        .joins(answer: { problem: { problem_groups: {}}}) \
+        .where(answers: { team_id: answer.team_id, problems: { problem_groups: { id: problem_group.id } } }) \
+        .group('problems.id', 'problem_groups.id') \
+        .having('sum(scores.point) >= problems.reference_point') \
+        .select('problem_groups.id', 'problems.reference_point')
 
-    relation_problems_solved = Score \
-      .joins(answer: { problem: { problem_group: {}}}) \
-      .where(answers: {team_id: answer.team_id}, problems: {problem_group_id: problem_group_id}) \
-      .group(:problem_id, :problem_group_id) \
-      .having("sum(scores.point) >= problems.reference_point") \
-      .select(:problem_group_id, "problems.reference_point") # select `problems.reference_point` for MySQL
+      problems_solved_count = relation_problems_solved.where("scores.id <= ?", self.id).to_a.count
 
-    problems_solved_count = relation_problems_solved.where("scores.id <= ?", self.id).to_a.count
+      # if this score doesn't make all problems in pg cleared yet, return false
+      next 0 if problems_solved_count != problems_count_in_pg
 
-    # if this score doesn't make all problems in pg cleared yet, return false
-    return false if problems_solved_count != problems_count_in_pg
+      # if this score before than self have solved all problems in pg, return false
+      problems_solved_before_self_count = relation_problems_solved.where("scores.id < ?", self.id).to_a.count
 
-    # if this score before than self have solved all problems in pg, return false
-    problems_solved_before_self_count = relation_problems_solved.where("scores.id < ?", self.id).to_a.count
-    return problems_solved_before_self_count != problems_solved_count
+      next 0 if problems_solved_before_self_count == problems_solved_count
+
+      problem_group.completing_bonus_point
+    end.sum
   end
 
-  def self.cleared_problem_group_ids(team_id: nil, with_tid: false)
-    # reference_points[pgid][id] = referenec_point
-    reference_points = Problem \
+  # @return { team_id: { problem_group_id: completing_bonus_point } }  (when with_tid: true)
+  # @return { problem_group_id: completing_bonus_point }               (when with_tid: false)
+  def self.cleared_problem_group_bonuses(team_id: nil, with_tid: false)
+    # reference_points[problem_group_id][problem_id] = reference_point
+    reference_points = Problem.joins(:problem_groups) \
       .all \
       .pluck(:problem_group_id, :id, :reference_point) \
       .inject({}) do |acc, (pgid, id, ref)|
@@ -51,36 +57,38 @@ class Score < ActiveRecord::Base
         acc
       end
 
-    total_problems_by_pg = Problem.all.group(:problem_group_id).count
-    subtotal_point = {} # [tid][pid]
-    score_id_cleared_pg = {} # [tid][pgid]
+    subtotal_point = {} # [team_id][problem_id]
+    score_id_with_bonus = {} # [team_id][score_id][problem_group_id] = completing_bonus_point or 0
 
-    relation = team_id.nil? ? Score : Score.joins(:answer).where(answers: { team_id: team_id })
+    score_relation = team_id.nil? ? Score : Score.joins(:answer).where(answers: { team_id: team_id })
+    score_relation.joins(answer: { problem: { problem_groups: {} } }) \
+      .order(:id) \
+      .pluck('id', 'team_id', 'answers.problem_id', 'scores.point', 'problem_groups_problems.problem_group_id', 'problem_groups.completing_bonus_point') \
+      .each do |(score_id, team_id, problem_id, point, pg_id, pg_bonus_point)|
+        subtotal_point[team_id] ||= Hash.new(0)
+        score_id_with_bonus[team_id] ||= {}
+        score_id_with_bonus[team_id][score_id] ||= {}
 
-    relation.includes(answer: { problem: {} }).order(:id).each do |x|
-      tid = x.answer.team_id
-      pid = x.answer.problem.id
-      pgid = x.answer.problem.problem_group_id
+        next if score_id_with_bonus[team_id][score_id][pg_id]
 
-      subtotal_point[tid] ||= Hash.new(0)
-      score_id_cleared_pg[tid] ||= {}
-
-      next if score_id_cleared_pg[tid][pgid]
-
-      subtotal_point[tid][pid] += x.point
-      score_id_cleared_pg[tid][pgid] = x.id if reference_points[pgid].all?{|(pid, ref)| ref <= subtotal_point[tid][pid] }
+        subtotal_point[team_id][problem_id] += point
+        score_id_with_bonus[team_id][score_id][pg_id] ||= pg_bonus_point if reference_points[pg_id].all?{|(problem_id, ref)| ref <= subtotal_point[team_id][problem_id] }
+      end
+    create_hash = proc do |hash|
+      hash&.map{|score_id, pg_id_bonus_hash| [score_id, pg_id_bonus_hash.values.inject(:+) ] }&.to_h&.compact || {}
     end
 
-    return Hash[score_id_cleared_pg.map{|k, v| [k, v.values] }] if with_tid
-    return score_id_cleared_pg.values.flat_map(&:values)
+    if with_tid
+      score_id_with_bonus.map{|team_id, hash| [team_id, create_hash.call(score_id_with_bonus[team_id])] }.to_h
+    elsif team_id
+      create_hash.call(score_id_with_bonus[team_id])
+    else
+      create_hash.call(score_id_with_bonus.values.inject(&:merge))
+    end
   end
 
   def bonus_point
-    if cleared_problem_group?
-      Setting.bonus_point_for_clear_problem_group 
-    else
-      0
-    end
+    cleared_problem_group_bonus
   end
 
   def subtotal_point
