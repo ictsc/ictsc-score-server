@@ -104,9 +104,9 @@ class AnswerRoutes < Sinatra::Base
         status 400
         next json completed: "participant can't make multiple answers of one problem completed within #{Setting.answer_reply_delay_sec} seconds"
       end
-
-      @attrs[:completed_at] = DateTime.now
     end
+
+    @attrs[:completed_at] = DateTime.now if !@answer.completed && @attrs[:completed]
 
     @answer.attributes = @attrs
 
