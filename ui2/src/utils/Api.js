@@ -97,7 +97,7 @@ export class API {
       .then(res => res.body)
   }
   static getTeamWithAnswersComments (id, req = superagent) {
-    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-member`))
       .then(res => res.body)
   }
   static getTeamWithAnswers (id, req = superagent) {
@@ -105,7 +105,7 @@ export class API {
       .then(res => res.body)
   }
   static getTeamWithIssues (id, req = superagent) {
-    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-member`))
       .then(res => res.body)
   }
   static postAnswersComments (problemId, text, req = superagent) {
@@ -215,7 +215,7 @@ export class API {
   }
   static addAnswerComment (answerId, text, req = superagent) {
     return RequestMiddleware(
-      req.post(`answers/${answerId}/comments`)
+      req.post(`problems/${answerId}/answers`)
         .send(JSON.stringify({ text }))
     ).then(res => res.body)
   }

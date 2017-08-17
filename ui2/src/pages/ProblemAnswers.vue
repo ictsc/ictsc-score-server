@@ -140,20 +140,12 @@ export default {
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 
-        var answers = await API.getAnswersWithComments();
-        var filteredAnswer = answers
-          .filter(i => '' + i.problem_id === this.problemId)
-          .filter(i => '' + i.team_id === this.teamId);
-
-        // 解答が無い・最後の解答がcompletedである場合、新規作成
-        var answer;
-        if (filteredAnswer.length === 0 || filteredAnswer[filteredAnswer.length - 1].completed) {
-          answer = await API.postAnswers(this.teamId, this.problemId);
-        } else {
-          answer = filteredAnswer[filteredAnswer.length - 1]
-        }
-
-        await API.addAnswerComment(answer.id, this.newAnswer);
+        // 新規解答の投稿
+        var answer = await API.addAnswerComment(this.problemId, this.newAnswer);
+        debugger;
+        API.patchAnswers(answer.id, {
+          completed: true,
+        });
 
         this.newAnswer = '';
         this.reload();
