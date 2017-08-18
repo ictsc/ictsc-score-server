@@ -20,6 +20,7 @@
     "superagent": "^3.2.1",
     "superagent-prefix": "0.0.2",
     "vue": "^2.4.1",
+    "vue-async-data-2": "^0.0.2",
     "vue-router": "^2.7.0",
     "vuex": "^2.3.0"
   },
@@ -81,7 +82,6 @@
     "simplemde": "^1.11.2",
     "underscore": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",
     "url-loader": "^0.5.8",
-    "vue-async-data": "git+https://github.com/kamijin-fanta/vue-async-data.git",
     "vue-loader": "^13.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.3.3",

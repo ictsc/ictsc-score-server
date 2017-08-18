@@ -8,7 +8,7 @@ import 'element-ui/lib/theme-default/index.css'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 
-import { AsyncDataPlugin } from 'vue-async-data'
+import { AsyncDataPlugin } from 'vue-async-data-2'
 Vue.use(AsyncDataPlugin)
 
 import App from './App'
