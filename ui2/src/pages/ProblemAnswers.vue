@@ -12,13 +12,23 @@
         <template v-for="answer in currentAnswers">
           <answer :value="answer" :reload="reload"></answer>
         </template>
-        <div class="new-issue">
+        <div class="new-issue" v-show="!confirm">
           <simple-markdown-editor v-model="newAnswer"></simple-markdown-editor>
           <div class="tools">
-            <button v-on:click="postNewIssue()" class="btn btn-success">解答投稿</button>
+            <button v-on:click="enableConfirm()" class="btn btn-success">解答投稿</button>
           </div>
           <div v-if="!canAnswer" class="overlay">
             {{ scoringCompleteTime | dateRelative }}に解答送信が可能になります。
+          </div>
+        </div>
+        <div v-if="confirm" class="confirm">
+          <p>以下の内容で解答を送信しますか？</p>
+          <div class="markdown">
+            <markdown :value="this.newAnswer"></markdown>
+          </div>
+          <div class="buttonWrapper">
+            <button v-on:click="disableConfirm()" class="btn btn-default">修正</button>
+            <button v-on:click="postNewIssue()" class="btn btn-success">解答送信</button>
           </div>
         </div>
       </div>
@@ -44,6 +54,29 @@
   padding-top: 15rem;
 }
 
+.confirm {
+  background: white;
+  padding: 0;
+  text-align: left;
+}
+
+.confirm p {
+  font-size: 1.2rem;
+  text-align: left;
+  padding: 10px 20px 5px;
+  border-bottom: 1px solid #ed1848;
+}
+
+.confirm .markdown {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.confirm .buttonWrapper {
+  text-align: right;
+  padding: 10px 20px;
+}
 </style>
 
 <script>
@@ -51,6 +84,7 @@ import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import Problem from '../components/Problem'
 import Answer from '../components/Answer'
+import Markdown from '../components/Markdown'
 import ProblemModeSwitch from '../components/ProblemModeSwitch'
 import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import {
@@ -67,6 +101,7 @@ export default {
     SimpleMarkdownEditor,
     Answer,
     ProblemModeSwitch,
+    Markdown
   },
   filters: {
     dateRelative,
@@ -75,6 +110,7 @@ export default {
     return {
       newAnswer: '',
       currentDate: new Date(),
+      confirm: false,
     }
   },
   asyncData: {
@@ -148,6 +184,7 @@ export default {
         });
 
         this.newAnswer = '';
+        this.confirm = false;
         this.reload();
         Emit(PUSH_NOTIF, {
           type: 'success',
@@ -166,6 +203,12 @@ export default {
     },
     reload () {
       this.asyncReload();
+    },
+    enableConfirm () {
+      this.confirm = true;
+    },
+    disableConfirm () {
+      this.confirm = false;
     }
   },
 }
