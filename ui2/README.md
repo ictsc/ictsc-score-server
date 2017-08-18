@@ -1,20 +1,20 @@
-# vue-sandbox
+# ictsc-score-server ui
 
 ```
-npm install
+yarn install
 
-npm run dev  # ローカル開発用
-npm run build  # プロダクション向けにビルド
+yarn run dev  # ローカル開発用
+yarn run build  # プロダクション向けにビルド
 ```
 
 ## 独自の文化
 
-### vue-data-sync
+### vue-async-data-2
 
 - Ajax中のローディング・エラーハンドリング・dataへの代入を担当してくれるプラグイン
 - 自作
 
-https://github.com/kamijin-fanta/vue-async-data
+https://github.com/kamijin-fanta/vue-async-data-2
 
 ### src/utils/EventBus
 
