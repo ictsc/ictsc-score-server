@@ -2,7 +2,7 @@
   <div>
     <div class="answers">
       <div v-if="isAdmin" class="scoring">
-        <div v-if="value.completed" class="row">
+        <div v-if="!value.score" class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
           </div>
@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="status">
-        <template v-if="true">
+        <template>
           <div v-if="value.score" class="result">
             得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
           </div>

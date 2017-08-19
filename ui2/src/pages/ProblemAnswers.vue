@@ -12,22 +12,22 @@
         <template v-for="answer in currentAnswers">
           <answer :value="answer" :reload="reload"></answer>
         </template>
-        <div class="new-issue" v-show="!confirm">
+        <div class="new-issue" v-show="!isAdmin && !confirming">
           <simple-markdown-editor v-model="newAnswer"></simple-markdown-editor>
           <div class="tools">
-            <button v-on:click="enableConfirm()" class="btn btn-success">解答投稿</button>
+            <button v-on:click="showConfirmation()" class="btn btn-success">解答投稿</button>
           </div>
           <div v-if="!canAnswer" class="overlay">
             {{ scoringCompleteTime | dateRelative }}に解答送信が可能になります。
           </div>
         </div>
-        <div v-if="confirm" class="confirm">
+        <div v-if="confirming" class="confirm">
           <p>以下の内容で解答を送信しますか？</p>
           <div class="markdown">
             <markdown :value="this.newAnswer"></markdown>
           </div>
           <div class="buttonWrapper">
-            <button v-on:click="disableConfirm()" class="btn btn-default">修正</button>
+            <button v-on:click="hideConfirmation()" class="btn btn-default">修正</button>
             <button v-on:click="postNewIssue()" class="btn btn-success">解答送信</button>
           </div>
         </div>
@@ -93,6 +93,7 @@ import {
   REMOVE_NOTIF
 } from '../utils/EventBus'
 import { dateRelative } from '../utils/Filters'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'problem-answers',
@@ -110,7 +111,7 @@ export default {
     return {
       newAnswer: '',
       currentDate: new Date(),
-      confirm: false,
+      confirming: false,
     }
   },
   asyncData: {
@@ -145,18 +146,20 @@ export default {
     scoringAnswers () {
       return this.answers
         .filter(ans => `${ans.problem_id}` === this.problemId)
-        .filter(ans => ans.completed && !ans.score)
-        .filter(ans => this.currentDate < new Date(ans.completed_at).valueOf() + this.delay)
+        .filter(ans => !ans.score)
     },
     // 回答可能かどうか
     canAnswer () {
-      return this.scoringAnswers.length === 0;
+      return this.scoringCompleteTime < new Date(this.currentDate).valueOf();
     },
     // 採点が完了する時間(ms)
     scoringCompleteTime () {
       return this.scoringAnswers
-        .reduce((p, n) => Math.max(p, new Date(n.completed_at).valueOf() + this.delay), 0)
+        .reduce((p, n) => Math.max(p, new Date(n.created_at).valueOf() + this.delay), 0)
     },
+    ...mapGetters([
+      'isAdmin',
+    ])
   },
   watch: {
     teamId () {
@@ -176,15 +179,10 @@ export default {
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 
-        // 新規解答の投稿
-        var answer = await API.addAnswerComment(this.problemId, this.newAnswer);
-        debugger;
-        API.patchAnswers(answer.id, {
-          completed: true,
-        });
+        await API.addAnswer(this.problemId, this.newAnswer);
 
         this.newAnswer = '';
-        this.confirm = false;
+        this.confirming = false;
         this.reload();
         Emit(PUSH_NOTIF, {
           type: 'success',
@@ -204,11 +202,11 @@ export default {
     reload () {
       this.asyncReload();
     },
-    enableConfirm () {
-      this.confirm = true;
+    showConfirmation () {
+      this.confirming = true;
     },
-    disableConfirm () {
-      this.confirm = false;
+    hideConfirmation () {
+      this.confirming = false;
     }
   },
 }
