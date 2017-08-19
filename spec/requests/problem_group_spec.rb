@@ -30,6 +30,17 @@ describe ProblemGroup do
         by_writer      { is_expected.to eq 2 }
         by_admin       { is_expected.to eq 2 }
       end
+
+      let(:expected_keys) { %w(id description name problem_ids completing_bonus_point flag_icon_url visible created_at updated_at) }
+      describe '#keys for problem_groups' do
+        let(:json_response_problem) { json_response.first }
+        subject { json_response_problem.keys }
+
+        by_viewer      { is_expected.to match_array expected_keys }
+        by_participant { is_expected.to match_array expected_keys }
+        by_writer      { is_expected.to match_array expected_keys }
+        by_admin       { is_expected.to match_array expected_keys }
+      end
     end
 
     describe 'before start competition' do
@@ -77,6 +88,16 @@ describe ProblemGroup do
       by_participant { is_expected.to eq 200 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
+
+      describe '#keys' do
+       let(:expected_keys) { %w(id description name problem_ids completing_bonus_point flag_icon_url visible created_at updated_at) }
+        subject { json_response.keys }
+
+        by_viewer      { is_expected.to match_array expected_keys }
+        by_participant { is_expected.to match_array expected_keys }
+        by_writer      { is_expected.to match_array expected_keys }
+        by_admin       { is_expected.to match_array expected_keys }
+      end
     end
 
     describe 'before start competition' do
