@@ -109,7 +109,7 @@ export default {
     },
     status (answers, teamId, problemId) {
       // 0 未回答  1 未採点  2 採点済み
-      var teamAnswers = this.teamAnswers(answers, teamId, problemId).filter(ans => ans.completed);
+      var teamAnswers = this.teamAnswers(answers, teamId, problemId);
       if (teamAnswers.length === 0) return 0;
       return teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 2 : 1), 2);

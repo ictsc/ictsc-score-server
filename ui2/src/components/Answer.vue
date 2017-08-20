@@ -2,7 +2,7 @@
   <div>
     <div class="answers">
       <div v-if="isAdmin" class="scoring">
-        <div v-if="value.completed" class="row">
+        <div class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
           </div>
@@ -11,22 +11,19 @@
           </div>
         </div>
       </div>
-      <div v-if="value.comments" v-for="answer in value.comments" class="answer">
-        <markdown :value="answer.text"></markdown>
+      <div v-if="value" class="answer">
+        <markdown :value="value.text"></markdown>
         <div class="meta">
-          <small>{{ answer.created_at }}</small>
+          <small>{{ value.created_at }}</small>
         </div>
       </div>
       <div class="status">
-        <template v-if="value.completed">
+        <template>
           <div v-if="value.score" class="result">
             得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
           </div>
           <div v-if="!value.score" class="pending">採点依頼中...</div>
         </template>
-        <div v-else class="send">
-          <button v-on:click="sendRequest()" class="btn btn-block btn-secondary">採点依頼を送る</button>
-        </div>
       </div>
     </div>
   </div>
@@ -110,30 +107,6 @@ export default {
   destroyed () {
   },
   methods: {
-    sendRequest () {
-      Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
-      API.patchAnswers(this.value.id, {
-        completed: true,
-      })
-        .then(res => {
-          console.log('Patch OK');
-          Emit(PUSH_NOTIF, {
-            type: 'success',
-            title: '投稿しました',
-            detail: '',
-            key: 'issue',
-          });
-          if (this.reload.apply) this.reload();
-        })
-        .catch(err => {
-          console.error(err);
-          Emit(PUSH_NOTIF, {
-            type: 'error',
-            title: '投稿に失敗しました',
-            key: 'issue',
-          });
-        })
-    },
     submitPoint () {
       Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 

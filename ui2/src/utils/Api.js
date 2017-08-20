@@ -97,7 +97,7 @@ export class API {
       .then(res => res.body)
   }
   static getTeamWithAnswersComments (id, req = superagent) {
-    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-member`))
       .then(res => res.body)
   }
   static getTeamWithAnswers (id, req = superagent) {
@@ -105,9 +105,10 @@ export class API {
       .then(res => res.body)
   }
   static getTeamWithIssues (id, req = superagent) {
-    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-comments-member`))
+    return RequestMiddleware(req.get(`teams/${id}?with=members,answers-score,answers-member`))
       .then(res => res.body)
   }
+  // 補足説明の追加
   static postAnswersComments (problemId, text, req = superagent) {
     return RequestMiddleware(
       req.post(`problems/${problemId}/comments`)
@@ -200,22 +201,9 @@ export class API {
     return RequestMiddleware(req.get(`answers`))
       .then(res => res.body)
   }
-  static getAnswersWithComments (req = superagent) {
-    return RequestMiddleware(req.get(`answers?with=comments`))
-      .then(res => res.body)
-  }
-  static postAnswers (team, problem, req = superagent) {
+  static postAnswer (answerId, text, req = superagent) {
     return RequestMiddleware(
-      req.post(`answers`)
-        .send(JSON.stringify({
-          problem_id: +problem,
-          team_id: +team,
-        }))
-    ).then(res => res.body)
-  }
-  static addAnswerComment (answerId, text, req = superagent) {
-    return RequestMiddleware(
-      req.post(`answers/${answerId}/comments`)
+      req.post(`problems/${answerId}/answers`)
         .send(JSON.stringify({ text }))
     ).then(res => res.body)
   }

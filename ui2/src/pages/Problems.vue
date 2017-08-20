@@ -88,7 +88,7 @@
     </div>
 
     <div v-loading="asyncLoading" class="groups">
-      <div v-for="group in problemGroups" class="group row">
+      <div v-for="group in problemGroups" v-if="group.visible" class="group row">
         <div class="col-4">
           <div class="detail">
             <h2>{{ group.name }}</h2>
@@ -99,7 +99,8 @@
           <div class="problems">
             <template v-for="problem in problems">
               <router-link
-                v-if="group.id === problem.problem_group_id"
+                v-if="group.id === problem_group_id"
+                v-for="problem_group_id in problem.problem_group_ids"
                 :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
                 class="problem d-flex">
                 <div v-if="problem.title === undefined" class="overlay">
