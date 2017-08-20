@@ -29,7 +29,6 @@
 <script>
 import { API } from '../utils/Api'
 import { tickDuration } from '../utils/Filters'
-import * as d3 from 'd3'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -64,7 +63,7 @@ export default {
       }
     },
     ratio () {
-      return d3.format('.3%')(this.scoredPurePoint / this.sumPurePoint);
+      return this.scoredPurePoint;
     },
     ...mapGetters([
       'isMember',
