@@ -201,7 +201,7 @@ export class API {
     return RequestMiddleware(req.get(`answers`))
       .then(res => res.body)
   }
-  static addAnswer (answerId, text, req = superagent) {
+  static postAnswer (answerId, text, req = superagent) {
     return RequestMiddleware(
       req.post(`problems/${answerId}/answers`)
         .send(JSON.stringify({ text }))

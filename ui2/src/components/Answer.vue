@@ -2,7 +2,7 @@
   <div>
     <div class="answers">
       <div v-if="isAdmin" class="scoring">
-        <div v-if="!value.score" class="row">
+        <div class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
           </div>

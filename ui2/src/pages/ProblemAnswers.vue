@@ -179,7 +179,7 @@ export default {
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'answer');
 
-        await API.addAnswer(this.problemId, this.newAnswer);
+        await API.postAnswer(this.problemId, this.newAnswer);
 
         this.newAnswer = '';
         this.confirming = false;
