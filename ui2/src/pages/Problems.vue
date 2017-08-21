@@ -8,34 +8,34 @@
       <span slot="title">新規問題</span>
       <div slot="body">
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">タイトル</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">タイトル</label>
+          <div class="col-sm-9">
             <input v-model="newProblemObj.title" type="text" class="form-control" placeholder="タイトル">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">基準点</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">基準点</label>
+          <div class="col-sm-9">
             <input v-model="newProblemObj.reference_point" type="number" class="form-control">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">満点</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">満点</label>
+          <div class="col-sm-9">
             <input v-model="newProblemObj.perfect_point" type="number" class="form-control">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">依存問題</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">依存問題</label>
+          <div class="col-sm-9">
             <select class="form-control" v-model="newProblemObj.problem_must_solve_before_id">
               <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
             </select>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">グループ<br />(複数選択可)</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">グループ<br />(複数選択可)</label>
+          <div class="col-sm-9">
             <select class="form-control" v-model="newProblemObj.problem_group_ids" multiple>
               <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
             </select>
@@ -54,14 +54,14 @@
       <span slot="title">新規グループ</span>
       <div slot="body">
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">グループ名</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">グループ名</label>
+          <div class="col-sm-9">
             <input v-model="newGroupObj.name" type="text" class="form-control" placeholder="グループ名">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">表示する</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">表示する</label>
+          <div class="col-sm-9">
             <select v-model="newGroupObj.visible" class="form-control" name="visibility">
               <option :value="1">はい</option>
               <option :value="0">いいえ</option>
@@ -69,14 +69,14 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">完答ボーナス</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">完答ボーナス</label>
+          <div class="col-sm-9">
             <input v-model="newGroupObj.completing_bonus_point" type="number" class="form-control" placeholder="完答ボーナス">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">国旗</label>
-          <div class="col-sm-10">
+          <label class="col-sm-3 col-form-label">国旗</label>
+          <div class="col-sm-9">
             <input v-model="newGroupObj.flag_icon_url" type="text" class="form-control" placeholder="http://">
           </div>
         </div>
@@ -488,7 +488,7 @@ export default {
       console.log(this.newGroupObj);
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'problemGroup');
-        await API.postGroup(this.newGroupObj);
+        await API.postProblemGroup(this.newGroupObj);
         this.newGroupObj.name = '';
         this.newGroupObj.description = '';
         Emit(PUSH_NOTIF, {

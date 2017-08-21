@@ -136,7 +136,7 @@ export class API {
   }
 
   // groups
-  static postGroup (obj, req = superagent) {
+  static postProblemGroup (obj, req = superagent) {
     return RequestMiddleware(
       req.post(`problem_groups`)
         .send(JSON.stringify(obj))
