@@ -1,6 +1,6 @@
 class ProblemGroup < ActiveRecord::Base
   validates :name, presence: true
-  validates :visible, presence: true
+  validates :visible, inclusion: { in: [true, false] }
   validates :completing_bonus_point, presence: true
 
   has_and_belongs_to_many :problems, dependent: :nullify
