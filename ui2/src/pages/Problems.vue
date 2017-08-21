@@ -1,15 +1,16 @@
 <template>
   <div>
     <div v-if="isAdmin" class="fixed-tool-tips">
-      <div v-on:click="showAdd = true" class="add"><i class="fa fa-plus"></i></div>
+      <div v-on:click="showAddGroup = true" class="add"><i class="fa fa-plus"></i>新規グループ</div>
+      <div v-on:click="showAddProblem = true" class="add"><i class="fa fa-plus"></i>新規問題</div>
     </div>
-    <message-box v-model="showAdd">
+    <message-box v-model="showAddProblem">
       <span slot="title">新規問題</span>
       <div slot="body">
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">グループ</label>
+          <label class="col-sm-2 col-form-label">グループ<br />(複数選択可)</label>
           <div class="col-sm-10">
-            <select class="form-control" v-model="newObj.problem_group_id">
+            <select class="form-control" v-model="newProblemObj.problem_group_ids" multiple>
               <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
             </select>
           </div>
@@ -17,35 +18,73 @@
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">依存問題</label>
           <div class="col-sm-10">
-            <select class="form-control" v-model="newObj.problem_must_solve_before_id">
+            <select class="form-control" v-model="newProblemObj.problem_must_solve_before_id">
               <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
             </select>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">Title</label>
+          <label class="col-sm-2 col-form-label">タイトル</label>
           <div class="col-sm-10">
-            <input v-model="newObj.title" type="text" class="form-control" placeholder="タイトル">
+            <input v-model="newProblemObj.title" type="text" class="form-control" placeholder="タイトル">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">基準点</label>
           <div class="col-sm-10">
-            <input v-model="newObj.reference_point" type="number" class="form-control">
+            <input v-model="newProblemObj.reference_point" type="number" class="form-control">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">満点</label>
           <div class="col-sm-10">
-            <input v-model="newObj.perfect_point" type="number" class="form-control">
+            <input v-model="newProblemObj.perfect_point" type="number" class="form-control">
           </div>
         </div>
 
-        <simple-markdown-editor v-model="newObj.text"></simple-markdown-editor>
+        <simple-markdown-editor v-model="newProblemObj.text"></simple-markdown-editor>
       </div>
       <template slot="buttons" scope="props">
         <button v-on:click="addProblem()" class="btn btn-lg btn-success">
           <i class="fa fa-plus"></i> 問題を追加する
+        </button>
+      </template>
+    </message-box>
+    <message-box v-model="showAddGroup">
+      <span slot="title">新規グループ</span>
+      <div slot="body">
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">グループ名</label>
+          <div class="col-sm-10">
+            <input v-model="newGroupObj.name" type="text" class="form-control" placeholder="グループ名">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">表示する</label>
+          <div class="col-sm-10">
+            <select v-model="newGroupObj.visible" class="form-control" name="visibility">
+              <option value="1">はい</option>
+              <option value="0">いいえ</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">完答ボーナス</label>
+          <div class="col-sm-10">
+            <input v-model="newGroupObj.completing_bonus_point" type="number" class="form-control" placeholder="完答ボーナス">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">国旗</label>
+          <div class="col-sm-10">
+            <input v-model="newGroupObj.flag_icon_url" type="text" class="form-control" placeholder="http://">
+          </div>
+        </div>
+        <simple-markdown-editor v-model="newGroupObj.description"></simple-markdown-editor>
+      </div>
+      <template slot="buttons" scope="props">
+        <button v-on:click="addGroup()" class="btn btn-lg btn-success">
+          <i class="fa fa-plus"></i> グループを追加する
         </button>
       </template>
     </message-box>
@@ -99,8 +138,8 @@
           <div class="problems">
             <template v-for="problem in problems">
               <router-link
-                v-if="group.id === problem_group_id"
                 v-for="problem_group_id in problem.problem_group_ids"
+                v-if="group.id === problem_group_id"
                 :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
                 class="problem d-flex">
                 <div v-if="problem.title === undefined" class="overlay">
@@ -151,8 +190,13 @@
   background: #888;
   color: white;
   line-height: 1;
-  border-radius: 50%;
-  font-size: 2rem;
+  border-radius: 2rem;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.add > .fa {
+  padding-right: 5px;
 }
 
 .groups {
@@ -294,14 +338,22 @@ export default {
   },
   data () {
     return {
-      showAdd: false,
-      newObj: {
+      showAddProblem: false,
+      showAddGroup: false,
+      newProblemObj: {
         title: '',
         text: '',
         reference_point: 0,
         perfect_point: 0,
-        problem_group_id: '',
+        problem_group_ids: [],
         problem_must_solve_before_id: null,
+      },
+      newGroupObj: {
+        name: '',
+        description: '',
+        visible: 1,
+        completing_bonus_point: 0,
+        flag_icon_url: '',
       },
     }
   },
@@ -409,12 +461,12 @@ export default {
       else return '???';
     },
     async addProblem () {
-      console.log(this.newObj);
+      console.log(this.newProblemObj);
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
-        await API.postProblems(this.newObj);
-        this.newObj.title = '';
-        this.newObj.text = '';
+        await API.postProblems(this.newProblemObj);
+        this.newProblemObj.title = '';
+        this.newProblemObj.text = '';
         Emit(PUSH_NOTIF, {
           type: 'success',
           title: '投稿しました',
@@ -426,9 +478,33 @@ export default {
         console.log(err)
         Emit(PUSH_NOTIF, {
           type: 'error',
-          title: '投稿に失敗しました失敗しました',
+          title: '投稿に失敗しました',
           detail: '',
           key: 'problem',
+        });
+      }
+    },
+    async addGroup () {
+      console.log(this.newGroupObj);
+      try {
+        Emit(REMOVE_NOTIF, msg => msg.key === 'problemGroup');
+        await API.postGroup(this.newGroupObj);
+        this.newGroupObj.name = '';
+        this.newGroupObj.description = '';
+        Emit(PUSH_NOTIF, {
+          type: 'success',
+          title: '投稿しました',
+          detail: '',
+          key: 'problemGroup',
+        });
+        this.asyncReload('problemGroups');
+      } catch (err) {
+        console.log(err)
+        Emit(PUSH_NOTIF, {
+          type: 'error',
+          title: '投稿に失敗しました',
+          detail: '',
+          key: 'problemGroup',
         });
       }
     },

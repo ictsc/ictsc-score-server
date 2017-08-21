@@ -135,6 +135,14 @@ export class API {
       .then(res => res.body)
   }
 
+  // groups
+  static postGroup (obj, req = superagent) {
+    return RequestMiddleware(
+      req.post(`problem_groups`)
+        .send(JSON.stringify(obj))
+    ).then(res => res.body)
+  }
+
   // problems
   static getProblemGroups (req = superagent) {
     return RequestMiddleware(req.get(`problem_groups`))
