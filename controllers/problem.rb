@@ -92,9 +92,15 @@ class ProblemRoutes < Sinatra::Base
   post "/api/problems" do
     halt 403 if not Problem.allowed_to_create_by?(current_user)
 
-    @attrs = params_to_attributes_of(klass: Problem)
+    @attrs = params_to_attributes_of(klass: Problem, include: [:problem_group_ids])
     @attrs[:creator_id] = current_user.id
-    @problem = Problem.new(@attrs)
+
+    begin
+      @problem = Problem.new(@attrs)
+    rescue ActiveRecord::RecordNotFound
+      status 400
+      next json problem_group_ids: "存在しないレコードです"
+    end
 
     if @problem.save
       status 201
@@ -118,6 +124,13 @@ class ProblemRoutes < Sinatra::Base
     if not @problem.valid?
       status 400
       next json @problem.errors
+    end
+
+    begin
+      @problem.problem_group_ids = params[:problem_group_ids]
+    rescue ActiveRecord::RecordNotFound
+      status 400
+      next json problem_group_ids: "存在しないレコードです"
     end
 
     if @problem.save

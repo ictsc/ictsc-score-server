@@ -33,13 +33,19 @@ class ProblemGroupRoutes < Sinatra::Base
   post "/api/problem_groups" do
     halt 403 if not ProblemGroup.allowed_to_create_by?(current_user)
 
-    @attrs = params_to_attributes_of(klass: ProblemGroup)
-    @problem_group = ProblemGroup.new(@attrs)
+    @attrs = params_to_attributes_of(klass: ProblemGroup, include: [:problem_ids])
+
+    begin
+      @problem_group = ProblemGroup.new(@attrs)
+    rescue ActiveRecord::RecordNotFound
+      status 400
+      next json problem_ids: "存在しないレコードです"
+    end
 
     if @problem_group.save
       status 201
       headers "Location" => to("/api/problem_groups/#{@problem_group.id}")
-      json @problem_group
+      json @problem_group.as_json(@as_option)
     else
       status 400
       json @problem_group.errors
@@ -60,8 +66,15 @@ class ProblemGroupRoutes < Sinatra::Base
       next json @problem_group.errors
     end
 
+    begin
+      @problem_group.problem_ids = params[:problem_ids]
+    rescue ActiveRecord::RecordNotFound
+      status 400
+      next json problem_ids: "存在しないレコードです"
+    end
+
     if @problem_group.save
-      json @problem_group
+      json @problem_group.as_json(@as_option)
     else
       status 400
       json @problem_group.errors
