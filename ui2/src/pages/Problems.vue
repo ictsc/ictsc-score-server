@@ -8,22 +8,6 @@
       <span slot="title">新規問題</span>
       <div slot="body">
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">グループ<br />(複数選択可)</label>
-          <div class="col-sm-10">
-            <select class="form-control" v-model="newProblemObj.problem_group_ids" multiple>
-              <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label">依存問題</label>
-          <div class="col-sm-10">
-            <select class="form-control" v-model="newProblemObj.problem_must_solve_before_id">
-              <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
           <label class="col-sm-2 col-form-label">タイトル</label>
           <div class="col-sm-10">
             <input v-model="newProblemObj.title" type="text" class="form-control" placeholder="タイトル">
@@ -39,6 +23,22 @@
           <label class="col-sm-2 col-form-label">満点</label>
           <div class="col-sm-10">
             <input v-model="newProblemObj.perfect_point" type="number" class="form-control">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">依存問題</label>
+          <div class="col-sm-10">
+            <select class="form-control" v-model="newProblemObj.problem_must_solve_before_id">
+              <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">グループ<br />(複数選択可)</label>
+          <div class="col-sm-10">
+            <select class="form-control" v-model="newProblemObj.problem_group_ids" multiple>
+              <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
+            </select>
           </div>
         </div>
 
