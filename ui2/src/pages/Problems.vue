@@ -63,8 +63,8 @@
           <label class="col-sm-2 col-form-label">表示する</label>
           <div class="col-sm-10">
             <select v-model="newGroupObj.visible" class="form-control" name="visibility">
-              <option value="1">はい</option>
-              <option value="0">いいえ</option>
+              <option :value="1">はい</option>
+              <option :value="0">いいえ</option>
             </select>
           </div>
         </div>
