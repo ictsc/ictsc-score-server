@@ -52,8 +52,9 @@ describe 'Sessions' do
           'team' => member&.team&.notification_subscriber&.channel_id,
           'role' => member&.role&.notification_subscriber&.channel_id,
           'all' => 'everyone'
-        }.compact
-      }
+        }.compact,
+        'member' => member.as_json(except: [:hashed_password])
+      }.as_json
     }
 
     let(:response) { post '/api/session', params }

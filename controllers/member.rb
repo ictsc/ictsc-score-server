@@ -60,7 +60,7 @@ class MemberRoutes < Sinatra::Base
     if compare_password(params[:password], @member.hashed_password)
       login_as(@member.id)
       status 201
-      json status: "success", notification_channels: notification_channels, member: @member
+      json status: "success", notification_channels: notification_channels, member: @member.as_json(except: [:hashed_password])
     else
       status 401
       json status: "failed"
