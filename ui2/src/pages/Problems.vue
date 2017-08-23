@@ -109,7 +109,7 @@
         </div>
         <div class="item">
           <h4>採点結果を確認</h4>
-          <p>高得点を目指して追加の解答も可能です。</p>
+          <p>満点でない場合は、高得点を目指して追加の解答も可能です。</p>
         </div>
       </div>
       <div class="alert alert-warning" role="alert">
@@ -159,7 +159,7 @@
                   </div>
                 </div>
                 <div class="tips ml-auto">
-                  <div v-if="isMember"><i class="fa fa-paper-plane-o"></i> {{ scoringStatusText(problem.answers) }}</div>
+                  <div v-if="isMember"><i class="fa fa-paper-plane-o"></i> {{ scoringStatusText(problem) }}</div>
                   <div><i class="fa fa-child"></i> {{ problem.solved_teams_count }}チーム正解</div>
                 </div>
               </div>
@@ -208,6 +208,7 @@
 .problems {
   align-items: center;
   margin-top: 1em;
+  overflow-x: scroll;
 }
 
 .problem .background {
@@ -215,7 +216,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 3px solid white;
+  border: 4px solid white;
 }
 
 .problem .background-triangle {
@@ -229,9 +230,9 @@
   content: '';
   width: 0;
   height: 0;
-  margin: 0 0 0 -30px;
+  margin: 0 0 0 -63px;
   border-style: solid;
-  border-width: 70px 200px 0;
+  border-width: 80px 230px 0;
   border-color: #E7EFF1 transparent transparent transparent;
 }
 
@@ -247,10 +248,7 @@
 }
 
 .problem {
-  /*background: #FCEFF2;*/
   border: 1px solid #d9d9d9;
-  /*margin-bottom: 2rem;*/
-  /*border-radius: 10px;*/
   overflow: hidden;
   flex-wrap: nowrap;
   position: relative;
@@ -258,12 +256,14 @@
   color: inherit;
   text-decoration: none;
 
-  min-height: 11em;
+  min-height: 13em;
+  min-width: 24em;
+
   flex: 1;
 }
 
 .problem h3 {
-  margin: 10px;
+  margin: 14px;
   overflow-wrap: break-word;
   font-size: 1.3em;
 }
@@ -272,7 +272,7 @@
   content: '';
   width: 0;
   height: 0;
-  margin: 0 14px;
+  margin: 0 10px;
   border-style: solid;
   border-width: 14px 0 14px 15px;
   border-color: transparent transparent transparent #e0e0e0;
@@ -283,18 +283,23 @@
 }
 
 .problem .scores-wrapper {
-  min-width: 110px;
+  min-width: 10em;
   text-align: right;
 }
 
+.problem .scores {
+  font-size: .96em;
+}
+
 .problem .scores .current {
-  font-size: 1.2em;
+  font-size: 1.15em;
+  font-weight: bold;
   margin-bottom: 3px;
   color: #E6003B;
 }
 
-.problem .scores .subtotal {
-  font-size: 1.7em;
+.problem .scores .current .subtotal {
+  font-size: 1.8em;
 }
 
 .problem .scores .brakedown, .problem .scores .point {
@@ -311,7 +316,7 @@
 
 .problem .tips {
   float: right;
-  font-size: .96em;
+  font-size: 1.1em;
   text-align: right;
   width: calc(50% - 10px);
 }
@@ -474,7 +479,12 @@ export default {
         .filter(a => a.problem_id === problemId)
         .reduce((p, n) => p + 1, 0);
     },
-    scoringStatusText (answers) {
+    scoringStatusText (problem) {
+      if (problem.title === undefined) {
+        return '解答不可'
+      }
+
+      let answers = problem.answers;
       if (!answers || answers.length === 0) {
         return '解答可能'
       } else {
