@@ -19,9 +19,13 @@
           <div class="new-issue">
             <div class="answerExample" >
               <h3>質問例</h3>
-              <p>・問題xxxに使われているhogeですが、○○という認識でよろしいでしょうか？</p>
-              <p>・問題yyyで使用されている機材のzzzが正しく動作していないように思われます。一度見ていただけませんか？</p>
-              <p>・○○したいのですが大丈夫でしょうか？</p>
+              <p>タイトル例：xyzについて</p>
+              <p>
+                質問例：<br>
+                &emsp;・問題xxxに使われているhogeですが、○○という認識でよろしいでしょうか？
+              </p>
+              <p>&emsp;・問題yyyで使用されている機材のzzzが正しく動作していないように思われます。一度見ていただけませんか？</p>
+              <p>&emsp;・○○したいのですが大丈夫でしょうか？</p>
             </div>
             <div class="form-group">
               <input v-model="issueTitle" type="text" class="form-control"
@@ -46,9 +50,7 @@
 
 .answerExample {
   color: #aaa;
-  border: 1px solid #ddd;
   margin: 20px 0;
-  border-radius: 5px;
   padding: 10px 20px;
 }
 
