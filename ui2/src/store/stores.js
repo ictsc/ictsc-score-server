@@ -16,19 +16,21 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     title: '',
-    session: {},
+    session: {
+      member: {}
+    },
   },
   getters: {
     title: state => state.title,
     session: state => state.session,
     isAdmin: state => {
-      return state.session &&
-        state.session.member &&
+      return state.session != null &&
+        state.session.member != null &&
         state.session.member.role_id === 2;
     },
     isMember: state => {
-      return state.session &&
-        state.session.member &&
+      return state.session != null &&
+        state.session.member != null &&
         state.session.member.role_id === 4;
     },
     notificationChannels: state => {
@@ -41,7 +43,7 @@ export default new Vuex.Store({
   mutations: {
     [_SET_STATE_TITLE]: (state, title) => { state.title = title },
     [SET_SESSION]: (state, session) => { state.session = session },
-    [CLEAR_SESSION]: (state) => { state.session = {} },
+    [CLEAR_SESSION]: (state) => { state.session = { member: {} } },
   },
   actions: {
     [SET_TITLE]: (context, val) => {
