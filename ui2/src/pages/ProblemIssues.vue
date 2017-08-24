@@ -17,13 +17,23 @@
         <template v-if="!isSingleIssue && isMember">
           <h3>新規質問</h3>
           <div class="new-issue">
+            <div class="answerExample" >
+              <h3>質問例</h3>
+              <p>タイトル例：xyzについて</p>
+              <p>
+                質問例：<br>
+                &emsp;・問題xxxに使われているhogeですが、○○という認識でよろしいでしょうか？
+              </p>
+              <p>&emsp;・問題yyyで使用されている機材のzzzが正しく動作していないように思われます。一度見ていただけませんか？</p>
+              <p>&emsp;・○○したいのですが大丈夫でしょうか？</p>
+            </div>
             <div class="form-group">
               <input v-model="issueTitle" type="text" class="form-control"
                 placeholder="タイトルは具体的かつ端的に記入してください">
             </div>
             <simple-markdown-editor v-model="issueText"></simple-markdown-editor>
             <div class="tools">
-              <button v-on:click="postNewIssue()" class="btn btn-secondary btn-block" :disabled="posting">質問投稿</button>
+              <button v-on:click="postNewIssue()" class="btn btn-success btn-block" :disabled="posting">質問投稿</button>
             </div>
           </div>
         </template>
@@ -37,6 +47,25 @@
 </template>
 
 <style scoped>
+
+.answerExample {
+  color: #aaa;
+  margin: 20px 0;
+  padding: 10px 20px;
+}
+
+.answerExample h3 {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 10px 3px;
+}
+
+.answerExample p {
+  margin-bottom: 1.2rem;
+}
+
+.answereExaample p:last-child {
+  margin-bottom: inherit;
+}
 
 </style>
 

@@ -13,6 +13,25 @@
           <answer :value="answer" :reload="reload"></answer>
         </template>
         <div class="new-issue" v-show="!isAdmin && !confirming">
+          <div class="answerExample" v-if="canAnswer">
+            <h3>解答例</h3>
+            <p>
+              お疲れ様です。〇〇です。<br>
+              問題 XXX の解答を送らせていただきます。
+            </p>
+            <p>
+              この問題ではxxxxxが原因でトラブルが発生したと考えられました。<br>
+              そのため、以下のように設定を変更し、○○が正しく動くことを確認いたしました。<br>
+              確認のほどよろしくお願いします。
+            </p>
+            <p>
+              1. /etc/hoge/hoo.bar の編集<br>
+              'config.hoge'の項目をtrueへ変更
+            </p>
+            <p>
+              2. …
+            </p>
+          </div>
           <simple-markdown-editor v-model="newAnswer"></simple-markdown-editor>
           <div class="tools">
             <button v-on:click="showConfirmation()" class="btn btn-success">解答投稿</button>
@@ -41,6 +60,28 @@
   position: relative;
   padding: 2rem 0;
 }
+
+.answerExample {
+  color: #aaa;
+  border: 1px solid #ddd;
+  margin: 20px 0;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.answerExample h3 {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 10px 3px;
+}
+
+.answerExample p {
+  margin-bottom: 1.2rem;
+}
+
+.answereExaample p:last-child {
+  margin-bottom: inherit;
+}
+
 .new-issue .overlay {
   position: absolute;
   top: 0;
