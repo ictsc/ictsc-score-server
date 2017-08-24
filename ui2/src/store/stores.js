@@ -26,14 +26,11 @@ export default new Vuex.Store({
     isAdmin: state => {
       return state.session != null &&
         state.session.member != null &&
-        state.session.member.role_id != null &&
         state.session.member.role_id === 2;
     },
     isMember: state => {
-      console.log(state.session);
       return state.session != null &&
         state.session.member != null &&
-        state.session.member.role_id != null &&
         state.session.member.role_id === 4;
     },
     notificationChannels: state => {
