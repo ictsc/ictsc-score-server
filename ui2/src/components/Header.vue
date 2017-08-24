@@ -25,11 +25,12 @@
       <div class="nav-item">
         <router-link :to="{ name: 'issues'}" active-class="active" class="nav-link">質問</router-link>
       </div>
-      <div v-if="!isMember" class="nav-item">
+      <div v-if="!isMember && isMember != undefined" class="nav-item">
         <router-link :to="{ name: 'answers'}" active-class="active" class="nav-link">解答</router-link>
       </div>
       <div class="nav-item">
-        <a v-on:click="logout()" class="nav-link">ログアウト</a>
+        <a v-on:click="logout()" class="nav-link" v-if="isMember != undefined && isAdmin != undefined">ログアウト</a>
+        <router-link :to="{ name: 'login' }" class="nav-link" v-else>ログイン</router-link>
       </div>
     </div>
   </nav>
@@ -95,6 +96,7 @@ export default {
   computed: {
     ...mapGetters([
       'isMember',
+      'isAdmin',
       'session',
     ]),
   },
