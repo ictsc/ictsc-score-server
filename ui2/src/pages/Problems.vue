@@ -122,8 +122,9 @@
     </div>
 
     <div v-loading="asyncLoading" class="groups">
-      <div v-for="group in problemGroups" v-if="group.visible" class="group row">
+      <div v-for="group in problemGroups" v-if="group.visible" class="group">
         <div class="detail">
+          <img class="flag" v-if="group.flag_icon_url" :src="group.flag_icon_url">
           <h2>{{ group.name }}</h2>
           <markdown :value="group.description"></markdown>
         </div>
@@ -201,8 +202,14 @@
   padding: 2rem;
 }
 .group h2 {
+  display: inline-block;
   color: #FDBBCC;
   font-size: 2.5rem;
+}
+.group .flag {
+  height: 38px;
+  margin-right: .2em;
+  vertical-align: top;
 }
 
 .problems {
@@ -257,7 +264,9 @@
   text-decoration: none;
 
   min-height: 13em;
-  min-width: 24em;
+  max-height: 13em;
+  min-width: 23em;
+  max-width: 24em;
 
   flex: 1;
 }
