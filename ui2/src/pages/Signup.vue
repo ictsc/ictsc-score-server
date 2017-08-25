@@ -29,7 +29,6 @@
           <p class="text-center"><router-link :to="{ name: 'login' }">ログインはこちら</router-link></p>
       </div>
     </div>
-    <pre>{{ teams }}</pre>
   </div>
 </template>
 
