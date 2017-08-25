@@ -205,10 +205,14 @@
   font-size: 2.5rem;
 }
 
+.group .detail {
+  width: 100%;
+}
+
 .problems {
   align-items: center;
   margin-top: 1em;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .problem .background {
