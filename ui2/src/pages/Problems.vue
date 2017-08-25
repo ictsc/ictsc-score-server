@@ -212,10 +212,14 @@
   vertical-align: top;
 }
 
+.group .detail {
+  width: 100%;
+}
+
 .problems {
   align-items: center;
   margin-top: 1em;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .problem .background {
@@ -510,11 +514,11 @@ export default {
     },
     getScoreInfo (answers) {
       let nothing = {
-        pure: '-',
-        bonus: '-',
-        subtotal: '-',
+        pure: 0,
+        bonus: 0,
+        subtotal: 0,
       }
-      if (!this.session.member.team) return nothing;
+      if (!this.session.member) return nothing;
       if (!answers) return nothing;
       if (this.contest && (new Date(this.contest.competition_end_at) < Date.now())) return nothing;
       return answers
