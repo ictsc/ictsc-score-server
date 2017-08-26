@@ -44,7 +44,7 @@
           基準点: {{ problem.reference_point }} /
           満点: {{ problem.perfect_point }} /
           通過チーム数: {{ problem.solved_teams_count }} /
-          依存: {{ dependenceProblem.title }}
+          依存: {{ dependenceProblemTitle }}
         </template>
       </div>
     </header>
@@ -134,16 +134,23 @@ export default {
     return {
       edit: false,
       newComment: '',
+      dependenceProblemTitle: {},
+      problems: [],
     }
   },
   asyncData: {
     problemDefault: {},
     problem () {
-      return API.getProblem(this.id);
-    },
-    problemsDefault: [],
-    problems () {
-      return API.getProblems();
+      return API.getProblem(this.id)
+        .then(res => {
+          // retrieve dependence problem
+          if (res.problem_must_solve_before_id) {
+            API.getProblem(res.problem_must_solve_before_id).then(res => { this.dependenceProblemTitle = res.title });
+          } else {
+            this.dependenceProblemTitle = 'なし';
+          }
+          return res;
+        });
     },
   },
   computed: {
@@ -152,10 +159,6 @@ export default {
         id: null,
         title: 'Null',
       }], this.problems);
-    },
-    dependenceProblem () {
-      return this.problems.find(p => p.id === this.problem.problem_must_solve_before_id) ||
-        { title: 'なし' };
     },
     ...mapGetters([
       'isAdmin',
@@ -167,6 +170,11 @@ export default {
         this.asyncReload();
       }
     },
+    edit (val, old) {
+      if (val) {
+        API.getProblems.then(res => { this.problems = res; });
+      }
+    }
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ページ名');

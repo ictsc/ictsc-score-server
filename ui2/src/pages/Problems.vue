@@ -432,7 +432,6 @@ export default {
     },
     problemsDefault: [],
     problems () {
-      console.log('problems', this.session, this.isMember)
       if (this.session.member) {
         if (this.isMember) {
           return API.getProblemsWithScore();
@@ -442,14 +441,6 @@ export default {
       } else {
         return new Promise((resolve) => resolve([]));
       }
-    },
-    answersDefault: [],
-    answers () {
-      return API.getAnswers();
-    },
-    issuesDefault: [],
-    issues () {
-      return API.getIssues();
     },
   },
   computed: {
@@ -483,16 +474,6 @@ export default {
   destroyed () {
   },
   methods: {
-    answerCount (problemId) {
-      return this.answers
-        .filter(a => a.problem_id === problemId)
-        .reduce((p, n) => p + 1, 0);
-    },
-    issueCount (problemId) {
-      return this.issues
-        .filter(a => a.problem_id === problemId)
-        .reduce((p, n) => p + 1, 0);
-    },
     scoringStatusText (problem) {
       if (problem.title === undefined) {
         return '解答不可'
@@ -546,7 +527,6 @@ export default {
       return pg.flag_icon_url;
     },
     async addProblem () {
-      // console.log(this.newProblemObj);
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'problem');
         await API.postProblems(this.newProblemObj);
