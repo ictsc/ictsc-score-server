@@ -2,7 +2,7 @@
   <div v-loading="asyncLoading">
     <h1>解答と採点</h1>
     <div class="description">
-      <p>このページは質問一覧画面です。下のボタンを切り替えることで、表示される種類が絞り込めます。</p>
+      <p>このページは解答一覧画面です。下のボタンを切り替えることで、表示される種類が絞り込めます。</p>
     </div>
     <div class="tools">
       <button v-on:click="filterSelect = 0" :class="{ active: filterSelect == 0 }" class="btn label-secondary">全て</button>
