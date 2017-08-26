@@ -8,6 +8,12 @@ class Answer < ActiveRecord::Base
   has_one :score
   belongs_to :team
 
+  def notification_payload(state: :created, **data)
+    payload = super
+    payload[:data].merge!(team_id: team_id, problem_id: problem_id)
+    payload
+  end
+
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     case user&.role_id

@@ -209,6 +209,10 @@ export class API {
     return RequestMiddleware(req.get(`answers`))
       .then(res => res.body)
   }
+  static getAnswer (id, req = superagent) {
+    return RequestMiddleware(req.get(`answers/${id}?with=score`))
+      .then(res => res.body)
+  }
   static postAnswer (answerId, text, req = superagent) {
     return RequestMiddleware(
       req.post(`problems/${answerId}/answers`)

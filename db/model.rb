@@ -45,7 +45,7 @@ class ActiveRecord::Base
 
   def notification_payload(state: :created, **data)
     {
-      resource: self.class.to_s,
+      type: self.class.to_s.downcase,
       resource_id: id,
       state: state,
       data: data
