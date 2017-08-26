@@ -49,10 +49,6 @@ export default {
     problems () {
       return API.getProblemsWithScore();
     },
-    contestDefault: {},
-    contest () {
-      return API.getContest();
-    },
   },
   computed: {
     limit () {
@@ -67,6 +63,7 @@ export default {
       return d3.format('.3%')(this.scoredPurePoint / this.sumPurePoint);
     },
     ...mapGetters([
+      'contest',
       'isMember',
     ]),
   },

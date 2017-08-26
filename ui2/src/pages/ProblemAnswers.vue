@@ -160,10 +160,6 @@ export default {
     answers () {
       return API.getTeamWithAnswersComments(this.teamId).then(res => res.answers)
     },
-    contentDefault: {},
-    contest () {
-      return API.getContest();
-    },
   },
   computed: {
     problemId () {
@@ -199,6 +195,7 @@ export default {
         .reduce((p, n) => Math.max(p, new Date(n.created_at).valueOf() + this.delay), 0)
     },
     ...mapGetters([
+      'contest',
       'isAdmin',
     ])
   },
