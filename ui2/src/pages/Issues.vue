@@ -97,6 +97,8 @@
 }
 .tools button {
   margin: .3rem;
+  padding-right: 5rem;
+  padding-left: 5rem;
 }
 </style>
 
