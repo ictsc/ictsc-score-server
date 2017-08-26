@@ -66,6 +66,11 @@
   border-bottom: 1px solid #FDBBCC;
   margin: .5rem 0;
 }
+
+.head .body .content { 
+  overflow: auto;
+}
+
 .meta {
   text-align: right;
   font-size: .8rem;

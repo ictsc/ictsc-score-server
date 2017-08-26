@@ -79,6 +79,21 @@
   padding: 1rem;
   border-radius: 10px;
 }
+
+.item .title h3 {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.item .comments .content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item .comments .comment {
+  text-overflow: ellipsis;
+}
+
 .item .comments.answer {
   background: #F0F0F0;
 }
