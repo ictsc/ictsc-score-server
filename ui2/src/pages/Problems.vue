@@ -146,7 +146,7 @@
               <div class="bottom-wrapper d-flex align-content-end align-items-end mt-auto">
                 <div class="scores-wrapper mr-auto">
                   <div class="scores" v-if="isMember">
-                    <div class="current">得点 <span class="subtotal">{{ getScoreInfo(problem.answers).subtotal }}</span></div>
+                    <div class="current">得点 <span class="subtotal">{{ getScoreInfo(problem.answers).subtotal }}</span><span class="perfect_point"> / {{ problem.perfect_point }}</span></div>
                     <div class="border"></div>
                     <span class="brakedown">内訳</span>
                     <div class="point">基本点 {{ getScoreInfo(problem.answers).pure }}</div>
@@ -307,8 +307,12 @@
 .problem .scores .current {
   font-size: 1.15em;
   font-weight: bold;
-  margin-bottom: 3px;
+  margin-bottom: 0;
   color: #E6003B;
+}
+
+.problem .scores .perfect_point {
+  font-size: 1.06em;
 }
 
 .problem .scores .current .subtotal {
