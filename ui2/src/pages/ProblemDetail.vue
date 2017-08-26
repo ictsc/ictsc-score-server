@@ -35,8 +35,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, '問題詳細');
-    console.log(this.session);
-    if (this.session.member && this.session.member.team_id !== null) {
+    if (this.session.member && this.session.member.team_id) {
       this.$router.replace({
         name: 'problem-issues',
         params: {
