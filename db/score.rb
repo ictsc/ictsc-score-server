@@ -8,12 +8,13 @@ class Score < ActiveRecord::Base
 
   def notification_payload(state: :created, **data)
     payload = super
-    payload[:sub_resource]    = payload[:resource]
-    payload[:sub_resource_id] = payload[:resource_id]
-    payload.merge(
-      resource: 'Answer',
-      resource_id: answer_id,
-    )
+    payload[:data].merge!(
+      problem_id: answer.problem_id,
+      team_id: answer.team_id,
+      created_at: answer.created_at,
+      notify_at: answer.created_at + Setting.answer_reply_delay_sec
+      )
+    payload
   end
 
   def problem

@@ -8,12 +8,14 @@ class Comment < ActiveRecord::Base
 
   def notification_payload(state: :created, **data)
     payload = super
-    payload[:sub_resource]    = payload[:resource]
-    payload[:sub_resource_id] = payload[:resource_id]
-    payload.merge(
-      resource: commentable_type,
-      resource_id: commentable_id,
-    )
+    payload[:type] = "#{commentable_type.downcase}-comment"
+    payload[:data].merge!("#{commentable_type.downcase}_id" => commentable_id)
+
+    if commentable_type == "Issue"
+      payload[:data].merge!(problem_id: commentable.problem_id, team_id: commentable.team_id)
+    end
+
+    payload
   end
 
   # method: POST

@@ -134,6 +134,7 @@ REMOVE_NOTIFイベントでは、通知のインデックス番号・message => 
 
 import { API } from '../utils/Api'
 import { Subscribe, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
+import { mapGetters } from 'vuex'
 
 export default {
   name: '',
@@ -156,6 +157,9 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'session',
+    ]),
   },
   watch: {
   },
@@ -177,82 +181,111 @@ export default {
   },
   methods: {
     notify (message) {
-      let title, body;
-
-      let notify_delay = 0; // default
       if (message.type !== 'api') {
-        title = message.title;
-        body = message.detail;
-      } else {
-        let resource, sub_resource, state, data;
-        ({resource, sub_resource, state, data} = JSON.parse(message.detail));
+        let title = message.title;
+        let body = message.detail;
 
-        const STATE_CREATED = 'created';
-        const STATE_UPDATED = 'updated';
+        this.append(title, body, message.type);
 
-        switch (resource) {
-          case 'Answer':
-            if (sub_resource === 'Score' && state === STATE_CREATED) {
-              let created_at = new Date(data.created_at);
-              let notify_delay_from_created_at = ((this.contest && this.contest.answer_reply_delay_sec) ? this.contest.answer_reply_delay_sec : 0) * 1000;
-              let notify_at = created_at.valueOf() + notify_delay_from_created_at;
+        return;
+      }
 
-              notify_delay = notify_at - new Date();
+      // let notify_payload = JSON.parse(message.detail);
+      let type, resource_id, state, data;
+      ({type, resource_id, state, data} = JSON.parse(message.detail));
+
+      const STATE_CREATED = 'created';
+      const STATE_UPDATED = 'updated';
+
+      switch (type) {
+        case 'answer':
+          if (state === STATE_CREATED) {
+            this.notifyBrowser(
+              '解答が投稿されました',
+              '',
+              { name: 'problem-answers', params: { id: data.problem_id, team: data.team_id } }
+            );
+            break;
+          }
+          break;
+        case 'issue-comment':
+          if (state === STATE_CREATED) {
+            this.notifyBrowser(
+              '質問にコメントが投稿されました',
+              '',
+              { name: 'problem-issues', params: { id: data.problem_id, team: data.team_id, issue: data.issue_id } }
+            );
+            break;
+          }
+          break;
+        case 'problem-comment':
+          if (state === STATE_CREATED) {
+            this.notifyBrowser(
+              '問題の補足が追加されました',
+              '',
+              { name: 'problem-detail', params: { id: data.problem_id } }
+            );
+            break;
+          }
+          break;
+        case 'score':
+          if (state === STATE_CREATED) {
+            let notify_at = new Date(data.notify_at);
+            let notify_delay = notify_at - new Date();
+
+            setTimeout(() => {
+              // checks score existence and can read
+              API.getAnswer(resource_id).then(answer => {
+                if (!answer.score) return;
+
+                this.notifyBrowser(
+                  '解答の採点結果が公開されました',
+                  '',
+                  { name: 'problem-answers', params: { id: data.problem_id, team: data.team_id } }
+                );
+              });
+            }, notify_delay);
+
+            break;
+          }
+          break;
+        case 'notice':
+          switch (state) {
+            case STATE_CREATED:
+              this.notifyBrowser(
+                'お知らせが公開されました',
+                '',
+                { name: 'dashboard' }
+              );
               break;
-            }
-
-            if (state === STATE_CREATED) {
-              title = '採点依頼が提出されました';
-            }
-            break;
-          case 'Issue':
-            if (sub_resource === 'Comment' && state === STATE_CREATED) {
-              title = '質問にコメントが投稿されました';
+            case STATE_UPDATED:
+              this.notifyBrowser(
+                'お知らせが更新されました',
+                '',
+                { name: 'dashboard' }
+              );
               break;
-            }
-            break;
-          case 'Problem':
-            if (sub_resource === 'Comment' && state === STATE_CREATED) {
-              title = '問題の補足が追加されました';
-              break;
-            }
-            break;
-          case 'Notice':
-            switch (state) {
-              case STATE_CREATED:
-                title = 'お知らせが公開されました';
-                break;
-              case STATE_UPDATED:
-                title = 'お知らせが更新されました';
-                break;
-            }
-            break;
-          default:
-            break;
+          }
+          break;
+        default:
+          break;
+      }
+    },
+    notifyBrowser (title, body, route_to, type = 'api') {
+      // try browser notification if allowed
+      if (this.useBrowserNotification) {
+        let notif = new Notification(
+          title,
+          {
+            body: body,
+          }
+        );
+        let router = this.$router;
+        if (route_to) {
+          notif.addEventListener('click', () => { router.push(route_to); });
         }
-      }
-
-      if (notify_delay < 0) {
-        notify_delay = 0;
-      }
-
-      if (this.useBrowserNotification && message.type === 'api') {
-        setTimeout(() => {
-          let notif = new Notification(
-            title,
-            {
-              body: body,
-            }
-          );
-          // reload or refresh screen
-          notif.addEventListener('click', () => {
-            // jump to page
-          });
-        }, notify_delay);
       } else {
-        setTimeout(() => {
-          this.append(title, body, message.type);
-        }, notify_delay);
+        this.append(title, body, type);
       }
     },
     append (title, body, type) {

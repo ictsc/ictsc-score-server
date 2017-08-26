@@ -80,7 +80,7 @@ class NotificationRoutes < Sinatra::Base
 
           notifications << resource_info.merge({
             type: "new_answer_to_problem",
-            text: "問題の採点依頼が投稿されました。",
+            text: "解答が投稿されました。",
             created_at: a.created_at
           })
         end

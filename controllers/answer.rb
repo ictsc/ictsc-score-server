@@ -89,7 +89,6 @@ class AnswerRoutes < Sinatra::Base
     end
 
     if @answer.save
-      push_notification(to: Role.where(name: %w(Admin Writer)), payload: @answer.notification_payload(state: :created))
       json @answer
     else
       status 400
@@ -131,6 +130,8 @@ class AnswerRoutes < Sinatra::Base
     @answer = Answer.new(@attrs)
 
     if @answer.save
+      push_notification(to: Role.where(name: %w(Admin Writer)), payload: @answer.notification_payload)
+
       status 201
       headers "Location" => to("/api/answers/#{@answer.id}")
       json @answer
