@@ -103,10 +103,6 @@ export default {
     }
   },
   asyncData: {
-    sessionDefault: {},
-    session () {
-      return API.getSession();
-    },
     noticesDefault: [],
     notices () {
       return API.getNotices();
@@ -125,6 +121,7 @@ export default {
       return this.notifications.filter((v, i) => i < 15)
     },
     ...mapGetters([
+      'session',
       'isAdmin',
     ]),
   },

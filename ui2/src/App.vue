@@ -36,7 +36,7 @@ import Notif from './components/Notif'
 import { Emit, PUSH_NOTIF, Subscribe, AUTH_ERROR } from './utils/EventBus'
 import { API } from './utils/Api'
 import { mapGetters } from 'vuex'
-import { SET_SESSION } from './store/'
+import { RELOAD_CONTEST, SET_SESSION } from './store/'
 
 
 export default {
@@ -66,6 +66,7 @@ export default {
   },
   mounted () {
     this.reloadSession();
+    this.$store.dispatch(RELOAD_CONTEST);
   },
   beforeDestroy () {
     this.authError.off();

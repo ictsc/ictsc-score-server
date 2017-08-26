@@ -151,13 +151,10 @@ export default {
     }
   },
   asyncData: {
-    contentDefault: {},
-    contest () {
-      return API.getContest();
-    },
   },
   computed: {
     ...mapGetters([
+      'contest',
       'session',
     ]),
   },

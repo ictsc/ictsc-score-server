@@ -451,10 +451,6 @@ export default {
     issues () {
       return API.getIssues();
     },
-    contentDefault: {},
-    contest () {
-      return API.getContest();
-    }
   },
   computed: {
     problemSelect () {
@@ -464,6 +460,7 @@ export default {
       }], this.problems);
     },
     ...mapGetters([
+      'contest',
       'isAdmin',
       'isMember',
       'session',

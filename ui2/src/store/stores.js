@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 import { API } from '../utils/Api'
 
+export const SET_CONTEST = 'SET_CONTEST';
+export const RELOAD_CONTEST = 'RELOAD_CONTEST';
 // ページのタイトルを設定する
 export const SET_TITLE = 'SET_TITLE';
 export const _SET_STATE_TITLE = '_SET_STATE_TITLE';
@@ -10,17 +12,18 @@ export const RELOAD_SESSION = 'RELOAD_SESSION'
 export const SET_SESSION = 'SET_SESSION'
 export const CLEAR_SESSION = 'CLEAR_SESSION'
 
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    contest: {},
     title: '',
     session: {
       member: {}
     },
   },
   getters: {
+    contest: state => state.contest,
     title: state => state.title,
     session: state => state.session,
     isAdmin: state => {
@@ -41,6 +44,7 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    [SET_CONTEST]: (state, contest) => { state.contest = contest },
     [_SET_STATE_TITLE]: (state, title) => { state.title = title },
     [SET_SESSION]: (state, session) => { state.session = session },
     [CLEAR_SESSION]: (state) => { state.session = { member: {} } },
@@ -53,7 +57,13 @@ export default new Vuex.Store({
     [RELOAD_SESSION]: (ctx) => {
       API.getSession()
         .then(res => {
-          ctx.commit(SET_SESSION)
+          ctx.commit(SET_SESSION, res)
+        })
+    },
+    [RELOAD_CONTEST]: (ctx) => {
+      API.getContest()
+        .then(res => {
+          ctx.commit(SET_CONTEST, res)
         })
     }
   },

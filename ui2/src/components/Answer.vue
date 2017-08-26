@@ -22,7 +22,8 @@
           <div v-if="value.score" class="result">
             得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
           </div>
-          <div v-if="!value.score" class="pending">採点依頼中...</div>
+          <div v-if="!value.score && !isAdmin && isContestEnded" class="pending">競技時間が終了したため表示されません</div>
+          <div v-if="!value.score && (isAdmin || !isContestEnded)" class="pending">採点依頼中...</div>
         </template>
       </div>
     </div>
@@ -84,6 +85,7 @@ export default {
     return {
       post: '',
       newPoint: undefined,
+      now: new Date(),
     }
   },
   asyncData: {
@@ -92,7 +94,12 @@ export default {
     issueId () {
       return this.value.id;
     },
+    isContestEnded () {
+      if (!this.contest || !this.contest.competition_end_at) return false;
+      return new Date(this.contest.competition_end_at) <= this.now;
+    },
     ...mapGetters([
+      'contest',
       'isAdmin',
     ]),
   },
@@ -103,8 +110,10 @@ export default {
   },
   mounted () {
     this.newPoint = (this.value.score && this.value.score.point) || 0;
+    this.interval_id = setInterval(() => { this.now = new Date() }, 1000);
   },
   destroyed () {
+    clearInterval(this.interval_id);
   },
   methods: {
     submitPoint () {
