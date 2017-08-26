@@ -10,7 +10,6 @@ export const RELOAD_SESSION = 'RELOAD_SESSION'
 export const SET_SESSION = 'SET_SESSION'
 export const CLEAR_SESSION = 'CLEAR_SESSION'
 
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -53,7 +52,7 @@ export default new Vuex.Store({
     [RELOAD_SESSION]: (ctx) => {
       API.getSession()
         .then(res => {
-          ctx.commit(SET_SESSION)
+          ctx.commit(SET_SESSION, res)
         })
     }
   },
