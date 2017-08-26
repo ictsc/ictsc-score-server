@@ -83,6 +83,7 @@ export default {
           detail: '',
           key: 'login',
         });
+        this.$router.push({ name: 'login' })
       } catch (err) {
         console.error(err);
         Emit(PUSH_NOTIF, {
