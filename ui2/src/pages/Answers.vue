@@ -128,7 +128,7 @@ export default {
       var teamAnswers = this.teamAnswers(answers, teamId, problemId);
       if (teamAnswers.length === 0) return 1;
       return teamAnswers
-        .reduce((p, n) => Math.max(p, n.score ? 4 : 2), 2);
+        .reduce((p, n) => Math.min(p, n.score ? 4 : 2), 4);
     },
     score (answers, teamId, problemId) {
       return this.teamAnswers(answers, teamId, problemId)
