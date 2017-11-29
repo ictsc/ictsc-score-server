@@ -3,13 +3,6 @@ class Setting
   include Singleton
 
   ENV_PREFIX = 'API_CONTEST_'
-  REQUIRED_KEYS = %w(
-    answer_reply_delay_sec
-    competition_start_at
-    scoreboard_hide_at
-    competition_end_at
-    redis_realtime_notification_channel
-  )
 
   INTEGER_VALUES = %w(
     answer_reply_delay_sec
@@ -20,6 +13,10 @@ class Setting
     scoreboard_hide_at
     competition_end_at
   )
+
+  REQUIRED_KEYS = %w(
+    redis_realtime_notification_channel
+  ) + INTEGER_VALUES + DATETIME_VALUES
 
   REQUIRED_KEYS.each do |key|
     env_key = ENV_PREFIX + key.upcase
