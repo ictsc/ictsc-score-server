@@ -156,3 +156,26 @@ class Score < ActiveRecord::Base
     end
   }
 end
+
+class Score::Scores
+  def initialize
+  end
+
+  def all_scores
+    return @all_scores if @all_scores
+
+    # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
+    @all_scores = [
+      Score.all.joins(:answer).group("answers.team_id").sum(:point),
+      Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
+    ]
+      .flat_map(&:to_a)
+      .each_with_object(Hash.new(0)){|(team_id, score), scores| scores[team_id] += score }
+      .to_a
+      .sort_by(&:last)
+      .reverse # 1st, 2nd, ..., last
+
+
+    @all_scores
+  end
+end

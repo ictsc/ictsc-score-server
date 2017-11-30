@@ -21,15 +21,8 @@ class ScoreBoardRoutes < Sinatra::Base
   helpers do
     def scoreboard_for(team: nil, all: false)
       # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
-      all_scores = [
-          Score.all.joins(:answer).group("answers.team_id").sum(:point),
-          Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
-        ] \
-        .flat_map(&:to_a) \
-        .inject(Hash.new(0)){|acc, (team_id, score)| acc[team_id] += score; acc } \
-        .to_a \
-        .sort_by(&:last) \
-        .reverse # 1st, 2nd, ..., last
+      scores = Score::Scores.new
+      all_scores = scores.all_scores
 
       if not all
         team_score = all_scores.find{|(team_id, score)| team_id == team.id }&.last
