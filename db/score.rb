@@ -196,4 +196,8 @@ class Score::Scores
   def find(team_id)
     all_scores.find{|data| data[:team_id] == team_id }
   end
+
+  def count_same_rank(rank)
+    all_scores.count{|data| data[:rank] == rank }
+  end
 end

@@ -20,30 +20,27 @@ class ScoreBoardRoutes < Sinatra::Base
 
   helpers do
     def scoreboard_for(team: nil, all: false)
-      # [[1st_team_id, score, rank], [2nd_team_id, score, rank], [3rd_team_id, score, rank], ...]
+      # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
       scores = Score::Scores.new
 
       # -1: may happen when team has nothing score yet
       my_team_rank = scores.find(team.id)&.fetch(:rank) || -1 unless all
 
-      viewable_scores = scores.all_scores.inject([]) do |acc, current_team|
-        team_id = current_team[:team_id]
-        team_score = current_team[:score]
-        team_rank = current_team[:rank]
-
-        same_rank_teams_count = scores.all_scores.count{|t| t[:rank] == team_rank }
-
+      viewable_scores = scores.all_scores.inject([]) do |acc, current|
+        # NOTE currentの一部
         score_info = {
-          score: team_score,
-          rank: team_rank
+          score: current[:score],
+          rank: current[:rank]
         }
 
-        if all || team_rank <= Setting.scoreboard_viewable_top || team_id == team&.id
-          t = Team.find_by(id: team_id)
+        if all || current[:rank] <= Setting.scoreboard_viewable_top || current[:team_id] == team&.id
+          t = Team.find_by(id: current[:team_id])
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
 
           acc << score_info
-        elsif (team_rank + same_rank_teams_count) == my_team_rank
+        elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
+          # 1つ上のチーム(同スコア全て)を公開する
+          # チーム情報なし
           acc << score_info
         end
 
