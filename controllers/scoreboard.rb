@@ -20,39 +20,35 @@ class ScoreBoardRoutes < Sinatra::Base
 
   helpers do
     def scoreboard_for(team: nil, all: false)
-      # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
+      # [[1st_team_id, score, rank], [2nd_team_id, score, rank], [3rd_team_id, score, rank], ...]
       scores = Score::Scores.new
-      all_scores = scores.all_scores
 
       if not all
-        team_score = all_scores.find{|(team_id, score)| team_id == team.id }&.last
-        team_actual_rank = if team_score
-            all_scores.index{|(team_id, score)| team_score == score } + 1
-          else
-            -1 # may happen when team has nothing score yet
-          end
+        # -1: may happen when team has nothing score yet
+        my_team_rank = scores.all_scores.find{|(team_id, score, rank)| team_id == team.id }&.at(2) || -1
       end
 
-      viewable_scores = all_scores.each_with_index.inject([]) do |acc, ((team_id, team_score), rank)|
-        actual_rank = all_scores.index{|(team_id, score)| team_score == score } + 1
-        same_actual_rank_teams_count = all_scores.map(&:last).count(team_score)
+      viewable_scores = scores.all_scores.inject([]) do |acc, (team_id, team_score, team_rank)|
+        same_rank_teams_count = scores.all_scores.count{|(id, score, rank)| rank == team_rank }
 
         score_info = {
           score: team_score,
-          rank: actual_rank
+          rank: team_rank
         }
 
-        if all || actual_rank <= 3 || team_id == team&.id
+        if all || team_rank <= 3 || team_id == team&.id
           t = Team.find_by(id: team_id)
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
 
           acc << score_info
-        elsif (actual_rank + same_actual_rank_teams_count) == team_actual_rank
+        elsif (team_rank + same_rank_teams_count) == my_team_rank
           acc << score_info
         end
 
         acc
       end
+
+      viewable_scores
     end
   end
 

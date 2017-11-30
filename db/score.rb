@@ -161,6 +161,7 @@ class Score::Scores
   def initialize
   end
 
+  # [[1st_team_id, score, rank], [2nd_team_id, score, rank], [3rd_team_id, score, rank], ...]
   def all_scores
     return @all_scores if @all_scores
 
@@ -175,6 +176,19 @@ class Score::Scores
       .sort_by(&:last)
       .reverse # 1st, 2nd, ..., last
 
+    # 順位を付ける
+    # 同スコアがあった場合の順位は 1 2 2 4
+    current_rank = 1
+    previous_score = @all_scores.first&.at(1)
+    @all_scores.each.with_index(1) do |data, index|
+      if previous_score != data[1]
+        previous_score = data[1]
+        current_rank = index
+      end
+
+      # 末尾に順位を追加
+      data << current_rank
+    end
 
     @all_scores
   end
