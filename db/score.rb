@@ -161,11 +161,11 @@ class Score::Scores
   def initialize
   end
 
-  # [[1st_team_id, score, rank], [2nd_team_id, score, rank], [3rd_team_id, score, rank], ...]
+  # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
   def all_scores
     return @all_scores if @all_scores
 
-    # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
+    # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]
     @all_scores = [
       Score.all.joins(:answer).group("answers.team_id").sum(:point),
       Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
@@ -175,25 +175,25 @@ class Score::Scores
       .to_a
       .sort_by(&:last)
       .reverse # 1st, 2nd, ..., last
+      .map{|team_id, score| {team_id: team_id, score: score} }
 
     # 順位を付ける
     # 同スコアがあった場合の順位は 1 2 2 4
     current_rank = 1
-    previous_score = @all_scores.first&.at(1)
+    previous_score = @all_scores.first&.fetch(:score)
     @all_scores.each.with_index(1) do |data, index|
-      if previous_score != data[1]
-        previous_score = data[1]
+      if previous_score != data[:score]
+        previous_score = data[:score]
         current_rank = index
       end
 
-      # 末尾に順位を追加
-      data << current_rank
+      data[:rank] = current_rank
     end
 
     @all_scores
   end
 
-  def find(target_team_id)
-    all_scores.find{|team_id, score, rank| team_id == target_team_id }
+  def find(team_id)
+    all_scores.find{|data| data[:team_id] == team_id }
   end
 end
