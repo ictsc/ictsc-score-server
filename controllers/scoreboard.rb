@@ -23,10 +23,8 @@ class ScoreBoardRoutes < Sinatra::Base
       # [[1st_team_id, score, rank], [2nd_team_id, score, rank], [3rd_team_id, score, rank], ...]
       scores = Score::Scores.new
 
-      if not all
-        # -1: may happen when team has nothing score yet
-        my_team_rank = scores.all_scores.find{|(team_id, score, rank)| team_id == team.id }&.at(2) || -1
-      end
+      # -1: may happen when team has nothing score yet
+      my_team_rank = scores.find(team.id)&.at(2) || -1 unless all
 
       viewable_scores = scores.all_scores.inject([]) do |acc, (team_id, team_score, team_rank)|
         same_rank_teams_count = scores.all_scores.count{|(id, score, rank)| rank == team_rank }

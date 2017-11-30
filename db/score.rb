@@ -192,4 +192,8 @@ class Score::Scores
 
     @all_scores
   end
+
+  def find(target_team_id)
+    all_scores.find{|team_id, score, rank| team_id == target_team_id }
+  end
 end
