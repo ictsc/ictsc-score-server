@@ -27,20 +27,36 @@ class ScoreBoardRoutes < Sinatra::Base
       my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
 
       viewable_scores = scores.inject([]) do |acc, current|
-        # NOTE currentの一部
         score_info = {
-          score: current[:score],
-          rank: current[:rank]
+          rank: current[:rank],
         }
 
-        if all || current[:rank] <= Setting.scoreboard_viewable_top || current[:team_id] == team&.id
+        # 表示するチームと、情報を選択
+        if all || current[:team_id] == team&.id
           t = Team.find_by(id: current[:team_id])
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
+          score_info[:score] = current[:score]
+
+          acc << score_info
+        elsif current[:rank] <= Setting.scoreboard_viewable_top
+          if Setting.scoreboard_viewable_top_show_team
+            t = Team.find_by(id: current[:team_id])
+            score_info[:team] = t.as_json(only: [:id, :name, :organization])
+          end
+
+          score_info[:score] = current[:score] if Setting.scoreboard_viewable_top_show_score
 
           acc << score_info
         elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
-          # 1つ上のチーム(同スコア全て)を公開する
-          # チーム情報なし
+          # 1ランク上のチームを全て公開する
+
+          if Setting.scoreboard_viewable_up_show_team
+            t = Team.find_by(id: current[:team_id])
+            score_info[:team] = t.as_json(only: [:id, :name, :organization])
+          end
+
+          score_info[:score] = current[:score] if Setting.scoreboard_viewable_up_show_score
+
           acc << score_info
         end
 
