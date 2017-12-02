@@ -6,6 +6,7 @@ class Setting
 
   INTEGER_VALUES = %w(
     answer_reply_delay_sec
+    scoreboard_viewable_top
   )
 
   DATETIME_VALUES = %w(

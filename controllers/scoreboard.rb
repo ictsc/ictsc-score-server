@@ -34,7 +34,7 @@ class ScoreBoardRoutes < Sinatra::Base
           rank: team_rank
         }
 
-        if all || team_rank <= 3 || team_id == team&.id
+        if all || team_rank <= Setting.scoreboard_viewable_top || team_id == team&.id
           t = Team.find_by(id: team_id)
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
 
