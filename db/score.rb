@@ -6,6 +6,8 @@ class Score < ActiveRecord::Base
   belongs_to :answer
   belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
 
+  after_save :create_first_correct_answer
+
   def notification_payload(state: :created, **data)
     payload = super
     payload[:data].merge!(
@@ -104,6 +106,16 @@ class Score < ActiveRecord::Base
 
   def subtotal_point
     point + bonus_point
+  end
+
+  def create_first_correct_answer
+    problem = answer.problem
+    return if problem.first_correct_answer
+    team = answer.team
+    problem_point = team.answers.joins(:score).where(problem: problem, team: team).sum(:point)
+    if problem_point >= problem.reference_point
+      FirstCorrectAnswer.create!(team: team, problem: problem)
+    end
   end
 
   # method: POST
