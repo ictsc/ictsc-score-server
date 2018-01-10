@@ -516,8 +516,8 @@ export default {
     },
     problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);
-      if (found && found.title) return `「${found.title}」で基準点以上を獲得すること`;
-      if (found) return '??? で基準点以上を獲得すること';
+      if (found && found.title) return `「${found.title}」で基準点以上を獲得するチームが表われること`;
+      if (found) return '??? で基準点以上を獲得するチームが表われること';
       else return '???';
     },
     problemGroupIconSrc (problem) {
