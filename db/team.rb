@@ -7,6 +7,7 @@ class Team < ActiveRecord::Base
   has_many :answers, dependent: :destroy
   has_many :issues, dependent: :destroy
   has_one :notification_subscriber, dependent: :destroy, as: :subscribable
+  has_many :first_correct_answers, dependent: :nullify
 
   before_validation def build_notification_subscriber_if_not_exists
     build_notification_subscriber if not notification_subscriber
