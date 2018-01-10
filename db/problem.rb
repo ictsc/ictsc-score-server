@@ -41,7 +41,7 @@ class Problem < ActiveRecord::Base
   end
 
   # method: GET
-  scope :readables, ->(user: nil, team: nil, action: "") {
+  scope :readables, -> (user: nil, team: nil, action: "") {
     case user&.role_id
     when ROLE_ID[:admin]
       all
@@ -52,17 +52,11 @@ class Problem < ActiveRecord::Base
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
       next none if DateTime.now <= Setting.competition_start_at
 
-      relation =
-        left_outer_joins(problem_must_solve_before: [answers: [:score]]).
-        group(:id).
-        where(answers: {team: [user&.team || team, nil]})
+      relation = left_outer_joins(problem_must_solve_before: [:first_correct_answer])
 
-      relation.
-        having(problem_must_solve_before_id: nil).
-        or(relation.having(Score.arel_table[:point].sum.gteq(
-          Problem.arel_table.alias("problem_must_solve_befores_problems")[:reference_point])
-        )).
-        select("problem_must_solve_befores_problems.*, problems.*")
+      relation.where(problem_must_solve_before_id: nil).or(
+        relation.merge(FirstCorrectAnswer.where.not(team_id: nil))
+      )
     when ROLE_ID[:viewer]
       all
     else
