@@ -1,6 +1,7 @@
 require_relative 'answer'
 require_relative 'attachment'
 require_relative 'comment'
+require_relative 'first_correct_answer'
 require_relative 'issue'
 require_relative 'member'
 require_relative 'notification_subscriber'

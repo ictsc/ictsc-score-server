@@ -75,8 +75,8 @@ describe Problem do
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
-    describe "problem have solved before problem must solve" do
-      let(:team) { current_member&.team }
+    describe "problem have solved by other team before problem must solve" do
+      let(:team) { create(:team) }
       let!(:score) { create(:score, answer: create(:answer, problem: problem, team: team), point: problem.reference_point) }
       let(:response) { get "/api/problems/#{next_problem.id}" }
       subject { response.status }
