@@ -26,34 +26,36 @@ class ScoreBoardRoutes < Sinatra::Base
       # -1: may happen when team has nothing score yet
       my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
 
+      viewable_config = Setting.scoreboard_viewable_config
+
       viewable_scores = scores.each_with_object([]) do |current, acc|
+        # 表示する情報を決める
+        display_mode =
+          if all || current[:team_id] == team&.id
+            :all
+          elsif current[:rank] <= Setting.scoreboard_viewable_top
+            :top
+          elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
+            # 1ランク上のチーム全て
+            :up
+          else
+            # 表示しない
+            nil
+          end
+
+        next unless display_mode
+
         score_info = {
           rank: current[:rank],
         }
 
-        # 表示するチームと、情報を選択
-        if all || current[:team_id] == team&.id
+        if viewable_config[display_mode][:team]
           t = Team.find_by(id: current[:team_id])
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
+        end
+
+        if viewable_config[display_mode][:score]
           score_info[:score] = current[:score]
-        elsif current[:rank] <= Setting.scoreboard_viewable_top
-          if Setting.scoreboard_viewable_top_show_team
-            t = Team.find_by(id: current[:team_id])
-            score_info[:team] = t.as_json(only: [:id, :name, :organization])
-          end
-
-          score_info[:score] = current[:score] if Setting.scoreboard_viewable_top_show_score
-        elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
-          # 1ランク上のチームを全て公開する
-
-          if Setting.scoreboard_viewable_up_show_team
-            t = Team.find_by(id: current[:team_id])
-            score_info[:team] = t.as_json(only: [:id, :name, :organization])
-          end
-
-          score_info[:score] = current[:score] if Setting.scoreboard_viewable_up_show_score
-        else
-          next
         end
 
         acc << score_info

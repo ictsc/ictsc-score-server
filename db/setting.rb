@@ -47,4 +47,22 @@ class Setting
 
     define_singleton_method(key.to_sym) { value }
   end
+
+  # スコアボードの公開する情報をRubyから扱いやすく
+  def self.scoreboard_viewable_config
+    {
+      all: {
+        team: true,
+        score: true,
+      },
+      top: {
+        team: self.scoreboard_viewable_top_show_team,
+        score: self.scoreboard_viewable_top_show_score,
+      },
+      up: {
+        team: self.scoreboard_viewable_up_show_team,
+        score: self.scoreboard_viewable_up_show_score,
+      },
+    }
+  end
 end
