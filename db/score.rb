@@ -157,16 +157,13 @@ class Score < ActiveRecord::Base
   }
 end
 
-class Score::Scores
+# [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
+class Score::Scores < Array
   def initialize
-  end
-
-  # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
-  def all_scores
-    return @all_scores if @all_scores
+    super()
 
     # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]
-    @all_scores = [
+    [
       Score.all.joins(:answer).group("answers.team_id").sum(:point),
       Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
     ]
@@ -175,13 +172,13 @@ class Score::Scores
       .to_a
       .sort_by(&:last)
       .reverse # 1st, 2nd, ..., last
-      .map{|team_id, score| {team_id: team_id, score: score} }
+      .each{|team_id, score| self.push({team_id: team_id, score: score}) }
 
     # 順位を付ける
     # 同スコアがあった場合の順位は 1 2 2 4
     current_rank = 1
-    previous_score = @all_scores.first&.fetch(:score)
-    @all_scores.each.with_index(1) do |data, index|
+    previous_score = self.first&.fetch(:score)
+    self.each.with_index(1) do |data, index|
       if previous_score != data[:score]
         previous_score = data[:score]
         current_rank = index
@@ -189,15 +186,13 @@ class Score::Scores
 
       data[:rank] = current_rank
     end
-
-    @all_scores
   end
 
-  def find(team_id)
-    all_scores.find{|data| data[:team_id] == team_id }
+  def find_by_id(team_id)
+    self.find{|data| data[:team_id] == team_id }
   end
 
   def count_same_rank(rank)
-    all_scores.count{|data| data[:rank] == rank }
+    self.count{|data| data[:rank] == rank }
   end
 end
