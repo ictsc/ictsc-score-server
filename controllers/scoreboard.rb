@@ -20,46 +20,34 @@ class ScoreBoardRoutes < Sinatra::Base
 
   helpers do
     def scoreboard_for(team: nil, all: false)
-      # [[1st_team_id, score], [2nd_team_id, score], [3rd_team_id, score], ...]
-      all_scores = [
-          Score.all.joins(:answer).group("answers.team_id").sum(:point),
-          Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
-        ] \
-        .flat_map(&:to_a) \
-        .inject(Hash.new(0)){|acc, (team_id, score)| acc[team_id] += score; acc } \
-        .to_a \
-        .sort_by(&:last) \
-        .reverse # 1st, 2nd, ..., last
+      # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
+      scores = Score::Scores.new
 
-      if not all
-        team_score = all_scores.find{|(team_id, score)| team_id == team.id }&.last
-        team_actual_rank = if team_score
-            all_scores.index{|(team_id, score)| team_score == score } + 1
-          else
-            -1 # may happen when team has nothing score yet
-          end
-      end
+      # -1: may happen when team has nothing score yet
+      my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
 
-      viewable_scores = all_scores.each_with_index.inject([]) do |acc, ((team_id, team_score), rank)|
-        actual_rank = all_scores.index{|(team_id, score)| team_score == score } + 1
-        same_actual_rank_teams_count = all_scores.map(&:last).count(team_score)
-
+      viewable_scores = scores.inject([]) do |acc, current|
+        # NOTE currentの一部
         score_info = {
-          score: team_score,
-          rank: actual_rank
+          score: current[:score],
+          rank: current[:rank]
         }
 
-        if all || actual_rank <= 3 || team_id == team&.id
-          t = Team.find_by(id: team_id)
+        if all || current[:rank] <= Setting.scoreboard_viewable_top || current[:team_id] == team&.id
+          t = Team.find_by(id: current[:team_id])
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
 
           acc << score_info
-        elsif (actual_rank + same_actual_rank_teams_count) == team_actual_rank
+        elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
+          # 1つ上のチーム(同スコア全て)を公開する
+          # チーム情報なし
           acc << score_info
         end
 
         acc
       end
+
+      viewable_scores
     end
   end
 
