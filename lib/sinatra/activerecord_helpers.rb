@@ -20,12 +20,12 @@ module Sinatra
       attribute_names - %i(id created_at updated_at) - options[:exclude] + options[:include]
     end
 
-    def params_to_attributes_of(klass:, **options)
+    def params_to_attributes_of(klass:, object: params, **options)
       raise "klass must be kind of Class" unless klass.kind_of? Class
 
       keys = attribute_names_of(klass: klass, **options)
       keys.inject(Hash.new) do |hash, attr_name|
-        hash[attr_name] = params[attr_name] if params.key?(attr_name)
+        hash[attr_name] = object[attr_name] if object.key?(attr_name)
         next hash
       end
     end
