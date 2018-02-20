@@ -4,6 +4,7 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
 
+# ファイルアップロード
 class AttachmentRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::JSONHelpers
@@ -18,11 +19,13 @@ class AttachmentRoutes < Sinatra::Base
     json @attachments
   end
 
+  # 権限チェック
   before "/api/attachments/:id" do
     @attachment = Attachment.find_by(id: params[:id])
     halt 404 if not @attachment&.allowed?(by: current_user, method: request.request_method)
   end
 
+  # IDからファイルの情報を取得
   get "/api/attachments/:id" do
     json @attachment
   end
@@ -53,6 +56,7 @@ class AttachmentRoutes < Sinatra::Base
 
       hash = Digest::SHA256.file(file_path).hexdigest
 
+      # ファイルのハッシュを返す
       status 201
       headers "Location" => to("/api/attachments/#{@attachment.id}")
       json @attachment.attributes.merge({"file_hash" => hash})
@@ -69,6 +73,8 @@ class AttachmentRoutes < Sinatra::Base
     end
   end
 
+  # ファイルを取得
+  # ファイルのハッシュが無いと取得できない
   get "/attachments/:id/:hash/:filename" do
     @attachment = Attachment.find_by(id: params[:id])
 
