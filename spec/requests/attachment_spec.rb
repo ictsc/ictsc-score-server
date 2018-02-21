@@ -113,7 +113,7 @@ describe Attachment do
 
         success_download_block = Proc.new do
           expect(response_download.status).to eq 200
-          expect(response_download.body).to eq file_to_upload.read
+          expect(response_download.body).to eq file_to_upload.tempfile.open.read
         end
 
         by_writer &success_download_block

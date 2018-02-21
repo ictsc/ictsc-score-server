@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :issue_comment, class: 'Comment' do
     member
     association :commentable, factory: :issue

@@ -1,7 +1,7 @@
 require_relative '../spec_helper.rb'
 
 describe Role do
-  role_factory = FactoryGirl.factories.find(:role)
+  role_factory = FactoryBot.factories.find(:role)
   role_traits = role_factory.defined_traits.map(&:name)
 
   role_traits.each {|trait| let!(trait) { create(:role, trait) } }

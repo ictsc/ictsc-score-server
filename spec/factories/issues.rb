@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :issue do
     closed false
     sequence(:title) { |n| "issue_#{n}" }

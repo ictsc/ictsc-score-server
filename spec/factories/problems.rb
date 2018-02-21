@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :problem do
     sequence(:title) { |n| "problem_#{n}" }
     sequence(:text) { |n| "problem_text_#{n}" }
