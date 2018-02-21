@@ -6,7 +6,7 @@ services:
       context: ui2
     image: ictsc-score-server:ui
     ports:
-       - "3001:80"
+      - "3001:80"
     restart: always
     links:
       - api
