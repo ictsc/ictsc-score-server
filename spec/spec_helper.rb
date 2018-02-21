@@ -6,7 +6,7 @@ SimpleCov.start do
   add_filter "/spec/"
 end
 
-require_relative 'support/factory_girl'
+require_relative 'support/factory_bot'
 require_relative 'support/api_helpers'
 require_relative '../app'
 

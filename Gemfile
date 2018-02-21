@@ -30,7 +30,7 @@ group :development do
 end
 
 group :test do
-  gem "factory_girl"
+  gem "factory_bot"
   gem "rspec"
   gem "rack-test"
   gem "database_cleaner"

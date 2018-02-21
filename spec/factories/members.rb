@@ -15,7 +15,7 @@ def hash_password(key, salt = "")
   end
 end
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :member do
     sequence(:name) { |n| "member_#{n}" }
     sequence(:login) { |n| "member_login_#{n}" }

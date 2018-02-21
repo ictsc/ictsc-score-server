@@ -23,7 +23,7 @@ class Member < ActiveRecord::Base
     notification_subscriber.valid?
   end
 
-  # For FactoryGirl to pass plain password to spec from factory
+  # For FactoryBot to pass plain password to spec from factory
   attr_accessor :password 
 
   # method: POST
