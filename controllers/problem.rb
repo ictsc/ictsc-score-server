@@ -93,7 +93,6 @@ class ProblemRoutes < Sinatra::Base
     halt 403 if not Problem.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Problem, include: [:problem_group_ids])
-    @attrs[:creator_id] = current_user.id
 
     begin
       @problem = Problem.new(@attrs)
