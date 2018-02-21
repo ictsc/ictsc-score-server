@@ -26,25 +26,39 @@ class ScoreBoardRoutes < Sinatra::Base
       # -1: may happen when team has nothing score yet
       my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
 
-      viewable_scores = scores.inject([]) do |acc, current|
-        # NOTE currentの一部
+      viewable_config = Setting.scoreboard_viewable_config
+
+      viewable_scores = scores.each_with_object([]) do |current, acc|
+        # 表示する情報を決める
+        display_mode =
+          if all || current[:team_id] == team&.id
+            :all
+          elsif current[:rank] <= Setting.scoreboard_viewable_top
+            :top
+          elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
+            # 1ランク上のチーム全て
+            :up
+          else
+            # 表示しない
+            nil
+          end
+
+        next unless display_mode
+
         score_info = {
-          score: current[:score],
-          rank: current[:rank]
+          rank: current[:rank],
         }
 
-        if all || current[:rank] <= Setting.scoreboard_viewable_top || current[:team_id] == team&.id
+        if viewable_config[display_mode][:team]
           t = Team.find_by(id: current[:team_id])
           score_info[:team] = t.as_json(only: [:id, :name, :organization])
-
-          acc << score_info
-        elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
-          # 1つ上のチーム(同スコア全て)を公開する
-          # チーム情報なし
-          acc << score_info
         end
 
-        acc
+        if viewable_config[display_mode][:score]
+          score_info[:score] = current[:score]
+        end
+
+        acc << score_info
       end
 
       viewable_scores
