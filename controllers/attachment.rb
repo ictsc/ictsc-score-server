@@ -10,6 +10,18 @@ class AttachmentRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
+  def uploads_dir
+    @uploads_dir ||= Pathname(settings.root) + "../uploads/#{@attachment.id}/"
+  end
+
+  def file_path
+    @file_path ||= (uploads_dir + @file_name).to_s
+  end
+
+  def file_hash
+    @file_hash ||= Digest::SHA256.file(file_path).hexdigest
+  end
+
   before "/api/attachments*" do
     I18n.locale = :en if request.xhr?
   end
@@ -39,6 +51,7 @@ class AttachmentRoutes < Sinatra::Base
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
     @attrs[:filename]  = f[:filename]
     @attachment = Attachment.new(@attrs)
+    @file_name = f[:filename]
 
     halt 400 if /(\/|\.\.)/ === f[:filename]
 
@@ -47,19 +60,15 @@ class AttachmentRoutes < Sinatra::Base
       json @attachment.errors
     else
       # save file
-      uploads_dir = Pathname(settings.root) + "../uploads/#{@attachment.id}/"
-      file_path = (uploads_dir + f[:filename]).to_s
       FileUtils.mkdir_p uploads_dir.to_s
       halt 400 unless file_path.start_with? uploads_dir.to_s
 
       File.write(file_path, f[:tempfile].read)
 
-      hash = Digest::SHA256.file(file_path).hexdigest
-
       # ファイルのハッシュを返す
       status 201
       headers "Location" => to("/api/attachments/#{@attachment.id}")
-      json @attachment.attributes.merge({"file_hash" => hash})
+      json @attachment.attributes.merge({"file_hash" => file_hash})
     end
   end
 
@@ -77,17 +86,14 @@ class AttachmentRoutes < Sinatra::Base
   # ファイルのハッシュが無いと取得できない
   get "/attachments/:id/:hash/:filename" do
     @attachment = Attachment.find_by(id: params[:id])
+    @file_name = params[:filename]
 
     if @attachment.filename != params[:filename]
       halt 404
     end
 
     begin
-      uploads_dir = Pathname(settings.root) + "../uploads/#{@attachment.id}/"
-      file_path = (uploads_dir + params[:filename]).to_s
-
-      hash = Digest::SHA256.file(file_path).hexdigest
-      if hash != params[:hash]
+      if file_hash != params[:hash]
         halt 403
       end
     rescue
