@@ -44,6 +44,14 @@ namespace :db do
     SeedFu.seed(fixture_paths, filter)
   end
 
+  task :re_seed_fu => :environment do
+    # TODO: 2回目移行のseed_fuが失敗する応急処置
+    Rake::Task['db:environment:set'].invoke
+    Rake::Task['db:drop'].invoke
+    Rake::Task['db:setup'].invoke
+    Rake::Task['db:seed_fu'].invoke
+  end
+
   task :load_config do
     require_relative "app"
   end
