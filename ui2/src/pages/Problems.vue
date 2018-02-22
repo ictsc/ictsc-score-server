@@ -431,6 +431,10 @@ export default {
         completing_bonus_point: 0,
         flag_icon_url: '',
       },
+      newMember: {
+        id: '',
+        name: '',
+      },
     }
   },
   asyncData: {
@@ -450,7 +454,11 @@ export default {
         return new Promise((resolve) => resolve([]));
       }
     },
+    members () {
+      return API.getMembers();
+    },
   },
+
   computed: {
     problemSelect () {
       return Array.concat([{
@@ -468,6 +476,7 @@ export default {
       return Array.concat([{
         id: null,
         name: '',
+        role_id: '',
       }], this.members)
     },
   },
