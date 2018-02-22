@@ -14,6 +14,14 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-sm-3 col-form-label">担当者</label>
+          <div class="col-sm-9">
+            <select class="form-control" v-model="newMember">
+              <option v-for="member in memberSelect" v-if="member.role_id===3" :value="member.id">{{ member.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
           <label class="col-sm-3 col-form-label">基準点</label>
           <div class="col-sm-9">
             <input v-model="newProblemObj.reference_point" type="number" class="form-control">
@@ -456,6 +464,12 @@ export default {
       'isMember',
       'session',
     ]),
+    memberSelect () {
+      return Array.concat([{
+        id: null,
+        name: '',
+      }], this.members)
+    },
   },
   watch: {
     problemGroups (val) {
@@ -576,4 +590,3 @@ export default {
   },
 }
 </script>
-
