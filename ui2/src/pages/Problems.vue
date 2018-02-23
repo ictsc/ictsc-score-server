@@ -14,6 +14,14 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-sm-3 col-form-label">担当者</label>
+          <div class="col-sm-9">
+            <select class="form-control" v-model="newProblemObj.creator_id">
+              <option v-for="member in memberSelect" v-if="member.role_id===3" :value="member.id">{{ member.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
           <label class="col-sm-3 col-form-label">基準点</label>
           <div class="col-sm-9">
             <input v-model="newProblemObj.reference_point" type="number" class="form-control">
@@ -411,6 +419,7 @@ export default {
       newProblemObj: {
         title: '',
         text: '',
+        creator_id: null,
         reference_point: 0,
         perfect_point: 0,
         problem_group_ids: [],
@@ -422,6 +431,9 @@ export default {
         visible: 1,
         completing_bonus_point: 0,
         flag_icon_url: '',
+      },
+      newMemberObj: {
+        name: '',
       },
     }
   },
@@ -442,7 +454,12 @@ export default {
         return new Promise((resolve) => resolve([]));
       }
     },
+    membersDefault: [],
+    members () {
+      return API.getMembers();
+    },
   },
+
   computed: {
     problemSelect () {
       return Array.concat([{
@@ -456,6 +473,13 @@ export default {
       'isMember',
       'session',
     ]),
+    memberSelect () {
+      return Array.concat([{
+        id: null,
+        name: 'Null',
+        role_id: null,
+      }], this.members);
+    },
   },
   watch: {
     problemGroups (val) {
@@ -550,7 +574,6 @@ export default {
       }
     },
     async addGroup () {
-      console.log(this.newGroupObj);
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'problemGroup');
         await API.postProblemGroup(this.newGroupObj);
@@ -576,4 +599,3 @@ export default {
   },
 }
 </script>
-

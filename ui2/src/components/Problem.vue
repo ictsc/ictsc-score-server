@@ -28,6 +28,14 @@
             </div>
           </div>
           <div class="form-group row">
+            <label class="col-2 col-form-label">作問者</label>
+            <div class="col-10">
+              <select class="form-control" v-model="problem.creator_id">
+                <option v-for="creator in creatorSelect" v-if="creator.role_id===3" :value="creator.id">{{ creator.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-2 col-form-label">基準点</label>
             <div class="col-10">
               <input v-model="problem.reference_point" class="form-control" type="number">
@@ -112,8 +120,8 @@
 <script>
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
-import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
-import Markdown from '../components/Markdown'
+import { SimpleMarkdownEditor } from '../components/SimpleMarkdownEditor'
+import { Markdown } from '../components/Markdown'
 import { mapGetters } from 'vuex'
 import {
   Emit,
@@ -152,6 +160,10 @@ export default {
           return res;
         });
     },
+    membersDefault: [],
+    members () {
+      return API.getMembers();
+    },
   },
   computed: {
     problemSelect () {
@@ -163,6 +175,9 @@ export default {
     ...mapGetters([
       'isAdmin',
     ]),
+    creatorSelect () {
+      return this.members;
+    },
   },
   watch: {
     id (val, old) {
@@ -239,4 +254,3 @@ export default {
   },
 }
 </script>
-
