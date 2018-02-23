@@ -1,4 +1,4 @@
-FROM ruby:2.4.1-alpine
+FROM ruby:2.4.3-alpine3.7
 
 LABEL maintainer "kyontan <kyontan@monora.me>"
 
