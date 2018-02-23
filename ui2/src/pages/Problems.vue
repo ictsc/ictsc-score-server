@@ -16,8 +16,8 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">担当者</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="newMember">
-              <option v-for="member in memberSelect" v-if="member.role_id===3" :value="member.id">{{ member.name }}</option>
+            <select class="form-control" v-model="newMemberObj">
+              <option v-for="member in memberSelect" v-if="member.role_id===3" :value="member">{{ member.name }}</option>
             </select>
           </div>
         </div>
@@ -419,6 +419,7 @@ export default {
       newProblemObj: {
         title: '',
         text: '',
+        role_id: null,
         reference_point: 0,
         perfect_point: 0,
         problem_group_ids: [],
@@ -431,8 +432,7 @@ export default {
         completing_bonus_point: 0,
         flag_icon_url: '',
       },
-      newMember: {
-        id: '',
+      newMemberObj: {
         name: '',
       },
     }
@@ -454,6 +454,7 @@ export default {
         return new Promise((resolve) => resolve([]));
       }
     },
+    membersDefault: [],
     members () {
       return API.getMembers();
     },
@@ -475,9 +476,9 @@ export default {
     memberSelect () {
       return Array.concat([{
         id: null,
-        name: '',
-        role_id: '',
-      }], this.members)
+        name: 'Null',
+        role_id: null,
+      }], this.members);
     },
   },
   watch: {
@@ -573,7 +574,6 @@ export default {
       }
     },
     async addGroup () {
-      console.log(this.newGroupObj);
       try {
         Emit(REMOVE_NOTIF, msg => msg.key === 'problemGroup');
         await API.postProblemGroup(this.newGroupObj);
