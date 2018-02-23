@@ -16,7 +16,7 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">担当者</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="newProblemObj.writer_id">
+            <select class="form-control" v-model="newProblemObj.creator_id">
               <option v-for="member in memberSelect" v-if="member.role_id===3" :value="member.id">{{ member.name }}</option>
             </select>
           </div>
