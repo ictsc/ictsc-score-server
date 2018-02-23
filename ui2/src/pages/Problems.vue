@@ -419,7 +419,7 @@ export default {
       newProblemObj: {
         title: '',
         text: '',
-        writer_id: null,
+        creator_id: null,
         reference_point: 0,
         perfect_point: 0,
         problem_group_ids: [],
