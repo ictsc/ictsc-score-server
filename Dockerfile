@@ -20,6 +20,7 @@ RUN apk update \
         mariadb-dev \
  && apk add --virtual .running-dep \
         mariadb-client-libs \
+        less \
  && bundle install --jobs=4 \
  && apk del .build-dep \
  && rm -rf /var/cache/apk/*

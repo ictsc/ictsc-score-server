@@ -57,6 +57,13 @@ namespace :db do
   end
 end
 
+task :pry do
+  require 'pry'
+  require_relative 'pry_r'
+
+  Pry::CLI.start(Pry::CLI.parse_options)
+end
+
 Rake::Task["db:seed_fu"].enhance(["db:load_config"])
 
 SeedFu.fixture_paths = [
