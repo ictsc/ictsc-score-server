@@ -3,6 +3,16 @@ require "pry"
 
 module Sinatra
   module NestedEntityHelpers
+    # 文字列からモデルを求める
+    def solve_model(entity:, parent_entity:)
+      begin
+        entity.singularize.capitalize.constantize
+      rescue NameError
+        parent_entity.singularize.capitalize.constantize
+          .reflections[entity].class_name.constantize
+      end
+    end
+
     def filter_entities(member:, resource:, entities:, parent_entity: nil)
       if resource.is_a? Array
         resource.each do |r|
@@ -13,23 +23,17 @@ module Sinatra
 
       r = resource
       entities.each.with_index do |entity, i|
-        begin
-          k = entity.singularize.capitalize.constantize
-        rescue NameError
-          parent_klass = parent_entity.singularize.capitalize.constantize
-          k = parent_klass.reflections[entity].class_name.constantize
-        end
-
+        model = solve_model(entity: entity, parent_entity: parent_entity)
         action = (entity == "comments") ? "#{parent_entity}_#{entity}" : ""
 
         case r[entity]
         when Array
-          r_entity_readable_ids = k.readables(user: member, action: action).ids
+          r_entity_readable_ids = model.readables(user: member, action: action).ids
           r[entity].select!{|rr| r_entity_readable_ids.include?(rr["id"]) }
           filter_entities(member: member, resource: r[entity], entities: entities[(i+1)..-1], parent_entity: entity) if 1 < entities.size
           return
         when Hash
-          if not k.readables(user: member, action: action).to_a.any?{|x| x.id = r[entity]["id"] }
+          if not model.readables(user: member, action: action).to_a.any?{|x| x.id = r[entity]["id"] }
             r.delete(entity)
             return
           end
