@@ -34,21 +34,28 @@ module Sinatra
     end
 
     def is_admin?
-      return current_user&.role&.name == "Admin"
+      return current_user&.role&.id == ROLE_ID[:admin]
     end
 
     def is_viewer?
-      return current_user&.role&.name == "Viewer"
+      return current_user&.role&.id == ROLE_ID[:viewer]
     end
 
     def is_participant?
-      return current_user&.role&.name == "Participant"
+      return current_user&.role&.id == ROLE_ID[:participant]
     end
 
     def is_writer?
-      return current_user&.role&.name == "Writer"
+      return current_user&.role&.id == ROLE_ID[:writer]
     end
 
+    def is_nologin?
+      return current_user&.role&.id == ROLE_ID[:nologin]
+    end
+
+    def is_manager?
+      return is_admin? || is_writer? || is_viewer?
+    end
   end
 
   helpers AccountServiceHelpers
