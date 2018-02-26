@@ -24,7 +24,7 @@ class Member < ActiveRecord::Base
   end
 
   # For FactoryBot to pass plain password to spec from factory
-  attr_accessor :password 
+  attr_accessor :password
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")

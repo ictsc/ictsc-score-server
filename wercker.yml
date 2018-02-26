@@ -10,7 +10,7 @@ ui-build:
         name: set env
         code: |
           export UI_DIR=ui2
-          export YARN_CACHE_DIR=$WERCKER_CACHE_DIR/yarn 
+          export YARN_CACHE_DIR=$WERCKER_CACHE_DIR/yarn
     - script:
       name: yarn
       cwd: $UI_DIR

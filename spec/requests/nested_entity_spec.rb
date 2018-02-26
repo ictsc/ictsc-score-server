@@ -59,7 +59,7 @@ describe 'Nested entity' do
           by_participant { is_expected.to eq 200 }
         end
 
-        describe "/api/#{pluralized_name}/:id?with=#{with_param}" do    
+        describe "/api/#{pluralized_name}/:id?with=#{with_param}" do
           let(:response) {
             get "/api/#{pluralized_name}/#{resource.id}?with=#{with_param}" }
           subject { response.status }

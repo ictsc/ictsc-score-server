@@ -15,7 +15,7 @@ RSpec.configure do |config|
   config.tty = true
 
   config.include Rack::Test::Methods
-  
+
   # Disable verbose default logger
   ActiveRecord::Base.logger = nil
 
@@ -27,7 +27,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.start
   end
- 
+
   config.after :each do
     DatabaseCleaner.clean
   end

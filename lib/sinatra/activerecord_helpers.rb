@@ -15,7 +15,7 @@ module Sinatra
           klass.required_attribute_names
         else
           klass.attribute_names.map(&:to_sym)
-        end 
+        end
 
       attribute_names - %i(id created_at updated_at) - options[:exclude] + options[:include]
     end
