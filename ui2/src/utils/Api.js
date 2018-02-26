@@ -149,7 +149,7 @@ export class API {
       .then(res => res.body)
   }
   static getProblemsWithScore (req = superagent) {
-    return RequestMiddleware(req.get(`problems?with=answers-score`))
+    return RequestMiddleware(req.get(`problems?with=answers-score,creator`))
       .then(res => res.body)
   }
   static getProblems (req = superagent) {
@@ -163,7 +163,7 @@ export class API {
     ).then(res => res.body)
   }
   static getProblem (id, req = superagent) {
-    return RequestMiddleware(req.get(`problems/${id}?with=comments`))
+    return RequestMiddleware(req.get(`problems/${id}?with=comments,creator`))
       .then(res => res.body)
   }
   static patchProblem (id, obj, req = superagent) {

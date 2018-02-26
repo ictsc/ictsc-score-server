@@ -26,10 +26,27 @@ export default new Vuex.Store({
     contest: state => state.contest,
     title: state => state.title,
     session: state => state.session,
+    isStaff: state => {
+      return state.session != null &&
+        state.session.member != null &&
+        state.session.member.role_id === 2 ||
+        state.session.member.role_id === 3 ||
+        state.session.member.role_id === 5;
+    },
     isAdmin: state => {
       return state.session != null &&
         state.session.member != null &&
         state.session.member.role_id === 2;
+    },
+    isViewer: state => {
+      return state.session != null &&
+        state.session.member != null &&
+        state.session.member.role_id === 5;
+    },
+    isWriter: state => {
+      return state.session != null &&
+        state.session.member != null &&
+        state.session.member.role_id === 3;
     },
     isMember: state => {
       return state.session != null &&

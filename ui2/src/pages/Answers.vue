@@ -17,6 +17,7 @@
           基準点: {{ problem.reference_point }} /
           満点: {{ problem.perfect_point }} /
           正解チーム数: {{ problem.solved_teams_count }}
+          担当者: {{ problem.creator.name }}
           </small>
         <div class="teams row">
           <div v-for="team in teams" v-if="matchesFilter(problem.answers, team.id, problem.id)" class="col-3">
