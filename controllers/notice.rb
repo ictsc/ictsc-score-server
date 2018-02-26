@@ -14,7 +14,7 @@ class NoticeRoutes < Sinatra::Base
   before "/api/notices*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(?,) & %w(member) if request.get?
+    @with_param = (params[:with] || "").split(',') & %w(member) if request.get?
   end
 
   get "/api/notices" do

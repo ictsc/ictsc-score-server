@@ -19,8 +19,8 @@ def hash_password(key, salt = "")
   end
 end
 
-alnum    = ->i{ [*1..i].map{ ([*?a..?z] + [*?A..?Z] + [*?0..?9]).sample}.join }
-hiragana = ->i{ [*1..i].map{ [*?あ..?ん].sample}.join }
+alnum    = ->i{ [*1..i].map{ ([*'a'..'z'] + [*'A'..'Z'] + [*'0'..'9']).sample}.join }
+hiragana = ->i{ [*1..i].map{ [*'あ'..'ん'].sample}.join }
 
 Team.seed(:id, [
   {id: 1,  name: "Team 1",        organization: "A学校",                        registration_code: "teama"},
