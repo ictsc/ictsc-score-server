@@ -3,6 +3,16 @@ require "pry"
 
 module Sinatra
   module NestedEntityHelpers
+    # 文字列からモデルを求める
+    def solve_model(entity:, parent_entity:)
+      begin
+        entity.singularize.capitalize.constantize
+      rescue NameError
+        parent_entity.singularize.capitalize.constantize
+          .reflections[entity].class_name.constantize
+      end
+    end
+
     def filter_entities(member:, resource:, entities:, parent_entity: nil)
       if resource.is_a? Array
         resource.each do |r|
@@ -13,23 +23,17 @@ module Sinatra
 
       r = resource
       entities.each.with_index do |entity, i|
-        begin
-          k = entity.singularize.capitalize.constantize
-        rescue NameError
-          parent_klass = parent_entity.singularize.capitalize.constantize
-          k = parent_klass.reflections[entity].class_name.constantize
-        end
-
+        model = solve_model(entity: entity, parent_entity: parent_entity)
         action = (entity == "comments") ? "#{parent_entity}_#{entity}" : ""
 
         case r[entity]
         when Array
-          r_entity_readable_ids = k.readables(user: member, action: action).ids
+          r_entity_readable_ids = model.readables(user: member, action: action).ids
           r[entity].select!{|rr| r_entity_readable_ids.include?(rr["id"]) }
           filter_entities(member: member, resource: r[entity], entities: entities[(i+1)..-1], parent_entity: entity) if 1 < entities.size
           return
         when Hash
-          if not k.readables(user: member, action: action).to_a.any?{|x| x.id = r[entity]["id"] }
+          if not model.readables(user: member, action: action).to_a.any?{|x| x.id = r[entity]["id"] }
             r.delete(entity)
             return
           end
@@ -46,13 +50,16 @@ module Sinatra
       # includes: { answers: { comments: {}, score: {} }, creator: {}, issues: { comments: {} } }
       #       as: { include: { answers: { include: { comments: {}, score: {} } }, creator: {}, issues: { include: { comments: {} } } } }
       includes_param, as_param = nested_params.inject([{}, {}]) do |(includes, as), nested_entity|
+        # 再帰的にデフォルト値をセットする
         i, a = includes, as
         nested_entity.each do |key|
+          # デフォルト値をセット
           i[key] ||= {}
-          i = i[key]
-
           a[:include] ||= {}
           a[:include][key] ||= {}
+
+          # 次の階層に移る
+          i = i[key]
           a = a[:include][key]
         end
 
@@ -61,7 +68,9 @@ module Sinatra
 
       as_param.deep_merge!(as_option)
 
+      # ここでは最上位のモデルからしかreadablesがよばれない
       resources = klass.readables(user: by, action: action).includes(includes_param).where(where)
+
       resources = resources.where(id: id.to_i) if id
       resources.as_json(as_param).reject{|x| x["id"].nil? }
     end
@@ -70,26 +79,40 @@ module Sinatra
     # return: [[:answers], [:answers, :comments], [:answers, :score], [:creator], [:issues], [:issues, :comments]]
     def nested_params_from_flat_array(ary)
       return [] if ary.empty?
-      ary \
-        .sort \
-        .tap{|x| x.select!{|y| x.grep(/^#{y}-/).empty? } } \
-        .map{|x| x.split(?-).map(&:to_sym) }
+
+      # ソート
+      # ['answers', 'answers-score'] -> ['answers-score']
+      # シンボル化 'answers-score' -> [:answers, :score]
+      ary
+        .sort
+        .tap{|array| array.select!{|str| array.grep(/^#{str}-/).empty? } }
+        .map{|str| str.split('-').map(&:to_sym) }
     end
 
     def generate_nested_hash(klass:, by:, params:, id: nil, as_option: {}, apply_filter: true, action: "", where: {})
-      np = params || []
-      np = np.split(?,) if np.is_a? String
-      np = nested_params_from_flat_array(np) if np.is_a? Array
+      nested_params = case params
+        when String
+          params.split(',')
+        when nil
+          []
+        else
+          params
+        end
 
-      resources = as_json_of(klass, nested_params: np, by: by, as_option: as_option, id: id&.to_i, action: action, where: where)
+      # パラメータを正規化
+      nested_params = nested_params_from_flat_array(nested_params) if nested_params.is_a? Array
+
+      # 再帰的にデータを取得
+      resources = as_json_of(klass, nested_params: nested_params, by: by, as_option: as_option, id: id&.to_i, action: action, where: where)
 
       if apply_filter
-        np.map{|x| x.map(&:to_s) }.each do |entities|
+        nested_params.map{|x| x.map(&:to_s) }.each do |entities|
           filter_entities(member: by, resource: resources, entities: entities, parent_entity: klass.to_s.downcase.pluralize)
         end
       end
 
       return resources.first if id
+
       resources
     end
   end

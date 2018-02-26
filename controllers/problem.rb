@@ -12,12 +12,12 @@ class ProblemRoutes < Sinatra::Base
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(?,) & %w(answers answers-score answers-team issues issues-comments creator comments problem_groups) if request.get?
+    @with_param = (params[:with] || "").split(',') & %w(answers answers-score answers-team issues issues-comments creator comments problem_groups) if request.get?
     @as_option = { methods: [:problem_group_ids] }
   end
 
   get "/api/problems" do
-    @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !(is_admin? || is_viewer?)).uniq
+    @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_manager?).uniq
 
     if is_participant?
       next json [] if DateTime.now <= Setting.competition_start_at
