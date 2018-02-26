@@ -50,7 +50,7 @@ describe Member do
     describe 'get participant member' do
       let(:response) { get "/api/members/#{participant.id}" }
       subject { response.status }
-      
+
       by_nologin     { is_expected.to eq 404 }
       by_viewer      { is_expected.to eq 200 }
       by_participant { is_expected.to eq 200 }
@@ -388,7 +388,7 @@ describe Member do
     describe 'delete participant member' do
       let(:response) { delete "/api/members/#{participant.id}" }
       subject { response.status }
-      
+
       by_nologin     { is_expected.to eq 404 }
       by_viewer      { is_expected.to eq 404 }
       by_participant { is_expected.to eq 404 }

@@ -230,7 +230,7 @@ describe Score do
 
       by_nologin     { is_expected.to eq 404 }
       by_viewer      { is_expected.to eq 403 }
-      by_participant { is_expected.to eq 403 } 
+      by_participant { is_expected.to eq 403 }
 
       all_success_block = Proc.new do
         is_expected.to eq 201

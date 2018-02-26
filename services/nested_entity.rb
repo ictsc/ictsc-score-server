@@ -13,6 +13,13 @@ module Sinatra
       end
     end
 
+    # NOTE: 解読中
+    # readablesを呼んでくれてるっぽい
+    # @param member []
+    # @param resource []
+    # @param entities []
+    # @param parent_entity []
+    # @return []
     def filter_entities(member:, resource:, entities:, parent_entity: nil)
       if resource.is_a? Array
         resource.each do |r|
@@ -24,6 +31,7 @@ module Sinatra
       r = resource
       entities.each.with_index do |entity, i|
         model = solve_model(entity: entity, parent_entity: parent_entity)
+        # NOTE: 謎
         action = (entity == "comments") ? "#{parent_entity}_#{entity}" : ""
 
         case r[entity]
@@ -46,10 +54,20 @@ module Sinatra
       end
     end
 
+    # NOTE: 解読中
+    # データを再帰的に取得する readablesを使ってる
+    # @param klass []
+    # @param nested_params []
+    # @param by []
+    # @param as_option []
+    # @param id [] 取得するデータのid
+    # @param action []
+    # @return
     def as_json_of(klass, nested_params:, by:, as_option: {}, id: nil, action: "", where: {})
-      # includes: { answers: { comments: {}, score: {} }, creator: {}, issues: { comments: {} } }
-      #       as: { include: { answers: { include: { comments: {}, score: {} } }, creator: {}, issues: { include: { comments: {} } } } }
       includes_param, as_param = nested_params.inject([{}, {}]) do |(includes, as), nested_entity|
+        # includes: { answers: { comments: {}, score: {} }, creator: {}, issues: { comments: {} } }
+        #       as: { include: { answers: { include: { comments: {}, score: {} } }, creator: {}, issues: { include: { comments: {} } } } }
+
         # 再帰的にデフォルト値をセットする
         i, a = includes, as
         nested_entity.each do |key|
@@ -75,8 +93,9 @@ module Sinatra
       resources.as_json(as_param).reject{|x| x["id"].nil? }
     end
 
-    #    ary: ["answers","answers-comments","answers-score","issues","issues-comments","creator"]
-    # return: [[:answers], [:answers, :comments], [:answers, :score], [:creator], [:issues], [:issues, :comments]]
+    # ネストするパラメータを正規化
+    # @params ary [Array<String>] ["answers","answers-comments","answers-score","issues","issues-comments","creator"]
+    # @return [Array<Array<Symbol>>] [[:answers, :comments], [:answers, :score], [:creator], [:issues, :comments]]
     def nested_params_from_flat_array(ary)
       return [] if ary.empty?
 
@@ -89,6 +108,18 @@ module Sinatra
         .map{|str| str.split('-').map(&:to_sym) }
     end
 
+    # 指定モデルのデータに別のモデルデータを結合(ネスト)する
+    #
+    # @param klass [] ベースデータ(モデル)
+    # @param by [] 呼び出しユーザー(権限)
+    # @param params [] ネストするモデル
+    # @param id [] 取得するデータのid
+    # @param as_option []
+    # @param apply_filter [Boolean] trueだとフィルタが適応される
+    # @param action []
+    # @param where []
+    # @return []
+    # @return [] idを指定すると返すデータは1つだけ
     def generate_nested_hash(klass:, by:, params:, id: nil, as_option: {}, apply_filter: true, action: "", where: {})
       nested_params = case params
         when String

@@ -53,7 +53,7 @@ end
       post '/api/session', { login: current_member.login, password: current_member.password }
     end
   end
-  
+
   # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer'
   define_method("by_#{role}".to_sym) do |&block|
     it "by #{role}", by: role.to_sym, &block

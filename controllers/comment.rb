@@ -11,6 +11,8 @@ class CommentRoutes < Sinatra::Base
   helpers Sinatra::AccountServiceHelpers
   helpers Sinatra::NotificationService
 
+  # Issue 質問に対する解答
+  # Problem 問題の補足
   [Issue, Problem].each do |klass|
     pluralize_name = klass.to_s.downcase.pluralize
     before "/api/#{pluralize_name}/:commentable_id/comments*" do

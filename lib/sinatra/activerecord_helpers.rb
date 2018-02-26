@@ -15,11 +15,12 @@ module Sinatra
           klass.required_attribute_names
         else
           klass.attribute_names.map(&:to_sym)
-        end 
+        end
 
       attribute_names - %i(id created_at updated_at) - options[:exclude] + options[:include]
     end
 
+    # ハッシュから指定したクラスのフィールドのみ取り出す
     def params_to_attributes_of(klass:, object: params, **options)
       raise "klass must be kind of Class" unless klass.kind_of? Class
 
