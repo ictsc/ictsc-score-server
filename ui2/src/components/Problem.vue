@@ -52,7 +52,10 @@
           基準点: {{ problem.reference_point }} /
           満点: {{ problem.perfect_point }} /
           通過チーム数: {{ problem.solved_teams_count }} /
-          依存: {{ dependenceProblemTitle }}
+          依存: {{ dependenceProblemTitle }} /
+          <a v-if="isStaff">
+          担当者: {{ problem.creator.name }}
+          </a>
         </template>
       </div>
     </header>
@@ -174,6 +177,7 @@ export default {
     },
     ...mapGetters([
       'isAdmin',
+      'isStaff',
     ]),
     creatorSelect () {
       return this.members;
