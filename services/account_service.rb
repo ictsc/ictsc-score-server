@@ -53,7 +53,7 @@ module Sinatra
       return current_user&.role&.id == ROLE_ID[:nologin]
     end
 
-    def is_manager?
+    def is_staff?
       return is_admin? || is_writer? || is_viewer?
     end
   end

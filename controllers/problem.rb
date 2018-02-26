@@ -17,7 +17,7 @@ class ProblemRoutes < Sinatra::Base
   end
 
   get "/api/problems" do
-    @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_manager?).uniq
+    @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_staff?).uniq
 
     if is_participant?
       next json [] if DateTime.now <= Setting.competition_start_at
