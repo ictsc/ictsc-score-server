@@ -142,15 +142,21 @@ class Score < ActiveRecord::Base
     end
   end
 
+  scope :reply_delay, ->() {
+     where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
+  }
+
   # method: GET
-  scope :readables, ->(user: nil, action: "") {
+  # aggregate: trueにするとスコアボードからの集計用に競技者でも全チームの得点を参照できる
+  scope :readables, ->(user: nil, action: '', aggregate: false) {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
       next none if Setting.competition_end_at <= DateTime.now
-      parameters = { team_id: user.team.id, time: DateTime.now - Setting.answer_reply_delay_sec.seconds }
-      joins(:answer).where("answers.team_id = :team_id AND answers.created_at <= :time", parameters)
+      result = joins(:answer).reply_delay
+      result = result.where('answers.team_id = :team_id', { team_id: user.team.id }) unless aggregate
+      result
     else # nologin, ...
       none
     end
@@ -159,12 +165,12 @@ end
 
 # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
 class Score::Scores < Array
-  def initialize
+  def initialize(user:)
     super()
 
     # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]
     [
-      Score.all.joins(:answer).group("answers.team_id").sum(:point),
+      Score.readables(user: user, aggregate: true).joins(:answer).group("answers.team_id").sum(:point),
       Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
     ]
       .flat_map(&:to_a)
