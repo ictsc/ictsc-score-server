@@ -1,0 +1,16 @@
+---
+- name: "問題グループ101"
+  description: "おにぎりにする?"
+  visible: true
+  completing_bonus_point: 0
+  flag_icon_url:
+- name: "問題グループ102"
+  description: "サンドイッチにする?"
+  visible: true
+  completing_bonus_point: 0
+  flag_icon_url:
+- name: "問題グループ103"
+  description: "それとも..."
+  visible: false
+  completing_bonus_point: 10
+  flag_icon_url:

@@ -1,0 +1,50 @@
+---
+- title: 問題10
+  text: ブラック
+  creator_id: 3
+  problem_must_solve_before_id:
+  reference_point: 80
+  perfect_point: 100
+  problem_group_ids:
+    - 1
+  solved_teams_count: 8
+- id: 11
+  title: 問題11
+  text: カフェラテ
+  creator_id: 3
+  problem_must_solve_before_id: 10
+  reference_point: 192
+  perfect_point: 240
+  problem_group_ids:
+    - 1
+- title: 問題12
+  text: モカ
+  creator_id: 2
+  problem_must_solve_before_id: 11
+  reference_point: 384
+  perfect_point: 480
+  problem_group_ids:
+    - 1
+  solved_teams_count: 4
+- id: 13
+  title: 問題13
+  text: エスプレッソ
+  creator_id: 4
+  problem_must_solve_before_id: 12
+  reference_point: 520
+  perfect_point: 650
+  problem_group_ids:
+    - 1
+    - 7
+    - 10
+  solved_teams_count: 1
+- id: 15
+  title: 問題15
+  text: アメリカン
+  creator_id: 4
+  problem_must_solve_before_id: 10
+  reference_point: 62
+  perfect_point: 78
+  problem_group_ids:
+    - 1
+  solved_teams_count: 5
