@@ -4,7 +4,7 @@
       問題の取得にエラーが発生しました
     </div>
     <header>
-      <div v-if="isAdmin" class="switch">
+      <div v-if="isStaff" class="switch">
         <template v-if="edit">
           <button v-on:click="editCancel()" class="btn btn-secondary">キャンセル</button>
           <button v-on:click="editSubmit()" class="btn btn-success">保存</button>

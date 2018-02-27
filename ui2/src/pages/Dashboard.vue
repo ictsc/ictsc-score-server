@@ -8,13 +8,13 @@
             <h4>{{ item.title }}</h4>
             <markdown :value="item.text"></markdown>
             <div class="tip">
-              <button v-if="isAdmin" class="btn btn-secondary" v-on:click="deleteNotif(item.id)">削除</button>
+              <button v-if="isStaff" class="btn btn-secondary" v-on:click="deleteNotif(item.id)">削除</button>
               <small>{{ item.created_at }}</small>
             </div>
           </div>
         </div>
 
-        <div v-if="isAdmin" class="item-box">
+        <div v-if="isStaff" class="item-box">
           <h4>お知らせ投稿</h4>
           <div class="form-group">
             <input v-model="notifPinning" id="checkbox-pinning" type="checkbox" class="">
@@ -122,7 +122,7 @@ export default {
     },
     ...mapGetters([
       'session',
-      'isAdmin',
+      'isStaff',
     ]),
   },
   watch: {
