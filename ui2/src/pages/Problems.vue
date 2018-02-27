@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isAdmin" class="fixed-tool-tips">
+    <div v-if="isStaff" class="fixed-tool-tips">
       <div v-on:click="showAddGroup = true" class="add"><i class="fa fa-plus"></i>新規グループ</div>
       <div v-on:click="showAddProblem = true" class="add"><i class="fa fa-plus"></i>新規問題</div>
     </div>
@@ -470,6 +470,7 @@ export default {
     ...mapGetters([
       'contest',
       'isAdmin',
+      'isStaff',
       'isMember',
       'session',
     ]),

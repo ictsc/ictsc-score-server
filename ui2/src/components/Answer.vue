@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="answers">
-      <div v-if="isAdmin" class="scoring">
+      <div v-if="isStaff" class="scoring">
         <div class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
@@ -22,8 +22,8 @@
           <div v-if="value.score" class="result">
             得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
           </div>
-          <div v-if="!value.score && !isAdmin && isContestEnded" class="pending">競技時間が終了したため表示されません</div>
-          <div v-if="!value.score && (isAdmin || !isContestEnded)" class="pending">採点依頼中...</div>
+          <div v-if="!value.score && !isStaff && isContestEnded" class="pending">競技時間が終了したため表示されません</div>
+          <div v-if="!value.score && (isStaff || !isContestEnded)" class="pending">採点依頼中...</div>
         </template>
       </div>
     </div>
@@ -101,6 +101,7 @@ export default {
     ...mapGetters([
       'contest',
       'isAdmin',
+      'isStaff',
     ]),
   },
   watch: {

@@ -12,7 +12,7 @@
         <template v-for="answer in currentAnswers">
           <answer :value="answer" :reload="reload"></answer>
         </template>
-        <div class="new-issue" v-show="!isAdmin && !confirming">
+        <div class="new-issue" v-show="!isStaff && !confirming">
           <div class="answerExample" v-if="canAnswer">
             <h3>解答例</h3>
             <p>
@@ -197,6 +197,7 @@ export default {
     ...mapGetters([
       'contest',
       'isAdmin',
+      'isStaff',
     ])
   },
   watch: {
