@@ -52,6 +52,24 @@ def update_problem(problem_hash)
   JSON.parse(request(:put, "problems/#{problem_hash['id']}", problem_hash))
 end
 
+def add_team(name:, organization:, registration_code:)
+  data = {
+    name: name,
+    organization: organization,
+    registration_code: registration_code,
+  }
+  JSON.parse(request(:post, 'teams', data))
+end
+
+def add_teams_from_hash(teams)
+  teams.each do |t|
+    puts add_team(
+      name: t['name'],
+      organization: t['organization'],
+      registration_code: t['registration_code'],
+    )
+  end
+end
 
 def list_members()
   JSON.parse(request(:get, 'members'))
