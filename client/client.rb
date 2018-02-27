@@ -2,7 +2,8 @@ require 'rest-client'
 require 'json'
 require 'yaml'
 
-$base_url = 'http://localhost:3000/api'
+host = ARGV[0] || 'localhost'
+$base_url = "http://#{host}:3000/api"
 $responses = []
 
 def build_url(path)
