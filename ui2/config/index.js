@@ -39,7 +39,7 @@ module.exports = {
         },
       },
       '/notifications': {
-        target: 'http://notification:3002/',
+        target: 'http://plasma:3002/',
         logLevel: 'debug',
         proxyTimeout: 10 * 000,
         pathRewrite: {
