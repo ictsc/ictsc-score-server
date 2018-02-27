@@ -103,6 +103,7 @@ end
 # まとめて流し込み系
 # YAML,JSONを読み込む
 def parse_file(filepath)
+  filepath = File.expand_path(filepath)
   case File.extname(filepath)
   when '.yml', '.yaml'
     YAML.load(File.read(filepath))
