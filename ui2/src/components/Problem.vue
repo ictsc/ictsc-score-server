@@ -28,6 +28,14 @@
             </div>
           </div>
           <div class="form-group row">
+            <label class="col-sm-3 col-form-label">グループ<br />(複数選択可)</label>
+            <div class="col-sm-9">
+              <select class="form-control" v-model="problem.problem_group_ids" multiple>
+                <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-2 col-form-label">作問者</label>
             <div class="col-10">
               <select class="form-control" v-model="problem.creator_id">
@@ -150,6 +158,10 @@ export default {
     }
   },
   asyncData: {
+    problemGroupsDefault: [],
+    problemGroups () {
+      return API.getProblemGroups();
+    },
     problemDefault: {},
     problem () {
       return API.getProblem(this.id)
@@ -184,6 +196,12 @@ export default {
     },
   },
   watch: {
+    problemGroups (val) {
+      try {
+        this.newObj.problem_group_id = val[0].id;
+      } catch (e) {
+      }
+    },
     id (val, old) {
       if (val !== old && val !== undefined) {
         this.asyncReload();
@@ -201,6 +219,12 @@ export default {
   destroyed () {
   },
   methods: {
+    problemGroupIconSrc (problem) {
+      let pg = this.problemGroups.find(pg => !pg.visible && pg.problem_ids.includes(problem.id));
+
+      if (!pg) return null;
+      return pg.flag_icon_url;
+    },
     editEnter () {
       this.edit = true;
     },
