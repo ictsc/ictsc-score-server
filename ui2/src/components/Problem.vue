@@ -123,8 +123,8 @@
 <script>
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
-import { SimpleMarkdownEditor } from '../components/SimpleMarkdownEditor'
-import { Markdown } from '../components/Markdown'
+import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
+import Markdown from '../components/Markdown'
 import { mapGetters } from 'vuex'
 import {
   Emit,
