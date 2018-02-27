@@ -158,6 +158,25 @@ puts r_login = login_as(user: 'admin', password: 'admin')
 # problem['title'] = 'this is a title'
 # puts update_problem(problem)
 
+def update_only_problem_group(problem_id:, group_id:)
+  problem = list_problems.find{|e| e['id'] == problem_id }
+  problem['problem_group_ids'] = [group_id]
+  update_problem(problem)
+end
+
+# afterはbeforeに依存する
+def change_depends_problem(before_id:, after_id:)
+  after_problem = list_problems.find {|e| e['id'] == after_id }
+  after_problem['problem_must_solve_before_id'] = before_id
+  update_problem(after_problem)
+end
+
+def register_problems_to_group(group_id:, problem_ids: [])
+  problem_ids.each do |id|
+    update_only_problem_group(problem_id: id, group_id: group_id)
+  end
+end
+
 require 'pry'
 binding.pry
 puts '[*] end binding'
