@@ -150,7 +150,7 @@
                   <div>{{ problemUnlockConditionTitle(problem.problem_must_solve_before_id) }}で解放</div>
                 </div>
               </div>
-              <h3>{{ problem.title }}</h3>
+              <h3>{{ problem.title }}<a v-if="isStaff">({{ problem.creator.name }})</a></h3>
               <div class="bottom-wrapper d-flex align-content-end align-items-end mt-auto">
                 <div class="scores-wrapper mr-auto">
                   <div class="scores" v-if="isMember">
@@ -445,7 +445,7 @@ export default {
     problemsDefault: [],
     problems () {
       if (this.session.member) {
-        if (this.isMember) {
+        if (this.isMember || this.isStaff) {
           return API.getProblemsWithScore();
         } else {
           return API.getProblems();
