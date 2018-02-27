@@ -2,6 +2,9 @@ require_relative '../spec_helper.rb'
 
 describe 'Score board' do
   describe 'GET /api/scoreboard' do
+    # answer_reply_delay_secの影響を無くしたいときはcreated_atを指定する
+    let(:created_at) { DateTime.now - Setting.answer_reply_delay_sec.seconds * 2 }
+
     describe 'response status' do
       let(:response) { get '/api/scoreboard' }
       subject { response.status }
@@ -62,13 +65,14 @@ describe 'Score board' do
       let!(:teams) { create_list(:team, 5) }
       let!(:points) { [10, 50, 80, 90, 100] }
       let!(:scores) {
+        # 全のチームにスコアを登録する
         teams.zip(points).map do |team, point|
-          create(:score, point: point, answer: create(:answer, team: team))
+          score = create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
         end
       }
 
       let!(:ours_score) {
-        create(:score, point: 50, answer: create(:answer, team: current_member.team))
+        score = create(:score, point: 50, answer: create(:answer, team: current_member.team, created_at: created_at))
       }
 
       let(:response) { get '/api/scoreboard' }
@@ -87,12 +91,12 @@ describe 'Score board' do
       let!(:points) { [50, 50, 80, 90, 100] }
       let!(:scores) {
         teams.zip(points).map do |team, point|
-          create(:score, point: point, answer: create(:answer, team: team))
+          create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
         end
       }
 
       let!(:ours_score) {
-        create(:score, point: 10, answer: create(:answer, team: current_member.team))
+        create(:score, point: 10, answer: create(:answer, team: current_member.team, created_at: created_at))
       }
 
       let(:response) { get '/api/scoreboard' }
@@ -110,12 +114,12 @@ describe 'Score board' do
       let!(:points) { [50, 80, 80, 90, 90, 100, 100] }
       let!(:scores) {
         teams.zip(points).map do |team, point|
-          create(:score, point: point, answer: create(:answer, team: team))
+          create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
         end
       }
 
       let!(:ours_score) {
-        create(:score, point: 10, answer: create(:answer, team: current_member.team))
+        create(:score, point: 10, answer: create(:answer, team: current_member.team, created_at: created_at))
       }
 
       let(:response) { get '/api/scoreboard' }
@@ -133,12 +137,12 @@ describe 'Score board' do
       let!(:points) { [50, 80, 90] }
       let!(:scores) {
         teams.zip(points).map do |team, point|
-          create(:score, point: point, answer: create(:answer, team: team))
+          create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
         end
       }
 
       let!(:ours_score) {
-        create(:score, point: 100, answer: create(:answer, team: current_member.team))
+        create(:score, point: 100, answer: create(:answer, team: current_member.team, created_at: created_at))
       }
 
       let(:response) { get '/api/scoreboard' }
