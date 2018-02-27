@@ -26,6 +26,11 @@ export default new Vuex.Store({
     contest: state => state.contest,
     title: state => state.title,
     session: state => state.session,
+    isNoLogin: state => {
+      return state.session == null
+        || state.session.member == null
+        || state.session.member.role_id === 1;
+    },
     isStaff: state => {
       return state.session != null &&
         state.session.member != null &&
