@@ -2,7 +2,8 @@ require 'rest-client'
 require 'json'
 require 'yaml'
 
-$base_url = 'http://localhost:3000/api'
+host = ARGV[0] || 'localhost'
+$base_url = "http://#{host}:3000/api"
 $responses = []
 
 def build_url(path)
@@ -52,6 +53,24 @@ def update_problem(problem_hash)
   JSON.parse(request(:put, "problems/#{problem_hash['id']}", problem_hash))
 end
 
+def add_team(name:, organization:, registration_code:)
+  data = {
+    name: name,
+    organization: organization,
+    registration_code: registration_code,
+  }
+  JSON.parse(request(:post, 'teams', data))
+end
+
+def add_teams_from_hash(teams)
+  teams.each do |t|
+    puts add_team(
+      name: t['name'],
+      organization: t['organization'],
+      registration_code: t['registration_code'],
+    )
+  end
+end
 
 def list_members()
   JSON.parse(request(:get, 'members'))
@@ -85,6 +104,7 @@ end
 # まとめて流し込み系
 # YAML,JSONを読み込む
 def parse_file(filepath)
+  filepath = File.expand_path(filepath)
   case File.extname(filepath)
   when '.yml', '.yaml'
     YAML.load(File.read(filepath))
@@ -138,6 +158,25 @@ puts r_login = login_as(user: 'admin', password: 'admin')
 # problem = list_problems
 # problem['title'] = 'this is a title'
 # puts update_problem(problem)
+
+def update_only_problem_group(problem_id:, group_id:)
+  problem = list_problems.find{|e| e['id'] == problem_id }
+  problem['problem_group_ids'] = [group_id]
+  update_problem(problem)
+end
+
+# afterはbeforeに依存する
+def change_depends_problem(before_id:, after_id:)
+  after_problem = list_problems.find {|e| e['id'] == after_id }
+  after_problem['problem_must_solve_before_id'] = before_id
+  update_problem(after_problem)
+end
+
+def register_problems_to_group(group_id:, problem_ids: [])
+  problem_ids.each do |id|
+    update_only_problem_group(problem_id: id, group_id: group_id)
+  end
+end
 
 require 'pry'
 binding.pry
