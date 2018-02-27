@@ -21,7 +21,7 @@ class ScoreBoardRoutes < Sinatra::Base
   helpers do
     def scoreboard_for(team: nil, all: false)
       # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
-      scores = Score::Scores.new
+      scores = Score::Scores.new(user: current_user)
 
       # -1: may happen when team has nothing score yet
       my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
