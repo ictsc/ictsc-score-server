@@ -26,6 +26,8 @@ services:
       - redis
     stdin_open: true
     tty: true
+    volumes:
+      - "./:/usr/src/app"
   db:
     image: mariadb:10.3
     ports:
