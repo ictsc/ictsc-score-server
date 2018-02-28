@@ -38,7 +38,7 @@
           <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
         </template>
         <template v-else>
-          <div class="meta">投稿者: ICTSC | {{ item.created_at }}</div>
+          <div class="meta">投稿者: ICTSC admin | {{ item.created_at }}</div>
         </template>
       </div>
     </div>
