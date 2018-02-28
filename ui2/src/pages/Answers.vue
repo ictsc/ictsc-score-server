@@ -133,7 +133,8 @@ export default {
     },
     scoreTime (answerTime) {
       var remain = Date.now() - Date.parse(answerTime) - (-9 * 60 - new Date().getTimezoneOffset()) * 60000
-      return (20 * 60) - remain / 1000
+      remain = (20 * 60) - remain / 1000
+      return Math.floor(remain * Math.pow(10, 1)) / Math.pow(10, 1)
     },
     status (answers, teamId, problemId, answerTime) {
       // 1 未回答  2 未採点 3 採点時間の残りが5分切った時 4 採点済み
