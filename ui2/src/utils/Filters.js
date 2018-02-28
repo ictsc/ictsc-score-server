@@ -40,6 +40,9 @@ export function issueStatus (issue) {
   if (issue.comments.length < 2) return 1;
 
   var lastComment = issue.comments[issue.comments.length - 1];
+  // memberが居ない => readableではないユーザ (上位ユーザ)
+  if (!lastComment.member) return 2;
+
   if (lastComment.member.role_id === 4) return 1;
   return 2;
 }
