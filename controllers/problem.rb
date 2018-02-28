@@ -9,6 +9,15 @@ class ProblemRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
+  def remove_secret_info_from(problem:)
+    problem.delete('creator_id') unless is_staff?
+
+    problem['creator']&.delete('hashed_password')
+    problem['answers']&.each do |answer|
+      answer['team']&.delete('registration_code')
+    end
+  end
+
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
 
@@ -38,10 +47,9 @@ class ProblemRoutes < Sinatra::Base
     cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
     @problems.each do |p|
+      remove_secret_info_from(problem: p)
       p["solved_teams_count"] = solved_teams_count_by_problem[p["id"]]
-      p["creator"]&.delete("hashed_password")
       p["answers"]&.each do |a|
-        a["team"]&.delete("registration_code")
         if score = a["score"]
           score["bonus_point"]    = cleared_pg_bonuses[score["id"]] || 0
           score["subtotal_point"] = score["point"] + score["bonus_point"]
@@ -74,10 +82,9 @@ class ProblemRoutes < Sinatra::Base
       .count
 
     @problem = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !(is_admin? || is_viewer?))
+    remove_secret_info_from(problem: @problem)
     @problem["solved_teams_count"] = solved_teams_count
-    @problem["creator"]&.delete("hashed_password")
     @problem["answers"]&.each do |a|
-      a["team"]&.delete("registration_code")
       if score = a["score"]
         s = Score.find(score["id"])
 
