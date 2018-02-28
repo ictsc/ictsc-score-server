@@ -43,7 +43,7 @@
         <button v-on:click="postComment()" class="btn btn-success">投稿</button>
       </div>
     </div>
-    <div v-else class="post done">
+    <div v-else-if="isAdmin || isWriter || isMember" class="post done">
       <i class="fa fa-check"></i> 解決済み
     </div>
   </div>
