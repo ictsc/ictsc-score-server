@@ -25,6 +25,9 @@
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
               :class="'team status-' + status(problem.answers, team.id, problem.id)">
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
+              <a v-if="status(problem.answers, team.id, problem.id) === 2">
+                ({{ scoreTime(problem.answers[0].updated_at) }}s)
+              </a>
             </router-link>
           </div>
         </div>
@@ -135,7 +138,10 @@ export default {
       return this.teamAnswers(answers, teamId, problemId)
         .reduce((p, n) => p + (n.score ? n.score.subtotal_point : 0), 0)
     },
+    scoreTime (answerTime) {
+      var remain = Date.now() - Date.parse(answerTime) - (-9 * 60 - new Date().getTimezoneOffset()) * 60000
+      return (20 * 60 * 1000) - (remain)
+    },
   },
 }
 </script>
-
