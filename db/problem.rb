@@ -80,7 +80,7 @@ class Problem < ActiveRecord::Base
 
     cache = {}
     data.each{|key, ans| data[key] = ans.max_by(&:created_at)} \
-      .map{|(k, v), ans| cache[k] = (cache[k] || []) + [[v, ans.created_at.to_s]]}
+      .map{|(k, v), ans| cache[k] = (cache[k] || []) + [[v.to_s, ans.created_at.to_s]]}
 
     cache.to_json
   end
@@ -95,13 +95,13 @@ class Problem < ActiveRecord::Base
 
   def self.add_solvecache(k, v)
     cache = JSON.parse(Problem.redis_client.get("solvecache") || self.calccache)
-    cache[k] = (cache[k] || []) + [v]
+    cache[k] = (cache[k] || []) + [v] if cache.keys.include?(k) && !cache[k].include?(v)
     Problem.redis_client.set "solvecache", cache.to_json
   end
 
   def self.del_solvecache(k, v)
     cache = JSON.parse(Problem.redis_client.get("solvecache") || self.calccache)
-    cache[k] = cache[k].select{|e| e != v}
+    cache[k] = cache[k].select{|e| e[0] != v[0]}
     Problem.redis_client.set "solvecache", cache.to_json
   end
 

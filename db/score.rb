@@ -112,11 +112,11 @@ class Score < ActiveRecord::Base
     problem = answer.problem
     return if problem.first_correct_answer
     team = answer.team
-    problem_point = team.answers.joins(:score).where(problem: problem, team: team).sum(:point)
+    problem_point = team.answers.joins(:score).where(problem: problem, team: team).order(:created_at).last.score.point
     if problem_point >= problem.reference_point
-      Problem.add_solvecache(problem.id, [team.id, answer.created_at.to_s])
+      Problem.add_solvecache(problem.id.to_s, [team.id.to_s, answer.created_at.to_s])
     else
-      Problem.del_solvecache(problem.id, [team.id, answer.created_at.to_s])
+      Problem.del_solvecache(problem.id.to_s, [team.id.to_s, answer.created_at.to_s])
     end
   end
 
