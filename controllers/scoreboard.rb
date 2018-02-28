@@ -16,6 +16,19 @@ class ScoreBoardRoutes < Sinatra::Base
 
   before "/api/scoreboard*" do
     I18n.locale = :en if request.xhr?
+
+    # アクセス禁止処理
+    halt 400 if is_nologin?
+
+    if is_participant?
+      now = DateTime.now
+      if now < Setting.competition_start_at ||
+          Setting.scoreboard_hide_at <= now ||
+          Setting.competition_end_at <= now
+
+        halt 400
+      end
+    end
   end
 
   helpers do
@@ -66,16 +79,12 @@ class ScoreBoardRoutes < Sinatra::Base
   end
 
   get "/api/scoreboard" do
-    case current_user&.role&.name
-    when "Admin", "Writer", "Viewer"
+    if is_staff?
       json scoreboard_for(all: true)
-    when "Participant"
-      halt 400 if Setting.scoreboard_hide_at <= DateTime.now
+    elsif is_participant?
       team = current_user.team
       halt 400 if team.nil?
       json scoreboard_for(team: team)
-    else
-      halt 400
     end
   end
 end
