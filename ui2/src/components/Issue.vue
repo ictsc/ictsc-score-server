@@ -21,7 +21,6 @@
           <router-link :to="{name: 'problem-issues', params: {id: '' + value.problem_id, team: '' + value.team_id, issue: '' + value.id}}">
             <h3>{{ value.title }}</h3>
           </router-link>
-          <!--<pre>{{ value }}</pre>-->
           <markdown :value="firstComment.text"></markdown>
         </div>
       </div>
@@ -30,8 +29,7 @@
       </div>
     </div>
     <div class="tail">
-      <!-- <div v-for="item in tailComment" class="item" :class="{ admin: item.member.role_id != 4 }"> -->
-      <div v-for="item in tailComment" class="item">
+      <div v-for="item in tailComment" class="item" :class="{ admin: !item.member || item.member.role_id != 4 }">
         <p>{{ item.member }}</p>
         <div class="comment">
           <markdown :value="item.text"></markdown>
