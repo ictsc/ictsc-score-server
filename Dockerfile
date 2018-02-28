@@ -19,8 +19,10 @@ RUN apk update \
         build-base \
         mariadb-dev \
  && apk add --virtual .running-dep \
+        tzdata \
         mariadb-client-libs \
         less \
+ && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && bundle install --jobs=4 \
  && apk del .build-dep \
  && rm -rf /var/cache/apk/*
