@@ -144,6 +144,7 @@ class MemberRoutes < Sinatra::Base
 
     @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
 
+    # 未ログイン, admin, writerでないなら
     if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
       @team = Team.find_by(registration_code: params[:registration_code])
       if @team.nil?
