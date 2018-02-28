@@ -21,7 +21,6 @@
           <router-link :to="{name: 'problem-issues', params: {id: '' + value.problem_id, team: '' + value.team_id, issue: '' + value.id}}">
             <h3>{{ value.title }}</h3>
           </router-link>
-          <!--<pre>{{ value }}</pre>-->
           <markdown :value="firstComment.text"></markdown>
         </div>
       </div>
@@ -30,11 +29,17 @@
       </div>
     </div>
     <div class="tail">
-      <div v-for="item in tailComment" class="item" :class="{ admin: item.member.role_id != 4 }">
+      <div v-for="item in tailComment" class="item" :class="{ admin: !item.member || item.member.role_id != 4 }">
+        <p>{{ item.member }}</p>
         <div class="comment">
           <markdown :value="item.text"></markdown>
         </div>
-        <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
+        <template v-if="item.member">
+          <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
+        </template>
+        <template v-else>
+          <div class="meta">投稿者: ICTSC admin | {{ item.created_at }}</div>
+        </template>
       </div>
     </div>
     <div v-if="status != 3 && (isAdmin || isWriter || isMember)" class="post">
@@ -67,7 +72,7 @@
   margin: .5rem 0;
 }
 
-.head .body .content { 
+.head .body .content {
   overflow: auto;
 }
 
