@@ -170,10 +170,26 @@ export default {
   },
   methods: {
     firstComment (comments) {
+      // 一番最初に出てきた質問
       return comments[0] || { member: {} };
     },
     lastResponseComment (comments, admin = true) {
-      var notWriterComment = comments.filter(c => (c.member.role_id === 4) !== admin);
+      // 一番最後に返答した質問
+      // その前は特に表示しない
+
+      // 権限不足でmember情報が取れなかった場合に、undefinedになるのでそれを埋める
+      // role_id = 0 は無意味であるはずなのでとりあえず設定している
+      var paddingComment = comments.map(function (element) {
+        if (!element.member) {
+          element.member = {}
+          element.member.role_id = 0;
+          return element;
+        }
+
+        return element;
+      });
+
+      var notWriterComment = paddingComment.filter(c => (c.member.role_id === 4) !== admin);
       if (notWriterComment.length === 0) return {};
       return notWriterComment[notWriterComment.length - 1];
     },
