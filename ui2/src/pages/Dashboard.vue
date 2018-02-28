@@ -4,7 +4,7 @@
       <div class="col-4" v-loading="noticesLoading">
         <h3>お知らせ</h3>
         <div class="item-box">
-          <div v-for="item in notices" class="item">
+          <div v-for="item in notices.slice().reverse()" class="item">
             <h4>{{ item.title }}</h4>
             <markdown :value="item.text"></markdown>
             <div class="tip">
