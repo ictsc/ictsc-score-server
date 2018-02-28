@@ -65,6 +65,10 @@
   background: #FFB1BC;
   color: #F00000;
 }
+.team.status-3 {
+  background: #F00000;
+  color: #000000;
+}
 .team.status-4 {
   background: #CBF5E0;
   color: #00A353;
@@ -127,20 +131,21 @@ export default {
       if (answers === undefined) return [];
       return answers.filter(ans => ans.team_id === teamId && ans.problem_id === problemId);
     },
-    status (answers, teamId, problemId) {
-      // 1 未回答  2 未採点  4 採点済み
+    scoreTime (answerTime) {
+      var remain = Date.now() - Date.parse(answerTime) - (-9 * 60 - new Date().getTimezoneOffset()) * 60000
+      return (20 * 60 * 1000) - (remain)
+    },
+    status (answers, teamId, problemId, answerTime) {
+      // 1 未回答  2 未採点 3 採点時間の残りが5分切った時 4 採点済み
       var teamAnswers = this.teamAnswers(answers, teamId, problemId);
       if (teamAnswers.length === 0) return 1;
+      if (this.scoreTime(answerTime) < 5 * 60) return 3;
       return teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 4 : 2), 4);
     },
     score (answers, teamId, problemId) {
       return this.teamAnswers(answers, teamId, problemId)
         .reduce((p, n) => p + (n.score ? n.score.subtotal_point : 0), 0)
-    },
-    scoreTime (answerTime) {
-      var remain = Date.now() - Date.parse(answerTime) - (-9 * 60 - new Date().getTimezoneOffset()) * 60000
-      return (20 * 60 * 1000) - (remain)
     },
   },
 }
