@@ -207,8 +207,8 @@ def register_problems_to_group(group_id:, problem_ids: [])
   end
 end
 
-host = ARGV[0] || 'localhost'
-$base_url = "http://#{host}:3000/api"
+$host = ARGV[0] || 'localhost'
+$base_url = "http://#{$host}:3000/api"
 $responses = []
 
 require 'pry'
