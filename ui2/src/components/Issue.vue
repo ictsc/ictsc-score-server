@@ -37,13 +37,13 @@
         <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
       </div>
     </div>
-    <div v-if="status != 3" class="post">
+    <div v-if="status != 3 && (isAdmin || isWriter || isMember)" class="post">
       <simple-markdown-editor v-model="post"></simple-markdown-editor>
       <div class="tools">
         <button v-on:click="postComment()" class="btn btn-success">投稿</button>
       </div>
     </div>
-    <div v-else class="post done">
+    <div v-else-if="isAdmin || isWriter || isMember" class="post done">
       <i class="fa fa-check"></i> 解決済み
     </div>
   </div>
@@ -111,6 +111,7 @@ import Markdown from '../components/Markdown'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { API } from '../utils/Api'
 import { issueStatus } from '../utils/Filters'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'issue',
@@ -137,6 +138,11 @@ export default {
         return {}
       }
     },
+    ...mapGetters([
+      'isAdmin',
+      'isWriter',
+      'isMember',
+    ]),
     tailComment () {
       if (this.value && this.value.comments) {
         return this.value.comments.slice(1);
