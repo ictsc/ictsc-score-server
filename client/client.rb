@@ -18,8 +18,12 @@ def request(method, path, payload_hash = {}, headers = { content_type: :json })
   $responses.last
 end
 
-def login_as(user:, password:)
-  JSON.parse(request(:post, 'session', { login: user, password: password }))
+def login_as(login:, password:)
+  JSON.parse(request(:post, 'session', { login: login, password: password }))
+end
+
+def logout
+  JSON.parse(request(:delete, 'session'))
 end
 
 def add_problem_group(name:, description:, visible: true, completing_bonus_point: 0, flag_icon_url: '')
@@ -101,6 +105,34 @@ def download_attachments(id:, file_hash:, file_name:)
 end
 
 
+# role_id: 2=admin, 3=writer 4=participant 5=viewer
+# writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
+# participantはrole_idを指定しないでもいい
+def add_member(name:, login:, password:, team_id:, registration_code:, role_id:)
+  data = {
+    name: name,
+    login: login,
+    password: password,
+    team_id: team_id,
+    registration_code: registration_code,
+    role_id: role_id,
+  }
+  JSON.parse(request(:post, 'members', data))
+end
+
+def add_members_from_hash(members)
+  members.each do |m|
+    puts add_member(
+      name: m['name'],
+      login: m['login'],
+      password: m['password'],
+      team_id: m['team_id'],
+      registration_code: m['registration_code'],
+      role_id: m['role_id'],
+    )
+  end
+end
+
 # まとめて流し込み系
 # YAML,JSONを読み込む
 def parse_file(filepath)
@@ -144,8 +176,8 @@ end
 
 #### 操作サンプル(雑) ####
 
-puts r_login = login_as(user: 'admin', password: 'admin')
-# puts r_login = login_as(user: 'f_1', password: 'f_1')
+puts r_login = login_as(login: 'admin', password: 'admin')
+# puts r_login = login_as(login: 'f_1', password: 'f_1')
 
 # puts add_attachments('./pry_r.rb')
 
