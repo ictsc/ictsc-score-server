@@ -2,10 +2,6 @@ require 'rest-client'
 require 'json'
 require 'yaml'
 
-host = ARGV[0] || 'localhost'
-$base_url = "http://#{host}:3000/api"
-$responses = []
-
 ## utils
 
 def build_url(path)
@@ -185,26 +181,7 @@ def add_members_from_hash(members)
   end
 end
 
-
-#### 操作サンプル(雑) ####
-
-# TODO: valid_probleとか作るproblemからproblem_groupを読み取って自動で作る
-
-
-# puts r_login = login_as(login: 'admin', password: 'admin')
-# puts r_login = login_as(login: 'f_1', password: 'f_1')
-
-# puts add_attachments('./pry_r.rb')
-
-# puts add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, creator_id: 3, problem_group_ids: [1], problem_must_solve_before_id: 12)
-
-
-# puts new_groups = parse_file('./sample-problem-groups.yml')
-# puts add_problems_from_hash(new_groups)
-
-# problem = list_problems
-# problem['title'] = 'this is a title'
-# puts update_problem(problem)
+#### 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
   problem = list_problems.find{|e| e['id'] == problem_id }
@@ -212,21 +189,47 @@ def update_only_problem_group(problem_id:, group_id:)
   update_problem(problem)
 end
 
-# afterはbeforeに依存する
+# afterをbeforeに依存させる
 def change_depends_problem(before_id:, after_id:)
   after_problem = list_problems.find {|e| e['id'] == after_id }
   after_problem['problem_must_solve_before_id'] = before_id
   update_problem(after_problem)
 end
 
+# グループに複数の問題を依存させる
 def register_problems_to_group(group_id:, problem_ids: [])
   problem_ids.each do |id|
     update_only_problem_group(problem_id: id, group_id: group_id)
   end
 end
 
+host = ARGV[0] || 'localhost'
+$base_url = "http://#{host}:3000/api"
+$responses = []
+
 require 'pry'
 binding.pry
 puts '[*] end binding'
 
 __END__
+
+#### 操作サンプル
+
+
+# ログイン/ログアウト
+login_as(login: 'admin', password: 'admin')
+logout
+
+# 問題の追加
+add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, creator_id: 3, problem_group_ids: [1], problem_must_solve_before_id: 12)
+
+# 問題を更新する
+problem = list_problems[0]
+problem['title'] = 'this is a title'
+puts update_problem(problem)
+
+# YAMLから問題を読み込んでまとめて追加
+add_problems_from_hash(parse_file('./sample-problem-groups.yml'))
+
+# ファイルをアップロード
+add_attachments('./pry_r.rb')
