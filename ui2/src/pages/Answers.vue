@@ -23,7 +23,7 @@
           <div v-for="team in teams" v-if="matchesFilter(problem.answers, team.id, problem.id)" class="col-3">
             <router-link
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
-              :class="'team status-' + status(problem.answers, team.id, problem.id)">
+              :class="'team status-' + status(problem.answers, team.id, problem.id, problem.answers[0])">
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
               <a v-if="status(problem.answers, team.id, problem.id) === 2">
                 ({{ scoreTime(problem.answers[0].updated_at) }}s)
@@ -139,9 +139,13 @@ export default {
       // 1 未回答  2 未採点 3 採点時間の残りが5分切った時 4 採点済み
       var teamAnswers = this.teamAnswers(answers, teamId, problemId);
       if (teamAnswers.length === 0) return 1;
-      if (this.scoreTime(answerTime) < 5 * 60) return 3;
-      return teamAnswers
+      var st = teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 4 : 2), 4);
+      // 未済点でかつ残り時間が5分きったものを3にする
+      if (answerTime) {
+        if (st === 2 && this.scoreTime(answerTime.updated_at) < 5 * 60) st = 3;
+      }
+      return st
     },
     score (answers, teamId, problemId) {
       return this.teamAnswers(answers, teamId, problemId)
