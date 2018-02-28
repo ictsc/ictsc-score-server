@@ -23,10 +23,10 @@
           <div v-for="team in teams" v-if="matchesFilter(problem.answers, team.id, problem.id)" class="col-3">
             <router-link
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
-              :class="'team status-' + status(problem.answers, team.id, problem.id, problem.answers[0])">
+              :class="'team status-' + status(problem.answers, team.id, problem.id, problem.answers[problem.answers.length - 1])">
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
               <a v-if="status(problem.answers, team.id, problem.id) === 2">
-                ({{ scoreTime(problem.answers[0].updated_at) }}s)
+                ({{ scoreTime(problem.answers[problem.answers.length - 1].updated_at) }}s)
               </a>
             </router-link>
           </div>
@@ -133,7 +133,7 @@ export default {
     },
     scoreTime (answerTime) {
       var remain = Date.now() - Date.parse(answerTime) - (-9 * 60 - new Date().getTimezoneOffset()) * 60000
-      return (20 * 60 * 1000) - (remain)
+      return (20 * 60) - remain / 1000
     },
     status (answers, teamId, problemId, answerTime) {
       // 1 未回答  2 未採点 3 採点時間の残りが5分切った時 4 採点済み
@@ -143,7 +143,7 @@ export default {
         .reduce((p, n) => Math.min(p, n.score ? 4 : 2), 4);
       // 未済点でかつ残り時間が5分きったものを3にする
       if (answerTime) {
-        if (st === 2 && this.scoreTime(answerTime.updated_at) < 5 * 60) st = 3;
+        if (st === 2 && this.scoreTime(answerTime.updated_at) < 0) st = 3;
       }
       return st
     },
