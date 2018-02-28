@@ -160,7 +160,7 @@
                     <div class="point">基本点 {{ getScoreInfo(problem.answers).pure }}</div>
                     <div class="point">ボーナス点 {{ getScoreInfo(problem.answers).bonus }}</div>
                   </div>
-                  <div class="scores" v-if="!isMember">
+                  <div class="scores" v-if="isStaff">
                     <div class="border"></div>
                     <div class="brakedown">内訳</div>
                     <div class="point">満点 {{ problem.perfect_point }}</div>

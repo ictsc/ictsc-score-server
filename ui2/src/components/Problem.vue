@@ -18,7 +18,7 @@
       </h2>
       <div class="meta">公開　{{ problem.created_at }}　|　更新　{{ problem.updated_at }}</div>
       <div class="point">
-        <template v-if="edit">
+        <template v-if="edit && (isWriter || isAdmin)">
           <div class="form-group row">
             <label class="col-2 col-form-label">依存問題</label>
             <div class="col-10">
@@ -57,7 +57,9 @@
           </div>
         </template>
         <template v-else>
+          <a v-if="isStaff">
           基準点: {{ problem.reference_point }} /
+          </a>
           満点: {{ problem.perfect_point }} /
           通過チーム数: {{ problem.solved_teams_count }} /
           依存: {{ dependenceProblemTitle }} /
