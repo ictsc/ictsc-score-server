@@ -8,7 +8,7 @@
             <h4>{{ item.title }}</h4>
             <markdown :value="item.text"></markdown>
             <div class="tip">
-              <button v-if="isStaff" class="btn btn-secondary" v-on:click="deleteNotif(item.id)">削除</button>
+              <button v-if="isAdmin || isWriter" class="btn btn-secondary" v-on:click="deleteNotif(item.id)">削除</button>
               <small>{{ item.created_at }}</small>
             </div>
           </div>
@@ -123,6 +123,8 @@ export default {
     ...mapGetters([
       'session',
       'isStaff',
+      'isAdmin',
+      'isWriter',
     ]),
   },
   watch: {

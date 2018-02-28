@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isStaff" class="fixed-tool-tips">
+    <div v-if="isAdmin || isWriter" class="fixed-tool-tips">
       <div v-on:click="showAddGroup = true" class="add"><i class="fa fa-plus"></i>新規グループ</div>
       <div v-on:click="showAddProblem = true" class="add"><i class="fa fa-plus"></i>新規問題</div>
     </div>
@@ -472,6 +472,7 @@ export default {
       'isAdmin',
       'isStaff',
       'isMember',
+      'isWriter',
       'session',
     ]),
     memberSelect () {

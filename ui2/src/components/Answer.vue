@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="answers">
-      <div v-if="isStaff" class="scoring">
+      <div v-if="isAdmin || isWriter" class="scoring">
         <div class="row">
           <div class="col-6">
             <input v-model="newPoint" type="number" class="form-control">
@@ -101,6 +101,7 @@ export default {
     ...mapGetters([
       'contest',
       'isAdmin',
+      'isWriter',
       'isStaff',
     ]),
   },

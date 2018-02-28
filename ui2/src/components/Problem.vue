@@ -4,7 +4,7 @@
       問題の取得にエラーが発生しました
     </div>
     <header>
-      <div v-if="isStaff" class="switch">
+      <div v-if="isAdmin || isWriter" class="switch">
         <template v-if="edit">
           <button v-on:click="editCancel()" class="btn btn-secondary">キャンセル</button>
           <button v-on:click="editSubmit()" class="btn btn-success">保存</button>
@@ -190,6 +190,7 @@ export default {
     ...mapGetters([
       'isAdmin',
       'isStaff',
+      'isWriter',
     ]),
     creatorSelect () {
       return this.members;
