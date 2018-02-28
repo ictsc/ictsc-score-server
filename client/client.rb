@@ -22,6 +22,10 @@ def login_as(login:, password:)
   JSON.parse(request(:post, 'session', { login: login, password: password }))
 end
 
+def logout
+  JSON.parse(request(:delete, 'session'))
+end
+
 def add_problem_group(name:, description:, visible: true, completing_bonus_point: 0, flag_icon_url: '')
   data = {
     name: name,
