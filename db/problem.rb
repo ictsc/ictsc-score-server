@@ -1,3 +1,6 @@
+require 'redis'
+require 'json'
+
 class Problem < ActiveRecord::Base
   validates :title,     presence: true
   validates :text,      presence: true
@@ -52,10 +55,8 @@ class Problem < ActiveRecord::Base
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
       next none if DateTime.now <= Setting.competition_start_at
 
-      relation = left_outer_joins(problem_must_solve_before: [:first_correct_answer])
-
-      relation.where(problem_must_solve_before_id: nil).or(
-        relation.merge(FirstCorrectAnswer.where.not(team_id: nil))
+      where(problem_must_solve_before_id: Problem.solvecache(filter: true).keys).or(
+        where(problem_must_solve_before_id: nil)
       )
     when ROLE_ID[:viewer]
       all
@@ -67,4 +68,46 @@ class Problem < ActiveRecord::Base
   def readable_teams
     Team.select{|team| Problem.readables(team: team).find_by(id: id) }
   end
+
+  def self.calccache
+    data = Answer \
+      .all \
+      .joins(:score, :problem) \
+      .select(:problem_id, :team_id, :created_at) \
+      .where("scores.point >= problems.reference_point") \
+      .to_a \
+      .group_by{|e| [e.problem_id, e.team_id]}
+
+    cache = {}
+    data.each{|key, ans| data[key] = ans.max_by(&:created_at)} \
+      .map{|(k, v), ans| cache[k] = (cache[k] || []) + [[v, ans.created_at.to_s]]}
+
+    cache.to_json
+  end
+
+  def self.solvecache(filter: false)
+    cache = JSON.parse(Problem.redis_client.get("solvecache") || self.calccache)
+    if filter
+      cache = cache.select{|k, v| v.map{|e| DateTime.parse(e[1]) <= DateTime.now - Setting.answer_reply_delay_sec.seconds}.any?}
+    end
+    cache
+  end
+
+  def self.add_solvecache(k, v)
+    cache = JSON.parse(Problem.redis_client.get("solvecache") || self.calccache)
+    cache[k] = (cache[k] || []) + [v]
+    Problem.redis_client.set "solvecache", cache.to_json
+  end
+
+  def self.del_solvecache(k, v)
+    cache = JSON.parse(Problem.redis_client.get("solvecache") || self.calccache)
+    cache[k] = cache[k].select{|e| e != v}
+    Problem.redis_client.set "solvecache", cache.to_json
+  end
+
+  def self.redis_client
+    @redis ||= Redis.new
+  end
+
+  self.redis_client.del "solvecache"
 end
