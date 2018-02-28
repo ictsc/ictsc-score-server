@@ -105,6 +105,34 @@ def download_attachments(id:, file_hash:, file_name:)
 end
 
 
+# role_id: 2=admin, 3=writer 4=participant 5=viewer
+# writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
+# participantはrole_idを指定しないでもいい
+def add_member(name:, login:, password:, team_id:, registration_code:, role_id:)
+  data = {
+    name: name,
+    login: login,
+    password: password,
+    team_id: team_id,
+    registration_code: registration_code,
+    role_id: role_id,
+  }
+  JSON.parse(request(:post, 'members', data))
+end
+
+def add_members_from_hash(members)
+  members.each do |m|
+    puts add_member(
+      name: m['name'],
+      login: m['login'],
+      password: m['password'],
+      team_id: m['team_id'],
+      registration_code: m['registration_code'],
+      role_id: m['role_id'],
+    )
+  end
+end
+
 # まとめて流し込み系
 # YAML,JSONを読み込む
 def parse_file(filepath)
