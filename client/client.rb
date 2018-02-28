@@ -147,6 +147,10 @@ def download_attachments(id:, file_hash:, file_name:)
   JSON.parse(request(:get, path))
 end
 
+def build_download_link(response)
+  File.join($base_url, '../attachments', response['id'].to_s, response['file_hash'], response['filename'])
+end
+
 ## members
 
 def list_members()
@@ -231,5 +235,5 @@ puts update_problem(problem)
 # YAMLから問題を読み込んでまとめて追加
 add_problems_from_hash(parse_file('./sample-problem-groups.yml'))
 
-# ファイルをアップロード
-add_attachments('./pry_r.rb')
+# ファイルをアップロード(ダウンロードリンクを返す)
+build_download_link(add_attachments('./pry_r.rb'))
