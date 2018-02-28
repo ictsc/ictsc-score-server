@@ -50,7 +50,7 @@ module Sinatra
     end
 
     def is_nologin?
-      return current_user&.role&.id == ROLE_ID[:nologin]
+      return current_user == nil || current_user&.role&.id == ROLE_ID[:nologin]
     end
 
     def is_staff?
