@@ -177,6 +177,9 @@ export default {
           return res;
         });
     },
+    problems () {
+      return API.getProblemsWithScore()
+    },
     membersDefault: [],
     members () {
       return API.getMembers();
@@ -210,11 +213,6 @@ export default {
         this.asyncReload();
       }
     },
-    edit (val, old) {
-      if (val) {
-        API.getProblems.then(res => { this.problems = res; });
-      }
-    }
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ページ名');
