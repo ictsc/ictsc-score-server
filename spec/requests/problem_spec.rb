@@ -43,8 +43,8 @@ describe Problem do
       by_admin       { is_expected.to match_array expected_keys }
 
       describe '#solved_teams_count' do
-        let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, answer: create(:answer, problem: problem)) } # solved
-        let!(:score_by_other_team_b) { create(:score, point: problem.reference_point - 1, answer: create(:answer, problem: problem)) } # not solved
+        let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, answer: create(:answer, problem: problem), solved: true) } # solved
+        let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, answer: create(:answer, problem: problem), solved: false) } # not solved
         subject { json_response_problem['solved_teams_count'] }
 
         by_viewer      { is_expected.to eq 1 }
@@ -101,8 +101,8 @@ describe Problem do
     end
 
     describe '#solved_teams_count' do
-      let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, answer: create(:answer, problem: problem)) } # solved
-      let!(:score_by_other_team_b) { create(:score, point: problem.reference_point - 1, answer: create(:answer, problem: problem)) } # not solved
+      let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem)) } # solved
+      let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem)) } # not solved
       subject { json_response['solved_teams_count'] }
 
       by_viewer      { is_expected.to eq 1 }
