@@ -6,7 +6,7 @@ class Score < ActiveRecord::Base
   belongs_to :answer
   belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
 
-  after_save :create_first_correct_answer
+  after_save :refresh_solvecache
 
   def notification_payload(state: :created, **data)
     payload = super
@@ -108,13 +108,15 @@ class Score < ActiveRecord::Base
     point + bonus_point
   end
 
-  def create_first_correct_answer
+  def refresh_solvecache
     problem = answer.problem
     return if problem.first_correct_answer
     team = answer.team
-    problem_point = team.answers.joins(:score).where(problem: problem, team: team).sum(:point)
+    problem_point = team.answers.joins(:score).where(problem: problem, team: team).order(:created_at).last.score.point
     if problem_point >= problem.reference_point
-      FirstCorrectAnswer.create!(team: team, problem: problem)
+      Problem.add_solvecache(problem.id.to_s, [team.id.to_s, answer.created_at.to_s])
+    else
+      Problem.del_solvecache(problem.id.to_s, [team.id.to_s, answer.created_at.to_s])
     end
   end
 
