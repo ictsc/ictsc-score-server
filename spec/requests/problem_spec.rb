@@ -38,7 +38,7 @@ describe Problem do
       subject { json_response_problem.keys }
 
       by_viewer      { is_expected.to match_array expected_keys }
-      by_participant { is_expected.to match_array expected_keys }
+      by_participant { is_expected.to match_array expected_keys - ['creator_id'] }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
 
@@ -59,7 +59,7 @@ describe Problem do
       let(:json_response_next_problem) { json_response.find{|p| p['id'] == next_problem.id } }
       subject { json_response_next_problem.keys }
 
-      by_participant { is_expected.to match_array expected_keys_for_participant }
+      by_participant { is_expected.to match_array expected_keys_for_participant - ['creator_id'] }
     end
   end
 

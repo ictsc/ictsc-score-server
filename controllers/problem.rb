@@ -9,6 +9,15 @@ class ProblemRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
+  def remove_secret_info_from(problem:)
+    problem.delete('creator_id') unless is_staff?
+
+    problem['creator']&.delete('hashed_password')
+    problem['answers']&.each do |answer|
+      answer['team']&.delete('registration_code')
+    end
+  end
+
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
 
@@ -31,9 +40,8 @@ class ProblemRoutes < Sinatra::Base
 
     @problems.each do |p|
       p["solved_teams_count"] = (solvecache[p["id"].to_s] || []).size
-      p["creator"]&.delete("hashed_password")
+      remove_secret_info_from(problem: p)
       p["answers"]&.each do |a|
-        a["team"]&.delete("registration_code")
         if score = a["score"]
           score["bonus_point"]    = cleared_pg_bonuses[score["id"]] || 0
           score["subtotal_point"] = score["point"] + score["bonus_point"]
@@ -59,9 +67,8 @@ class ProblemRoutes < Sinatra::Base
   get "/api/problems/:id" do
     @problem = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !(is_admin? || is_viewer?))
     @problem["solved_teams_count"] = (Problem.solvecache(filter: true)[params[:id]] || []).size
-    @problem["creator"]&.delete("hashed_password")
+    remove_secret_info_from(problem: @problem)
     @problem["answers"]&.each do |a|
-      a["team"]&.delete("registration_code")
       if score = a["score"]
         s = Score.find(score["id"])
 

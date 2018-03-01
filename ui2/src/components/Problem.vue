@@ -4,7 +4,7 @@
       問題の取得にエラーが発生しました
     </div>
     <header>
-      <div v-if="isStaff" class="switch">
+      <div v-if="isAdmin || isWriter" class="switch">
         <template v-if="edit">
           <button v-on:click="editCancel()" class="btn btn-secondary">キャンセル</button>
           <button v-on:click="editSubmit()" class="btn btn-success">保存</button>
@@ -18,7 +18,7 @@
       </h2>
       <div class="meta">公開　{{ problem.created_at }}　|　更新　{{ problem.updated_at }}</div>
       <div class="point">
-        <template v-if="edit">
+        <template v-if="edit && (isWriter || isAdmin)">
           <div class="form-group row">
             <label class="col-2 col-form-label">依存問題</label>
             <div class="col-10">
@@ -57,7 +57,9 @@
           </div>
         </template>
         <template v-else>
+          <a v-if="isStaff">
           基準点: {{ problem.reference_point }} /
+          </a>
           満点: {{ problem.perfect_point }} /
           通過チーム数: {{ problem.solved_teams_count }} /
           依存: {{ dependenceProblemTitle }} /
@@ -190,6 +192,7 @@ export default {
     ...mapGetters([
       'isAdmin',
       'isStaff',
+      'isWriter',
     ]),
     creatorSelect () {
       return this.members;

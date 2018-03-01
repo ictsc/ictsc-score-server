@@ -21,7 +21,6 @@
           <router-link :to="{name: 'problem-issues', params: {id: '' + value.problem_id, team: '' + value.team_id, issue: '' + value.id}}">
             <h3>{{ value.title }}</h3>
           </router-link>
-          <!--<pre>{{ value }}</pre>-->
           <markdown :value="firstComment.text"></markdown>
         </div>
       </div>
@@ -30,20 +29,26 @@
       </div>
     </div>
     <div class="tail">
-      <div v-for="item in tailComment" class="item" :class="{ admin: item.member.role_id != 4 }">
+      <div v-for="item in tailComment" class="item" :class="{ admin: !item.member || item.member.role_id != 4 }">
+        <p>{{ item.member }}</p>
         <div class="comment">
           <markdown :value="item.text"></markdown>
         </div>
-        <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
+        <template v-if="item.member">
+          <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
+        </template>
+        <template v-else>
+          <div class="meta">投稿者: ICTSC admin | {{ item.created_at }}</div>
+        </template>
       </div>
     </div>
-    <div v-if="status != 3" class="post">
+    <div v-if="status != 3 && (isAdmin || isWriter || isMember)" class="post">
       <simple-markdown-editor v-model="post"></simple-markdown-editor>
       <div class="tools">
         <button v-on:click="postComment()" class="btn btn-success">投稿</button>
       </div>
     </div>
-    <div v-else class="post done">
+    <div v-else-if="isAdmin || isWriter || isMember" class="post done">
       <i class="fa fa-check"></i> 解決済み
     </div>
   </div>
@@ -67,7 +72,7 @@
   margin: .5rem 0;
 }
 
-.head .body .content { 
+.head .body .content {
   overflow: auto;
 }
 
@@ -111,6 +116,7 @@ import Markdown from '../components/Markdown'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { API } from '../utils/Api'
 import { issueStatus } from '../utils/Filters'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'issue',
@@ -137,6 +143,11 @@ export default {
         return {}
       }
     },
+    ...mapGetters([
+      'isAdmin',
+      'isWriter',
+      'isMember',
+    ]),
     tailComment () {
       if (this.value && this.value.comments) {
         return this.value.comments.slice(1);

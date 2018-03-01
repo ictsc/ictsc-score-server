@@ -5,15 +5,17 @@ describe 'Score board' do
     # answer_reply_delay_secの影響を無くしたいときはcreated_atを指定する
     let(:created_at) { DateTime.now - Setting.answer_reply_delay_sec.seconds * 2 }
 
+    before(:each) {
+      now = DateTime.now
+      allow(Setting).to receive(:competition_start_at).and_return(now - 1.minute)
+      allow(Setting).to receive(:scoreboard_hide_at).and_return(now + 1.minute)
+      allow(Setting).to receive(:competition_end_at).and_return(now + 1.minute)
+    }
+
+
     describe 'response status' do
       let(:response) { get '/api/scoreboard' }
       subject { response.status }
-
-      before(:each) {
-        time = DateTime.parse("2017-07-07T21:00:00+09:00")
-        allow(DateTime).to receive(:now).and_return(time)
-        allow(Setting).to receive(:scoreboard_hide_at).and_return(time + 1.minute)
-      }
 
       by_nologin     { is_expected.to eq 400 }
       by_viewer      { is_expected.to eq 200 }
@@ -28,7 +30,6 @@ describe 'Score board' do
 
       before(:each) {
         time = DateTime.parse("2017-07-07T21:00:00+09:00")
-        allow(DateTime).to receive(:now).and_return(time)
         allow(Setting).to receive(:scoreboard_hide_at).and_return(time - 3.year)
       }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isStaff" class="fixed-tool-tips">
+    <div v-if="isAdmin || isWriter" class="fixed-tool-tips">
       <div v-on:click="showAddGroup = true" class="add"><i class="fa fa-plus"></i>新規グループ</div>
       <div v-on:click="showAddProblem = true" class="add"><i class="fa fa-plus"></i>新規問題</div>
     </div>
@@ -160,7 +160,7 @@
                     <div class="point">基本点 {{ getScoreInfo(problem.answers).pure }}</div>
                     <div class="point">ボーナス点 {{ getScoreInfo(problem.answers).bonus }}</div>
                   </div>
-                  <div class="scores" v-if="!isMember">
+                  <div class="scores" v-if="isStaff">
                     <div class="border"></div>
                     <div class="brakedown">内訳</div>
                     <div class="point">満点 {{ problem.perfect_point }}</div>
@@ -472,6 +472,7 @@ export default {
       'isAdmin',
       'isStaff',
       'isMember',
+      'isWriter',
       'session',
     ]),
     memberSelect () {
