@@ -103,7 +103,7 @@
         各部署に複数の問題があります。
       </p>
       <p>
-        それぞれの問題に設定された基準点をクリアすると、次の問題が解放されます。
+        それぞれの問題に設定された基準を満たすと、次の問題が解放されます。
       </p>
 
       <div class="steps d-flex">
@@ -542,8 +542,8 @@ export default {
     },
     problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);
-      if (found && found.title) return `「${found.title}」で基準点以上を獲得するチームが表われること`;
-      if (found) return '前の問題で基準点以上を獲得するチームが表われること';
+      if (found && found.title) return `「${found.title}」で基準を満たすチームが表われること`;
+      if (found) return '前の問題で基準を満たすチームが表われること';
       else return '前の問題';
     },
     problemGroupIconSrc (problem) {

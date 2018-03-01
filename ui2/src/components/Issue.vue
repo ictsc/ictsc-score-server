@@ -30,7 +30,6 @@
     </div>
     <div class="tail">
       <div v-for="item in tailComment" class="item" :class="{ admin: !item.member || item.member.role_id != 4 }">
-        <p>{{ item.member }}</p>
         <div class="comment">
           <markdown :value="item.text"></markdown>
         </div>
@@ -38,7 +37,7 @@
           <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
         </template>
         <template v-else>
-          <div class="meta">投稿者: ICTSC admin | {{ item.created_at }}</div>
+          <div class="meta">投稿者: ICTSC運営 | {{ item.created_at }}</div>
         </template>
       </div>
     </div>
@@ -214,4 +213,3 @@ export default {
   },
 }
 </script>
-
