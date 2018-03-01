@@ -49,6 +49,12 @@
             </select>
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">表示順序<br/>(低いほうが先)</label>
+          <div class="col-sm-9">
+            <input v-model="newProblemObj.order" type="number" class="form-control">
+          </div>
+        </div>
 
         <simple-markdown-editor v-model="newProblemObj.text"></simple-markdown-editor>
       </div>
@@ -137,7 +143,7 @@
           <markdown :value="group.description"></markdown>
         </div>
         <div class="problems d-flex flex-row align-content-center flex-nowrap">
-          <template v-for="problem in problems" v-if="problem.problem_group_ids.includes(group.id)">
+          <template v-for="problem in sortedProblems" v-if="problem.problem_group_ids.includes(group.id)">
             <div class="arrow-next-problem"></div>
             <router-link
               :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
@@ -423,6 +429,7 @@ export default {
         reference_point: 0,
         perfect_point: 0,
         problem_group_ids: [],
+        order: 0,
         problem_must_solve_before_id: null,
       },
       newGroupObj: {
@@ -461,6 +468,9 @@ export default {
   },
 
   computed: {
+    sortedProblems () {
+      return this.problems.sort((p1, p2) => p1.order - p2.order);
+    },
     problemSelect () {
       return Array.concat([{
         id: null,
