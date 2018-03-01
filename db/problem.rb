@@ -55,9 +55,7 @@ class Problem < ActiveRecord::Base
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
       next none if DateTime.now <= Setting.competition_start_at
 
-      where(problem_must_solve_before_id: Problem.solvecache(filter: true).keys).or(
-        where(problem_must_solve_before_id: nil)
-      )
+      where(problem_must_solve_before_id: Problem.solvecache(filter: true).keys + [nil])
     when ROLE_ID[:viewer]
       all
     else
