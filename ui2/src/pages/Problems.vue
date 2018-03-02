@@ -83,12 +83,6 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">完答ボーナス</label>
-          <div class="col-sm-9">
-            <input v-model="newGroupObj.completing_bonus_point" type="number" class="form-control" placeholder="完答ボーナス">
-          </div>
-        </div>
-        <div class="form-group row">
           <label class="col-sm-3 col-form-label">国旗</label>
           <div class="col-sm-9">
             <input v-model="newGroupObj.flag_icon_url" type="text" class="form-control" placeholder="http://">
@@ -166,7 +160,6 @@
                     <div class="border"></div>
                     <span class="brakedown">内訳</span>
                     <div class="point">基本点 {{ getScoreInfo(problem.answers).pure }}</div>
-                    <div class="point">ボーナス点 {{ getScoreInfo(problem.answers).bonus }}</div>
                   </div>
                   <div class="scores" v-if="isStaff">
                     <div class="border"></div>
