@@ -1,6 +1,6 @@
 <template>
   <div v-loading="asyncLoading">
-    <h1><small>Entry no. {{ team.id }} - {{ team.organization }}</small> {{ team.name }}</h1>
+    <h1><small>{{ team.organization }}</small> {{ team.name }}</h1>
     <div class="members d-flex justify-content-around flex-wrap">
       <div v-for="member in team.members" class="item d-flex flex-column justify-content-center">
         <div class="name">{{ member.name }}</div>
