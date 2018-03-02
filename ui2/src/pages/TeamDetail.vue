@@ -7,7 +7,7 @@
         <div class="login">{{ member.login }}</div>
       </div>
     </div>
-    <div v-if="isAdmin" class="problems">
+    <div v-if="isStaff" class="problems">
       <template v-for="problem in problems" class="item">
         <router-link
           :to="{ name: 'problem-answers', params: { team: id, id: problem.id} }"
@@ -85,6 +85,7 @@ export default {
     },
     ...mapGetters([
       'isAdmin',
+      'isStaff',
     ]),
   },
   watch: {
