@@ -177,16 +177,20 @@ class Score::Scores < Array
     super()
 
     # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]
-    [
-      Score.readables(user: user, aggregate: true).joins(:answer).group("answers.team_id").sum(:point),
-      Score.cleared_problem_group_bonuses(with_tid: true).map{|team_id, hash| [team_id, hash.values.sum] }
-    ]
-      .flat_map(&:to_a)
-      .each_with_object(Hash.new(0)){|(team_id, score), scores| scores[team_id] += score }
-      .to_a
-      .sort_by(&:last)
-      .reverse # 1st, 2nd, ..., last
-      .each{|team_id, score| self.push({team_id: team_id, score: score}) }
+    data = Score \
+      .readables(user: user, aggregate: true) \
+      .joins(:answer) \
+      .select("answers.problem_id", "answers.team_id", :point, "answers.created_at", :answer_id) \
+      .to_a \
+      .group_by{|e| [e.team_id, e.problem_id]}
+
+    data \
+      .each{|key, score| data[key] = score.max_by{|s| s.answer.created_at}} \
+      .inject(Hash.new(0)){|memo, (k, v)| memo[k[0]] += v.point; memo} \
+      .to_a \
+      .sort_by{|e| e[1]} \
+      .reverse \
+      .map{|e| self.push({team_id: e[0], score: e[1]})}
 
     # 順位を付ける
     # 同スコアがあった場合の順位は 1 2 2 4
