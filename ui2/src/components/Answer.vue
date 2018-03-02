@@ -20,7 +20,7 @@
       <div class="status">
         <template>
           <div v-if="value.score" class="result">
-            得点: {{ value.score.point }} + ボーナス: {{ value.score.bonus_point }}
+            得点: {{ value.score.point }}
           </div>
           <div v-if="!value.score && !isStaff && isContestEnded" class="pending">競技時間が終了したため表示されません</div>
           <div v-if="!value.score && (isStaff || !isContestEnded)" class="pending">採点依頼中...</div>
