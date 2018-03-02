@@ -23,8 +23,11 @@
           <div v-for="team in teams" v-if="matchesFilter(problem.answers, team.id, problem.id)" class="col-3">
             <router-link
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
-              :class="'team status-' + status(problem.answers, team.id, problem.id)">
+              :class="'team status-' + status(problem.answers, team.id, problem.id, problem.answers[problem.answers.length - 1])">
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}点
+              <a v-if="status(problem.answers, team.id, problem.id) === 2">
+                ({{ scoreTime(problem.answers[problem.answers.length - 1].updated_at) }}s)
+              </a>
             </router-link>
           </div>
         </div>
@@ -61,6 +64,10 @@
 .team.status-2 {
   background: #FFB1BC;
   color: #F00000;
+}
+.team.status-3 {
+  background: #F00000;
+  color: #000000;
 }
 .team.status-4 {
   background: #CBF5E0;
@@ -125,12 +132,22 @@ export default {
       if (answers === undefined) return [];
       return answers.filter(ans => ans.team_id === teamId && ans.problem_id === problemId);
     },
-    status (answers, teamId, problemId) {
-      // 1 未回答  2 未採点  4 採点済み
+    scoreTime (answerTime) {
+      var remain = Date.now() - Date.parse(answerTime) - (-9 * 60 - new Date().getTimezoneOffset()) * 60000
+      remain = (20 * 60) - remain / 1000
+      return Math.floor(remain * Math.pow(10, 1)) / Math.pow(10, 1)
+    },
+    status (answers, teamId, problemId, answerTime) {
+      // 1 未回答  2 未採点 3 採点時間の残りが5分切った時 4 採点済み
       var teamAnswers = this.teamAnswers(answers, teamId, problemId);
       if (teamAnswers.length === 0) return 1;
-      return teamAnswers
+      var st = teamAnswers
         .reduce((p, n) => Math.min(p, n.score ? 4 : 2), 4);
+      // 未済点でかつ残り時間が5分きったものを3にする
+      if (answerTime) {
+        if (st === 2 && this.scoreTime(answerTime.updated_at) < 0) st = 3;
+      }
+      return st
     },
     score (answers, teamId, problemId) {
       return ((e) => e.score ? e.score.subtotal_point : 0)(latestAnswer(this.teamAnswers(answers, teamId, problemId)))
