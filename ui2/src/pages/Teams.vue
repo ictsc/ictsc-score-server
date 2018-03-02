@@ -17,7 +17,7 @@
         </router-link>
       </div>
     </div>
-    <div v-if="isAdmin" class="row justify-content-center">
+    <div v-if="isStaff" class="row justify-content-center">
       <div class="col-4">
         <div class="team d-flex align-items-center">
           <div class="detail">
@@ -107,6 +107,7 @@ export default {
   computed: {
     ...mapGetters([
       'isAdmin',
+      'isStaff',
     ]),
   },
   watch: {
