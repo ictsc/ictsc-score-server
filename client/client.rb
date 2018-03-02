@@ -1,3 +1,4 @@
+require 'io/console'
 require 'rest-client'
 require 'json'
 require 'yaml'
@@ -87,6 +88,15 @@ def add_problem(title:, text:, reference_point:, perfect_point:, creator_id:, pr
 end
 
 def add_problems_from_hash(problems)
+  # 先にまとめて読み込みチェック
+  problems.each do |p|
+    if p.key?('text_file')
+      # TODO: 固有
+      filepath =  File.join('./ictsc9/', '/problem-text', (p['text_file']))
+      p['text'] = File.read(filepath)
+    end
+  end
+
   problems.each do |p|
     puts add_problem(
       title: p['title'],
@@ -207,9 +217,13 @@ def register_problems_to_group(group_id:, problem_ids: [])
   end
 end
 
-$host = ARGV[0] || 'localhost'
-$base_url = "http://#{$host}:3000/api"
+$host = ARGV[0] || "http://#{localhost}:3000"
+$base_url = $host
 $responses = []
+
+print 'password: '
+pass = STDIN.noecho(&:gets).chomp
+login_as(login: :admin, password: pass)
 
 require 'pry'
 binding.pry
