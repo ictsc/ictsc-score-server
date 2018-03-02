@@ -1,6 +1,6 @@
 <template>
   <div class="panel">
-    <span class="limit">{{ limit | tickDuration }}</span>
+    <span class="limit">{{ limit | tickDuration("HH:mm:ss") }}</span>
     <span v-if="isMember" class="score">
       <span class="label">Progress</span>
       <span class="ratio">{{ ratio }}</span>
@@ -54,7 +54,12 @@ export default {
     limit () {
       var end = this.contest.competition_end_at;
       if (end) {
-        return new Date(end).valueOf() - this.currentDate.valueOf();
+        let duration = new Date(end).valueOf() - this.currentDate.valueOf();
+        if (duration > 0) {
+          return duration;
+        } else {
+          return "Contest has finished";
+        }
       } else {
         return 0
       }
