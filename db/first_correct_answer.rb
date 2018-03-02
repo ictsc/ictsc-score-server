@@ -11,13 +11,23 @@ class FirstCorrectAnswer < ActiveRecord::Base
      where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
   }
 
-  scope :readables, ->(user: nil, team: nil, action: "") {    
+  scope :readables, ->(user:, action: "") {
     next none if DateTime.now <= Setting.competition_start_at
 
-    next joins(:answer).reply_delay if action == "for_count"
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      all
+    when ROLE_ID[:participant]
+      next none if DateTime.now <= Setting.competition_start_at
 
-    rel = joins(:problem).where(problems: {team_private: false}).joins(:answer).reply_delay
-    next rel.or(joins(:problem).where(problems: {team_private: true}, team: user.team).joins(:answer).reply_delay) if user
-    rel
+      rel = joins(:answer).reply_delay
+      next rel if action == "for_count"
+
+      rel.joins(:problem)
+        .where(problems: { team_private: false })
+        .or(rel.joins(:problem).where(problems: { team_private: true }, team: user.team))
+    else
+      none
+    end
   }
 end
