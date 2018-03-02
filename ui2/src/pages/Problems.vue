@@ -567,10 +567,13 @@ export default {
     },
     problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);
-      if (found && found.team_private && found.title) return `「${found.title}」で基準を満たすこと`;
-      if (found && found.title) return `「${found.title}」で基準を満たすチームが表われること`;
-      if (found) return '前の問題で基準を満たすチームが表われること';
-      else return '前の問題';
+      if (found) {
+        let prev = found.title ? `「${found.title}」` : '前の問題';
+        let cond = found.team_private ? '' : 'チームが現れる';
+        return `${prev}で基準を満たす${cond}こと`;
+      } else {
+        return '前の問題';
+      }
     },
     problemGroupIconSrc (problem) {
       let pg = this.problemGroups.find(pg => !pg.visible && pg.problem_ids.includes(problem.id));

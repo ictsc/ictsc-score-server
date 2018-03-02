@@ -1,10 +1,6 @@
 <template>
   <div class="panel">
-    <span class="limit">{{ limit | tickDuration }}</span>
-    <span v-if="isMember" class="score">
-      <span class="label">Progress</span>
-      <span class="ratio">{{ ratio }}</span>
-    </span>
+    <span class="limit">{{ limit | tickDuration("HH:mm:ss") }}</span>
   </div>
 </template>
 
@@ -54,7 +50,12 @@ export default {
     limit () {
       var end = this.contest.competition_end_at;
       if (end) {
-        return new Date(end).valueOf() - this.currentDate.valueOf();
+        let duration = new Date(end).valueOf() - this.currentDate.valueOf();
+        if (duration > 0) {
+          return duration;
+        } else {
+          return "Contest has finished";
+        }
       } else {
         return 0
       }
@@ -70,7 +71,7 @@ export default {
   watch: {
     problems (val) {
       try {
-        this.sumPurePoint = ((e) => e.perfect_point ? e.perfect_point : 0)(latestAnswer(val))
+        this.sumPurePoint = val.reduce((p, n) => p + n.perfect_point, 0);
 
         var scores = answers => ((e) => e && e.score ? e.score.point : 0)(latestAnswer(answers));
         this.scoredPurePoint = val
