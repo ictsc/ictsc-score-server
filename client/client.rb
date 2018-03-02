@@ -88,6 +88,15 @@ def add_problem(title:, text:, reference_point:, perfect_point:, creator_id:, pr
 end
 
 def add_problems_from_hash(problems)
+  # 先にまとめて読み込みチェック
+  problems.each do |p|
+    if p.key?('text_file')
+      # TODO: 固有
+      filepath =  File.join('./ictsc9/', '/problem-text', (p['text_file']))
+      p['text'] = File.read(filepath)
+    end
+  end
+
   problems.each do |p|
     puts add_problem(
       title: p['title'],
