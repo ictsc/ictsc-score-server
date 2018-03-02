@@ -33,10 +33,10 @@ export default new Vuex.Store({
     },
     isStaff: state => {
       return state.session != null &&
-        state.session.member != null &&
+        state.session.member != null && (
         state.session.member.role_id === 2 ||
         state.session.member.role_id === 3 ||
-        state.session.member.role_id === 5;
+        state.session.member.role_id === 5);
     },
     isAdmin: state => {
       return state.session != null &&
