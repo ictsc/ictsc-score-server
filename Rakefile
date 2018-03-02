@@ -91,9 +91,11 @@ task :create_admin do
     next
   end
 
+  # Roleの登録に必要
+  puts 'rake db:setupした?'
   print 'Password: '
   password = STDIN.noecho(&:gets).chomp
-  Member.create(name: 'admin', login: 'admin', hashed_password: hash_password(password), role: Role.find_by(id: ROLE_ID[:admin]))
+  p result = Member.create(name: 'admin', login: 'admin', hashed_password: hash_password(password), role: Role.find_by(id: ROLE_ID[:admin]))
 end
 
 Rake::Task["db:seed_fu"].enhance(["db:load_config"])
