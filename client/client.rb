@@ -1,3 +1,4 @@
+require 'io/console'
 require 'rest-client'
 require 'json'
 require 'yaml'
@@ -210,6 +211,10 @@ end
 $host = ARGV[0] || 'localhost'
 $base_url = "http://#{$host}:3000/api"
 $responses = []
+
+print 'password: '
+pass = STDIN.noecho(&:gets).chomp
+login_as(login: :admin, password: pass)
 
 require 'pry'
 binding.pry
