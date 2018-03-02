@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180301095347) do
+ActiveRecord::Schema.define(version: 20180301163535) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
@@ -42,11 +42,13 @@ ActiveRecord::Schema.define(version: 20180301095347) do
   end
 
   create_table "first_correct_answers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
-    t.bigint "problem_id", null: false
     t.bigint "team_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["problem_id"], name: "index_first_correct_answers_on_problem_id", unique: true
+    t.bigint "answer_id", null: false
+    t.bigint "problem_id", null: false
+    t.index ["answer_id"], name: "index_first_correct_answers_on_answer_id"
+    t.index ["problem_id"], name: "index_first_correct_answers_on_problem_id"
     t.index ["team_id"], name: "index_first_correct_answers_on_team_id"
   end
 
@@ -122,6 +124,7 @@ ActiveRecord::Schema.define(version: 20180301095347) do
     t.integer "problem_must_solve_before_id"
     t.integer "reference_point"
     t.integer "perfect_point"
+    t.boolean "team_private", default: false, null: false
     t.integer "order", default: 0, null: false
     t.index ["id"], name: "index_problems_on_id", unique: true
     t.index ["problem_must_solve_before_id"], name: "index_problems_on_problem_must_solve_before_id"
@@ -141,6 +144,7 @@ ActiveRecord::Schema.define(version: 20180301095347) do
     t.integer "marker_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "solved", default: false, null: false
     t.index ["answer_id"], name: "index_scores_on_answer_id", unique: true
     t.index ["id"], name: "index_scores_on_id", unique: true
   end

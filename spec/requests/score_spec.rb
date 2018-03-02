@@ -118,7 +118,7 @@ describe Score do
     end
 
     describe '#keys' do
-      let(:expected_keys) { %w(id point bonus_point subtotal_point marker_id answer_id created_at updated_at) }
+      let(:expected_keys) { %w(id point bonus_point subtotal_point marker_id answer_id created_at updated_at solved) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_participant { is_expected.to match_array expected_keys }
@@ -182,7 +182,7 @@ describe Score do
     end
 
     describe 'create score' do
-      let(:expected_keys) { %w(id point marker_id answer_id created_at updated_at) }
+      let(:expected_keys) { %w(id point marker_id answer_id created_at updated_at solved) }
       let(:response) { post '/api/scores', params }
       subject { response.status }
 
@@ -224,7 +224,7 @@ describe Score do
     end
 
     describe 'create score' do
-      let(:expected_keys) { %w(id point marker_id answer_id created_at updated_at) }
+      let(:expected_keys) { %w(id point marker_id answer_id created_at updated_at solved) }
       let(:response) { post "/api/answers/#{answer.id}/score", params }
       subject { response.status }
 
@@ -269,7 +269,8 @@ describe Score do
         {
           point: new_point,
           answer_id: score.answer_id,
-          marker_id: score.marker_id
+          marker_id: score.marker_id,
+          solved: false,
         }
       end
 

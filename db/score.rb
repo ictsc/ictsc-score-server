@@ -6,7 +6,7 @@ class Score < ActiveRecord::Base
   belongs_to :answer
   belongs_to :marker, foreign_key: "marker_id", class_name: "Member"
 
-  after_save :create_first_correct_answer
+  after_save :refresh_first_correct_answer
 
   def notification_payload(state: :created, **data)
     payload = super
@@ -35,6 +35,7 @@ class Score < ActiveRecord::Base
       # pg: problem_group
       problems_count_in_pg = problem_group.problems.count
 
+      # TODO: solved flag
       relation_problems_solved = Score \
         .joins(answer: { problem: { problem_groups: {}}}) \
         .where(answers: { team_id: answer.team_id, problems: { problem_groups: { id: problem_group.id } } }) \
@@ -59,6 +60,7 @@ class Score < ActiveRecord::Base
   # @return { team_id: { problem_group_id: completing_bonus_point } }  (when with_tid: true)
   # @return { problem_group_id: completing_bonus_point }               (when with_tid: false)
   def self.cleared_problem_group_bonuses(team_id: nil, with_tid: false)
+    # TODO: solved flag
     # reference_points[problem_group_id][problem_id] = reference_point
     reference_points = Problem.joins(:problem_groups) \
       .all \
@@ -108,13 +110,19 @@ class Score < ActiveRecord::Base
     point + bonus_point
   end
 
-  def create_first_correct_answer
+  def refresh_first_correct_answer
     problem = answer.problem
-    return if problem.first_correct_answer
     team = answer.team
-    problem_point = team.answers.joins(:score).where(problem: problem, team: team).sum(:point)
-    if problem_point >= problem.reference_point
-      FirstCorrectAnswer.create!(team: team, problem: problem)
+    if answer.score.solved
+      FirstCorrectAnswer.create!(team: team, problem: problem, answer: answer) unless FirstCorrectAnswer.where(team: team, problem: problem).first
+    else
+      # 採点修正
+      fca = FirstCorrectAnswer.where(team: team, problem: problem).first
+      if fca
+        fca.destroy
+        ans = Answer.where(team: team, problem: problem).joins(:score).where(scores: {solved: true}).order(:created_at).first
+        FirstCorrectAnswer.create!(team: team, problem: problem, answer: ans) if ans  
+      end
     end
   end
 
