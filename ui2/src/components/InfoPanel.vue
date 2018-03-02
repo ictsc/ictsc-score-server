@@ -1,10 +1,6 @@
 <template>
   <div class="panel">
     <span class="limit">{{ limit | tickDuration("HH:mm:ss") }}</span>
-    <span v-if="isMember" class="score">
-      <span class="label">Progress</span>
-      <span class="ratio">{{ ratio }}</span>
-    </span>
   </div>
 </template>
 
@@ -75,7 +71,7 @@ export default {
   watch: {
     problems (val) {
       try {
-        this.sumPurePoint = ((e) => e.perfect_point ? e.perfect_point : 0)(latestAnswer(val))
+        this.sumPurePoint = val.reduce((p, n) => p + n.perfect_point, 0);
 
         var scores = answers => ((e) => e && e.score ? e.score.point : 0)(latestAnswer(answers));
         this.scoredPurePoint = val
