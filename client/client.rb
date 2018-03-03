@@ -219,6 +219,15 @@ def register_problems_to_group(group_id:, problem_ids: [])
   end
 end
 
+## misc
+
+# 指定ディレクトリをまとめてアップロードする
+def upload_dir_files(file_dir)
+  Dir.glob(File.join(file_dir, '/*')).select{|file_path| File.file?(file_path) }.each do |file_path|
+    p build_download_link(add_attachments(file_path))
+  end
+end
+
 $host = ARGV[0] || "http://localhost:3000/api"
 $base_url = $host
 $responses = []
