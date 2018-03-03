@@ -5,9 +5,6 @@
       <div v-for="item in teams" class="col-4">
         <router-link :to="{name: 'team-detail', params: {id: item.id}}"
           class="team d-flex align-items-center">
-          <div class="entry-no">
-            <small>Entry no.</small> {{ item.id }}
-          </div>
           <div class="detail">
             <h3>{{ item.name }}</h3>
             <hr>
