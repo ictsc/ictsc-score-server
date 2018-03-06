@@ -3,104 +3,106 @@
     <div v-if="problemError" class="alert alert-danger">
       問題の取得にエラーが発生しました
     </div>
-    <header>
-      <div v-if="isAdmin || isWriter" class="switch">
-        <template v-if="edit">
-          <button v-on:click="editCancel()" class="btn btn-secondary">キャンセル</button>
-          <button v-on:click="editSubmit()" class="btn btn-success">保存</button>
-        </template>
-        <button v-else v-on:click="editEnter()" class="btn btn-secondary">編集</button>
-      </div>
-      <h2>
-        <input v-if="edit" v-model="problem.title" type="text" class="form-control form-control-lg">
-        <span v-else>{{ problem.title }}</span>
-      </h2>
-      <div class="meta">公開　{{ problem.created_at }}　|　更新　{{ problem.updated_at }}</div>
-      <div class="point">
-        <template v-if="edit && (isWriter || isAdmin)">
-          <div class="form-group row">
-            <label class="col-2 col-form-label">チーム限定公開</label>
-            <div class="col-10">
-              <input type="checkbox" v-model="problem.team_private">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-2 col-form-label">依存問題</label>
-            <div class="col-10">
-              <select class="form-control" v-model="problem.problem_must_solve_before_id">
-                <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-2 col-form-label">グループ<br/>(複数選択可)</label>
-            <div class="col-sm-10">
-              <select class="form-control" v-model="problem.problem_group_ids" multiple>
-                <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-2 col-form-label">表示順序<br/>(低いほうが先)</label>
-            <div class="col-10">
-              <input v-model="problem.order" class="form-control" type="number">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-2 col-form-label">作問者</label>
-            <div class="col-10">
-              <select class="form-control" v-model="problem.creator_id">
-                <option v-for="creator in creatorSelect" v-if="creator.role_id===3" :value="creator.id">{{ creator.name }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-2 col-form-label">基準点</label>
-            <div class="col-10">
-              <input v-model="problem.reference_point" class="form-control" type="number">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-2 col-form-label">満点</label>
-            <div class="col-10">
-              <input v-model="problem.perfect_point" class="form-control" type="number">
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <a v-if="isStaff">
-          基準点: {{ problem.reference_point }} /
-          </a>
-          満点: {{ problem.perfect_point }} /
-          通過チーム数: {{ problem.solved_teams_count }} /
-          依存: {{ dependenceProblemTitle }} /
-          <a v-if="isStaff">
-          担当者: {{ problem.creator.name }}
-          </a>
-        </template>
-      </div>
-    </header>
-    <aside>
-      <h3><span class="sub">補足事項:</span></h3>
-      <div v-for="comment in problem.comments" class="comment">
-        <p>{{ comment.text }}</p>
-        <div class="meta">
-          {{ comment.created_at }}
-          <i v-on:click="deleteComment(comment.id)" class="fa fa-trash"></i>
+    <div v-if="!asyncLoading">
+      <header>
+        <div v-if="isAdmin || isWriter" class="switch">
+          <template v-if="edit">
+            <button v-on:click="editCancel()" class="btn btn-secondary">キャンセル</button>
+            <button v-on:click="editSubmit()" class="btn btn-success">保存</button>
+          </template>
+          <button v-else v-on:click="editEnter()" class="btn btn-secondary">編集</button>
         </div>
-      </div>
-      <div v-if="edit" class="new-comment">
-        <simple-markdown-editor v-model="newComment"></simple-markdown-editor>
-        <div class="text-right">
-          <button v-on:click="newCommentSubmit()" class="btn btn-secondary"><i class="fa fa-plus"></i> 補足追加</button>
+        <h2>
+          <input v-if="edit" v-model="problem.title" type="text" class="form-control form-control-lg">
+          <span v-else>{{ problem.title }}</span>
+        </h2>
+        <div class="meta">公開　{{ problem.created_at }}　|　更新　{{ problem.updated_at }}</div>
+        <div class="point">
+          <template v-if="edit && (isWriter || isAdmin)">
+            <div class="form-group row">
+              <label class="col-2 col-form-label">チーム限定公開</label>
+              <div class="col-10">
+                <input type="checkbox" v-model="problem.team_private">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label">依存問題</label>
+              <div class="col-10">
+                <select class="form-control" v-model="problem.problem_must_solve_before_id">
+                  <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">グループ<br/>(複数選択可)</label>
+              <div class="col-sm-10">
+                <select class="form-control" v-model="problem.problem_group_ids" multiple>
+                  <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label">表示順序<br/>(低いほうが先)</label>
+              <div class="col-10">
+                <input v-model="problem.order" class="form-control" type="number">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label">作問者</label>
+              <div class="col-10">
+                <select class="form-control" v-model="problem.creator_id">
+                  <option v-for="creator in creatorSelect" v-if="creator.role_id===3" :value="creator.id">{{ creator.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label">基準点</label>
+              <div class="col-10">
+                <input v-model="problem.reference_point" class="form-control" type="number">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label">満点</label>
+              <div class="col-10">
+                <input v-model="problem.perfect_point" class="form-control" type="number">
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <a v-if="isStaff">
+            基準点: {{ problem.reference_point }} /
+            </a>
+            満点: {{ problem.perfect_point }} /
+            通過チーム数: {{ problem.solved_teams_count }} /
+            依存: {{ dependenceProblemTitle }} /
+            <a v-if="isStaff">
+            担当者: {{ problem.creator.name }}
+            </a>
+          </template>
         </div>
-      </div>
-    </aside>
-    <article>
-      <h3><span class="sub">問題:</span></h3>
-      <simple-markdown-editor v-if="edit" v-model="problem.text"></simple-markdown-editor>
-      <markdown v-else :value="problem.text"></markdown>
-    </article>
+      </header>
+      <aside>
+        <h3><span class="sub">補足事項:</span></h3>
+        <div v-for="comment in problem.comments" class="comment">
+          <p>{{ comment.text }}</p>
+          <div class="meta">
+            {{ comment.created_at }}
+            <i v-on:click="deleteComment(comment.id)" class="fa fa-trash"></i>
+          </div>
+        </div>
+        <div v-if="edit" class="new-comment">
+          <simple-markdown-editor v-model="newComment"></simple-markdown-editor>
+          <div class="text-right">
+            <button v-on:click="newCommentSubmit()" class="btn btn-secondary"><i class="fa fa-plus"></i> 補足追加</button>
+          </div>
+        </div>
+      </aside>
+      <article>
+        <h3><span class="sub">問題:</span></h3>
+        <simple-markdown-editor v-if="edit" v-model="problem.text"></simple-markdown-editor>
+        <markdown v-else :value="problem.text"></markdown>
+      </article>
+    </div>
   </div>
 </template>
 
