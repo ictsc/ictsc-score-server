@@ -73,12 +73,13 @@ def list_problems(with: [])
   JSON.parse(request(:get, 'problems' + with_params))
 end
 
-def add_problem(title:, text:, reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:)
+def add_problem(title:, text:, reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:, order:)
   data = {
     title: title,
     text: text,
     reference_point: reference_point,
     perfect_point: perfect_point,
+    order: order,
     creator_id: creator_id,
     problem_must_solve_before_id: problem_must_solve_before_id,
     problem_group_ids: problem_group_ids,
@@ -101,6 +102,7 @@ def add_problems_from_hash(problems)
     puts add_problem(
       title: p['title'],
       text: p['text'],
+      order: p['order'],
       reference_point: p['reference_point'],
       perfect_point: p['perfect_point'],
       creator_id: p['creator_id'],
@@ -214,6 +216,15 @@ end
 def register_problems_to_group(group_id:, problem_ids: [])
   problem_ids.each do |id|
     update_only_problem_group(problem_id: id, group_id: group_id)
+  end
+end
+
+## misc
+
+# 指定ディレクトリをまとめてアップロードする
+def upload_dir_files(file_dir)
+  Dir.glob(File.join(file_dir, '/*')).select{|file_path| File.file?(file_path) }.each do |file_path|
+    p build_download_link(add_attachments(file_path))
   end
 end
 
