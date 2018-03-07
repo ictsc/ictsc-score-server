@@ -43,7 +43,7 @@ class Problem < ActiveRecord::Base
   # method: GET
   scope :readables, -> (user: nil, team: nil, action: "") {
     case user&.role_id
-    when ROLE_ID[:admin]
+    when ROLE_ID[:admin], ROLE_ID[:viewer]
       all
     when ROLE_ID[:writer]
       next all if action.empty?
@@ -52,9 +52,8 @@ class Problem < ActiveRecord::Base
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
       next none if DateTime.now <= Setting.competition_start_at
 
-      where(problem_must_solve_before_id: FirstCorrectAnswer.readables(user: user, action: action).map{|e| e.problem_id} + [nil])
-    when ROLE_ID[:viewer]
-      all
+      fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
+      where(problem_must_solve_before_id: fca_problem_ids + [nil])
     else
       none
     end
