@@ -90,11 +90,20 @@ describe Problem do
 
     describe "problem have solved by other team before problem must solve" do
       let(:team) { create(:team) }
-      let!(:score) { create(:score, answer: create(:answer, problem: problem, team: team), point: problem.reference_point) }
       let(:response) { get "/api/problems/#{next_problem.id}" }
+      let!(:score) { create(:score, answer: create(:answer, problem: problem, team: team, created_at: created_at), point: problem.reference_point, solved: true) }
       subject { response.status }
 
-      by_participant { is_expected.to eq 200 }
+
+      describe '(answer created at now)' do
+        let!(:created_at) { DateTime.now }
+        by_participant { is_expected.to eq 404 }
+      end
+
+      describe '(answer created at before)' do
+        let!(:created_at) { delayed }
+        by_participant { is_expected.to eq 200 }
+      end
     end
 
     describe "problem haven't solved before problem must solve" do
