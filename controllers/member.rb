@@ -69,7 +69,7 @@ class MemberRoutes < Sinatra::Base
 
   get "/api/session" do
     if logged_in?
-      @with_param = (params[:with] || "").split(',') & %w(member member-team)
+      @with_param = (params[:with] || "").split(',') & Member.allowed_nested_params(user: current_user)
       @session = {
         logged_in: true,
         status: "logged_in",

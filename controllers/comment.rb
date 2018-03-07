@@ -24,7 +24,7 @@ class CommentRoutes < Sinatra::Base
                           .find_by(id: @commentable_id)
       halt 404 if @commentable.nil?
 
-      @with_param = (params[:with] || "").split(',') & %w(member) if request.get?
+      @with_param = (params[:with] || "").split(',') & Comment.allowed_nested_params(user: current_user) if request.get?
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments" do

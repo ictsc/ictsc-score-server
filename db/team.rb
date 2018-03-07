@@ -35,6 +35,10 @@ class Team < ActiveRecord::Base
     end
   end
 
+  def self.allowed_nested_params(user:)
+    %w(members answers answers-score issues issues-comments issues-comments-member)
+  end
+
   # method: GET
   scope :readables, ->(user: nil, action: "") {
     all
