@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180301163535) do
+ActiveRecord::Schema.define(version: 20180307025336) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
@@ -76,7 +76,7 @@ ActiveRecord::Schema.define(version: 20180301163535) do
 
   create_table "notices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string "title", null: false
-    t.string "text", null: false
+    t.string "text", limit: 4000, null: false
     t.boolean "pinned", default: false, null: false
     t.integer "member_id", null: false
     t.datetime "created_at", null: false
@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 20180301163535) do
 
   create_table "problems", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string "title", null: false
-    t.string "text", limit: 3000, null: false
+    t.string "text", limit: 4000, null: false
     t.integer "creator_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
