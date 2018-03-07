@@ -155,15 +155,15 @@ class Score < ActiveRecord::Base
   }
 
   # method: GET
-  # aggregate: trueにするとスコアボードからの集計用に競技者でも全チームの得点を参照できる
-  scope :readables, ->(user: nil, action: '', aggregate: false) {
+  # actionを'aggregate'にするとスコアボードからの集計用に競技者でも全チームの得点を参照できる
+  scope :readables, ->(user: nil, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
       next none if Setting.competition_end_at <= DateTime.now
       result = joins(:answer).reply_delay
-      result = result.where('answers.team_id = :team_id', { team_id: user.team.id }) unless aggregate
+      result = result.where('answers.team_id = :team_id', { team_id: user.team.id }) if action != 'aggregate'
       result
     else # nologin, ...
       none
@@ -178,7 +178,7 @@ class Score::Scores < Array
 
     # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]
     data = Score \
-      .readables(user: user, aggregate: true) \
+      .readables(user: user, action: 'aggregate') \
       .joins(:answer) \
       .select("answers.problem_id", "answers.team_id", :point, "answers.created_at", :answer_id) \
       .to_a \
