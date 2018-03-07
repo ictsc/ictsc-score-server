@@ -197,6 +197,10 @@ def add_members_from_hash(members)
   end
 end
 
+def update_member(member_hash)
+  JSON.parse(request(:put, "members/#{member_hash['id']}", member_hash))
+end
+
 #### 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
@@ -228,13 +232,21 @@ def upload_dir_files(file_dir)
   end
 end
 
-$host = ARGV[0] || "http://localhost:3000/api"
-$base_url = $host
+def change_password(login:, password: input_password())
+  member_hash = list_members.find{|m| m['login'] == login }
+  member_hash['password'] = password
+  update_member(member_hash)
+end
+
+def input_password()
+  print 'password: '
+  STDIN.noecho(&:gets).chomp
+end
+
+$base_url = ARGV[0] || 'http://localhost:3000/api'
 $responses = []
 
-print 'password: '
-pass = STDIN.noecho(&:gets).chomp
-login_as(login: :admin, password: pass)
+login_as(login: :admin, password: input_password())
 
 require 'pry'
 binding.pry

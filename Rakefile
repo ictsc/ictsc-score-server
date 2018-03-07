@@ -64,40 +64,6 @@ task :pry do
   Pry::CLI.start(Pry::CLI.parse_options)
 end
 
-task :create_admin do
-  require 'io/console'
-  require_relative 'pry_r'
-
-  def hash_password(key, salt = "")
-    return nil unless key.is_a? String
-
-    crypt_binname = case RUBY_PLATFORM
-      when /darwin/;  "crypt_darwin_amd64"
-      when /freebsd/; "crypt_freebsd_amd64"
-      when /linux/;   "crypt_linux_amd64"
-    end
-
-    path = File.join('./ext', crypt_binname)
-    hash, status = Open3.capture2(path, key, salt)
-    if status.exitstatus.zero?
-      hash.strip
-    else
-      nil
-    end
-  end
-
-  if Member.find_by(role_id: ROLE_ID[:admin])
-    puts 'admin user already exists'
-    next
-  end
-
-  # Roleの登録に必要
-  puts 'rake db:setupした?'
-  print 'Password: '
-  password = STDIN.noecho(&:gets).chomp
-  p result = Member.create(name: 'admin', login: 'admin', hashed_password: hash_password(password), role: Role.find_by(id: ROLE_ID[:admin]))
-end
-
 Rake::Task["db:seed_fu"].enhance(["db:load_config"])
 
 SeedFu.fixture_paths = [

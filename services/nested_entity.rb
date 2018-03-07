@@ -14,7 +14,7 @@ module Sinatra
     end
 
     # NOTE: 解読中
-    # readablesを呼んでくれてるっぽい
+    # readablesの戻り値のidsでフィルタする
     # @param member []
     # @param resource []
     # @param entities []
@@ -36,6 +36,7 @@ module Sinatra
 
         case r[entity]
         when Array
+          # readablesのidsを見てフィルタしてる
           r_entity_readable_ids = model.readables(user: member, action: action).ids
           r[entity].select!{|rr| r_entity_readable_ids.include?(rr["id"]) }
           filter_entities(member: member, resource: r[entity], entities: entities[(i+1)..-1], parent_entity: entity) if 1 < entities.size
