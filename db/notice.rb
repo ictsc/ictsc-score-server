@@ -30,6 +30,10 @@ class Notice < ActiveRecord::Base
     end
   end
 
+  def self.allowed_nested_params(user:)
+    %w(member)
+  end
+
   # method: GET
   scope :readables, ->(user: nil, action: "") {
     case user&.role_id

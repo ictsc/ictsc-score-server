@@ -52,6 +52,10 @@ class Comment < ActiveRecord::Base
     false
   end
 
+  def self.allowed_nested_params(user:)
+    %w(member)
+  end
+
   # method: GET
   scope :readables, ->(user: nil, action: "") {
     comments = case action

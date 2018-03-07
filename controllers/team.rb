@@ -12,7 +12,7 @@ class TeamRoutes < Sinatra::Base
   before "/api/teams*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(',') & %w(members answers answers-score issues issues-comments issues-comments-member) if request.get?
+    @with_param = (params[:with] || "").split(',') & Team.allowed_nested_params(user: current_user) if request.get?
   end
 
   get "/api/teams" do
