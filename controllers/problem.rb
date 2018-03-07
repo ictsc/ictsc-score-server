@@ -56,7 +56,7 @@ class ProblemRoutes < Sinatra::Base
   end
 
   before "/api/problems/:id" do
-    problems = if request.request_method == "GET"
+    problems = if request.get?
         Problem.includes(:comments, answers: [:score])
       else
         Problem.includes(:comments)
