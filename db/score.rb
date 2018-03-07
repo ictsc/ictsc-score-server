@@ -121,7 +121,7 @@ class Score < ActiveRecord::Base
       if fca
         fca.destroy
         ans = Answer.where(team: team, problem: problem).joins(:score).where(scores: {solved: true}).order(:created_at).first
-        FirstCorrectAnswer.create!(team: team, problem: problem, answer: ans) if ans  
+        FirstCorrectAnswer.create!(team: team, problem: problem, answer: ans) if ans
       end
     end
   end
