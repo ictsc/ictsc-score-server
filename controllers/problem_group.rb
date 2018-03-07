@@ -16,7 +16,7 @@ class ProblemGroupRoutes < Sinatra::Base
   end
 
   get "/api/problem_groups" do
-    @problem_groups = generate_nested_hash(klass: ProblemGroup, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !(is_admin? || is_viewer?))
+    @problem_groups = generate_nested_hash(klass: ProblemGroup, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_staff?)
     json @problem_groups
   end
 
@@ -26,7 +26,7 @@ class ProblemGroupRoutes < Sinatra::Base
   end
 
   get "/api/problem_groups/:id" do
-    @problem_group = generate_nested_hash(klass: ProblemGroup, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !(is_admin? || is_viewer?))
+    @problem_group = generate_nested_hash(klass: ProblemGroup, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_staff?)
     json @problem_group
   end
 
