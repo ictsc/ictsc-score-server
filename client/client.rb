@@ -228,13 +228,15 @@ def upload_dir_files(file_dir)
   end
 end
 
-$host = ARGV[0] || "http://localhost:3000/api"
-$base_url = $host
+def input_password()
+  print 'password: '
+  STDIN.noecho(&:gets).chomp
+end
+
+$base_url = ARGV[0] || 'http://localhost:3000/api'
 $responses = []
 
-print 'password: '
-pass = STDIN.noecho(&:gets).chomp
-login_as(login: :admin, password: pass)
+login_as(login: :admin, password: input_password())
 
 require 'pry'
 binding.pry
