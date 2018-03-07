@@ -197,6 +197,10 @@ def add_members_from_hash(members)
   end
 end
 
+def update_member(member_hash)
+  JSON.parse(request(:put, "members/#{member_hash['id']}", member_hash))
+end
+
 #### 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
@@ -226,6 +230,12 @@ def upload_dir_files(file_dir)
   Dir.glob(File.join(file_dir, '/*')).select{|file_path| File.file?(file_path) }.each do |file_path|
     p build_download_link(add_attachments(file_path))
   end
+end
+
+def change_password(login:, password: input_password())
+  member_hash = list_members.find{|m| m['login'] == login }
+  member_hash['password'] = password
+  update_member(member_hash)
 end
 
 def input_password()
