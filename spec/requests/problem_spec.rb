@@ -36,11 +36,12 @@ describe Problem do
 
     let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private) }
     describe '#keys for problem' do
+      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point) }
       let(:json_response_problem) { json_response.find{|p| p['id'] == problem.id } }
       subject { json_response_problem.keys }
 
       by_viewer      { is_expected.to match_array expected_keys }
-      by_participant { is_expected.to match_array expected_keys - ['creator_id'] }
+      by_participant { is_expected.to match_array expected_keys_for_participant }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
 
@@ -68,11 +69,11 @@ describe Problem do
     end
 
     describe "#keys for problem participant haven't solve problem before" do
-      let(:expected_keys_for_participant) { expected_keys - %w(title text) }
+      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point perfect_point title text) }
       let(:json_response_next_problem) { json_response.find{|p| p['id'] == next_problem.id } }
       subject { json_response_next_problem.keys }
 
-      by_participant { is_expected.to match_array expected_keys_for_participant - ['creator_id'] }
+      by_participant { is_expected.to match_array expected_keys_for_participant }
     end
   end
 
@@ -115,11 +116,13 @@ describe Problem do
     end
 
     describe '#keys' do
-      let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private ) }
+      let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private) }
+      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
+      by_participant { is_expected.to match_array expected_keys_for_participant }
     end
 
     describe '#solved_teams_count (delay)' do
