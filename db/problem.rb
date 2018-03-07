@@ -40,6 +40,19 @@ class Problem < ActiveRecord::Base
     end
   end
 
+  # 権限によって許可するパラメータを変える
+  def self.allowed_nested_params(user:)
+    base_params = %w(answers answers-score answers-team issues issues-comments comments problem_groups)
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      base_params + %w(creator)
+    when ROLE_ID[:participant]
+      base_params
+    else
+      %w()
+    end
+  end
+
   # method: GET
   scope :readables, -> (user: nil, team: nil, action: "") {
     case user&.role_id
