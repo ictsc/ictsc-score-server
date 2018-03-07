@@ -10,8 +10,6 @@ class ProblemRoutes < Sinatra::Base
   helpers Sinatra::AccountServiceHelpers
 
   def remove_secret_info_from(problem:)
-    problem.delete('creator_id') unless is_staff?
-
     problem['creator']&.delete('hashed_password')
     problem['answers']&.each do |answer|
       answer['team']&.delete('registration_code')
