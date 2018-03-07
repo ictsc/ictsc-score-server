@@ -10,8 +10,6 @@ class ProblemRoutes < Sinatra::Base
   helpers Sinatra::AccountServiceHelpers
 
   def remove_secret_info_from(problem:)
-    problem.delete('creator_id') unless is_staff?
-
     problem['creator']&.delete('hashed_password')
     problem['answers']&.each do |answer|
       answer['team']&.delete('registration_code')
@@ -21,7 +19,7 @@ class ProblemRoutes < Sinatra::Base
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(',') & %w(answers answers-score answers-team issues issues-comments creator comments problem_groups) if request.get?
+    @with_param = (params[:with] || '').split(',') & Problem.allowed_nested_params(user: current_user) if request.get?
     @as_option = { methods: [:problem_group_ids] }
   end
 
@@ -31,8 +29,10 @@ class ProblemRoutes < Sinatra::Base
     if is_participant?
       next json [] if DateTime.now <= Setting.competition_start_at
 
-      show_columns = Problem.column_names - %w(title text)
-      @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json(@as_option)).sort_by{|x| x["id"] }
+      # readablesではない問題も情報を制限して返す
+      @problems += Problem.where.not(id: @problems.map{|x| x['id']})
+        .not_opened_problem_info
+        .as_json(@as_option)
     end
 
     solved_teams_count_by_problem = FirstCorrectAnswer

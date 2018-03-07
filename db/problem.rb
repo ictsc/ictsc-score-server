@@ -40,10 +40,33 @@ class Problem < ActiveRecord::Base
     end
   end
 
+  # 権限によって許可するパラメータを変える
+  def self.allowed_nested_params(user:)
+    base_params = %w(answers answers-score answers-team issues issues-comments comments problem_groups)
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      base_params + %w(creator)
+    when ROLE_ID[:participant]
+      base_params
+    else
+      %w()
+    end
+  end
+
+  # 解放済み問題で得られる情報
+  scope :opened_problem_info, -> () {
+    select(*%w(id title text perfect_point team_private order problem_must_solve_before_id created_at updated_at))
+  }
+
+  # 未開放問題で得られる情報
+  scope :not_opened_problem_info, -> () {
+    select(*%w(id team_private order problem_must_solve_before_id created_at updated_at))
+  }
+
   # method: GET
   scope :readables, -> (user: nil, team: nil, action: "") {
     case user&.role_id
-    when ROLE_ID[:admin]
+    when ROLE_ID[:admin], ROLE_ID[:viewer]
       all
     when ROLE_ID[:writer]
       next all if action.empty?
@@ -52,9 +75,9 @@ class Problem < ActiveRecord::Base
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
       next none if DateTime.now <= Setting.competition_start_at
 
-      where(problem_must_solve_before_id: FirstCorrectAnswer.readables(user: user, action: action).map{|e| e.problem_id} + [nil])
-    when ROLE_ID[:viewer]
-      all
+      fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
+      where(problem_must_solve_before_id: fca_problem_ids + [nil])
+        .opened_problem_info
     else
       none
     end
