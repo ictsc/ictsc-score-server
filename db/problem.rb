@@ -53,6 +53,16 @@ class Problem < ActiveRecord::Base
     end
   end
 
+  # 解放済み問題で得られる情報
+  scope :opened_problem_info, -> () {
+    select(*%w(id title text perfect_point team_private order problem_must_solve_before_id created_at updated_at))
+  }
+
+  # 未開放問題で得られる情報
+  scope :not_opened_problem_info, -> () {
+    select(*%w(id team_private order problem_must_solve_before_id created_at updated_at))
+  }
+
   # method: GET
   scope :readables, -> (user: nil, team: nil, action: "") {
     case user&.role_id
@@ -67,6 +77,7 @@ class Problem < ActiveRecord::Base
 
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
       where(problem_must_solve_before_id: fca_problem_ids + [nil])
+        .opened_problem_info
     else
       none
     end

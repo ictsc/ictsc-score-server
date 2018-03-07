@@ -31,8 +31,10 @@ class ProblemRoutes < Sinatra::Base
     if is_participant?
       next json [] if DateTime.now <= Setting.competition_start_at
 
-      show_columns = Problem.column_names - %w(title text)
-      @problems = (@problems + Problem.where.not(id: @problems.map{|x| x["id"]}).select(*show_columns).as_json(@as_option)).sort_by{|x| x["id"] }
+      # readablesではない問題も情報を制限して返す
+      @problems += Problem.where.not(id: @problems.map{|x| x['id']})
+        .not_opened_problem_info
+        .as_json(@as_option)
     end
 
     solved_teams_count_by_problem = FirstCorrectAnswer
