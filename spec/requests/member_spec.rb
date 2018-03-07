@@ -19,7 +19,7 @@ describe Member do
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
 
-      describe '#size' do
+      describe '#keys' do
         subject { json_response.map{|x| x["role_id"] }.uniq }
         by_nologin     { is_expected.to match_array [] }
         by_participant { is_expected.to match_array [participant].map(&:role_id) }
