@@ -17,8 +17,10 @@ class Answer < ActiveRecord::Base
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:participant]
+    when ROLE_ID[:admin]
       true
+    when ROLE_ID[:participant]
+      in_competition?
     else # nologin, ...
       false
     end
