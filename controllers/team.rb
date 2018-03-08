@@ -44,6 +44,22 @@ class TeamRoutes < Sinatra::Base
     json @teams
   end
 
+  post "/api/teams" do
+    halt 403 if not Team.allowed_to_create_by?(current_user)
+
+    @attrs = params_to_attributes_of(klass: Team)
+    @team = Team.new(@attrs)
+
+    if @team.save
+      status 201
+      headers "Location" => to("/api/teams/#{@team.id}")
+      json @team
+    else
+      status 400
+      json @team.errors
+    end
+  end
+
   before "/api/teams/:id" do
     @team = Team.find_by(id: params[:id])
     halt 404 if not @team&.allowed?(by: current_user, method: request.request_method)
@@ -71,22 +87,6 @@ class TeamRoutes < Sinatra::Base
     end
 
     json @team
-  end
-
-  post "/api/teams" do
-    halt 403 if not Team.allowed_to_create_by?(current_user)
-
-    @attrs = params_to_attributes_of(klass: Team)
-    @team = Team.new(@attrs)
-
-    if @team.save
-      status 201
-      headers "Location" => to("/api/teams/#{@team.id}")
-      json @team
-    else
-      status 400
-      json @team.errors
-    end
   end
 
   update_team_block = Proc.new do

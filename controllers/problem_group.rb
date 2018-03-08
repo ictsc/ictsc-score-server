@@ -20,16 +20,6 @@ class ProblemGroupRoutes < Sinatra::Base
     json @problem_groups
   end
 
-  before "/api/problem_groups/:id" do
-    @problem_group = ProblemGroup.find_by(id: params[:id])
-    halt 404 if not @problem_group&.allowed?(by: current_user, method: request.request_method)
-  end
-
-  get "/api/problem_groups/:id" do
-    @problem_group = generate_nested_hash(klass: ProblemGroup, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_staff?)
-    json @problem_group
-  end
-
   post "/api/problem_groups" do
     halt 403 if not ProblemGroup.allowed_to_create_by?(current_user)
 
@@ -50,6 +40,16 @@ class ProblemGroupRoutes < Sinatra::Base
       status 400
       json @problem_group.errors
     end
+  end
+
+  before "/api/problem_groups/:id" do
+    @problem_group = ProblemGroup.find_by(id: params[:id])
+    halt 404 if not @problem_group&.allowed?(by: current_user, method: request.request_method)
+  end
+
+  get "/api/problem_groups/:id" do
+    @problem_group = generate_nested_hash(klass: ProblemGroup, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_staff?)
+    json @problem_group
   end
 
   update_problem_group_block = Proc.new do

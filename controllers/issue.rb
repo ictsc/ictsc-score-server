@@ -27,23 +27,6 @@ class IssueRoutes < Sinatra::Base
     json @issues
   end
 
-  before "/api/issues/:id" do
-    @issue = Issue.includes(:comments)
-                  .find_by(id: params[:id])
-    halt 404 if not @issue&.allowed?(by: current_user, method: request.request_method)
-  end
-
-  get "/api/issues/:id" do
-    @issue = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_staff?)
-    @issue.dig("team")&.delete("registration_code")
-    @issue.dig("comments")&.each do |c|
-      c.dig("member")&.delete("hashed_password")
-      c.dig("member", "team")&.delete("registration_code")
-    end
-
-    json @issue
-  end
-
   post "/api/issues" do
     halt 403 if not Issue.allowed_to_create_by?(current_user)
 
@@ -59,6 +42,23 @@ class IssueRoutes < Sinatra::Base
       status 400
       json @issue.errors
     end
+  end
+
+  before "/api/issues/:id" do
+    @issue = Issue.includes(:comments)
+                  .find_by(id: params[:id])
+    halt 404 if not @issue&.allowed?(by: current_user, method: request.request_method)
+  end
+
+  get "/api/issues/:id" do
+    @issue = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_staff?)
+    @issue.dig("team")&.delete("registration_code")
+    @issue.dig("comments")&.each do |c|
+      c.dig("member")&.delete("hashed_password")
+      c.dig("member", "team")&.delete("registration_code")
+    end
+
+    json @issue
   end
 
   update_issue_block = Proc.new do

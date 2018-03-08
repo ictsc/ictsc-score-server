@@ -58,6 +58,28 @@ class ProblemRoutes < Sinatra::Base
     json @problems
   end
 
+  post "/api/problems" do
+    halt 403 if not Problem.allowed_to_create_by?(current_user)
+
+    @attrs = params_to_attributes_of(klass: Problem, include: [:problem_group_ids])
+
+    begin
+      @problem = Problem.new(@attrs)
+    rescue ActiveRecord::RecordNotFound
+      status 400
+      next json problem_group_ids: "存在しないレコードです"
+    end
+
+    if @problem.save
+      status 201
+      headers "Location" => to("/api/problems/#{@problem.id}")
+      json @problem.as_json(@as_option)
+    else
+      status 400
+      json @problem.errors
+    end
+  end
+
   before "/api/problems/:id" do
     problems = if request.get?
         Problem.includes(:comments, answers: [:score])
@@ -89,28 +111,6 @@ class ProblemRoutes < Sinatra::Base
     end
 
     json @problem
-  end
-
-  post "/api/problems" do
-    halt 403 if not Problem.allowed_to_create_by?(current_user)
-
-    @attrs = params_to_attributes_of(klass: Problem, include: [:problem_group_ids])
-
-    begin
-      @problem = Problem.new(@attrs)
-    rescue ActiveRecord::RecordNotFound
-      status 400
-      next json problem_group_ids: "存在しないレコードです"
-    end
-
-    if @problem.save
-      status 201
-      headers "Location" => to("/api/problems/#{@problem.id}")
-      json @problem.as_json(@as_option)
-    else
-      status 400
-      json @problem.errors
-    end
   end
 
   update_problem_block = Proc.new do

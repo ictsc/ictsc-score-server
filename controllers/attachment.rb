@@ -31,17 +31,6 @@ class AttachmentRoutes < Sinatra::Base
     json @attachments
   end
 
-  # 権限チェック
-  before "/api/attachments/:id" do
-    @attachment = Attachment.find_by(id: params[:id])
-    halt 404 if not @attachment&.allowed?(by: current_user, method: request.request_method)
-  end
-
-  # IDからファイルの情報を取得
-  get "/api/attachments/:id" do
-    json @attachment
-  end
-
   post "/api/attachments" do
     halt 403 if not Attachment.allowed_to_create_by?(current_user)
 
@@ -70,6 +59,17 @@ class AttachmentRoutes < Sinatra::Base
       headers "Location" => to("/api/attachments/#{@attachment.id}")
       json @attachment.attributes.merge({"file_hash" => file_hash})
     end
+  end
+
+  # 権限チェック
+  before "/api/attachments/:id" do
+    @attachment = Attachment.find_by(id: params[:id])
+    halt 404 if not @attachment&.allowed?(by: current_user, method: request.request_method)
+  end
+
+  # IDからファイルの情報を取得
+  get "/api/attachments/:id" do
+    json @attachment
   end
 
   delete "/api/attachments/:id" do
