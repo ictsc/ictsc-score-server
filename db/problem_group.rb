@@ -28,7 +28,7 @@ class ProblemGroup < ActiveRecord::Base
   end
 
   def self.allowed_nested_params(user:)
-    %w(problems) 
+    %w(problems)
   end
 
   # method: GET

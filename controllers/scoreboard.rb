@@ -2,7 +2,6 @@ require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
 require_relative "../services/account_service"
 
-# https://wiki.icttoracon.net/ictsc7/rules/public
 # 2日目の午後開始前まで確認可能
 # - 自分の順位と得点
 # - 上位3チームの得点とチーム名
