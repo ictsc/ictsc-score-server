@@ -150,6 +150,18 @@ class Score < ActiveRecord::Base
     end
   end
 
+  def self.allowed_nested_params(user:)
+    base_params = %w(answer)
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      base_params + %w(answer-problem)
+    when ROLE_ID[:participant]
+      base_params
+    else
+      %w()
+    end
+  end
+
   scope :reply_delay, ->() {
      where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
   }

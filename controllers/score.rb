@@ -14,7 +14,7 @@ class ScoreRoutes < Sinatra::Base
   before "/api/scores*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(',') & %w(answer answer-problem) if request.get?
+    @with_param = (params[:with] || "").split(',') & Score.allowed_nested_params(user: current_user) if request.get?
   end
 
   get "/api/scores" do
