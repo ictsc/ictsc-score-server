@@ -26,9 +26,13 @@ class Problem < ActiveRecord::Base
     end
   end
 
+  def readable?(by: nil, action: '')
+    self.class.readables(user: by, action: action).exists?(id: id)
+  end
+
   # method: GET, PUT, PATCH, DELETE
   def allowed?(by: nil, method:, action: "")
-    return self.class.readables(user: by, action: action).to_a.one?{|x| x.id == id } if method == "GET"
+    return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
     when ROLE_ID[:admin]

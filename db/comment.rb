@@ -34,9 +34,13 @@ class Comment < ActiveRecord::Base
     false
   end
 
+  def readable?(by: nil, action: '')
+    self.class.readables(user: by, action: action).exists?(id: id)
+  end
+
   # method: GET, PUT, PATCH, DELETE
   def allowed?(method:, by: nil, action: "")
-    return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
+    return readable?(by: by, action: action) if method == 'GET'
 
     role_id = by&.role_id
 

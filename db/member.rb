@@ -36,15 +36,19 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def readable?(by: nil, action: '')
+    self.class.readables(user: by, action: action).exists?(id: id)
+  end
+
   # method: GET, PUT, PATCH, DELETE
   def allowed?(method:, by: nil, action: "")
-    return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
+    return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
     when ROLE_ID[:admin]
       true
     when ROLE_ID[:writer]
-      self.class.readables(user: by, action: action).exists?(id: id)
+      readable?(by: by, action: action)
     when ROLE_ID[:participant]
       return false if method == "DELETE"
       id == by.id
