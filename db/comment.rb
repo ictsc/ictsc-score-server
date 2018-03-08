@@ -23,6 +23,7 @@ class Comment < ActiveRecord::Base
     role_id = user&.role_id
 
     return true if role_id == ROLE_ID[:admin]
+    return false if role_id == ROLE_ID[:participant] && !in_competition?
 
     case action
     when "issues_comments"
@@ -73,17 +74,20 @@ class Comment < ActiveRecord::Base
         none
       end
 
-    role_id = user&.role_id
-
-    next comments if [ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]].include? role_id
-    next none if ROLE_ID[:participant] != role_id
-
-    # participant
-    case action
-    when "issues_comments"
-      comments.joins(:member).where(members: { team: [user.team, nil] })
-    when "problems_comments"
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       comments
+    when ROLE_ID[:participant]
+      next none unless in_competition?
+
+      case action
+      when "issues_comments"
+        comments.joins(:member).where(members: { team: [user.team, nil] })
+      when "problems_comments"
+        comments
+      else
+        none
+      end
     else
       none
     end
