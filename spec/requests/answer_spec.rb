@@ -88,50 +88,6 @@ describe Answer do
     end
   end
 
-  describe 'POST /api/answers' do
-    let!(:other_team) { create(:team) }
-    let(:answer) { build(:answer) }
-
-    let(:params) do
-      {
-        text: "hoge",
-        problem_id: answer.problem_id,
-        team_id: other_team.id
-      }
-    end
-
-    describe 'create answer' do
-      let(:expected_keys) { %w(id problem_id team_id text created_at updated_at) }
-      let(:response) { post '/api/answers', params }
-      subject { response.status }
-
-      by_nologin     { is_expected.to eq 403 }
-      by_viewer      { is_expected.to eq 403 }
-      by_writer      { is_expected.to eq 403 }
-
-      by_participant do
-        is_expected.to eq 201
-        expect(json_response.keys).to match_array expected_keys
-        expect(json_response['team_id']).not_to eq other_team.id
-      end
-
-      by_admin do
-        is_expected.to eq 201
-        expect(json_response.keys).to match_array expected_keys
-        expect(json_response['team_id']).to eq other_team.id
-      end
-    end
-
-    describe 'create answer with missing problem_id' do
-      let(:params_without_problem_id) { params.except(:problem_id) }
-      let(:response) { post '/api/answers', params_without_problem_id }
-      subject { response.status }
-
-      by_participant { is_expected.to eq 400 }
-      by_admin       { is_expected.to eq 400 }
-    end
-  end
-
   describe 'POST /api/problems/#{problem.id}/answers' do
     let!(:problem) { create(:problem) }
     let!(:another_problem) { create(:problem) }
