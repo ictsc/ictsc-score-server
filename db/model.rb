@@ -12,6 +12,7 @@ require_relative 'role'
 require_relative 'score'
 require_relative 'setting'
 require_relative 'team'
+require_relative '../lib/sinatra/competition_helpers'
 
 ROLE_ID = {
   admin: 2,
@@ -22,6 +23,9 @@ ROLE_ID = {
 }
 
 class ActiveRecord::Base
+  include Sinatra::CompetitionHelpers
+  extend Sinatra::CompetitionHelpers
+
   def self.required_attribute_names(options = {})
     options[:include] ||= []
     options[:include].map!(&:to_sym)

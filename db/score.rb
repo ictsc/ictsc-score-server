@@ -136,9 +136,13 @@ class Score < ActiveRecord::Base
     end
   end
 
+  def readable?(by: nil, action: '')
+    self.class.readables(user: by, action: action).exists?(id: id)
+  end
+
   # method: GET, PUT, PATCH, DELETE
   def allowed?(method:, by: nil, action: "")
-    return self.class.readables(user: by, action: action).exists?(id: id) if method == "GET"
+    return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
     when ROLE_ID[:admin]
@@ -173,7 +177,7 @@ class Score < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      next none if Setting.competition_end_at <= DateTime.now
+      next none unless in_competition?
       result = joins(:answer).reply_delay
       result = result.where('answers.team_id = :team_id', { team_id: user.team.id }) if action != 'aggregate'
       result

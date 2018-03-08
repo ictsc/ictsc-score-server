@@ -26,9 +26,13 @@ class Problem < ActiveRecord::Base
     end
   end
 
+  def readable?(by: nil, action: '')
+    self.class.readables(user: by, action: action).exists?(id: id)
+  end
+
   # method: GET, PUT, PATCH, DELETE
   def allowed?(by: nil, method:, action: "")
-    return self.class.readables(user: by, action: action).to_a.one?{|x| x.id == id } if method == "GET"
+    return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
     when ROLE_ID[:admin]
@@ -73,7 +77,7 @@ class Problem < ActiveRecord::Base
       next where(creator: user) if action == "problems_comments"
       none
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
-      next none if DateTime.now <= Setting.competition_start_at
+      next none unless in_competition?
 
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
       where(problem_must_solve_before_id: fca_problem_ids + [nil])

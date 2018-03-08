@@ -1,5 +1,6 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require 'sinatra/competition_helpers'
 require_relative "../services/account_service"
 
 # 2日目の午後開始前まで確認可能
@@ -12,6 +13,7 @@ class ScoreBoardRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::CompetitionHelpers
 
   before "/api/scoreboard*" do
     I18n.locale = :en if request.xhr?
@@ -20,11 +22,7 @@ class ScoreBoardRoutes < Sinatra::Base
     halt 400 if is_nologin?
 
     if is_participant?
-      now = DateTime.now
-      if now < Setting.competition_start_at ||
-          Setting.scoreboard_hide_at <= now ||
-          Setting.competition_end_at <= now
-
+      if !in_competition? || Setting.scoreboard_hide_at <= DateTime.now
         halt 400
       end
     end

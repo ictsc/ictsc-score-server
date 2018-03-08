@@ -1,5 +1,6 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/competition_helpers"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
@@ -8,6 +9,7 @@ class ProblemRoutes < Sinatra::Base
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::CompetitionHelpers
 
   def remove_secret_info_from(problem:)
     problem['creator']&.delete('hashed_password')
@@ -27,9 +29,10 @@ class ProblemRoutes < Sinatra::Base
     @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_staff?).uniq
 
     if is_participant?
-      next json [] if DateTime.now <= Setting.competition_start_at
+      next json [] unless in_competition?
 
       # readablesではない問題も情報を制限して返す
+      # TODO: ここの処理を上手くモデルに隠したい
       @problems += Problem.where.not(id: @problems.map{|x| x['id']})
         .not_opened_problem_info
         .as_json(@as_option)
