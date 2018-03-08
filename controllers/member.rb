@@ -125,20 +125,6 @@ class MemberRoutes < Sinatra::Base
     json @members
   end
 
-  before "/api/members/:id" do
-    @member = Member.find_by(id: params[:id])
-    halt 404 if not @member&.allowed?(by: current_user, method: request.request_method)
-  end
-
-  get "/api/members/:id" do
-    @member = generate_nested_hash(klass: Member, by: current_user, params: @with_param, id: params[:id], as_option: {except: [:hashed_password]}, apply_filter: !is_staff?)
-    if t = @member["team"]
-      t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
-      t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
-    end
-    json @member
-  end
-
   post "/api/members" do
     halt 403 if not Member.allowed_to_create_by?(current_user)
 
@@ -179,6 +165,20 @@ class MemberRoutes < Sinatra::Base
       status 400
       json @member.errors
     end
+  end
+
+  before "/api/members/:id" do
+    @member = Member.find_by(id: params[:id])
+    halt 404 if not @member&.allowed?(by: current_user, method: request.request_method)
+  end
+
+  get "/api/members/:id" do
+    @member = generate_nested_hash(klass: Member, by: current_user, params: @with_param, id: params[:id], as_option: {except: [:hashed_password]}, apply_filter: !is_staff?)
+    if t = @member["team"]
+      t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
+      t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
+    end
+    json @member
   end
 
   update_member_block = Proc.new do

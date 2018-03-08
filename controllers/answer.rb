@@ -31,20 +31,6 @@ class AnswerRoutes < Sinatra::Base
     json @answers
   end
 
-  before "/api/answers/:id" do
-    @answer = Answer.includes(:score).find_by(id: params[:id])
-
-    halt 404 if not @answer&.allowed?(by: current_user, method: request.request_method)
-  end
-
-  get "/api/answers/:id" do
-    @as_option = { include: {} }
-    @as_option[:include][:score] = { methods: [:bonus_point, :subtotal_point] } if @with_param.include?("score")
-    @answer = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !is_staff?)
-
-    json @answer
-  end
-
   post "/api/answers" do
     halt 403 if not Answer.allowed_to_create_by?(current_user)
 
@@ -72,6 +58,20 @@ class AnswerRoutes < Sinatra::Base
       status 400
       json @answer.errors
     end
+  end
+
+  before "/api/answers/:id" do
+    @answer = Answer.includes(:score).find_by(id: params[:id])
+
+    halt 404 if not @answer&.allowed?(by: current_user, method: request.request_method)
+  end
+
+  get "/api/answers/:id" do
+    @as_option = { include: {} }
+    @as_option[:include][:score] = { methods: [:bonus_point, :subtotal_point] } if @with_param.include?("score")
+    @answer = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !is_staff?)
+
+    json @answer
   end
 
   update_answer_block = Proc.new do
@@ -110,6 +110,7 @@ class AnswerRoutes < Sinatra::Base
   end
 
   before "/api/problems/:id/answers" do
+    # Problemのフィルタを使うから注意
     @problem = Problem.find_by(id: params[:id])
     pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET')
     halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)

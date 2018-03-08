@@ -25,17 +25,6 @@ class NoticeRoutes < Sinatra::Base
     json @notices
   end
 
-  before "/api/notices/:id" do
-    @notice = Notice.find_by(id: params[:id])
-    halt 404 if not @notice&.allowed?(by: current_user, method: request.request_method)
-  end
-
-  get "/api/notices/:id" do
-    @notice = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !is_staff?)
-    @notice["member"]&.delete("hashed_password")
-    json @notice
-  end
-
   post "/api/notices" do
     halt 403 if not Notice.allowed_to_create_by?(current_user)
 
@@ -52,6 +41,17 @@ class NoticeRoutes < Sinatra::Base
       status 400
       json @notice.errors
     end
+  end
+
+  before "/api/notices/:id" do
+    @notice = Notice.find_by(id: params[:id])
+    halt 404 if not @notice&.allowed?(by: current_user, method: request.request_method)
+  end
+
+  get "/api/notices/:id" do
+    @notice = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !is_staff?)
+    @notice["member"]&.delete("hashed_password")
+    json @notice
   end
 
   update_notice_block = Proc.new do
