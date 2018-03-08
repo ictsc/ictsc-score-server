@@ -12,8 +12,10 @@ class Issue < ActiveRecord::Base
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:participant]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       true
+    when ROLE_ID[:participant]
+      in_competition?
     else # nologin, ...
       false
     end
@@ -44,6 +46,7 @@ class Issue < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
+      next none unless in_competition?
       where(team: user.team)
     else # nologin, ...
       none

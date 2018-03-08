@@ -73,7 +73,7 @@ class Problem < ActiveRecord::Base
       next where(creator: user) if action == "problems_comments"
       none
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
-      next none if DateTime.now <= Setting.competition_start_at
+      next none unless in_competition?
 
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
       where(problem_must_solve_before_id: fca_problem_ids + [nil])

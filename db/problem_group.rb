@@ -37,7 +37,7 @@ class ProblemGroup < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      next none if DateTime.now <= Setting.competition_start_at
+      next none unless in_competition?
       all
     else # nologin, ...
       none
