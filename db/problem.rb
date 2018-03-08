@@ -68,7 +68,7 @@ class Problem < ActiveRecord::Base
   }
 
   # method: GET
-  scope :readables, -> (user: nil, team: nil, action: "") {
+  scope :readables, -> (user:, team: nil, action: "") {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:viewer]
       all

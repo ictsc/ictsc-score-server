@@ -36,7 +36,7 @@ class ProblemGroup < ActiveRecord::Base
   end
 
   # method: GET
-  scope :readables, ->(user: nil, action: "") {
+  scope :readables, ->(user:, action: "") {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
