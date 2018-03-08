@@ -116,7 +116,7 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/problems/:id/answers" do
-    @answers = Answer.readables(user: current_user) \
+    @answers = Answer.readables(user: current_user)
                      .where(problem: @problem)
     json @answers
   end

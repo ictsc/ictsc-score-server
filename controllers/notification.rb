@@ -30,9 +30,9 @@ class NotificationRoutes < Sinatra::Base
       }
     end
 
-    Problem \
-      .readables(user: current_user) \
-      .includes(:comments, :answers) \
+    Problem
+      .readables(user: current_user)
+      .includes(:comments, :answers)
       .each do |p|
         resource_info = {
           resource: "Problem",
@@ -86,15 +86,15 @@ class NotificationRoutes < Sinatra::Base
         end
       end
 
-    comments = Comment.where(commentable_type: "Issue") \
-                      .joins("INNER JOIN issues ON issues.id = comments.commentable_id") \
+    comments = Comment.where(commentable_type: "Issue")
+                      .joins("INNER JOIN issues ON issues.id = comments.commentable_id")
 
     if current_user&.team_id
-      comments = comments.where(issues: {team_id: current_user.team_id }) \
+      comments = comments.where(issues: {team_id: current_user.team_id })
     end
 
-    comments \
-      .order(:updated_at) \
+    comments
+      .order(:updated_at)
       .map do |c|
         resource_info = {
           resource: c.commentable_type,
