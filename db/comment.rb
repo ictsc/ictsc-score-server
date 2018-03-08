@@ -62,7 +62,7 @@ class Comment < ActiveRecord::Base
   end
 
   # method: GET
-  scope :readables, ->(user: nil, action: "") {
+  scope :readables, ->(user:, action: "") {
     comments = case action
       when ""
         all
