@@ -54,7 +54,7 @@ class Member < ActiveRecord::Base
   end
 
   def self.allowed_nested_params(user:)
-    %w(member member-team)
+    %w(team)
   end
 
   # method: GET

@@ -69,7 +69,9 @@ class MemberRoutes < Sinatra::Base
 
   get "/api/session" do
     if logged_in?
-      @with_param = (params[:with] || "").split(',') & Member.allowed_nested_params(user: current_user)
+      # ここだけ @with_paramの扱いが特殊
+      @with_param = (params[:with] || "").split(',') & %w(member member-team)
+
       @session = {
         logged_in: true,
         status: "logged_in",
@@ -110,7 +112,7 @@ class MemberRoutes < Sinatra::Base
   before "/api/members*" do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(',') & %w(team) if request.get?
+    @with_param = (params[:with] || "").split(',') & Member.allowed_nested_params(user: current_user) if request.get?
   end
 
   get "/api/members" do
