@@ -20,7 +20,7 @@ class CommentRoutes < Sinatra::Base
 
       @action = "#{pluralize_name}_comments"
       @commentable_id = params[:commentable_id]
-      @commentable = klass.readables(user: current_user, action: @action) \
+      @commentable = klass.readables(user: current_user, action: @action)
                           .find_by(id: @commentable_id)
       halt 404 if @commentable.nil?
 

@@ -1,5 +1,4 @@
 require "sinatra/base"
-require "pry"
 
 module Sinatra
   module NestedEntityHelpers

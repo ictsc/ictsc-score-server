@@ -36,11 +36,11 @@ class Score < ActiveRecord::Base
       problems_count_in_pg = problem_group.problems.count
 
       # TODO: solved flag
-      relation_problems_solved = Score \
-        .joins(answer: { problem: { problem_groups: {}}}) \
-        .where(answers: { team_id: answer.team_id, problems: { problem_groups: { id: problem_group.id } } }) \
-        .group('problems.id', 'problem_groups.id') \
-        .having('sum(scores.point) >= problems.reference_point') \
+      relation_problems_solved = Score
+        .joins(answer: { problem: { problem_groups: {}}})
+        .where(answers: { team_id: answer.team_id, problems: { problem_groups: { id: problem_group.id } } })
+        .group('problems.id', 'problem_groups.id')
+        .having('sum(scores.point) >= problems.reference_point')
         .select('problem_groups.id', 'problems.reference_point')
 
       problems_solved_count = relation_problems_solved.where("scores.id <= ?", self.id).to_a.count
@@ -62,9 +62,9 @@ class Score < ActiveRecord::Base
   def self.cleared_problem_group_bonuses(team_id: nil, with_tid: false)
     # TODO: solved flag
     # reference_points[problem_group_id][problem_id] = reference_point
-    reference_points = Problem.joins(:problem_groups) \
-      .all \
-      .pluck(:problem_group_id, :id, :reference_point) \
+    reference_points = Problem.joins(:problem_groups)
+      .all
+      .pluck(:problem_group_id, :id, :reference_point)
       .inject({}) do |acc, (pgid, id, ref)|
         acc[pgid] ||= {}
         acc[pgid][id] ||= {}
@@ -76,9 +76,9 @@ class Score < ActiveRecord::Base
     score_id_with_bonus = {} # [team_id][score_id][problem_group_id] = completing_bonus_point or 0
 
     score_relation = team_id.nil? ? Score : Score.joins(:answer).where(answers: { team_id: team_id })
-    score_relation.joins(answer: { problem: { problem_groups: {} } }) \
-      .order(:id) \
-      .pluck('id', 'team_id', 'answers.problem_id', 'scores.point', 'problem_groups_problems.problem_group_id', 'problem_groups.completing_bonus_point') \
+    score_relation.joins(answer: { problem: { problem_groups: {} } })
+      .order(:id)
+      .pluck('id', 'team_id', 'answers.problem_id', 'scores.point', 'problem_groups_problems.problem_group_id', 'problem_groups.completing_bonus_point')
       .each do |(score_id, team_id, problem_id, point, pg_id, pg_bonus_point)|
         subtotal_point[team_id] ||= Hash.new(0)
         score_id_with_bonus[team_id] ||= {}
@@ -189,19 +189,19 @@ class Score::Scores < Array
     super()
 
     # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]
-    data = Score \
-      .readables(user: user, action: 'aggregate') \
-      .joins(:answer) \
-      .select("answers.problem_id", "answers.team_id", :point, "answers.created_at", :answer_id) \
-      .to_a \
+    data = Score
+      .readables(user: user, action: 'aggregate')
+      .joins(:answer)
+      .select("answers.problem_id", "answers.team_id", :point, "answers.created_at", :answer_id)
+      .to_a
       .group_by{|e| [e.team_id, e.problem_id]}
 
-    data \
-      .each{|key, score| data[key] = score.max_by{|s| s.answer.created_at}} \
-      .inject(Hash.new(0)){|memo, (k, v)| memo[k[0]] += v.point; memo} \
-      .to_a \
-      .sort_by{|e| e[1]} \
-      .reverse \
+    data
+      .each{|key, score| data[key] = score.max_by{|s| s.answer.created_at}}
+      .inject(Hash.new(0)){|memo, (k, v)| memo[k[0]] += v.point; memo}
+      .to_a
+      .sort_by{|e| e[1]}
+      .reverse
       .map{|e| self.push({team_id: e[0], score: e[1]})}
 
     # 順位を付ける
