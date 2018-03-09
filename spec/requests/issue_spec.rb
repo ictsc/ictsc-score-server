@@ -112,54 +112,6 @@ describe Issue do
     end
   end
 
-  describe 'POST /api/issues' do
-    let!(:other_team) { create(:team) }
-    let(:issue) { build(:issue) }
-
-    let(:params) do
-      {
-        title: issue.title,
-        closed: false,
-        problem_id: issue.problem_id,
-        team_id: other_team.id
-      }
-    end
-
-    describe 'create issue' do
-      let(:expected_keys) { %w(id title closed problem_id created_at updated_at team_id) }
-      let(:response) { post '/api/issues', params }
-      subject { response.status }
-
-      by_nologin     { is_expected.to eq 403 }
-      by_viewer      { is_expected.to eq 403 }
-
-      all_success_block = Proc.new do
-        is_expected.to eq 201
-        expect(json_response.keys).to match_array expected_keys
-        expect(json_response['team_id']).to eq other_team.id
-      end
-
-      by_writer &all_success_block
-      by_admin &all_success_block
-
-      by_participant do
-        is_expected.to eq 201
-        expect(json_response.keys).to match_array expected_keys
-        expect(json_response['team_id']).not_to eq other_team.id
-      end
-    end
-
-    describe 'create issue with missing title' do
-      let(:params_without_title) { params.except(:title) }
-      let(:response) { post '/api/issues', params_without_title }
-      subject { response.status }
-
-      by_participant { is_expected.to eq 400 }
-      by_writer      { is_expected.to eq 400 }
-      by_admin       { is_expected.to eq 400 }
-    end
-  end
-
   describe 'POST /api/problems/:problem_id/issues' do
     let!(:problem) { create(:problem) }
     let!(:another_problem) { create(:problem) }

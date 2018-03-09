@@ -188,8 +188,8 @@ export class API {
   }
   static addIssues (problem_id, title, req = superagent) {
     return RequestMiddleware(
-      req.post(`issues`)
-        .send(JSON.stringify({ problem_id, title }))
+      req.post(`problems/${problem_id}/issues`)
+        .send(JSON.stringify({ title }))
     ).then(res => res.body)
   }
   static patchIssues (id, obj, req = superagent) {
@@ -235,9 +235,8 @@ export class API {
   }
   static postScore (answer_id, point, solved, req = superagent) {
     return RequestMiddleware(
-      req.post(`scores`)
+      req.post(`answers/${answer_id}/score`)
         .send(JSON.stringify({
-          answer_id,
           point,
           solved,
         }))

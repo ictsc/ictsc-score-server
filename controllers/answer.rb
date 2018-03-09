@@ -31,35 +31,6 @@ class AnswerRoutes < Sinatra::Base
     json @answers
   end
 
-  post "/api/answers" do
-    halt 403 if not Answer.allowed_to_create_by?(current_user)
-
-    @attrs = params_to_attributes_of(klass: Answer)
-    @attrs[:team_id] = current_user.team_id if not is_admin?
-
-    @answer = Answer.new(@attrs)
-
-    # # 参加者は同一の問題に対し、 Setting.answer_reply_delay_sec 秒以内に連続で採点依頼を送ることができない
-    last_answer_created_at = Answer.where(
-        team_id: current_user&.team_id,
-        problem_id: @answer.problem_id
-      ).maximum(:created_at)
-
-    if last_answer_created_at && DateTime.now <= (last_answer_created_at + Setting.answer_reply_delay_sec.seconds)
-      status 400
-      next json answer: "participant can't submit multiple answers to one problem within #{Setting.answer_reply_delay_sec} seconds"
-    end
-
-    if @answer.save
-      status 201
-      headers "Location" => to("/api/answers/#{@answer.id}")
-      json @answer
-    else
-      status 400
-      json @answer.errors
-    end
-  end
-
   before "/api/answers/:id" do
     @answer = Answer.includes(:score).find_by(id: params[:id])
 
