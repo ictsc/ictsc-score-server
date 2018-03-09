@@ -44,29 +44,6 @@ class ScoreRoutes < Sinatra::Base
     json @score #, { methods: [:bonus_point, :subtotal_point] }
   end
 
-  post_score_block = Proc.new do
-    halt 403 if not Score.allowed_to_create_by?(current_user)
-
-    @attrs = params_to_attributes_of(klass: Score)
-    @attrs[:marker_id] = current_user.id if !is_admin? || @attrs[:marker_id].nil?
-    # '/api/answers/:id/score' ではbeforeで@answerがセットされる
-    @attrs[:answer_id] = @answer.id if @answer
-    @score = Score.new(@attrs)
-
-    if @score.save
-      @answer = @score.answer
-      notification_payload = @score.notification_payload
-      push_notification(to: @answer.team, payload: notification_payload) if notification_payload.dig(:data, :notify_at) <= Setting.competition_end_at
-
-      status 201
-      headers "Location" => to("/api/scores/#{@score.id}")
-      json @score
-    else
-      status 400
-      json @score.errors
-    end
-  end
-
   update_score_block = Proc.new do
     if request.put? and not filled_all_attributes_of?(klass: Score)
       status 400
@@ -88,11 +65,6 @@ class ScoreRoutes < Sinatra::Base
       json @score.errors
     end
   end
-
-  # answer無し
-  post "/api/scores", &post_score_block
-  # answer有り
-  post "/api/answers/:id/score", &post_score_block
 
   put "/api/scores/:id", &update_score_block
   patch "/api/scores/:id", &update_score_block
@@ -119,5 +91,27 @@ class ScoreRoutes < Sinatra::Base
 
     status 303
     headers "Location" => to("/api/scores/#{@score.id}")
+  end
+
+  post "/api/answers/:id/score" do
+    halt 403 if not Score.allowed_to_create_by?(current_user)
+
+    @attrs = params_to_attributes_of(klass: Score)
+    @attrs[:marker_id] = current_user.id if !is_admin? || @attrs[:marker_id].nil?
+    @attrs[:answer_id] = @answer.id
+    @score = Score.new(@attrs)
+
+    if @score.save
+      @answer = @score.answer
+      notification_payload = @score.notification_payload
+      push_notification(to: @answer.team, payload: notification_payload) if notification_payload.dig(:data, :notify_at) <= Setting.competition_end_at
+
+      status 201
+      headers "Location" => to("/api/scores/#{@score.id}")
+      json @score
+    else
+      status 400
+      json @score.errors
+    end
   end
 end
