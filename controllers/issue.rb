@@ -27,23 +27,6 @@ class IssueRoutes < Sinatra::Base
     json @issues
   end
 
-  post "/api/issues" do
-    halt 403 if not Issue.allowed_to_create_by?(current_user)
-
-    @attrs = params_to_attributes_of(klass: Issue)
-    @attrs[:team_id] = current_user.team_id if not %w(Admin Writer).include? current_user&.role&.name
-    @issue = Issue.new(@attrs)
-
-    if @issue.save
-      status 201
-      headers "Location" => to("/api/issues/#{@issue.id}")
-      json @issue
-    else
-      status 400
-      json @issue.errors
-    end
-  end
-
   before "/api/issues/:id" do
     @issue = Issue.includes(:comments)
                   .find_by(id: params[:id])
