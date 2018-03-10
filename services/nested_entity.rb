@@ -14,7 +14,7 @@ module Sinatra
 
     # NOTE: 解読中
     # readablesの戻り値のidsでフィルタする
-    # @param member []
+    # @param member [Member] アクセスしようとしてるユーザ
     # @param resource []
     # @param entities []
     # @param parent_entity []
@@ -38,6 +38,7 @@ module Sinatra
           # readablesのidsを見てフィルタしてる
           r_entity_readable_ids = model.readables(user: member, action: action).ids
           r[entity].select!{|rr| r_entity_readable_ids.include?(rr["id"]) }
+          filter_columns(member: member, entities: r[entity], model: model)
           filter_entities(member: member, resource: r[entity], entities: entities[(i+1)..-1], parent_entity: entity) if 1 < entities.size
           return
         when Hash
@@ -51,6 +52,18 @@ module Sinatra
           return
           # raise "Entity not exist: #{entity}"
         end
+      end
+    end
+
+    # 権限によってよめるカラムをフィルタする(破壊的)
+    # @params member [Member] アクセスしようとしてるユーザ
+    # @params entity [Array<Hash>] フィルタするエンティティ
+    # @params model [ActiveRecord::Base]
+    # @return 無し
+    def filter_columns(member:, entities:, model:)
+      columns = model.readable_columns(user: member)
+      entities.each do |entity|
+        entity.select! {|col, _| columns.include?(col) }
       end
     end
 
