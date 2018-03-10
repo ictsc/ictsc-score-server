@@ -25,11 +25,11 @@
       <div class="nav-item">
         <router-link :to="{ name: 'issues'}" active-class="active" class="nav-link">質問</router-link>
       </div>
-      <div v-if="!isMember && isStaff" class="nav-item">
+      <div v-if="isStaff" class="nav-item">
         <router-link :to="{ name: 'answers'}" active-class="active" class="nav-link">解答</router-link>
       </div>
       <div class="nav-item">
-        <a href="#" v-on:click="logout()" class="nav-link" v-if="isMember == true || isStaff == true">ログアウト</a>
+        <a href="#" v-on:click="logout()" class="nav-link" v-if="!isNoLogin">ログアウト</a>
         <router-link :to="{ name: 'login' }" class="nav-link" v-else>ログイン</router-link>
       </div>
     </div>
