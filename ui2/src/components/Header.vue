@@ -29,6 +29,9 @@
         <router-link :to="{ name: 'answers'}" active-class="active" class="nav-link">解答</router-link>
       </div>
       <div class="nav-item">
+        <router-link :to="{ name: 'result'}" active-class="active" class="nav-link">グラフ</router-link>
+      </div>
+      <div class="nav-item">
         <a href="#" v-on:click="logout()" class="nav-link" v-if="!isNoLogin">ログアウト</a>
         <router-link :to="{ name: 'login' }" class="nav-link" v-else>ログイン</router-link>
       </div>
