@@ -114,11 +114,12 @@ export default {
         .tickSizeInner(-this.innerHeight)
         .tickSizeOuter(0)
         .tickFormat(d3.timeFormat('%H:%M'))
-        .ticks(5);
+        .ticks(7);
       graphArea
         .select('.axis.x')
         .attr('transform', 'translate(0,' + this.innerHeight + ')')
         .call(axisBottom);
+
       let axisLeft = d3
         .axisLeft(y)
         .tickSizeInner(-this.innerWidth)
@@ -126,7 +127,6 @@ export default {
         .ticks(5);
       // 単位設定
       // axisLeft.tickFormat(this.valueTypeSettings().tickFormat);
-
       graphArea
         .select('.axis.y')
         .call(axisLeft);
