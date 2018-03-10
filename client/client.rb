@@ -42,13 +42,14 @@ def list_problem_groups()
   JSON.parse(request(:get, 'problem_groups'))
 end
 
-def add_problem_group(name:, description:, visible: true, completing_bonus_point: 0, flag_icon_url: '')
+def add_problem_group(name:, description:, visible: true, completing_bonus_point: 0, flag_icon_url: '', order:)
   data = {
     name: name,
     description: description,
     visible: visible,
     completing_bonus_point: completing_bonus_point,
     flag_icon_url: flag_icon_url,
+    order: order,
   }
 
   request(:post, 'problem_groups', data)
@@ -62,6 +63,7 @@ def add_problem_groups_from_hash(problem_groups)
       visible: g['visible'],
       completing_bonus_point: g['completing_bonus_point'],
       flag_icon_url: g['flag_icon_url'],
+      order: g['order'],
     )
   end
 end
