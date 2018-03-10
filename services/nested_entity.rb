@@ -41,7 +41,7 @@ module Sinatra
           filter_entities(member: member, resource: r[entity], entities: entities[(i+1)..-1], parent_entity: entity) if 1 < entities.size
           return
         when Hash
-          if not model.readables(user: member, action: action).to_a.any?{|x| x.id == r[entity]["id"] }
+          if not model.readables(user: member, action: action).exists?(id: r[entity]['id'])
             r.delete(entity)
             return
           end
