@@ -23,7 +23,7 @@ class AnswerRoutes < Sinatra::Base
 
     @answers.each do |a|
       if score = a["score"]
-        score["bonus_point"]    = cleared_pg_bonuses[s["id"]] || 0
+        score["bonus_point"]    = cleared_pg_bonuses[score["id"]] || 0
         score["subtotal_point"] = score["point"] + score["bonus_point"]
       end
     end
