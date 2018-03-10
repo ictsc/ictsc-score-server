@@ -13,7 +13,6 @@
         <i class="tag" :style="{ background: item.color }"></i> {{ item.name }}
       </div>
     </div>
-    <pre>{{ result }}</pre>
   </div>
 </template>
 
@@ -36,6 +35,7 @@ import { API } from '../utils/Api'
 import * as d3 from 'd3';
 import { latestAnswer } from '../utils/Filters'
 import { nestedValue } from '../utils/Utils'
+import * as _ from 'underscore'
 
 window.d3 = d3;
 
@@ -56,27 +56,34 @@ export default {
   },
   computed: {
     result () {
-      return this.teams.map((t, i) => {
-        var completedAnswers = t.answers
-          .filter(ans => ans.completed_at && ans.completed);
-
-        // 積算の点数を計算する関数
+      return this.teams.map((team, index) => {
+        // その時点での合計スコア
         const getPileSubtotal = (answers, date) => {
-          const answer = latestAnswer(answers.filter(a => new Date(a.completed_at).valueOf() <= new Date(date).valueOf()));
-          return nestedValue(answer, 'score', 'subtotal_point') || 0;
-        }
+          return _.chain(answers)
+            // 指定時間以前の解答
+            .filter(a => new Date(a.created_at) <= new Date(date))
+            // 問題毎の解答一覧 problem_id => [Answer, ...]
+            .groupBy('problem_id')
+            // 得点として使用する解答のみ集める
+            .map(latestAnswer)
+            // 合計
+            .reduce((sum, ans) => sum + ans.score.subtotal_point, 0);
+        };
 
-        var answers = completedAnswers
+        // スコアのついた解答
+        const scoredAnswers = team.answers.filter(ans => ans.score);
+
+        const answers = scoredAnswers
           .map(ans => ({
             problem: ans.problem_id,
-            subtotal: ans.score && ans.score.subtotal_point,
-            total: getPileSubtotal(completedAnswers, ans.completed_at),
-            date: new Date(ans.completed_at),
+            subtotal: nestedValue(ans, 'score', 'subtotal_point'),
+            total: getPileSubtotal(scoredAnswers, ans.created_at),
+            date: new Date(ans.created_at),
           }))
-          .sort((a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf())
-        return Object.assign({}, t, {
-          answers: answers,
-          color: d3.schemeCategory20[i],
+
+        return Object.assign({}, team, {
+          answers: _.sortBy(answers, 'date'),
+          color: d3.schemeCategory20[index],
         });
       })
     },
@@ -92,4 +99,3 @@ export default {
   },
 }
 </script>
-
