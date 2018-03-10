@@ -83,7 +83,7 @@ export default {
 
         return Object.assign({}, team, {
           answers: _.sortBy(answers, 'date'),
-          color: d3.schemeCategory20[index],
+          color: d3.schemeCategory10[index],
         });
       })
     },

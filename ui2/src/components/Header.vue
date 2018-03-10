@@ -25,11 +25,14 @@
       <div class="nav-item">
         <router-link :to="{ name: 'issues'}" active-class="active" class="nav-link">質問</router-link>
       </div>
-      <div v-if="!isMember && isStaff" class="nav-item">
+      <div v-if="isStaff" class="nav-item">
         <router-link :to="{ name: 'answers'}" active-class="active" class="nav-link">解答</router-link>
       </div>
       <div class="nav-item">
-        <a href="#" v-on:click="logout()" class="nav-link" v-if="isMember == true || isStaff == true">ログアウト</a>
+        <router-link :to="{ name: 'result'}" active-class="active" class="nav-link">グラフ</router-link>
+      </div>
+      <div class="nav-item">
+        <a href="#" v-on:click="logout()" class="nav-link" v-if="!isNoLogin">ログアウト</a>
         <router-link :to="{ name: 'login' }" class="nav-link" v-else>ログイン</router-link>
       </div>
     </div>
@@ -44,9 +47,9 @@
   float: left;
   /*flex-direction: row;*/
   align-items: center;
-  min-width: 900px;
+  min-width: 700px;
   width: 100%;
-  padding: .3rem 1rem;
+  padding: .3rem 0.8rem;
 }
 /* from @media (min-width: 576px) .navbar-toggleable .navbar-nav */
 .navbar .navbar-nav {
@@ -58,8 +61,8 @@
 }
 /* from @media (min-width: 576px) .navbar-toggleable .navbar-nav .nav-link */
 .navbar .navbar-nav .nav-link {
-  padding-right: 1rem;
-  padding-left: 1rem;
+  padding-right: 0.8rem;
+  padding-left: 0.8rem;
 }
 
 .navbar .navbar-brand img {

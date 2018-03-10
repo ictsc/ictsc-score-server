@@ -23,14 +23,14 @@
 </template>
 
 <style scoped>
-
 .graph-container .cursor {
   fill: none;
   stroke: #5C6171;
   stroke-width: 2px;
-  opacity: .6;
+  opacity: 0.6;
 }
 </style>
+
 <style>
 .graph-container .axis-background.x {
   fill: #ddd;
@@ -42,7 +42,11 @@
   fill: none;
   stroke-width: 1px;
 }
+.graph-container {
+  background-color: #222;
+}
 </style>
+
 <script>
 export default require('./GraphScripts').default
 </script>
