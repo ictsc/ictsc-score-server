@@ -418,6 +418,7 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import { mapGetters } from 'vuex'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { dateRelative, latestAnswer } from '../utils/Filters'
+import { nestedValue } from '../utils/Utils'
 
 export default {
   name: 'problems',
@@ -556,14 +557,15 @@ export default {
           subtotal: '---',
         }
       }
+
       if (this.contest && (new Date(this.contest.competition_end_at) < Date.now())) return nothing;
-      return ((e) => {
-        return {
-          pure: e && e.score ? e.score.point : '採点中',
-          bonus: e && e.score ? e.score.bonus_point : '採点中',
-          subtotal: e && e.score ? e.score.subtotal_point : '採点中'
-        }
-      })(latestAnswer(answers))
+
+      const answer = latestAnswer(answers)
+      return {
+        pure: nestedValue(answer, 'score', 'point') || '採点中',
+        bonus: nestedValue(answer, 'score', 'bonus_point') || '採点中',
+        subtotal: nestedValue(answer, 'score', 'subtotal_point') || '採点中',
+      }
     },
     problemUnlockConditionTitle (id) {
       var found = this.problems.find(p => p.id === id);
@@ -582,8 +584,7 @@ export default {
       return pg.flag_icon_url;
     },
     problemSolved (answers) {
-      let answer = latestAnswer(answers)
-      return answer && answer.score ? answer.score.solved : false;
+      return nestedValue(latestAnswer(answers), 'score', 'solved') || false;
     },
     async addProblem () {
       try {

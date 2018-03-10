@@ -63,6 +63,7 @@ import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import { mapGetters } from 'vuex'
 import { latestAnswer } from '../utils/Filters'
+import { nestedValue } from '../utils/Utils'
 
 export default {
   name: 'team-detail',
@@ -99,8 +100,8 @@ export default {
   methods: {
     point (problemId) {
       try {
-        return ((e) => e.score ? e.score.subtotal_point : 0)(latestAnswer(
-          this.team.answers.filter(ans => ans.problem_id === problemId)))
+        const answer = latestAnswer(this.team.answers.filter(ans => ans.problem_id === problemId));
+        return nestedValue(answer, 'score', 'subtotal_point') || 0;
       } catch (e) {
         return '---'
       }

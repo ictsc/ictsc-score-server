@@ -91,6 +91,7 @@ import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
 import { mapGetters } from 'vuex'
 import { tickDuration, latestAnswer } from '../utils/Filters'
+import { nestedValue } from '../utils/Utils'
 
 export default {
   name: 'answers',
@@ -163,7 +164,8 @@ export default {
         .reduce((p, n) => Math.min(p, n.score ? 4 : 2), 4);
     },
     score (answers, teamId, problemId) {
-      return ((e) => e.score ? e.score.subtotal_point : 0)(latestAnswer(this.teamAnswers(answers, teamId, problemId)))
+      const ans = latestAnswer(this.teamAnswers(answers, teamId, problemId));
+      return nestedValue(ans, 'score', 'subtotal_point') || 0;
     },
   },
 }

@@ -35,6 +35,7 @@
 <script>
 import { SET_TITLE } from '../store/'
 import { latestAnswer } from '../utils/Filters'
+import { nestedValue } from '../utils/Utils'
 
 export default {
   name: 'problem-mode-switch',
@@ -56,7 +57,7 @@ export default {
         .filter(i => '' + i.team_id === this.teamId)
     },
     point () {
-      return ((e) => e.score ? e.score.subtotal_point : 0)(latestAnswer(this.currentAnswers))
+      return nestedValue(latestAnswer(this.currentAnswers), 'score', 'subtotal_point') || 0;
     },
   },
   watch: {

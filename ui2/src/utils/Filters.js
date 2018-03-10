@@ -1,6 +1,7 @@
 import dateformat from 'dateformat';
 import * as d3 from 'd3';
 import moment from 'moment';
+import { maxBy } from '../utils/Utils';
 
 export function fullDateFilter (value) {
   var fmtStr = 'yyyy/mm/dd HH:MM'
@@ -62,6 +63,6 @@ export function tickDuration (date, format) {
   }
 }
 
-export function latestAnswer (ans) {
-  return ans ? ans.reduce((p, n) => Date.parse(p.updated_at) < Date.parse(n.updated_at) ? n : p, {updated_at: 0}) : ans;
+export function latestAnswer (answers) {
+  return maxBy(answers, 'created_at');
 }
