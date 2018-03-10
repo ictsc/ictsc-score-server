@@ -25,6 +25,7 @@
 <script>
 import { API } from '../utils/Api'
 import { tickDuration, latestAnswer } from '../utils/Filters'
+import { nestedValue } from '../utils/Utils'
 import * as d3 from 'd3'
 import { mapGetters } from 'vuex'
 
@@ -73,9 +74,8 @@ export default {
       try {
         this.sumPurePoint = val.reduce((p, n) => p + n.perfect_point, 0);
 
-        var scores = answers => ((e) => e && e.score ? e.score.point : 0)(latestAnswer(answers));
-        this.scoredPurePoint = val
-          .reduce((p, n) => p + scores(n.answers), 0);
+        const scoreOf = problem => (nestedValue(latestAnswer(problem.answers), 'score', 'subtotal_point') || 0);
+        this.scoredPurePoint = val.reduce((p, n) => p + scoreOf(n), 0);
       } catch (err) {
         console.warn('scoredPurePoint', err);
       }
