@@ -33,6 +33,10 @@ class Attachment < ActiveRecord::Base
     end
   end
 
+  def self.readable_columns(user:, action: '')
+    self.column_names
+  end
+
   # method: GET
   scope :readables, ->(user:, action: "") {
     case user&.role_id

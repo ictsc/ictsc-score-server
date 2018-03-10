@@ -57,6 +57,10 @@ class Problem < ActiveRecord::Base
     end
   end
 
+  def self.readable_columns(user:, action: '')
+    self.column_names
+  end
+
   # 解放済み問題で得られる情報
   scope :opened_problem_info, -> () {
     select(*%w(id title text perfect_point team_private order problem_must_solve_before_id created_at updated_at))

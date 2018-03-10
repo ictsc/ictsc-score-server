@@ -43,6 +43,10 @@ class Team < ActiveRecord::Base
     %w(members answers answers-score issues issues-comments issues-comments-member)
   end
 
+  def self.readable_columns(user:, action: '')
+    self.column_names
+  end
+
   # method: GET
   scope :readables, ->(user:, action: "") {
     all

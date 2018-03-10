@@ -44,6 +44,10 @@ class Issue < ActiveRecord::Base
     %w(comments comments-member comments-member-team team problem)
   end
 
+  def self.readable_columns(user:, action: '')
+    self.column_names
+  end
+
   # method: GET
   scope :readables, ->(user:, action: "") {
     case user&.role_id

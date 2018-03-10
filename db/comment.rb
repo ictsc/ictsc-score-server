@@ -61,6 +61,10 @@ class Comment < ActiveRecord::Base
     %w(member)
   end
 
+  def self.readable_columns(user:, action: '')
+    self.column_names
+  end
+
   # method: GET
   scope :readables, ->(user:, action: "") {
     comments = case action
