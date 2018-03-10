@@ -424,7 +424,8 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import { mapGetters } from 'vuex'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { dateRelative, latestAnswer } from '../utils/Filters'
-import { nestedValue, sortBy } from '../utils/Utils'
+import { nestedValue } from '../utils/Utils'
+import * as _ from 'underscore';
 
 export default {
   name: 'problems',
@@ -489,10 +490,10 @@ export default {
 
   computed: {
     sortedProblems () {
-      return sortBy(this.problems, 'order');
+      return _.sortBy(this.problems, 'order');
     },
     sortedProblemGroups () {
-      return sortBy(this.problemGroups, 'order');
+      return _.sortBy(this.problemGroups, 'order');
     },
     problemSelect () {
       return Array.concat([{
