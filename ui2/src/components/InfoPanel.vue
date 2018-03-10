@@ -54,7 +54,7 @@ export default {
         if (duration > 0) {
           return duration;
         } else {
-          return "Contest has finished";
+          return 'Contest has finished';
         }
       } else {
         return 0
