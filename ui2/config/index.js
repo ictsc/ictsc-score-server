@@ -23,8 +23,8 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8080,
-    autoOpenBrowser: true,
+    port: 3001,
+    autoOpenBrowser: false,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
@@ -32,7 +32,7 @@ module.exports = {
         target: 'http://localhost:3000/',
         changeOrigin: true,
         logLevel: 'debug',
-        proxyTimeout: 10 * 000,
+        proxyTimeout: 0,
         onProxyReq (proxyReq, req, res) {
           delete proxyReq._headers.referer;
           proxyReq._headers.origin = 'http://localhost:3000';
@@ -41,7 +41,7 @@ module.exports = {
       '/notifications': {
         target: 'http://localhost:3002/',
         logLevel: 'debug',
-        proxyTimeout: 10 * 000,
+        proxyTimeout: 0,
         pathRewrite: {
           '^/notifications' : ''
         }
