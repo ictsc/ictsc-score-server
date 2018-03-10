@@ -94,6 +94,12 @@
             <input v-model="newGroupObj.flag_icon_url" type="text" class="form-control" placeholder="http://">
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">表示順序<br/>(低いほうが先)</label>
+          <div class="col-sm-9">
+            <input v-model="newGroupObj.order" type="number" class="form-control">
+          </div>
+        </div>
         <simple-markdown-editor v-model="newGroupObj.description"></simple-markdown-editor>
       </div>
       <template slot="buttons" scope="props">
@@ -136,7 +142,7 @@
     </div>
 
     <div v-loading="asyncLoading" class="groups">
-      <div v-for="group in problemGroups" v-if="group.visible" class="group">
+      <div v-for="group in sortedProblemGroups" v-if="group.visible" class="group">
         <div class="detail">
           <img class="flag" v-if="group.flag_icon_url" :src="group.flag_icon_url">
           <h2>{{ group.name }}</h2>
@@ -418,7 +424,7 @@ import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import { mapGetters } from 'vuex'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { dateRelative, latestAnswer } from '../utils/Filters'
-import { nestedValue } from '../utils/Utils'
+import { nestedValue, sortBy } from '../utils/Utils'
 
 export default {
   name: 'problems',
@@ -451,6 +457,7 @@ export default {
         visible: 1,
         completing_bonus_point: 0,
         flag_icon_url: '',
+        order: 0,
       },
       newMemberObj: {
         name: '',
@@ -482,7 +489,10 @@ export default {
 
   computed: {
     sortedProblems () {
-      return this.problems.sort((p1, p2) => p1.order - p2.order);
+      return sortBy(this.problems, 'order');
+    },
+    sortedProblemGroups () {
+      return sortBy(this.problemGroups, 'order');
     },
     problemSelect () {
       return Array.concat([{

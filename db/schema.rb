@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180307025336) do
+ActiveRecord::Schema.define(version: 20180310084724) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 20180307025336) do
     t.boolean "visible", default: true, null: false
     t.integer "completing_bonus_point", null: false
     t.string "flag_icon_url"
+    t.integer "order", default: 0, null: false
     t.index ["id"], name: "index_problem_groups_on_id", unique: true
   end
 
