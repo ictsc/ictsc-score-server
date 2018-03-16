@@ -58,7 +58,14 @@ class Problem < ActiveRecord::Base
   end
 
   def self.readable_columns(user:, action: '')
-    self.column_names
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      self.column_names
+    when ROLE_ID[:participant]
+      self.column_names - %w(creator_id reference_point)
+    else
+      []
+    end
   end
 
   scope :filter_columns, ->(user:, action: '') {
