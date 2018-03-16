@@ -19,7 +19,7 @@ class ProblemRoutes < Sinatra::Base
   end
 
   get "/api/problems" do
-    @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_staff?).uniq
+    @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_admin?).uniq
 
     if is_participant?
       next json [] unless in_competition?
@@ -90,7 +90,7 @@ class ProblemRoutes < Sinatra::Base
       .readables(user: current_user, action: 'for_count')
       .count(:id) # readablesでselectしてるからカラムの指定が必要
 
-    @problem = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_staff?)
+    @problem = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_admin?)
     @problem["solved_teams_count"] = solved_teams_count
     @problem["answers"]&.each do |a|
       if score = a["score"]

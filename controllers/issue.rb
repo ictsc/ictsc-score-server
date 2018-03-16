@@ -16,7 +16,7 @@ class IssueRoutes < Sinatra::Base
   end
 
   get "/api/issues" do
-    @issues = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, apply_filter: !is_staff?)
+    @issues = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, apply_filter: !is_admin?)
     json @issues
   end
 
@@ -27,7 +27,7 @@ class IssueRoutes < Sinatra::Base
   end
 
   get "/api/issues/:id" do
-    @issue = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_staff?)
+    @issue = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_admin?)
 
     json @issue
   end

@@ -16,7 +16,7 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams" do
-    @teams = generate_nested_hash(klass: Team, by: current_user, params: @with_param, apply_filter: !is_staff?)
+    @teams = generate_nested_hash(klass: Team, by: current_user, params: @with_param, apply_filter: !is_admin?)
 
     if @with_param.include? "answers-score"
       cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
@@ -58,7 +58,7 @@ class TeamRoutes < Sinatra::Base
   end
 
   get "/api/teams/:id" do
-    @team = generate_nested_hash(klass: Team, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_staff?)
+    @team = generate_nested_hash(klass: Team, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_admin?)
 
     if @with_param.include? "answers-score"
       cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
