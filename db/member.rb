@@ -72,7 +72,7 @@ class Member < ActiveRecord::Base
   }
 
   # method: GET
-  scope :readables, ->(user:, action: "") {
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin]
       all

@@ -54,7 +54,7 @@ class Team < ActiveRecord::Base
   }
 
   # method: GET
-  scope :readables, ->(user:, action: "") {
+  scope :readable_records, ->(user:, action: '') {
     all
   }
 end

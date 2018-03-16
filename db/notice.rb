@@ -49,7 +49,7 @@ class Notice < ActiveRecord::Base
   }
 
   # method: GET
-  scope :readables, ->(user:, action: "") {
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:participant], ROLE_ID[:viewer]
       all

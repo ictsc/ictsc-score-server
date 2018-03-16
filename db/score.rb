@@ -182,7 +182,7 @@ class Score < ActiveRecord::Base
 
   # method: GET
   # actionを'aggregate'にするとスコアボードからの集計用に競技者でも全チームの得点を参照できる
-  scope :readables, ->(user:, action: '') {
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
