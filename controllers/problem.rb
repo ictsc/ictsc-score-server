@@ -96,7 +96,7 @@ class ProblemRoutes < Sinatra::Base
     solved_teams_count = FirstCorrectAnswer
       .where(problem: @problem)
       .readables(user: current_user, action: 'for_count')
-      .count
+      .count(:id) # readablesでselectしてるからカラムの指定が必要
 
     @problem = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_staff?)
     remove_secret_info_from(problem: @problem)
