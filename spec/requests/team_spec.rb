@@ -38,13 +38,13 @@ describe Team do
     by_admin       { is_expected.to eq 200 }
 
     describe '#keys' do
-      let(:expected_keys_without_registration_code) { %w(id name organization created_at updated_at hashed_registration_code) }
+      let(:expected_keys) { %w(id name organization created_at updated_at hashed_registration_code) }
       subject { json_response.keys }
-      by_nologin     { is_expected.to match_array expected_keys_without_registration_code }
-      by_viewer      { is_expected.to match_array expected_keys_without_registration_code }
-      by_participant { is_expected.to match_array expected_keys_without_registration_code }
-      by_writer      { is_expected.to match_array expected_keys_without_registration_code + %w(registration_code) }
-      by_admin       { is_expected.to match_array expected_keys_without_registration_code + %w(registration_code) }
+      by_nologin     { is_expected.to match_array expected_keys }
+      by_viewer      { is_expected.to match_array expected_keys }
+      by_participant { is_expected.to match_array expected_keys }
+      by_writer      { is_expected.to match_array expected_keys + %w(registration_code) }
+      by_admin       { is_expected.to match_array expected_keys + %w(registration_code) }
     end
   end
 

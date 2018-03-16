@@ -44,7 +44,12 @@ class Team < ActiveRecord::Base
   end
 
   def self.readable_columns(user:, action: '')
-    self.column_names
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer]
+      self.column_names
+    else
+      self.column_names - %w(registration_code)
+    end
   end
 
   scope :filter_columns, ->(user:, action: '') {

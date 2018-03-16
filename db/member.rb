@@ -62,7 +62,14 @@ class Member < ActiveRecord::Base
   end
 
   def self.readable_columns(user:, action: '')
-    self.column_names
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer]
+      self.column_names
+    when ROLE_ID[:viewer], ROLE_ID[:participant]
+      self.column_names - %w(hashed_password)
+    else
+      []
+    end
   end
 
   scope :filter_columns, ->(user:, action: '') {

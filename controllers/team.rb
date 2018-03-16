@@ -20,9 +20,6 @@ class TeamRoutes < Sinatra::Base
       .map do |t|
         t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
         t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
-        t["members"]&.each {|m| m.delete("hashed_password") }
-        t["answers"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
-        t["issues"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
         t
       end
 
@@ -69,9 +66,6 @@ class TeamRoutes < Sinatra::Base
     @team = generate_nested_hash(klass: Team, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_staff?)
     @team["hashed_registration_code"] = Digest::SHA1.hexdigest(@team["registration_code"])
     @team.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
-    @team["members"]&.map{|m| m.delete("hashed_password") }
-    @team["answers"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
-    @team["issues"]&.each {|a| a["comments"]&.each {|c| c["member"]&.delete("hashed_password") } }
 
     if @with_param.include? "answers-score"
       cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)

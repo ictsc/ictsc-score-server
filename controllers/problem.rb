@@ -11,13 +11,6 @@ class ProblemRoutes < Sinatra::Base
   helpers Sinatra::AccountServiceHelpers
   helpers Sinatra::CompetitionHelpers
 
-  def remove_secret_info_from(problem:)
-    problem['creator']&.delete('hashed_password')
-    problem['answers']&.each do |answer|
-      answer['team']&.delete('registration_code')
-    end
-  end
-
   before "/api/problems*" do
     I18n.locale = :en if request.xhr?
 
@@ -45,7 +38,6 @@ class ProblemRoutes < Sinatra::Base
     cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
     @problems.each do |p|
-      remove_secret_info_from(problem: p)
       p["solved_teams_count"] = solved_teams_count_by_problem[p["id"]] || 0
       p["answers"]&.each do |a|
         if score = a["score"]
@@ -99,7 +91,6 @@ class ProblemRoutes < Sinatra::Base
       .count(:id) # readablesでselectしてるからカラムの指定が必要
 
     @problem = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_staff?)
-    remove_secret_info_from(problem: @problem)
     @problem["solved_teams_count"] = solved_teams_count
     @problem["answers"]&.each do |a|
       if score = a["score"]
