@@ -45,7 +45,6 @@ class ProblemGroup < ActiveRecord::Base
     select(*cols)
   }
 
-  # method: GET
   scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
@@ -56,5 +55,11 @@ class ProblemGroup < ActiveRecord::Base
     else # nologin, ...
       none
     end
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 end

@@ -71,7 +71,6 @@ class Comment < ActiveRecord::Base
     select(*cols)
   }
 
-  # method: GET
   scope :readable_records, ->(user:, action: '') {
     comments = case action
       when ""
@@ -101,6 +100,12 @@ class Comment < ActiveRecord::Base
     else
       none
     end
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 
   private

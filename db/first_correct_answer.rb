@@ -38,4 +38,10 @@ class FirstCorrectAnswer < ActiveRecord::Base
       none
     end
   }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
+  }
 end

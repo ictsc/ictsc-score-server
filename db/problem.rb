@@ -77,7 +77,6 @@ class Problem < ActiveRecord::Base
     select(*%w(id team_private order problem_must_solve_before_id created_at updated_at))
   }
 
-  # method: GET
   scope :readable_records, ->(user:, action: '', team: nil) {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:viewer]
@@ -95,6 +94,12 @@ class Problem < ActiveRecord::Base
     else
       none
     end
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 
   def readable_teams
