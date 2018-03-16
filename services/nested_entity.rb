@@ -46,6 +46,7 @@ module Sinatra
             r.delete(entity)
             return
           end
+          filter_columns(member: member, entities: [r[entity]], model: model)
           r = r[entity]
           parent_entity = entity
         else
