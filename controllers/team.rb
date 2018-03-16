@@ -17,11 +17,6 @@ class TeamRoutes < Sinatra::Base
 
   get "/api/teams" do
     @teams = generate_nested_hash(klass: Team, by: current_user, params: @with_param, apply_filter: !is_staff?)
-      .map do |t|
-        t["hashed_registration_code"] = Digest::SHA1.hexdigest(t["registration_code"])
-        t.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
-        t
-      end
 
     if @with_param.include? "answers-score"
       cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
@@ -64,8 +59,6 @@ class TeamRoutes < Sinatra::Base
 
   get "/api/teams/:id" do
     @team = generate_nested_hash(klass: Team, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_staff?)
-    @team["hashed_registration_code"] = Digest::SHA1.hexdigest(@team["registration_code"])
-    @team.delete("registration_code") if not %w(Admin Writer).include? current_user&.role&.name
 
     if @with_param.include? "answers-score"
       cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)

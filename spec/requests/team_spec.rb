@@ -38,7 +38,7 @@ describe Team do
     by_admin       { is_expected.to eq 200 }
 
     describe '#keys' do
-      let(:expected_keys) { %w(id name organization created_at updated_at hashed_registration_code) }
+      let(:expected_keys) { %w(id name organization created_at updated_at) }
       subject { json_response.keys }
       by_nologin     { is_expected.to match_array expected_keys }
       by_viewer      { is_expected.to match_array expected_keys }
