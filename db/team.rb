@@ -47,6 +47,12 @@ class Team < ActiveRecord::Base
     self.column_names
   end
 
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
+  }
+
   # method: GET
   scope :readables, ->(user:, action: "") {
     all

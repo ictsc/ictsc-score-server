@@ -61,6 +61,12 @@ class Problem < ActiveRecord::Base
     self.column_names
   end
 
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
+  }
+
   # 解放済み問題で得られる情報
   scope :opened_problem_info, -> () {
     select(*%w(id title text perfect_point team_private order problem_must_solve_before_id created_at updated_at))

@@ -170,6 +170,12 @@ class Score < ActiveRecord::Base
     self.column_names
   end
 
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
+  }
+
   scope :reply_delay, ->() {
      where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
   }
