@@ -18,4 +18,9 @@ class ContestRoutes < Sinatra::Base
     }
     json @contest_info
   end
+
+  get '/api/contest/health' do
+    status 200
+    json status: 'success'
+  end
 end
