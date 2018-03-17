@@ -28,11 +28,7 @@ class CommentRoutes < Sinatra::Base
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments" do
-      @comments = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, action: @action, where: {commentable_id: @commentable_id}, apply_filter: !is_staff?)
-      @comments.map do |c|
-        c["member"]&.delete("hashed_password")
-      end
-
+      @comments = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, action: @action, where: {commentable_id: @commentable_id}, apply_filter: !is_admin?)
       json @comments
     end
 
@@ -42,9 +38,7 @@ class CommentRoutes < Sinatra::Base
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
-      @comment = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, id: params[:comment_id], action: @action, where: {commentable_id: @commentable_id}, apply_filter: !is_staff?)
-      @comment["member"]&.delete("hashed_password")
-
+      @comment = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, id: params[:comment_id], action: @action, where: {commentable_id: @commentable_id}, apply_filter: !is_admin?)
       json @comment
     end
 

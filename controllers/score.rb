@@ -18,7 +18,7 @@ class ScoreRoutes < Sinatra::Base
   end
 
   get "/api/scores" do
-    @scores = generate_nested_hash(klass: Score, by: current_user, params: @with_param, apply_filter: !is_staff?)
+    @scores = generate_nested_hash(klass: Score, by: current_user, params: @with_param, apply_filter: !is_admin?)
 
     # NOTE: Calculate each Score#cleared_problem_group? is too slow
     # So, fetch cleared problem ids first, and calculate each entities using it.
@@ -40,7 +40,7 @@ class ScoreRoutes < Sinatra::Base
 
   get "/api/scores/:id" do
     @as_option = { methods: [:bonus_point, :subtotal_point] }
-    @score = generate_nested_hash(klass: Score, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !is_staff?)
+    @score = generate_nested_hash(klass: Score, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !is_admin?)
     json @score #, { methods: [:bonus_point, :subtotal_point] }
   end
 

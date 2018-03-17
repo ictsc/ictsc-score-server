@@ -18,7 +18,7 @@ class AnswerRoutes < Sinatra::Base
   end
 
   get "/api/answers" do
-    @answers = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, apply_filter: !is_staff?)
+    @answers = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, apply_filter: !is_admin?)
     cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
     @answers.each do |a|
@@ -40,7 +40,7 @@ class AnswerRoutes < Sinatra::Base
   get "/api/answers/:id" do
     @as_option = { include: {} }
     @as_option[:include][:score] = { methods: [:bonus_point, :subtotal_point] } if @with_param.include?("score")
-    @answer = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !is_staff?)
+    @answer = generate_nested_hash(klass: Answer, by: current_user, params: @with_param, id: params[:id], as_option: @as_option, apply_filter: !is_admin?)
 
     json @answer
   end

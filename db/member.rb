@@ -61,8 +61,24 @@ class Member < ActiveRecord::Base
     %w(team)
   end
 
-  # method: GET
-  scope :readables, ->(user:, action: "") {
+  def self.readable_columns(user:, action: '')
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer]
+      self.column_names
+    when ROLE_ID[:viewer], ROLE_ID[:participant]
+      self.column_names - %w(hashed_password)
+    else
+      []
+    end
+  end
+
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
+  }
+
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin]
       all
@@ -73,5 +89,11 @@ class Member < ActiveRecord::Base
     else # nologin, ...
       none
     end
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 end

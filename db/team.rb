@@ -43,8 +43,28 @@ class Team < ActiveRecord::Base
     %w(members answers answers-score issues issues-comments issues-comments-member)
   end
 
-  # method: GET
-  scope :readables, ->(user:, action: "") {
+  def self.readable_columns(user:, action: '')
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer]
+      self.column_names
+    else
+      self.column_names - %w(registration_code)
+    end
+  end
+
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
+  }
+
+  scope :readable_records, ->(user:, action: '') {
     all
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 end

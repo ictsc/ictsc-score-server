@@ -57,9 +57,21 @@ class Problem < ActiveRecord::Base
     end
   end
 
-  # 解放済み問題で得られる情報
-  scope :opened_problem_info, -> () {
-    select(*%w(id title text perfect_point team_private order problem_must_solve_before_id created_at updated_at))
+  def self.readable_columns(user:, action: '')
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      self.column_names
+    when ROLE_ID[:participant]
+      self.column_names - %w(creator_id reference_point)
+    else
+      []
+    end
+  end
+
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
   }
 
   # 未開放問題で得られる情報
@@ -67,8 +79,7 @@ class Problem < ActiveRecord::Base
     select(*%w(id team_private order problem_must_solve_before_id created_at updated_at))
   }
 
-  # method: GET
-  scope :readables, -> (user:, team: nil, action: "") {
+  scope :readable_records, ->(user:, action: '', team: nil) {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:viewer]
       all
@@ -81,10 +92,15 @@ class Problem < ActiveRecord::Base
 
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
       where(problem_must_solve_before_id: fca_problem_ids + [nil])
-        .opened_problem_info
     else
       none
     end
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 
   def readable_teams

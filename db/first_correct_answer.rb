@@ -7,11 +7,21 @@ class FirstCorrectAnswer < ActiveRecord::Base
   validates :answer,  presence: true
   validates :problem, presence: true
 
+  def self.readable_columns(user:, action: '')
+    self.column_names
+  end
+
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
+  }
+
   scope :reply_delay, ->() {
      where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
   }
 
-  scope :readables, ->(user:, action: "") {
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
@@ -27,5 +37,11 @@ class FirstCorrectAnswer < ActiveRecord::Base
     else
       none
     end
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 end

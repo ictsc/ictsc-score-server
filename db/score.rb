@@ -166,13 +166,29 @@ class Score < ActiveRecord::Base
     end
   end
 
+  def self.readable_columns(user:, action: '')
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+      self.column_names
+    when ROLE_ID[:participant]
+      self.column_names - %w(marker_id)
+    else # nologin, ...
+      %w()
+    end
+  end
+
+  scope :filter_columns, ->(user:, action: '') {
+    cols = readable_columns(user: user, action: action)
+    next none if cols.empty?
+    select(*cols)
+  }
+
   scope :reply_delay, ->() {
      where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
   }
 
-  # method: GET
   # actionを'aggregate'にするとスコアボードからの集計用に競技者でも全チームの得点を参照できる
-  scope :readables, ->(user:, action: '') {
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
@@ -184,6 +200,12 @@ class Score < ActiveRecord::Base
     else # nologin, ...
       none
     end
+  }
+
+  # method: GET
+  scope :readables, ->(user:, action: '') {
+    readable_records(user: user, action: action)
+      .filter_columns(user: user, action: action)
   }
 end
 
