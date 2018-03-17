@@ -7,12 +7,12 @@ class FirstCorrectAnswer < ActiveRecord::Base
   validates :answer,  presence: true
   validates :problem, presence: true
 
-  def self.readable_columns(user:, action: '')
-    self.column_names
+  def self.readable_columns(user:, action: '', reference_keys: true)
+    self.all_column_names(reference_keys: reference_keys)
   end
 
   scope :filter_columns, ->(user:, action: '') {
-    cols = readable_columns(user: user, action: action)
+    cols = readable_columns(user: user, action: action, reference_keys: false)
     next none if cols.empty?
     select(*cols)
   }

@@ -43,17 +43,17 @@ class Team < ActiveRecord::Base
     %w(members answers answers-score issues issues-comments issues-comments-member)
   end
 
-  def self.readable_columns(user:, action: '')
+  def self.readable_columns(user:, action: '', reference_keys: true)
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
-      self.column_names
+      self.all_column_names(reference_keys: reference_keys)
     else
-      self.column_names - %w(registration_code)
+      self.all_column_names(reference_keys: reference_keys) - %w(registration_code)
     end
   end
 
   scope :filter_columns, ->(user:, action: '') {
-    cols = readable_columns(user: user, action: action)
+    cols = readable_columns(user: user, action: action, reference_keys: false)
     next none if cols.empty?
     select(*cols)
   }

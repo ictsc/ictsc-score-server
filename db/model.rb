@@ -56,4 +56,11 @@ class ActiveRecord::Base
       data: data
     }.compact
   end
+
+  # 参照キーも取得できる
+  def self.all_column_names(reference_keys: true)
+    cols = self.column_names
+    cols += self.reflections.keys if reference_keys
+    cols
+  end
 end
