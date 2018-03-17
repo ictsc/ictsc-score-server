@@ -22,7 +22,7 @@ default_session_expire_sec = 60 * 60 * 24 * 7 # 1 week
 
 if ENV['API_SESSION_USE_REDIS']
   use Rack::Session::Redis,
-		redis_server: ENV.fetch('API_SESSION_REDIS_SERVER', 'redis://127.0.0.1:6379/0/rack:session'),
+    redis_server: ENV.fetch('API_SESSION_REDIS_SERVER', 'redis://127.0.0.1:6379/0/rack:session'),
     expire_after: ENV.fetch('API_SESSION_EXPIRE_SEC', default_session_expire_sec).to_i
 else
   use Rack::Session::Cookie,
