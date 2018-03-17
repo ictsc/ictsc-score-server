@@ -58,7 +58,9 @@ class ActiveRecord::Base
   end
 
   # 参照キーも取得できる
-  def self.all_column_names
-    self.column_names + self.reflections.keys
+  def self.all_column_names(reference_keys: true)
+    cols = self.column_names
+    cols += self.reflections.keys if reference_keys
+    cols
   end
 end

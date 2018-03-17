@@ -61,19 +61,19 @@ class Member < ActiveRecord::Base
     %w(team)
   end
 
-  def self.readable_columns(user:, action: '')
+  def self.readable_columns(user:, action: '', reference_keys: true)
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
-      self.all_column_names
+      self.all_column_names(reference_keys: reference_keys)
     when ROLE_ID[:viewer], ROLE_ID[:participant]
-      self.all_column_names - %w(hashed_password)
+      self.all_column_names(reference_keys: reference_keys) - %w(hashed_password)
     else
       []
     end
   end
 
   scope :filter_columns, ->(user:, action: '') {
-    cols = readable_columns(user: user, action: action)
+    cols = readable_columns(user: user, action: action, reference_keys: false)
     next none if cols.empty?
     select(*cols)
   }
