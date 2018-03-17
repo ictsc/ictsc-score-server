@@ -9,12 +9,12 @@ module Sinatra
 
     def logged_in?
       return false if session[:member_id].nil?
-      return Member.exists?(id: session[:member_id])
+      @logged_in ||= Member.exists?(id: session[:member_id])
     end
 
     def current_user
       return nil if not logged_in?
-      Member.includes(:role).find_by(id: session[:member_id])
+      @current_user ||= Member.includes(:role).find_by(id: session[:member_id])
     end
 
     def login_as(member_id)
@@ -24,6 +24,8 @@ module Sinatra
 
     def logout
       session.delete(:member_id)
+      @logged_in = nil
+      @current_user = nil
     end
 
     def user_and_method
