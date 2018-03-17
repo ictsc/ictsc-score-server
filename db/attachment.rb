@@ -34,7 +34,7 @@ class Attachment < ActiveRecord::Base
   end
 
   def self.readable_columns(user:, action: '')
-    self.column_names
+    self.all_column_names
   end
 
   scope :filter_columns, ->(user:, action: '') {

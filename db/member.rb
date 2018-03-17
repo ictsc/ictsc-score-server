@@ -64,9 +64,9 @@ class Member < ActiveRecord::Base
   def self.readable_columns(user:, action: '')
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
-      self.column_names
+      self.all_column_names
     when ROLE_ID[:viewer], ROLE_ID[:participant]
-      self.column_names - %w(hashed_password)
+      self.all_column_names - %w(hashed_password)
     else
       []
     end

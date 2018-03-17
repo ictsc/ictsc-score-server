@@ -46,9 +46,9 @@ class Team < ActiveRecord::Base
   def self.readable_columns(user:, action: '')
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
-      self.column_names
+      self.all_column_names
     else
-      self.column_names - %w(registration_code)
+      self.all_column_names - %w(registration_code)
     end
   end
 

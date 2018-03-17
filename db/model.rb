@@ -56,4 +56,9 @@ class ActiveRecord::Base
       data: data
     }.compact
   end
+
+  # 参照キーも取得できる
+  def self.all_column_names
+    self.column_names + self.reflections.keys
+  end
 end
