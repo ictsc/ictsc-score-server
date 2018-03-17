@@ -62,7 +62,13 @@ class Problem < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       self.all_column_names(reference_keys: reference_keys)
     when ROLE_ID[:participant]
-      self.all_column_names(reference_keys: reference_keys) - %w(creator_id reference_point)
+      case action
+      when 'not_open'
+        # 未開放問題の閲覧可能情報
+        %w(id team_private order problem_must_solve_before_id created_at updated_at)
+      else
+        self.all_column_names(reference_keys: reference_keys) - %w(creator_id reference_point)
+      end
     else
       []
     end
@@ -72,11 +78,6 @@ class Problem < ActiveRecord::Base
     cols = readable_columns(user: user, action: action, reference_keys: false)
     next none if cols.empty?
     select(*cols)
-  }
-
-  # 未開放問題で得られる情報
-  scope :not_opened_problem_info, -> () {
-    select(*%w(id team_private order problem_must_solve_before_id created_at updated_at))
   }
 
   scope :readable_records, ->(user:, action: '', team: nil) {
@@ -91,7 +92,14 @@ class Problem < ActiveRecord::Base
       next none unless in_competition?
 
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
-      where(problem_must_solve_before_id: fca_problem_ids + [nil])
+
+      case action
+      when 'not_open'
+        # 未開放問題
+        where.not(problem_must_solve_before_id: fca_problem_ids + [nil])
+      else
+        where(problem_must_solve_before_id: fca_problem_ids + [nil])
+      end
     else
       none
     end
