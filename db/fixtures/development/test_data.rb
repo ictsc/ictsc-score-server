@@ -145,7 +145,7 @@ Team.all.each do |team|
         a.text         = hiragana[100]
 
         if last_answer
-          date = last_answer.created_at + 20.minutes + rand(900).seconds
+          date = last_answer.created_at + 1.minutes + rand(120).seconds
           a.created_at = date
           a.updated_at = date
         end
@@ -164,7 +164,7 @@ Team.all.each do |team|
         s.point      = point
         s.answer_id  = last_answer.id
         s.marker     = admin
-        date = last_answer.created_at + rand(1200).seconds
+        date = last_answer.created_at + rand(60).seconds
         s.created_at = date
         s.updated_at = date
         s.solved     = point >= p.reference_point
@@ -183,7 +183,7 @@ Team.all.each do |team|
         a.problem_id = p.id
         a.team_id    = team.id
         a.text         = hiragana[100]
-        date = last_score.created_at + 20.minutes + rand(900).seconds
+        date = last_score.created_at + 1.minutes + rand(120).seconds
         a.created_at = date
         a.updated_at = date
       end.first
@@ -195,7 +195,7 @@ Team.all.each do |team|
         s.point      = second_point
         s.answer_id  = last_answer.id
         s.marker     = admin
-        date = last_answer.created_at + rand(1200).seconds
+        date = last_answer.created_at + rand(60).seconds
         s.created_at = date
         s.updated_at = date
         s.solved     = second_point >= p.reference_point
