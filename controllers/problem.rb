@@ -22,8 +22,6 @@ class ProblemRoutes < Sinatra::Base
     @problems = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, apply_filter: !is_admin?).uniq
 
     if is_participant?
-      next json [] unless in_competition?
-
       # readablesではない問題も情報を制限して返す
       @problems += Problem
         .readables(user: current_user, action: 'not_open')
