@@ -91,7 +91,7 @@ class Problem < ActiveRecord::Base
     when ->(role_id) { role_id == ROLE_ID[:participant] || team }
       next none unless in_competition?
 
-      fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).map(&:problem_id)
+      fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).pluck(:problem_id)
 
       case action
       when 'not_open'
