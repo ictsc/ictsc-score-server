@@ -190,9 +190,15 @@ class Score < ActiveRecord::Base
       all
     when ROLE_ID[:participant]
       next none unless in_competition?
-      result = joins(:answer).merge(Answer.reply_delay)
-      result = result.where('answers.team_id = :team_id', { team_id: user.team.id }) if action != 'aggregate'
-      result
+
+      rel = joins(:answer).merge(Answer.reply_delay)
+
+      case action
+      when 'aggregate'
+        rel
+      else
+        rel.where(answers: { team: user.team })
+      end
     else # nologin, ...
       none
     end
