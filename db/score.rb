@@ -183,10 +183,6 @@ class Score < ActiveRecord::Base
     select(*cols)
   }
 
-  scope :reply_delay, ->() {
-     where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
-  }
-
   # actionを'aggregate'にするとスコアボードからの集計用に競技者でも全チームの得点を参照できる
   scope :readable_records, ->(user:, action: '') {
     case user&.role_id
@@ -194,7 +190,7 @@ class Score < ActiveRecord::Base
       all
     when ROLE_ID[:participant]
       next none unless in_competition?
-      result = joins(:answer).reply_delay
+      result = joins(:answer).merge(Answer.reply_delay)
       result = result.where('answers.team_id = :team_id', { team_id: user.team.id }) if action != 'aggregate'
       result
     else # nologin, ...
