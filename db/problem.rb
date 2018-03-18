@@ -63,7 +63,7 @@ class Problem < ActiveRecord::Base
       self.all_column_names(reference_keys: reference_keys)
     when ROLE_ID[:participant]
       case action
-      when 'not_open'
+      when 'not_opened'
         # 未開放問題の閲覧可能情報
         %w(id team_private order problem_must_solve_before_id created_at updated_at)
       else
@@ -94,7 +94,7 @@ class Problem < ActiveRecord::Base
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).pluck(:problem_id)
 
       case action
-      when 'not_open'
+      when 'not_opened'
         # 未開放問題
         where.not(problem_must_solve_before_id: fca_problem_ids + [nil])
       else

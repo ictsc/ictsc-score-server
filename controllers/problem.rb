@@ -24,7 +24,7 @@ class ProblemRoutes < Sinatra::Base
     if is_participant?
       # readablesではない問題も情報を制限して返す
       @problems += Problem
-        .readables(user: current_user, action: 'not_open')
+        .readables(user: current_user, action: 'not_opened')
         .as_json(@as_option)
     end
 
