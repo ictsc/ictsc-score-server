@@ -28,14 +28,11 @@ class ProblemRoutes < Sinatra::Base
         .as_json(@as_option)
     end
 
-    solved_teams_count_by_problem = FirstCorrectAnswer
-      .readables(user: current_user, action: 'for_count')
-      .each_with_object(Hash.new(0)){|fca, memo| memo[fca.problem_id] += 1 }
-
+    solved_teams_counts = Problem.solved_teams_counts(user: current_user)
     cleared_pg_bonuses = Score.cleared_problem_group_bonuses(team_id: current_user&.team_id)
 
     @problems.each do |p|
-      p["solved_teams_count"] = solved_teams_count_by_problem[p["id"]] || 0
+      p["solved_teams_count"] = solved_teams_counts[p["id"]]
       p["answers"]&.each do |a|
         if score = a["score"]
           score["bonus_point"]    = cleared_pg_bonuses[score["id"]] || 0
@@ -82,10 +79,7 @@ class ProblemRoutes < Sinatra::Base
   end
 
   get "/api/problems/:id" do
-    solved_teams_count = FirstCorrectAnswer
-      .where(problem: @problem)
-      .readables(user: current_user, action: 'for_count')
-      .count(:id) # readablesでselectしてるからカラムの指定が必要
+    solved_teams_count = Problem.solved_teams_counts(user: current_user, id: @problem.id)
 
     @problem = generate_nested_hash(klass: Problem, by: current_user, as_option: @as_option, params: @with_param, id: params[:id], apply_filter: !is_admin?)
     @problem["solved_teams_count"] = solved_teams_count

@@ -114,4 +114,18 @@ class Problem < ActiveRecord::Base
   def readable_teams
     Team.select{|team| Problem.readables(team: team).find_by(id: id) }
   end
+
+  # 突破チーム数を返す
+  # idが指定されると単一の値を返す
+  def self.solved_teams_counts(user:, id: nil)
+    rel = id ? FirstCorrectAnswer.where(problem_id: id) : FirstCorrectAnswer.all
+    counts = rel
+      .readables(user: user, action: 'for_count')
+      .group(:problem_id)
+      .count(:team_id) # readables内でselectしてるからカラムの指定が必要
+
+    counts.default = 0
+
+    id ? counts[id] : counts
+  end
 end
