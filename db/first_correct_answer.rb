@@ -31,9 +31,10 @@ class FirstCorrectAnswer < ActiveRecord::Base
       rel = joins(:answer).reply_delay
       next rel if action == "for_count"
 
-      rel.joins(:problem)
+      rel = rel.joins(:problem)
+      rel
         .where(problems: { team_private: false })
-        .or(rel.joins(:problem).where(problems: { team_private: true }, team: user.team))
+        .or(rel.where(problems: { team_private: true }, team: user.team))
     else
       none
     end
