@@ -24,13 +24,18 @@ class FirstCorrectAnswer < ActiveRecord::Base
     when ROLE_ID[:participant]
       next none unless in_competition?
 
-      rel = joins(:answer).merge(Answer.reply_delay)
-      next rel if action == "for_count"
-
-      rel = rel.joins(:problem)
-      rel
-        .where(problems: { team_private: false })
-        .or(rel.where(problems: { team_private: true }, team: user.team))
+      rel_delayed = joins(:answer).merge(Answer.reply_delay)
+      case action
+      when 'for_count'
+        rel_delayed
+      when 'opened_problem'
+        rel = rel_delayed.joins(:problem)
+        rel
+          .where(problems: { team_private: false })
+          .or(rel.where(problems: { team_private: true }, team: user.team))
+      else
+        rel_delayed.where(team: user.team)
+      end
     else
       none
     end
