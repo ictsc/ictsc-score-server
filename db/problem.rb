@@ -63,7 +63,7 @@ class Problem < ActiveRecord::Base
       self.all_column_names(reference_keys: reference_keys)
     when ROLE_ID[:participant]
       case action
-      when 'not_open'
+      when 'not_opened'
         # 未開放問題の閲覧可能情報
         %w(id team_private order problem_must_solve_before_id created_at updated_at)
       else
@@ -80,7 +80,7 @@ class Problem < ActiveRecord::Base
     select(*cols)
   }
 
-  scope :readable_records, ->(user:, action: '', team: nil) {
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:viewer]
       all
@@ -88,13 +88,13 @@ class Problem < ActiveRecord::Base
       next all if action.empty?
       next where(creator: user) if action == "problems_comments"
       none
-    when ->(role_id) { role_id == ROLE_ID[:participant] || team }
+    when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team }
       next none unless in_competition?
 
-      fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: action).pluck(:problem_id)
+      fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: 'opened_problem').pluck(:problem_id)
 
       case action
-      when 'not_open'
+      when 'not_opened'
         # 未開放問題
         where.not(problem_must_solve_before_id: fca_problem_ids + [nil])
       else
@@ -112,6 +112,22 @@ class Problem < ActiveRecord::Base
   }
 
   def readable_teams
-    Team.select{|team| Problem.readables(team: team).find_by(id: id) }
+    # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性がある
+    dummy_user = { role_id: ROLE_ID[:participant], team: team }
+    Team.select{|team| Problem.readable?(user: dummy_user) }
+  end
+
+  # 突破チーム数を返す
+  # idが指定されると単一の値を返す
+  def self.solved_teams_counts(user:, id: nil)
+    rel = id ? FirstCorrectAnswer.where(problem_id: id) : FirstCorrectAnswer.all
+    counts = rel
+      .readables(user: user, action: 'for_count')
+      .group(:problem_id)
+      .count(:team_id) # readables内でselectしてるからカラムの指定が必要
+
+    counts.default = 0
+
+    id ? counts[id] : counts
   end
 end

@@ -72,4 +72,9 @@ class Answer < ActiveRecord::Base
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
+
+  scope :reply_delay, ->() {
+    # merge後に呼ばれるからテーブル名の明示が必要
+    where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
+  }
 end
