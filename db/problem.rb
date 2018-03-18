@@ -80,7 +80,7 @@ class Problem < ActiveRecord::Base
     select(*cols)
   }
 
-  scope :readable_records, ->(user:, action: '', team: nil) {
+  scope :readable_records, ->(user:, action: '') {
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:viewer]
       all
@@ -88,7 +88,7 @@ class Problem < ActiveRecord::Base
       next all if action.empty?
       next where(creator: user) if action == "problems_comments"
       none
-    when ->(role_id) { role_id == ROLE_ID[:participant] || team }
+    when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team }
       next none unless in_competition?
 
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: 'opened_problem').pluck(:problem_id)
@@ -112,7 +112,9 @@ class Problem < ActiveRecord::Base
   }
 
   def readable_teams
-    Team.select{|team| Problem.readables(team: team).find_by(id: id) }
+    # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性がある
+    dummy_user = { role_id: ROLE_ID[:participant], team: team }
+    Team.select{|team| Problem.readable?(user: dummy_user) }
   end
 
   # 突破チーム数を返す
