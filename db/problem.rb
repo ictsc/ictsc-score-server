@@ -1,3 +1,5 @@
+require 'ostruct'
+
 class Problem < ActiveRecord::Base
   validates :title,     presence: true
   validates :text,      presence: true
@@ -112,9 +114,11 @@ class Problem < ActiveRecord::Base
   }
 
   def readable_teams
-    # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性がある
-    dummy_user = { role_id: ROLE_ID[:participant], team: team }
-    Team.select{|team| Problem.readable?(user: dummy_user) }
+    Team.select do |team|
+      # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性がある
+      dummy_user = OpenStruct.new({ role_id: ROLE_ID[:participant], team: team })
+      readable?(by: dummy_user)
+    end
   end
 
   # 突破チーム数を返す
