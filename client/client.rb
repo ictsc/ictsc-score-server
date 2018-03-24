@@ -75,10 +75,11 @@ def list_problems(with: [])
   JSON.parse(request(:get, 'problems' + with_params))
 end
 
-def add_problem(title:, text:, reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:, order:)
+def add_problem(title:, text:, secret_text: '', reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:, order: 0)
   data = {
     title: title,
     text: text,
+    secret_text: secret_text,
     reference_point: reference_point,
     perfect_point: perfect_point,
     order: order,
@@ -104,6 +105,7 @@ def add_problems_from_hash(problems)
     puts add_problem(
       title: p['title'],
       text: p['text'],
+      secret_text: p['secret_text'],
       order: p['order'],
       reference_point: p['reference_point'],
       perfect_point: p['perfect_point'],
