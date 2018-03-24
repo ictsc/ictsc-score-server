@@ -1,6 +1,7 @@
 ---
 - title: 問題10
   text: ブラック
+  order: 0
   creator_id: 3
   problem_must_solve_before_id:
   reference_point: 80
@@ -11,6 +12,7 @@
 - id: 11
   title: 問題11
   text: カフェラテ
+  order: 1
   creator_id: 3
   problem_must_solve_before_id: 10
   reference_point: 192
@@ -19,6 +21,7 @@
     - 1
 - title: 問題12
   text: モカ
+  order: 2
   creator_id: 2
   problem_must_solve_before_id: 11
   reference_point: 384
@@ -29,6 +32,7 @@
 - id: 13
   title: 問題13
   text: エスプレッソ
+  order: 3
   creator_id: 4
   problem_must_solve_before_id: 12
   reference_point: 520
@@ -38,11 +42,12 @@
     - 7
     - 10
   solved_teams_count: 1
-- id: 15
-  title: 問題15
+- id: 14
+  title: 問題14
   text: アメリカン
+  order: 4
   creator_id: 4
-  problem_must_solve_before_id: 10
+  problem_must_solve_before_id: 13
   reference_point: 62
   perfect_point: 78
   problem_group_ids:

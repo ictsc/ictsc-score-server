@@ -4,6 +4,7 @@ class Problem < ActiveRecord::Base
   validates :title,     presence: true
   validates :text,      presence: true
   validates :creator,   presence: true
+  validates :order,     presence: true
   validates :reference_point, presence: true
   validates :perfect_point,   presence: true
 
