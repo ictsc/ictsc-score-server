@@ -61,6 +61,12 @@
             <input v-model="newProblemObj.order" type="number" class="form-control">
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label">運営用テキスト</label>
+          <div class="col-sm-9">
+            <input v-model="newProblemObj.secret_text" type="text" class="form-control">
+          </div>
+        </div>
 
         <simple-markdown-editor v-model="newProblemObj.text"></simple-markdown-editor>
       </div>
@@ -444,6 +450,7 @@ export default {
       newProblemObj: {
         title: '',
         text: '',
+        secret_text: '',
         creator_id: null,
         reference_point: 0,
         perfect_point: 0,
@@ -603,6 +610,7 @@ export default {
         await API.postProblems(this.newProblemObj);
         this.newProblemObj.title = '';
         this.newProblemObj.text = '';
+        this.newProblemObj.secret_text = '';
         Emit(PUSH_NOTIF, {
           type: 'success',
           title: '投稿しました',

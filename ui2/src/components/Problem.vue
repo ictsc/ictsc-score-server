@@ -67,6 +67,12 @@
                 <input v-model="problem.perfect_point" class="form-control" type="number">
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label">運営用テキスト</label>
+              <div class="col-10">
+                <input v-model="problem.secret_text" class="form-control" type="text">
+              </div>
+            </div>
           </template>
           <template v-else>
             <a v-if="isStaff">
@@ -78,6 +84,9 @@
             <a v-if="isStaff">
             担当者: {{ problem.creator.name }}
             </a>
+            <div v-if="isAdmin || isWriter">
+              運営用テキスト: {{ problem.secret_text }}
+            </div>
           </template>
         </div>
       </header>
