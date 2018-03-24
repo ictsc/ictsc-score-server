@@ -2,6 +2,7 @@
 - title: 問題10
   text: ブラック
   order: 0
+  secret_text: 秘密その0
   creator_id: 3
   problem_must_solve_before_id:
   reference_point: 80
@@ -13,6 +14,7 @@
   title: 問題11
   text: カフェラテ
   order: 1
+  secret_text: 秘密その1
   creator_id: 3
   problem_must_solve_before_id: 10
   reference_point: 192
@@ -22,6 +24,7 @@
 - title: 問題12
   text: モカ
   order: 2
+  secret_text: 秘密その2
   creator_id: 2
   problem_must_solve_before_id: 11
   reference_point: 384
@@ -33,6 +36,7 @@
   title: 問題13
   text: エスプレッソ
   order: 3
+  secret_text: 秘密その3
   creator_id: 4
   problem_must_solve_before_id: 12
   reference_point: 520
@@ -46,6 +50,7 @@
   title: 問題14
   text: アメリカン
   order: 4
+  secret_text: 秘密その4
   creator_id: 4
   problem_must_solve_before_id: 13
   reference_point: 62

@@ -70,7 +70,7 @@ class Problem < ActiveRecord::Base
         # 未開放問題の閲覧可能情報
         %w(id team_private order problem_must_solve_before_id created_at updated_at)
       else
-        self.all_column_names(reference_keys: reference_keys) - %w(creator_id reference_point)
+        self.all_column_names(reference_keys: reference_keys) - %w(creator_id reference_point secret_text)
       end
     else
       []
