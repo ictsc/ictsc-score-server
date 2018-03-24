@@ -66,7 +66,7 @@ export default {
     },
     ...mapGetters([
       'contest',
-      'isMember',
+      'isParticipant',
     ]),
   },
   watch: {

@@ -53,7 +53,7 @@ export default new Vuex.Store({
         state.session.member != null &&
         state.session.member.role_id === 3;
     },
-    isMember: state => {
+    isParticipant: state => {
       return state.session != null &&
         state.session.member != null &&
         state.session.member.role_id === 4;

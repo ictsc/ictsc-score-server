@@ -98,7 +98,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'isMember',
+      'isParticipant',
       'isStaff',
       'session',
     ]),
