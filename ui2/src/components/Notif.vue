@@ -113,10 +113,11 @@ Emit(PUSH_NOTIF, {
   detail: 'ドメインチェックが失敗したため、サイトを有効にできません。',  // エラー文など
   key: 'setting', // 削除等を行う時の基準キー
   autoClose: false,  // 自動的に表示を消す
+  timeout: 3000, // autoCloseの時間
 });
 ```
 
-`autoClose` がtrueの場合、 `this.timeout` ミリ秒で通知を消します。
+`autoClose` がtrueの場合、 `timeout` ミリ秒で通知を消します。
 指定がない場合は、 `type` がerror,warnの際はfalse・successの場合はtrueがデフォルトで指定されます。
 
 通知を消すサンプルは以下のとおりです。
@@ -146,7 +147,6 @@ export default {
       pushSubscriber: Subscribe(PUSH_NOTIF, opt => { this.notify(opt) }),
       removeSubscriber: Subscribe(REMOVE_NOTIF, fn => { this.hide(fn) }),
       refreshInterval: setInterval(_ => this.refresh(), 500),
-      timeout: 3000, // autoclose ms
       useBrowserNotification: false,
     }
   },
@@ -286,13 +286,15 @@ export default {
       }
     },
     append (title, body, type) {
-      var autoClose;
-      var icon;
+      let autoClose;
+      let icon;
+      let timeout;
       switch (type) {
         case 'error':
         case 'warn':
           icon = 'warning';
-          autoClose = false;
+          autoClose = true;
+          timeout = 5000;
           break;
         case 'api':
           icon = 'comments';
@@ -302,6 +304,7 @@ export default {
         case 'success':
           icon = 'check';
           autoClose = true;
+          timeout = 3000;
           break;
       }
 
@@ -310,6 +313,7 @@ export default {
         body,
         type,
         id: this.incr++,
+        timeout,
         timestamp: Date.now(),
         autoClose,
         icon,
@@ -329,7 +333,7 @@ export default {
       this.notifs = this.notifs.filter(s => !fn(s));
     },
     refresh () {
-      this.hide(msg => msg.autoClose && (msg.timestamp + this.timeout < Date.now()));
+      this.hide(msg => msg.autoClose && (msg.timestamp + msg.timeout < Date.now()));
     },
   },
 }
