@@ -14,7 +14,7 @@
           質問一覧
         </router-link>
 
-        <template v-if="!isSingleIssue && isMember">
+        <template v-if="!isSingleIssue && isParticipant">
           <h3>新規質問</h3>
           <div class="new-issue">
             <div class="answerExample" >
@@ -129,7 +129,7 @@ export default {
         // .filter(i => this.issueId === undefined || '' + i.id === this.issueId);
     },
     ...mapGetters([
-      'isMember',
+      'isParticipant',
       'session',
     ]),
   },

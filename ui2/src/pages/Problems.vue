@@ -173,7 +173,7 @@
               <h3>{{ problem.title }}<a v-if="isStaff">({{ problem.creator.name }})</a></h3>
               <div class="bottom-wrapper d-flex align-content-end align-items-end mt-auto">
                 <div class="scores-wrapper mr-auto">
-                  <div class="scores" v-if="isMember">
+                  <div class="scores" v-if="isParticipant">
                     <div class="current">得点 <span class="subtotal">{{ getScoreInfo(problem.answers).subtotal }}</span><span class="perfect_point"> / {{ problem.perfect_point }}</span></div>
                     <div class="border"></div>
                     <span class="brakedown">内訳</span>
@@ -187,7 +187,7 @@
                   </div>
                 </div>
                 <div class="tips ml-auto">
-                  <div v-if="isMember"><i class="fa fa-paper-plane-o"></i> {{ scoringStatusText(problem) }}</div>
+                  <div v-if="isParticipant"><i class="fa fa-paper-plane-o"></i> {{ scoringStatusText(problem) }}</div>
                   <div><i class="fa fa-child"></i> {{ problem.solved_teams_count }}チーム正解</div>
                 </div>
               </div>
@@ -480,7 +480,7 @@ export default {
     problemsDefault: [],
     problems () {
       if (this.session.member) {
-        if (this.isMember || this.isStaff) {
+        if (this.isParticipant || this.isStaff) {
           return API.getProblemsWithScore();
         } else {
           return API.getProblems();
@@ -512,7 +512,7 @@ export default {
       'contest',
       'isAdmin',
       'isStaff',
-      'isMember',
+      'isParticipant',
       'isWriter',
       'session',
     ]),

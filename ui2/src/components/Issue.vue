@@ -41,13 +41,13 @@
         </template>
       </div>
     </div>
-    <div v-if="status != 3 && (isAdmin || isWriter || isMember)" class="post">
+    <div v-if="status != 3 && (isAdmin || isWriter || isParticipant)" class="post">
       <simple-markdown-editor v-model="post"></simple-markdown-editor>
       <div class="tools">
         <button v-on:click="postComment()" class="btn btn-success">投稿</button>
       </div>
     </div>
-    <div v-else-if="isAdmin || isWriter || isMember" class="post done">
+    <div v-else-if="isAdmin || isWriter || isParticipant" class="post done">
       <i class="fa fa-check"></i> 解決済み
     </div>
   </div>
@@ -145,7 +145,7 @@ export default {
     ...mapGetters([
       'isAdmin',
       'isWriter',
-      'isMember',
+      'isParticipant',
     ]),
     tailComment () {
       if (this.value && this.value.comments) {
