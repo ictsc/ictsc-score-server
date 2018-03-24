@@ -2,6 +2,7 @@ require "open3"
 
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/crypt_helpers"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
@@ -10,33 +11,9 @@ class MemberRoutes < Sinatra::Base
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::CryptHelpers
 
   helpers do
-    def crypt(key, salt = "")
-      return nil unless key.is_a? String
-
-      crypt_binname = case RUBY_PLATFORM
-        when /darwin/;  "crypt_darwin_amd64"
-        when /freebsd/; "crypt_freebsd_amd64"
-        when /linux/;   "crypt_linux_amd64"
-      end
-      path = File.join(settings.root, "../ext", crypt_binname)
-      hash, status = Open3.capture2(path, key, salt)
-      if status.exitstatus.zero?
-        hash.strip
-      else
-        nil
-      end
-    end
-
-    def compare_password(key, hash)
-      salt_len = hash.index('$', 3)
-      return false if salt_len.nil?
-      salt = hash.slice(0, salt_len)
-
-      return crypt(key, salt) == hash
-    end
-
     def notification_channels
       {
         member: current_user&.notification_subscriber&.channel_id,
@@ -139,7 +116,7 @@ class MemberRoutes < Sinatra::Base
       @attrs[:team_id] = @team.id
     end
 
-    @attrs[:hashed_password] = crypt(@attrs[:password])
+    @attrs[:hashed_password] = hash_password(@attrs[:password])
     @attrs.delete(:password)
     @attrs[:role_id] ||= Role.find_by(name: "Participant").id
 
@@ -188,7 +165,7 @@ class MemberRoutes < Sinatra::Base
     @attrs = params_to_attributes_of(klass: Member, **field_options)
 
     if @attrs.key?(:password)
-      @attrs[:hashed_password] = crypt(@attrs[:password])
+      @attrs[:hashed_password] = hash_password(@attrs[:password])
       @attrs.delete(:password)
     end
 

@@ -1,23 +1,9 @@
 require "open3"
+require 'sinatra/crypt_helpers'
+
+extend Sinatra::CryptHelpers
 
 srand(1)
-
-def hash_password(key, salt = "")
-  return nil unless key.is_a? String
-
-  crypt_binname = case RUBY_PLATFORM
-    when /darwin/;  "crypt_darwin_amd64"
-    when /freebsd/; "crypt_freebsd_amd64"
-    when /linux/;   "crypt_linux_amd64"
-  end
-  path = File.expand_path("../ext/#{crypt_binname}", __FILE__)
-  hash, status = Open3.capture2(path, key, salt)
-  if status.exitstatus.zero?
-    hash.strip
-  else
-    nil
-  end
-end
 
 alnum    = ->i{ [*1..i].map{ ([*'a'..'z'] + [*'A'..'Z'] + [*'0'..'9']).sample}.join }
 hiragana = ->i{ [*1..i].map{ [*'あ'..'ん'].sample}.join }
