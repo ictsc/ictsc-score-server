@@ -83,7 +83,7 @@ class IssueRoutes < Sinatra::Base
     halt 403 if not Issue.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Issue)
-    @attrs[:team_id] = current_user.team_id if not %w(Admin Writer).include? current_user&.role&.name
+    @attrs[:team_id] = current_user.team_id if !is_admin? && !is_writer?
     @attrs[:problem_id] = @problem.id
     @issue = Issue.new(@attrs)
 

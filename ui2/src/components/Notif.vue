@@ -3,7 +3,7 @@
     <div class="notif-container">
       <transition-group name="list">
         <div v-for="notif in notifs" class="outer" :key="notif.id">
-          <div class="item d-flex align-items-center" :class="{ ['item-' + notif.type]: true, }">
+          <div class="item d-flex align-items-center" :class="{ ['item-' + notif.type]: true, }" v-on:click='notifClicked(notif)'>
             <div class="icon">
               <i class="fa" :class="{ ['fa-' + notif.icon]: true, }"></i>
             </div>
@@ -113,10 +113,11 @@ Emit(PUSH_NOTIF, {
   detail: 'ドメインチェックが失敗したため、サイトを有効にできません。',  // エラー文など
   key: 'setting', // 削除等を行う時の基準キー
   autoClose: false,  // 自動的に表示を消す
+  timeout: 3000, // autoCloseの時間
 });
 ```
 
-`autoClose` がtrueの場合、 `this.timeout` ミリ秒で通知を消します。
+`autoClose` がtrueの場合、 `timeout` ミリ秒で通知を消します。
 指定がない場合は、 `type` がerror,warnの際はfalse・successの場合はtrueがデフォルトで指定されます。
 
 通知を消すサンプルは以下のとおりです。
@@ -146,7 +147,6 @@ export default {
       pushSubscriber: Subscribe(PUSH_NOTIF, opt => { this.notify(opt) }),
       removeSubscriber: Subscribe(REMOVE_NOTIF, fn => { this.hide(fn) }),
       refreshInterval: setInterval(_ => this.refresh(), 500),
-      timeout: 3000, // autoclose ms
       useBrowserNotification: false,
     }
   },
@@ -282,17 +282,19 @@ export default {
           notif.addEventListener('click', () => { router.push(route_to); });
         }
       } else {
-        this.append(title, body, type);
+        this.append(title, body, type, route_to);
       }
     },
-    append (title, body, type) {
-      var autoClose;
-      var icon;
+    append (title, body, type, route_to) {
+      let autoClose;
+      let icon;
+      let timeout;
       switch (type) {
         case 'error':
         case 'warn':
           icon = 'warning';
-          autoClose = false;
+          autoClose = true;
+          timeout = 5000;
           break;
         case 'api':
           icon = 'comments';
@@ -302,6 +304,7 @@ export default {
         case 'success':
           icon = 'check';
           autoClose = true;
+          timeout = 3000;
           break;
       }
 
@@ -309,7 +312,9 @@ export default {
         title,
         body,
         type,
+        route_to,
         id: this.incr++,
+        timeout,
         timestamp: Date.now(),
         autoClose,
         icon,
@@ -329,7 +334,13 @@ export default {
       this.notifs = this.notifs.filter(s => !fn(s));
     },
     refresh () {
-      this.hide(msg => msg.autoClose && (msg.timestamp + this.timeout < Date.now()));
+      this.hide(msg => msg.autoClose && (msg.timestamp + msg.timeout < Date.now()));
+    },
+    notifClicked (notif) {
+      if (notif.route_to) {
+        this.$router.push(notif.route_to);
+      }
+      this.hide(notif.id);
     },
   },
 }
