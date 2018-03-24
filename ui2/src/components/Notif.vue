@@ -3,7 +3,7 @@
     <div class="notif-container">
       <transition-group name="list">
         <div v-for="notif in notifs" class="outer" :key="notif.id">
-          <div class="item d-flex align-items-center" :class="{ ['item-' + notif.type]: true, }">
+          <div class="item d-flex align-items-center" :class="{ ['item-' + notif.type]: true, }" v-on:click='notifClicked(notif)'>
             <div class="icon">
               <i class="fa" :class="{ ['fa-' + notif.icon]: true, }"></i>
             </div>
@@ -282,10 +282,10 @@ export default {
           notif.addEventListener('click', () => { router.push(route_to); });
         }
       } else {
-        this.append(title, body, type);
+        this.append(title, body, type, route_to);
       }
     },
-    append (title, body, type) {
+    append (title, body, type, route_to) {
       let autoClose;
       let icon;
       let timeout;
@@ -312,6 +312,7 @@ export default {
         title,
         body,
         type,
+        route_to,
         id: this.incr++,
         timeout,
         timestamp: Date.now(),
@@ -334,6 +335,12 @@ export default {
     },
     refresh () {
       this.hide(msg => msg.autoClose && (msg.timestamp + msg.timeout < Date.now()));
+    },
+    notifClicked (notif) {
+      if (notif.route_to) {
+        this.$router.push(notif.route_to);
+      }
+      this.hide(notif.id);
     },
   },
 }
