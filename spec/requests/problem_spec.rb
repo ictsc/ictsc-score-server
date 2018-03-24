@@ -34,9 +34,9 @@ describe Problem do
       by_admin       { is_expected.to eq 2 }
     end
 
-    let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private) }
+    let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
     describe '#keys for problem' do
-      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point) }
+      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point secret_text) }
       let(:json_response_problem) { json_response.find{|p| p['id'] == problem.id } }
       subject { json_response_problem.keys }
 
@@ -69,7 +69,7 @@ describe Problem do
     end
 
     describe "#keys for problem participant haven't solve problem before" do
-      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point perfect_point title text) }
+      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point perfect_point secret_text title text) }
       let(:json_response_next_problem) { json_response.find{|p| p['id'] == next_problem.id } }
       subject { json_response_next_problem.keys }
 
@@ -116,8 +116,8 @@ describe Problem do
     end
 
     describe '#keys' do
-      let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private) }
-      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point) }
+      let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
+      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point secret_text) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
@@ -155,6 +155,7 @@ describe Problem do
       {
         title: problem.title,
         text: problem.text,
+        secret_text: '',
         creator_id: problem.creator_id,
         reference_point: problem.reference_point,
         perfect_point: problem.perfect_point,
@@ -165,7 +166,7 @@ describe Problem do
     end
 
     describe 'create problem' do
-      let(:expected_keys) { %w(id title text creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private) }
+      let(:expected_keys) { %w(id title text creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
       let(:response) { post '/api/problems', params }
       subject { response.status }
 
@@ -208,6 +209,7 @@ describe Problem do
         {
           title: new_title,
           text: problem.text,
+          secret_text: '',
           creator_id: problem.creator_id,
           reference_point: problem.reference_point,
           perfect_point: problem.perfect_point,
