@@ -104,8 +104,7 @@ class MemberRoutes < Sinatra::Base
 
     @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
 
-    # 未ログイン, admin, writerでないなら
-    if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
+    if !is_admin? && !is_writer?
       @team = Team.find_by(registration_code: params[:registration_code])
       if @team.nil?
         status 400
@@ -152,7 +151,7 @@ class MemberRoutes < Sinatra::Base
   update_member_block = Proc.new do
     field_options = { exclude: [:hashed_password], include: [:password] }
 
-    if current_user.nil? || !Role.where(name: ["Admin", "Writer"]).ids.include?(current_user.role_id)
+    if !is_admin? && !is_writer?
       field_options[:exclude] << :team_id
       field_options[:exclude] << :role_id
     end
