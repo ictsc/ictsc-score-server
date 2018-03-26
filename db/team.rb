@@ -1,6 +1,6 @@
 class Team < ActiveRecord::Base
   validates :name, presence: true
-  validates :registration_code, presence: true
+  validates :hashed_registration_code, presence: true
   validates_associated :notification_subscriber
 
   has_many :members, dependent: :nullify
