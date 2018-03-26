@@ -1,7 +1,10 @@
+require 'sinatra/crypt_helpers'
+
 class Team < ActiveRecord::Base
   validates :name, presence: true
-  validates :registration_code, presence: true
+  validates :hashed_registration_code, presence: true
   validates_associated :notification_subscriber
+  extend Sinatra::CryptHelpers
 
   has_many :members, dependent: :nullify
   has_many :answers, dependent: :destroy
@@ -12,6 +15,9 @@ class Team < ActiveRecord::Base
   before_validation def build_notification_subscriber_if_not_exists
     build_notification_subscriber if not notification_subscriber
   end
+
+  # For FactoryBot to pass plain registration_code to spec from factory
+  attr_accessor :registration_code
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
@@ -48,7 +54,7 @@ class Team < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer]
       self.all_column_names(reference_keys: reference_keys)
     else
-      self.all_column_names(reference_keys: reference_keys) - %w(registration_code)
+      self.all_column_names(reference_keys: reference_keys) - %w(hashed_registration_code)
     end
   end
 
@@ -67,4 +73,8 @@ class Team < ActiveRecord::Base
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
+
+  def self.find_by_registration_code(registration_code)
+    find {|team| compare_password(registration_code, team.hashed_registration_code)}
+  end
 end

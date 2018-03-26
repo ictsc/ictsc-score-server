@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180324150611) do
+ActiveRecord::Schema.define(version: 20180325144752) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
@@ -157,7 +157,8 @@ ActiveRecord::Schema.define(version: 20180324150611) do
     t.string "organization"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "registration_code", default: "", null: false
+    t.string "hashed_registration_code", null: false
+    t.index ["hashed_registration_code"], name: "index_teams_on_hashed_registration_code", unique: true
     t.index ["id"], name: "index_teams_on_id", unique: true
   end
 

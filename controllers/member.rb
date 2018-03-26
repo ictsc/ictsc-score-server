@@ -103,7 +103,7 @@ class MemberRoutes < Sinatra::Base
     @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
 
     if !is_admin? && !is_writer?
-      @team = Team.find_by(registration_code: params[:registration_code])
+      @team = Team.find_by_registration_code(params[:registration_code])
       if @team.nil?
         status 400
         next json registration_code: ["を入力してください"]
