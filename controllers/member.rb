@@ -100,8 +100,6 @@ class MemberRoutes < Sinatra::Base
   post "/api/members" do
     halt 403 if not Member.allowed_to_create_by?(current_user)
 
-    @permit_role_ids = Role.readables(user: current_user).ids
-
     @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
 
     if !is_admin? && !is_writer?
@@ -121,7 +119,7 @@ class MemberRoutes < Sinatra::Base
 
     @member = Member.new(@attrs)
 
-    if not @permit_role_ids.include? @member.role_id
+    if not Role.permitted_to_create_by?(user: current_user, role_id: @member.role_id)
       halt 403
     end
 
