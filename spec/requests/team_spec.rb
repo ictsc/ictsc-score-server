@@ -43,8 +43,8 @@ describe Team do
       by_nologin     { is_expected.to match_array expected_keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_participant { is_expected.to match_array expected_keys }
-      by_writer      { is_expected.to match_array expected_keys + %w(registration_code) }
-      by_admin       { is_expected.to match_array expected_keys + %w(registration_code) }
+      by_writer      { is_expected.to match_array expected_keys + %w(hashed_registration_code) }
+      by_admin       { is_expected.to match_array expected_keys + %w(hashed_registration_code) }
     end
   end
 
@@ -69,7 +69,7 @@ describe Team do
 
       all_success_block = Proc.new do
         is_expected.to eq 201
-        expect(json_response.keys).to match_array %w(id name organization created_at updated_at registration_code)
+        expect(json_response.keys).to match_array %w(id name organization created_at updated_at hashed_registration_code)
       end
 
       by_writer &all_success_block
