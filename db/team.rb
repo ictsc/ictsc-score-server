@@ -16,6 +16,9 @@ class Team < ActiveRecord::Base
     build_notification_subscriber if not notification_subscriber
   end
 
+  # For FactoryBot to pass plain registration_code to spec from factory
+  attr_accessor :registration_code
+
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: "")
     case user&.role_id
