@@ -48,7 +48,7 @@ class Team < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer]
       self.all_column_names(reference_keys: reference_keys)
     else
-      self.all_column_names(reference_keys: reference_keys) - %w(registration_code)
+      self.all_column_names(reference_keys: reference_keys) - %w(hashed_registration_code)
     end
   end
 
