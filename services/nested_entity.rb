@@ -60,7 +60,6 @@ module Sinatra
     # @params member [Member] アクセスしようとしてるユーザ
     # @params entity [Array<Hash>] フィルタするエンティティ
     # @params model [ActiveRecord::Base]
-    # @return 無し
     def filter_columns(member:, entities:, model:)
       columns = model.readable_columns(user: member)
       entities.each do |entity|
