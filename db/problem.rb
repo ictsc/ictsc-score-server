@@ -91,7 +91,7 @@ class Problem < ActiveRecord::Base
       next all if action.empty?
       next where(creator: user) if action == "problems_comments"
       none
-    when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team }
+    when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team.present? }
       next none unless in_competition?
 
       fca_problem_ids = FirstCorrectAnswer.readables(user: user, action: 'opened_problem').pluck(:problem_id)
@@ -124,8 +124,10 @@ class Problem < ActiveRecord::Base
 
   # 突破チーム数を返す
   # idが指定されると単一の値を返す
+  # 返すハッシュのデフォルト値は0
   def self.solved_teams_counts(user:, id: nil)
-    rel = id ? FirstCorrectAnswer.where(problem_id: id) : FirstCorrectAnswer.all
+    rel = id.nil? ?  FirstCorrectAnswer.all : FirstCorrectAnswer.where(problem_id: id)
+
     counts = rel
       .readables(user: user, action: 'for_count')
       .group(:problem_id)
@@ -133,6 +135,6 @@ class Problem < ActiveRecord::Base
 
     counts.default = 0
 
-    id ? counts[id] : counts
+    id.nil? ? counts : counts[id]
   end
 end
