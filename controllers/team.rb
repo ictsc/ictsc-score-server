@@ -1,5 +1,6 @@
 require "sinatra/activerecord_helpers"
 require "sinatra/json_helpers"
+require "sinatra/crypt_helpers"
 require_relative "../services/account_service"
 require_relative "../services/nested_entity"
 
@@ -8,6 +9,7 @@ class TeamRoutes < Sinatra::Base
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
+  helpers Sinatra::CryptHelpers
 
   before "/api/teams*" do
     I18n.locale = :en if request.xhr?
@@ -39,9 +41,12 @@ class TeamRoutes < Sinatra::Base
   post "/api/teams" do
     halt 403 if not Team.allowed_to_create_by?(current_user)
 
-    @attrs = params_to_attributes_of(klass: Team)
-    @team = Team.new(@attrs)
+    @attrs = params_to_attributes_of(klass: Team, exclude: [:hashed_registration_code], include: [:registration_code])
 
+    @attrs[:hashed_registration_code] = hash_password(@attrs[:registration_code])
+    @attrs.delete(:registration_code)
+
+    @team = Team.new(@attrs)
     if @team.save
       status 201
       headers "Location" => to("/api/teams/#{@team.id}")
@@ -77,12 +82,20 @@ class TeamRoutes < Sinatra::Base
   end
 
   update_team_block = Proc.new do
-    if request.put? and not filled_all_attributes_of?(klass: Team)
+    field_options = { exclude: [:hashed_registration_code], include: [:registration_code] }
+
+    if request.put? and not filled_all_attributes_of?(klass: Team, **field_options)
       status 400
-      next json required: insufficient_attribute_names_of(klass: Team)
+      next json required: insufficient_attribute_names_of(klass: Team, **field_options)
     end
 
     @attrs = params_to_attributes_of(klass: Team)
+
+    if @attrs.key?(:registration_code)
+      @attrs[:hashed_registration_code] = hash_password(@attrs[:registration_code])
+      @attrs.delete(:registration_code)
+    end
+
     @team.attributes = @attrs
 
     if not @team.valid?
