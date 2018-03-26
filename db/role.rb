@@ -65,4 +65,9 @@ class Role < ActiveRecord::Base
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
+
+  # userにそのid(Role#id)のメンバーが作成できるか
+  def self.permitted_to_create_by?(user:, role_id:)
+    readables(user: user).ids.include?(role_id)
+  end
 end

@@ -142,7 +142,7 @@ class NotificationRoutes < Sinatra::Base
       end
     end
 
-    if current_user&.role&.name == "Participant"
+    if is_participant?
       notifications.reject! {|x| Setting.competition_end_at < x[:created_at] }
     end
 

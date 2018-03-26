@@ -56,7 +56,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">表示順序<br/>(低いほうが先)</label>
+          <label class="col-sm-3 col-form-label">表示順序(昇順)</label>
           <div class="col-sm-9">
             <input v-model="newProblemObj.order" type="number" class="form-control">
           </div>
@@ -101,7 +101,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">表示順序<br/>(低いほうが先)</label>
+          <label class="col-sm-3 col-form-label">表示順序(昇順)</label>
           <div class="col-sm-9">
             <input v-model="newGroupObj.order" type="number" class="form-control">
           </div>
