@@ -2,6 +2,8 @@ require 'sinatra/base'
 
 module Sinatra
   module CryptHelpers
+    module_function
+
     def hash_password(key, salt = '')
       return nil unless key.is_a? String
 
