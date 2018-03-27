@@ -1,5 +1,6 @@
 class Attachment < ActiveRecord::Base
   validates :filename, presence: true
+  validates :access_token, presence: true
 
   belongs_to :member
 
