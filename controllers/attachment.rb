@@ -86,4 +86,18 @@ class AttachmentRoutes < Sinatra::Base
 
     send_file file_path
   end
+
+  def send_attachment
+    filename = @attachment.filename
+
+    if not response['Content-Type']
+      content_type File.extname(filename), :default => 'application/octet-stream'
+    end
+
+    disposition = :attachment if filename.present?
+    attachment(filename, disposition) if disposition
+    headers['Content-Length'] = @attachment.data.bytesize
+
+    @attachment.data
+  end
 end
