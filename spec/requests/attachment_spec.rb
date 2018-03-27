@@ -21,7 +21,7 @@ describe Attachment do
     describe '#size' do
       subject { json_response.size }
       by_nologin     { is_expected.to eq 0 }
-      by_viewer      { is_expected.to eq 2 }
+      by_viewer      { is_expected.to eq 0 }
       by_participant { is_expected.to eq 1 }
       by_writer      { is_expected.to eq 2 }
       by_admin       { is_expected.to eq 2 }
@@ -34,7 +34,7 @@ describe Attachment do
     subject { response.status }
 
     by_nologin     { is_expected.to eq 404 }
-    by_viewer      { is_expected.to eq 200 }
+    by_viewer      { is_expected.to eq 404 }
     by_participant { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
@@ -42,7 +42,6 @@ describe Attachment do
     describe '#keys' do
       let(:expected_keys) { %w(id filename member_id created_at updated_at) }
       subject { json_response.keys }
-      by_viewer      { is_expected.to match_array expected_keys }
       by_participant { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
@@ -55,7 +54,7 @@ describe Attachment do
     subject { response.status }
 
     by_nologin     { is_expected.to eq 404 }
-    by_viewer      { is_expected.to eq 200 }
+    by_viewer      { is_expected.to eq 404 }
     by_participant { is_expected.to eq 404 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
@@ -63,7 +62,6 @@ describe Attachment do
     describe '#keys' do
       let(:expected_keys) { %w(id filename member_id created_at updated_at) }
       subject { json_response.keys }
-      by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
     end
