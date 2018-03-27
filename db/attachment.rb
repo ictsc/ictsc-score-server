@@ -34,7 +34,16 @@ class Attachment < ActiveRecord::Base
   end
 
   def self.readable_columns(user:, action: '', reference_keys: true)
-    self.all_column_names(reference_keys: reference_keys)
+    col_names = self.all_column_names(reference_keys: reference_keys)
+
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer]
+    when ROLE_ID[:participant]
+    else # nologin, viewer
+      col_names = []
+    end
+
+    col_names
   end
 
   scope :filter_columns, ->(user:, action: '') {
@@ -50,9 +59,7 @@ class Attachment < ActiveRecord::Base
     when ROLE_ID[:participant]
       next none unless in_competition?
       where(member: user)
-    when ROLE_ID[:viewer]
-      all
-    else # nologin, ...
+    else # nologin, viewer
       none
     end
   }
