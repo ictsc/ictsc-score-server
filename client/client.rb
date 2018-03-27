@@ -162,10 +162,6 @@ def download_attachments(id:, access_token:)
   JSON.parse(request(:get, path))
 end
 
-def build_download_link(response)
-  File.join($base_url, '/attachments', response['id'].to_s, response['file_hash'])
-end
-
 ## members
 
 def list_members()
@@ -231,7 +227,7 @@ end
 # 指定ディレクトリをまとめてアップロードする
 def upload_dir_files(file_dir)
   Dir.glob(File.join(file_dir, '/*')).select{|file_path| File.file?(file_path) }.each do |file_path|
-    p build_download_link(add_attachments(file_path))
+    p add_attachments(file_path)['url']
   end
 end
 

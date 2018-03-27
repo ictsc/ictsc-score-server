@@ -83,7 +83,7 @@ describe Attachment do
     end
 
     describe 'create attachment' do
-      let(:expected_keys) { %w(id filename member_id access_token created_at updated_at) }
+      let(:expected_keys) { %w(id filename member_id access_token url created_at updated_at) }
       let(:response) { post '/api/attachments', params }
       subject { response.status }
 
