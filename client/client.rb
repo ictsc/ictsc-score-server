@@ -158,13 +158,12 @@ def list_attachments
 end
 
 def download_attachments(id:, file_hash:, file_name:)
-  # これだけ /api がいらないから
-  path = "../attachments/#{id}/#{file_hash}/#{file_name}"
+  path = "/attachments/#{id}/#{file_hash}/#{file_name}"
   JSON.parse(request(:get, path))
 end
 
 def build_download_link(response)
-  File.join($base_url, '../attachments', response['id'].to_s, response['file_hash'], response['filename'])
+  File.join($base_url, '/attachments', response['id'].to_s, response['file_hash'], response['filename'])
 end
 
 ## members

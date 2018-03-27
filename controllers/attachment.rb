@@ -84,8 +84,7 @@ class AttachmentRoutes < Sinatra::Base
 
   # ファイルを取得
   # ファイルのハッシュが無いと取得できない
-  # パスが /api から始まらないから注意
-  get "/attachments/:id/:hash/:filename" do
+  get "/api/attachments/:id/:hash/:filename" do
     @attachment = Attachment.find_by(id: params[:id])
     @file_name = params[:filename]
 

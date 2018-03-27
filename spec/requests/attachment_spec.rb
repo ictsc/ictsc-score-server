@@ -105,10 +105,10 @@ describe Attachment do
       by_participant { expect(json_response['member_id']).to eq current_member.id }
       by_admin       { expect(json_response['member_id']).to eq other_member.id }
 
-      describe 'GET /attachment/:id/:hash/:filename' do
+      describe 'GET /api/attachment/:id/:hash/:filename' do
         let(:response_download) do
           r = json_response
-          get "/attachments/#{r['id']}/#{r['file_hash']}/#{r['filename']}"
+          get "/api/attachments/#{r['id']}/#{r['file_hash']}/#{r['filename']}"
         end
 
         success_download_block = Proc.new do
