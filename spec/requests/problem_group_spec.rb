@@ -31,7 +31,7 @@ describe ProblemGroup do
         by_admin       { is_expected.to eq 2 }
       end
 
-      let(:expected_keys) { %w(id description name problem_ids completing_bonus_point flag_icon_url visible created_at updated_at order) }
+      let(:expected_keys) { %w(id description name problem_ids completing_bonus_point icon_url visible created_at updated_at order) }
       describe '#keys for problem_groups' do
         let(:json_response_problem) { json_response.first }
         subject { json_response_problem.keys }
@@ -90,7 +90,7 @@ describe ProblemGroup do
       by_admin       { is_expected.to eq 200 }
 
       describe '#keys' do
-       let(:expected_keys) { %w(id description name problem_ids completing_bonus_point flag_icon_url visible created_at updated_at order) }
+       let(:expected_keys) { %w(id description name problem_ids completing_bonus_point icon_url visible created_at updated_at order) }
         subject { json_response.keys }
 
         by_viewer      { is_expected.to match_array expected_keys }
@@ -141,7 +141,7 @@ describe ProblemGroup do
 
       all_success_block = Proc.new do
         is_expected.to eq 201
-        expect(json_response.keys).to match_array %w(id description name problem_ids completing_bonus_point flag_icon_url visible created_at updated_at order)
+        expect(json_response.keys).to match_array %w(id description name problem_ids completing_bonus_point icon_url visible created_at updated_at order)
       end
 
       by_writer &all_success_block
@@ -170,7 +170,7 @@ describe ProblemGroup do
           completing_bonus_point: problem_group.completing_bonus_point,
           visible: problem_group.visible,
           order: 20,
-          flag_icon_url: problem_group.flag_icon_url
+          icon_url: problem_group.icon_url
         }
       end
 
