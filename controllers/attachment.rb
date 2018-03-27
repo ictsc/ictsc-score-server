@@ -68,6 +68,7 @@ class AttachmentRoutes < Sinatra::Base
 
   # IDからファイルの情報を取得
   get "/api/attachments/:id" do
+    @attachment = Attachment.readables(user: current_user).find_by(id: params[:id])
     json @attachment
   end
 
