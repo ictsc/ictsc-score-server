@@ -51,13 +51,9 @@ class AttachmentRoutes < Sinatra::Base
 
       File.write(file_path, file[:tempfile].read)
 
-      # 取得用URL
-      url = "/api/attachments/#{@attachment.id}/#{@attachment.access_token}"
-
-      # ファイルのハッシュを返す
       status 201
       headers "Location" => to("/api/attachments/#{@attachment.id}")
-      json @attachment.attributes.merge({ 'url' => url })
+      json @attachment, methods: [:url]
     end
   end
 
