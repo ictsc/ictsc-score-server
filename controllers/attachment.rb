@@ -10,14 +10,6 @@ class AttachmentRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  def uploads_dir
-    @uploads_dir ||= Pathname(settings.root) + "../uploads/#{@attachment.id}/"
-  end
-
-  def file_path
-    @file_path ||= (uploads_dir + @attachment.filename).to_s
-  end
-
   before "/api/attachments*" do
     I18n.locale = :en if request.xhr?
   end
@@ -30,30 +22,25 @@ class AttachmentRoutes < Sinatra::Base
   post "/api/attachments" do
     halt 403 if not Attachment.allowed_to_create_by?(current_user)
 
-    file = params[:file] || {}
+    file = params[:file]
+    halt 400 if file.blank?
 
     @attrs = params_to_attributes_of(klass: Attachment)
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
-    @attrs[:filename]  = file[:filename]
+    @attrs[:filename] = File.basename(file[:filename])
     @attrs[:access_token] = SecureRandom.hex(32)
+    @attrs[:data] = file[:tempfile].read
 
     @attachment = Attachment.new(@attrs)
-
-    halt 400 if /(\/|\.\.)/ === file[:filename]
 
     if not @attachment.save
       status 400
       json @attachment.errors
     else
-      # save file
-      FileUtils.mkdir_p uploads_dir.to_s
-      halt 400 unless file_path.start_with? uploads_dir.to_s
-
-      File.write(file_path, file[:tempfile].read)
-
       status 201
       headers "Location" => to("/api/attachments/#{@attachment.id}")
-      json @attachment, methods: [:url]
+      # dataが大きいとJSON化に失敗する
+      json @attachment, methods: [:url], except: [:data]
     end
   end
 
@@ -80,10 +67,25 @@ class AttachmentRoutes < Sinatra::Base
 
   # ファイルを取得
   get "/api/attachments/:id/:access_token" do
+    # アクセス制限無し
     @attachment = Attachment.find_by(id: params[:id])
 
     halt 403 if @attachment.access_token != params[:access_token]
 
-    send_file file_path
+    send_attachment
+  end
+
+  def send_attachment
+    filename = @attachment.filename
+
+    if not response['Content-Type']
+      content_type File.extname(filename), :default => 'application/octet-stream'
+    end
+
+    disposition = :attachment if filename.present?
+    attachment(filename, disposition) if disposition
+    headers['Content-Length'] = @attachment.data.bytesize
+
+    @attachment.data
   end
 end
