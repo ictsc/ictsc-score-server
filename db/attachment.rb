@@ -72,4 +72,9 @@ class Attachment < ActiveRecord::Base
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
+
+  # 取得用URL
+  def url
+    "/api/attachments/#{id}/#{access_token}"
+  end
 end
