@@ -40,6 +40,8 @@ class Attachment < ActiveRecord::Base
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
     when ROLE_ID[:participant]
+      # 参加者はaccess_tokenを後から取得できない(POST時のみ取得可能)
+      col_names -= %w(access_token)
     else # nologin, viewer
       col_names = []
     end

@@ -42,7 +42,7 @@ describe Attachment do
     describe '#keys' do
       let(:expected_keys) { %w(id filename member_id access_token created_at updated_at) }
       subject { json_response.keys }
-      by_participant { is_expected.to match_array expected_keys }
+      by_participant { is_expected.to match_array expected_keys - %w(access_token) }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
     end
