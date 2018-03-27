@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180327020956) do
+ActiveRecord::Schema.define(version: 20180327115656) do
 
   create_table "answers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer "problem_id", null: false
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20180327020956) do
     t.integer "member_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "access_token", null: false
     t.index ["id"], name: "index_attachments_on_id", unique: true
     t.index ["member_id"], name: "index_attachments_on_member_id"
   end

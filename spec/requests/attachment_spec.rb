@@ -21,7 +21,7 @@ describe Attachment do
     describe '#size' do
       subject { json_response.size }
       by_nologin     { is_expected.to eq 0 }
-      by_viewer      { is_expected.to eq 2 }
+      by_viewer      { is_expected.to eq 0 }
       by_participant { is_expected.to eq 1 }
       by_writer      { is_expected.to eq 2 }
       by_admin       { is_expected.to eq 2 }
@@ -34,16 +34,15 @@ describe Attachment do
     subject { response.status }
 
     by_nologin     { is_expected.to eq 404 }
-    by_viewer      { is_expected.to eq 200 }
+    by_viewer      { is_expected.to eq 404 }
     by_participant { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
     describe '#keys' do
-      let(:expected_keys) { %w(id filename member_id created_at updated_at) }
+      let(:expected_keys) { %w(id filename member_id access_token created_at updated_at) }
       subject { json_response.keys }
-      by_viewer      { is_expected.to match_array expected_keys }
-      by_participant { is_expected.to match_array expected_keys }
+      by_participant { is_expected.to match_array expected_keys - %w(access_token) }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
     end
@@ -55,15 +54,14 @@ describe Attachment do
     subject { response.status }
 
     by_nologin     { is_expected.to eq 404 }
-    by_viewer      { is_expected.to eq 200 }
+    by_viewer      { is_expected.to eq 404 }
     by_participant { is_expected.to eq 404 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
     describe '#keys' do
-      let(:expected_keys) { %w(id filename member_id created_at updated_at) }
+      let(:expected_keys) { %w(id filename member_id access_token created_at updated_at) }
       subject { json_response.keys }
-      by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
     end
@@ -85,7 +83,7 @@ describe Attachment do
     end
 
     describe 'create attachment' do
-      let(:expected_keys) { %w(id filename file_hash member_id created_at updated_at) }
+      let(:expected_keys) { %w(id filename member_id access_token url created_at updated_at) }
       let(:response) { post '/api/attachments', params }
       subject { response.status }
 
@@ -105,10 +103,10 @@ describe Attachment do
       by_participant { expect(json_response['member_id']).to eq current_member.id }
       by_admin       { expect(json_response['member_id']).to eq other_member.id }
 
-      describe 'GET /attachment/:id/:hash/:filename' do
+      describe 'GET /api/attachment/:id/:access_token' do
         let(:response_download) do
           r = json_response
-          get "/attachments/#{r['id']}/#{r['file_hash']}/#{r['filename']}"
+          get "/api/attachments/#{r['id']}/#{r['access_token']}"
         end
 
         success_download_block = Proc.new do

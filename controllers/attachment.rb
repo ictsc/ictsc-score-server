@@ -15,11 +15,7 @@ class AttachmentRoutes < Sinatra::Base
   end
 
   def file_path
-    @file_path ||= (uploads_dir + @file_name).to_s
-  end
-
-  def file_hash
-    @file_hash ||= Digest::SHA256.file(file_path).hexdigest
+    @file_path ||= (uploads_dir + @attachment.filename).to_s
   end
 
   before "/api/attachments*" do
@@ -34,15 +30,16 @@ class AttachmentRoutes < Sinatra::Base
   post "/api/attachments" do
     halt 403 if not Attachment.allowed_to_create_by?(current_user)
 
-    f = params[:file] || {}
+    file = params[:file] || {}
 
     @attrs = params_to_attributes_of(klass: Attachment)
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
-    @attrs[:filename]  = f[:filename]
-    @attachment = Attachment.new(@attrs)
-    @file_name = f[:filename]
+    @attrs[:filename]  = file[:filename]
+    @attrs[:access_token] = SecureRandom.hex(32)
 
-    halt 400 if /(\/|\.\.)/ === f[:filename]
+    @attachment = Attachment.new(@attrs)
+
+    halt 400 if /(\/|\.\.)/ === file[:filename]
 
     if not @attachment.save
       status 400
@@ -52,16 +49,18 @@ class AttachmentRoutes < Sinatra::Base
       FileUtils.mkdir_p uploads_dir.to_s
       halt 400 unless file_path.start_with? uploads_dir.to_s
 
-      File.write(file_path, f[:tempfile].read)
+      File.write(file_path, file[:tempfile].read)
+
+      # 取得用URL
+      url = "/api/attachments/#{@attachment.id}/#{@attachment.access_token}"
 
       # ファイルのハッシュを返す
       status 201
       headers "Location" => to("/api/attachments/#{@attachment.id}")
-      json @attachment.attributes.merge({"file_hash" => file_hash})
+      json @attachment.attributes.merge({ 'url' => url })
     end
   end
 
-  # 権限チェック
   before "/api/attachments/:id" do
     @attachment = Attachment.find_by(id: params[:id])
     halt 404 if not @attachment&.allowed?(by: current_user, method: request.request_method)
@@ -69,6 +68,7 @@ class AttachmentRoutes < Sinatra::Base
 
   # IDからファイルの情報を取得
   get "/api/attachments/:id" do
+    @attachment = Attachment.readables(user: current_user).find_by(id: params[:id])
     json @attachment
   end
 
@@ -83,23 +83,10 @@ class AttachmentRoutes < Sinatra::Base
   end
 
   # ファイルを取得
-  # ファイルのハッシュが無いと取得できない
-  # パスが /api から始まらないから注意
-  get "/attachments/:id/:hash/:filename" do
+  get "/api/attachments/:id/:access_token" do
     @attachment = Attachment.find_by(id: params[:id])
-    @file_name = params[:filename]
 
-    if @attachment.filename != params[:filename]
-      halt 404
-    end
-
-    begin
-      if file_hash != params[:hash]
-        halt 403
-      end
-    rescue
-      halt 500
-    end
+    halt 403 if @attachment.access_token != params[:access_token]
 
     send_file file_path
   end
