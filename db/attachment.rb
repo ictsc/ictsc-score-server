@@ -1,6 +1,10 @@
+require 'active_support/core_ext/numeric/bytes.rb'
+
 class Attachment < ActiveRecord::Base
   validates :filename, presence: true
   validates :access_token, presence: true
+  # blobのサイズ制限はバリデーションが必須
+  validates :data, presence: true, length: { maximum: 20.megabyte }
 
   belongs_to :member
 
