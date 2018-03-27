@@ -3,17 +3,17 @@
   description: "おにぎりにする?"
   visible: true
   completing_bonus_point: 0
-  flag_icon_url:
+  icon_url:
   order: 100
 - name: "問題グループ102"
   description: "サンドイッチにする?"
   visible: true
   completing_bonus_point: 0
-  flag_icon_url:
+  icon_url:
   order: 200
 - name: "問題グループ103"
   description: "それとも..."
   visible: false
   completing_bonus_point: 10
-  flag_icon_url:
+  icon_url:
   order: 300

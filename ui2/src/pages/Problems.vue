@@ -97,7 +97,7 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">国旗</label>
           <div class="col-sm-9">
-            <input v-model="newGroupObj.flag_icon_url" type="text" class="form-control" placeholder="http://">
+            <input v-model="newGroupObj.icon_url" type="text" class="form-control" placeholder="http://">
           </div>
         </div>
         <div class="form-group row">
@@ -150,7 +150,7 @@
     <div v-loading="asyncLoading" class="groups">
       <div v-for="group in sortedProblemGroups" v-if="group.visible" class="group">
         <div class="detail">
-          <img class="flag" v-if="group.flag_icon_url" :src="group.flag_icon_url">
+          <img class="flag" v-if="group.icon_url" :src="group.icon_url">
           <h2>{{ group.name }}</h2>
           <markdown :value="group.description"></markdown>
         </div>
@@ -464,7 +464,7 @@ export default {
         description: '',
         visible: 1,
         completing_bonus_point: 0,
-        flag_icon_url: '',
+        icon_url: '',
         order: 0,
       },
       newMemberObj: {
@@ -599,7 +599,7 @@ export default {
       let pg = this.problemGroups.find(pg => !pg.visible && pg.problem_ids.includes(problem.id));
 
       if (!pg) return null;
-      return pg.flag_icon_url;
+      return pg.icon_url;
     },
     problemSolved (answers) {
       return nestedValue(latestAnswer(answers), 'score', 'solved') || false;

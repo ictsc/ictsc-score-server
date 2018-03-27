@@ -246,7 +246,7 @@ export default {
       let pg = this.problemGroups.find(pg => !pg.visible && pg.problem_ids.includes(problem.id));
 
       if (!pg) return null;
-      return pg.flag_icon_url;
+      return pg.icon_url;
     },
     editEnter () {
       this.edit = true;
