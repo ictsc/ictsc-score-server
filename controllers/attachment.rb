@@ -34,15 +34,15 @@ class AttachmentRoutes < Sinatra::Base
   post "/api/attachments" do
     halt 403 if not Attachment.allowed_to_create_by?(current_user)
 
-    f = params[:file] || {}
+    file = params[:file] || {}
 
     @attrs = params_to_attributes_of(klass: Attachment)
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
-    @attrs[:filename]  = f[:filename]
+    @attrs[:filename]  = file[:filename]
     @attachment = Attachment.new(@attrs)
-    @file_name = f[:filename]
+    @file_name = file[:filename]
 
-    halt 400 if /(\/|\.\.)/ === f[:filename]
+    halt 400 if /(\/|\.\.)/ === file[:filename]
 
     if not @attachment.save
       status 400
@@ -52,7 +52,7 @@ class AttachmentRoutes < Sinatra::Base
       FileUtils.mkdir_p uploads_dir.to_s
       halt 400 unless file_path.start_with? uploads_dir.to_s
 
-      File.write(file_path, f[:tempfile].read)
+      File.write(file_path, file[:tempfile].read)
 
       # ファイルのハッシュを返す
       status 201
@@ -61,7 +61,6 @@ class AttachmentRoutes < Sinatra::Base
     end
   end
 
-  # 権限チェック
   before "/api/attachments/:id" do
     @attachment = Attachment.find_by(id: params[:id])
     halt 404 if not @attachment&.allowed?(by: current_user, method: request.request_method)
