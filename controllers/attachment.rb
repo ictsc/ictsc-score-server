@@ -39,7 +39,8 @@ class AttachmentRoutes < Sinatra::Base
     else
       status 201
       headers "Location" => to("/api/attachments/#{@attachment.id}")
-      json @attachment, methods: [:url]
+      # dataが大きいとJSON化に失敗する
+      json @attachment, methods: [:url], except: [:data]
     end
   end
 

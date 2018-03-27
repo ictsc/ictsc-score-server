@@ -41,6 +41,9 @@ class Attachment < ActiveRecord::Base
   def self.readable_columns(user:, action: '', reference_keys: true)
     col_names = self.all_column_names(reference_keys: reference_keys)
 
+    # dataのサイズが大きいとJSON化に失敗するからデフォルトでは返さない
+    col_names -= %w(data) if action != 'download'
+
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
     when ROLE_ID[:participant]
