@@ -77,11 +77,6 @@ describe Attachment do
       }
     end
 
-    after do
-      uploads_dir_path = File.expand_path("../../../uploads", __FILE__)
-      FileUtils.rm_r(Dir.glob("#{uploads_dir_path}/*")) if Dir.exists? uploads_dir_path
-    end
-
     describe 'create attachment' do
       let(:expected_keys) { %w(id filename member_id access_token url created_at updated_at) }
       let(:response) { post '/api/attachments', params }
