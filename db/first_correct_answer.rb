@@ -25,14 +25,15 @@ class FirstCorrectAnswer < ActiveRecord::Base
       next none unless in_competition?
 
       rel_delayed = joins(:answer).merge(Answer.reply_delay)
+
       case action
       when 'for_count'
         rel_delayed
       when 'opened_problem'
-        rel = rel_delayed.joins(:problem)
-        rel
-          .where(problems: { team_private: false })
-          .or(rel.where(problems: { team_private: true }, team: user.team))
+        rel_delayed.joins(:problem).scoping do
+          where(problems: { team_private: false })
+            .or(where(problems: { team_private: true }, team: user.team))
+        end
       else
         rel_delayed.where(team: user.team)
       end
