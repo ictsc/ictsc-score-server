@@ -35,6 +35,7 @@ class FirstCorrectAnswer < ActiveRecord::Base
             .or(where(problems: { team_private: true }, team: user.team))
         end
       else
+        # 通常は自チームの情報しか返さないのが正しい
         rel_delayed.where(team: user.team)
       end
     else

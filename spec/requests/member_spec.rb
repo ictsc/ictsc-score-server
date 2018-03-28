@@ -176,6 +176,7 @@ describe Member do
 
         by_viewer { is_expected.to eq 404 }
 
+        # participantはRoleとTeamを変更できないい
         by_participant do
           is_expected.to eq 200
           expect(json_response['login']).to eq new_login
