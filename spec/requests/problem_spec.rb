@@ -45,7 +45,7 @@ describe Problem do
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
 
-      describe '#solved_teams_count (delay)' do
+      describe '#solved_teams_count before reply_delay_sec' do
         let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem)) } # solved
         let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem)) } # not solved
         subject { json_response_problem['solved_teams_count'] }
@@ -56,9 +56,9 @@ describe Problem do
         by_admin       { is_expected.to eq 1 }
       end
 
-      describe '#solved_teams_count (opened)' do
+      describe '#solved_teams_count after reply_delay_sec' do
         let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem, created_at: delayed)) } # solved
-        let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem, created_at: delayed)) } # not solve subject
+        let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem, created_at: delayed)) } # not solve
         subject { json_response_problem['solved_teams_count'] }
 
         by_viewer      { is_expected.to eq 1 }
@@ -125,7 +125,7 @@ describe Problem do
       by_participant { is_expected.to match_array expected_keys_for_participant }
     end
 
-    describe '#solved_teams_count (delay)' do
+    describe '#solved_teams_count before reply_delay_sec' do
       let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem)) } # solved
       let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem)) } # not solved
       subject { json_response['solved_teams_count'] }
@@ -136,7 +136,7 @@ describe Problem do
       by_admin       { is_expected.to eq 1 }
     end
 
-    describe '#solved_teams_count (open)' do
+    describe '#solved_teams_count after reply_delay_sec' do
       let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem, created_at: delayed)) } # solved
       let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem, created_at: delayed)) } # not solved
       subject { json_response['solved_teams_count'] }
