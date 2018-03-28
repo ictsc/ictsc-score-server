@@ -5,6 +5,7 @@
   secret_text: 秘密その0
   creator_id: 3
   problem_must_solve_before_id:
+  team_private: false
   reference_point: 80
   perfect_point: 100
   problem_group_ids:
@@ -17,6 +18,7 @@
   secret_text: 秘密その1
   creator_id: 3
   problem_must_solve_before_id: 10
+  team_private: false
   reference_point: 192
   perfect_point: 240
   problem_group_ids:
@@ -27,6 +29,7 @@
   secret_text: 秘密その2
   creator_id: 2
   problem_must_solve_before_id: 11
+  team_private: false
   reference_point: 384
   perfect_point: 480
   problem_group_ids:
@@ -39,6 +42,7 @@
   secret_text: 秘密その3
   creator_id: 4
   problem_must_solve_before_id: 12
+  team_private: false
   reference_point: 520
   perfect_point: 650
   problem_group_ids:
@@ -53,6 +57,7 @@
   secret_text: 秘密その4
   creator_id: 4
   problem_must_solve_before_id: 13
+  team_private: false
   reference_point: 62
   perfect_point: 78
   problem_group_ids:
