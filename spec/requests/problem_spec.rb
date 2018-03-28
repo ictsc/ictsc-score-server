@@ -16,8 +16,8 @@ describe Problem do
     let!(:next_problem) { create(:problem, problem_must_solve_before: problem) }
 
     let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
-    let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point secret_text) }
-    let(:expected_keys_for_participant_not_opend) { expected_keys_for_participant - %w(title text perfect_point) }
+    let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
+    let(:expected_keys_for_participant_not_opend) { expected_keys_for_participant_opened - %w(title text perfect_point) }
 
     let(:response) { get '/api/problems' }
     subject { response.status }
@@ -43,7 +43,7 @@ describe Problem do
       subject { json_response_problem.keys }
 
       by_viewer      { is_expected.to match_array expected_keys }
-      by_participant { is_expected.to match_array expected_keys_for_participant }
+      by_participant { is_expected.to match_array expected_keys_for_participant_opened }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
 
@@ -118,12 +118,12 @@ describe Problem do
 
     describe '#keys' do
       let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
-      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point secret_text) }
+      let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
-      by_participant { is_expected.to match_array expected_keys_for_participant }
+      by_participant { is_expected.to match_array expected_keys_for_participant_opened }
     end
 
     describe '#solved_teams_count before reply_delay_sec' do
