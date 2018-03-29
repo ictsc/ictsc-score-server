@@ -15,6 +15,10 @@ describe Problem do
     let!(:problem) { create(:problem) }
     let!(:next_problem) { create(:problem, problem_must_solve_before: problem) }
 
+    let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
+    let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
+    let(:expected_keys_for_participant_not_opend) { expected_keys_for_participant_opened - %w(title text perfect_point) }
+
     let(:response) { get '/api/problems' }
     subject { response.status }
 
@@ -34,20 +38,18 @@ describe Problem do
       by_admin       { is_expected.to eq 2 }
     end
 
-    let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
     describe '#keys for problem' do
-      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point secret_text) }
       let(:json_response_problem) { json_response.find{|p| p['id'] == problem.id } }
       subject { json_response_problem.keys }
 
       by_viewer      { is_expected.to match_array expected_keys }
-      by_participant { is_expected.to match_array expected_keys_for_participant }
+      by_participant { is_expected.to match_array expected_keys_for_participant_opened }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
 
-      describe '#solved_teams_count (delay)' do
-        let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem)) } # solved
-        let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem)) } # not solved
+      describe '#solved_teams_count before reply_delay_sec' do
+        let!(:score_by_other_team_a) { create(:score, solved: true,  answer: create(:answer, problem: problem)) } # solved
+        let!(:score_by_other_team_b) { create(:score, solved: false, answer: create(:answer, problem: problem)) } # not solved
         subject { json_response_problem['solved_teams_count'] }
 
         by_viewer      { is_expected.to eq 1 }
@@ -56,9 +58,9 @@ describe Problem do
         by_admin       { is_expected.to eq 1 }
       end
 
-      describe '#solved_teams_count (opened)' do
-        let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem, created_at: delayed)) } # solved
-        let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem, created_at: delayed)) } # not solve subject
+      describe '#solved_teams_count after reply_delay_sec' do
+        let!(:score_by_other_team_a) { create(:score, solved: true,  answer: create(:answer, problem: problem, created_at: delayed)) } # solved
+        let!(:score_by_other_team_b) { create(:score, solved: false, answer: create(:answer, problem: problem, created_at: delayed)) } # not solve
         subject { json_response_problem['solved_teams_count'] }
 
         by_viewer      { is_expected.to eq 1 }
@@ -69,11 +71,10 @@ describe Problem do
     end
 
     describe "#keys for problem participant haven't solve problem before" do
-      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point perfect_point secret_text title text) }
       let(:json_response_next_problem) { json_response.find{|p| p['id'] == next_problem.id } }
       subject { json_response_next_problem.keys }
 
-      by_participant { is_expected.to match_array expected_keys_for_participant }
+      by_participant { is_expected.to match_array expected_keys_for_participant_not_opend }
     end
   end
 
@@ -117,17 +118,17 @@ describe Problem do
 
     describe '#keys' do
       let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
-      let(:expected_keys_for_participant) { expected_keys - %w(creator_id reference_point secret_text) }
+      let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
       by_admin       { is_expected.to match_array expected_keys }
-      by_participant { is_expected.to match_array expected_keys_for_participant }
+      by_participant { is_expected.to match_array expected_keys_for_participant_opened }
     end
 
-    describe '#solved_teams_count (delay)' do
-      let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem)) } # solved
-      let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem)) } # not solved
+    describe '#solved_teams_count before reply_delay_sec' do
+      let!(:score_by_other_team_a) { create(:score, solved: true,  answer: create(:answer, problem: problem)) } # solved
+      let!(:score_by_other_team_b) { create(:score, solved: false, answer: create(:answer, problem: problem)) } # not solved
       subject { json_response['solved_teams_count'] }
 
       by_viewer      { is_expected.to eq 1 }
@@ -136,9 +137,9 @@ describe Problem do
       by_admin       { is_expected.to eq 1 }
     end
 
-    describe '#solved_teams_count (open)' do
-      let!(:score_by_other_team_a) { create(:score, point: problem.reference_point, solved: true, answer: create(:answer, problem: problem, created_at: delayed)) } # solved
-      let!(:score_by_other_team_b) { create(:score, point: problem.reference_point, solved: false, answer: create(:answer, problem: problem, created_at: delayed)) } # not solved
+    describe '#solved_teams_count after reply_delay_sec' do
+      let!(:score_by_other_team_a) { create(:score, solved: true,  answer: create(:answer, problem: problem, created_at: delayed)) } # solved
+      let!(:score_by_other_team_b) { create(:score, solved: false, answer: create(:answer, problem: problem, created_at: delayed)) } # not solved
       subject { json_response['solved_teams_count'] }
 
       by_viewer      { is_expected.to eq 1 }
