@@ -216,11 +216,10 @@ describe Member do
       end
     end
 
-    describe "edit other participant's login" do
+    describe "edit other participant" do
       let(:other_a) { create(:member, :participant, team: create(:team)) }
-      let(:other_b) { create(:member, :participant, team: create(:team)) }
-      let(:new_login) { other_a.login + 'fuga' }
-      let(:new_team) { other_b.team }
+      let(:new_login) { other_a.login + '-edit' }
+      let(:new_team) { create(:team) }
       let(:params) do
         {
           name: other_a.name,
