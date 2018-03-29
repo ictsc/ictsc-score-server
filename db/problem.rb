@@ -94,19 +94,12 @@ class Problem < ActiveRecord::Base
     when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team.present? }
       next none unless in_competition?
 
-      all_team_fcas = FirstCorrectAnswer.readables(user: user, action: 'all_opened')
-      my_team_fcas = all_team_fcas.where(team: user.team)
-
-      opened_problems = where(problem_must_solve_before_id: nil)
-        .or(where(team_private: false, problem_must_solve_before_id: all_team_fcas.pluck(:problem_id)))
-        .or(where(team_private: true,  problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
-
       case action
       when 'not_opened'
         # 未開放問題
-        where.not(id: opened_problems.ids)
+        where.not(id: opened(user: user).ids)
       else
-        opened_problems
+        opened(user: user)
       end
     else
       none
@@ -142,4 +135,16 @@ class Problem < ActiveRecord::Base
 
     id.nil? ? counts : counts[id]
   end
+
+  # userが閲覧できる問題一覧
+  # アクセス制限が無いため、publicにすると危険
+  scope :opened, ->(user:) {
+    all_team_fcas = FirstCorrectAnswer.readables(user: user, action: 'all_opened')
+    my_team_fcas = all_team_fcas.where(team: user.team)
+
+    where(problem_must_solve_before_id: nil)
+      .or(where(team_private: false, problem_must_solve_before_id: all_team_fcas.pluck(:problem_id)))
+      .or(where(team_private: true,  problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
+  }
+  private_class_method :opened
 end
