@@ -220,13 +220,14 @@ describe Member do
       let(:other_a) { create(:member, :participant, team: create(:team)) }
       let(:new_login) { other_a.login + '-edit' }
       let(:new_team) { create(:team) }
+      let(:new_role) { build(:role, :writer) }
       let(:params) do
         {
           name: other_a.name,
           login: new_login,
           password: other_a.password + 'nyan',
           team_id: new_team.id,
-          role_id: other_a.role_id
+          role_id: new_role.id,
         }
       end
 
@@ -241,6 +242,7 @@ describe Member do
           expect(json_response['login']).to eq new_login
           expect(json_response['hashed_password']).not_to eq other_a.hashed_password
           expect(json_response['team_id']).to eq new_team.id
+          expect(json_response['role_id']).to eq new_role.id
         end
 
         by_writer &all_success_block
