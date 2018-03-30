@@ -17,7 +17,7 @@ def request(method, path, payload_hash = {}, headers = { content_type: :json })
   JSON.parse($responses.last)
 end
 
-def parse_file(filepath)
+def load_file(filepath)
   filepath = File.expand_path(filepath)
   case File.extname(filepath)
   when '.yml', '.yaml'
@@ -28,7 +28,7 @@ def parse_file(filepath)
 end
 
 
-def login_as(login:, password:)
+def login(login:, password:)
   request(:post, 'session', { login: login, password: password })
 end
 
@@ -55,7 +55,7 @@ def add_problem_group(name:, description:, visible: true, completing_bonus_point
   request(:post, 'problem_groups', data)
 end
 
-def add_problem_groups_from_hash(problem_groups)
+def add_problem_groups(problem_groups)
   problem_groups.each do |g|
     puts add_problem_group(
       name: g['name'],
@@ -92,7 +92,7 @@ def add_problem(title:, text:, secret_text: '', reference_point:, perfect_point:
   request(:post, 'problems', data)
 end
 
-def add_problems_from_hash(problems)
+def add_problems(problems)
   # 先にまとめて読み込みチェック
   problems.each do |p|
     if p.key?('text_file')
@@ -138,7 +138,7 @@ def add_team(name:, organization:, registration_code:)
   request(:post, 'teams', data)
 end
 
-def add_teams_from_hash(teams)
+def add_teams(teams)
   teams.each do |t|
     puts add_team(
       name: t['name'],
@@ -150,18 +150,21 @@ end
 
 ## attachments
 
-def add_attachments(filepath)
+def add_attachment(filepath)
   full_filepath = File.expand_path(filepath)
   request(:post, 'attachments', { file: File.open(full_filepath, 'rb'),  multipart: true }, {})
+end
+
+def add_attachments(filepathes)
+  filepathes.each {|filepath| add_attachments(filepath) }
 end
 
 def list_attachments
   request(:get, 'attachments')
 end
 
-def download_attachments(id:, access_token:)
-  path = "/api/attachments/#{id}/#{access_token}"
-  request(:get, path)
+def download_attachment(id:, access_token:)
+  request(:get, "/api/attachments/#{id}/#{access_token}")
 end
 
 ## members
@@ -185,7 +188,7 @@ def add_member(name:, login:, password:, team_id: nil, registration_code: nil, r
   request(:post, 'members', data)
 end
 
-def add_members_from_hash(members)
+def add_members(members)
   members.each do |m|
     puts add_member(
       name: m['name'],
@@ -247,7 +250,7 @@ end
 $base_url = ARGV[0] || 'http://localhost:3000/api'
 $responses = []
 
-login_as(login: :admin, password: input_password())
+login(login: :admin, password: input_password())
 
 require 'pry'
 binding.pry
@@ -259,7 +262,7 @@ __END__
 
 
 # ログイン/ログアウト
-login_as(login: 'admin', password: 'admin')
+login(login: 'admin', password: 'admin')
 logout
 
 # 問題の追加
@@ -271,7 +274,8 @@ problem['title'] = 'this is a title'
 puts update_problem(problem)
 
 # YAMLから問題を読み込んでまとめて追加
-add_problems_from_hash(parse_file('./sample-problem-groups.yml'))
+add_problems(load_file('./sample-problem-groups.yml'))
 
 # ファイルをアップロード(ダウンロードリンクを返す)
-build_download_link(add_attachments('./pry_r.rb'))
+attachment = add_attachments('./pry_r.rb')
+download_attachment(id: attachment[:id], access_token: attachment[:access_token])
