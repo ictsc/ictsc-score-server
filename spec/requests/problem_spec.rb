@@ -14,6 +14,8 @@ describe Problem do
   describe 'GET /api/problems' do
     let!(:problem) { create(:problem) }
     let!(:next_problem) { create(:problem, problem_must_solve_before: problem) }
+    let!(:team_private_problem) { create(:problem, problem_must_solve_before: problem, team_private: true) }
+    let!(:team_private_problem_no_deps) { create(:problem, problem_must_solve_before: nil, team_private: true) }
 
     let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
     let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
@@ -32,10 +34,10 @@ describe Problem do
       subject { json_response.size }
 
       by_nologin     { is_expected.to eq 0 }
-      by_viewer      { is_expected.to eq 2 }
-      by_participant { is_expected.to eq 2 }
-      by_writer      { is_expected.to eq 2 }
-      by_admin       { is_expected.to eq 2 }
+      by_viewer      { is_expected.to eq 4 }
+      by_participant { is_expected.to eq 4 }
+      by_writer      { is_expected.to eq 4 }
+      by_admin       { is_expected.to eq 4 }
     end
 
     describe '#keys for problem' do
@@ -75,6 +77,37 @@ describe Problem do
       subject { json_response_next_problem.keys }
 
       by_participant { is_expected.to match_array expected_keys_for_participant_not_opened }
+    end
+
+    describe "#keys of team private problem" do
+      let(:json_response_team_private_problem) { json_response.find{|p| p['id'] == team_private_problem.id } }
+      subject { json_response_team_private_problem.keys }
+
+      let(:solve_problem_by_own_team) { create(:score, solved: true, answer: create(:answer, problem: problem, team: current_member.team, created_at: delayed)) }
+      let(:solve_problem_by_other_team) { create(:score, solved: true,  answer: create(:answer, problem: problem, created_at: delayed)) } # solved
+
+      describe "when it has not dependency problem" do
+        let(:json_response_team_private_problem) { json_response.find{|p| p['id'] == team_private_problem_no_deps.id } }
+        by_participant { is_expected.to match_array expected_keys_for_participant_opened }
+      end
+
+      describe "when its dependency problem has been solved by own team" do
+        by_participant {
+          solve_problem_by_own_team
+          is_expected.to match_array expected_keys_for_participant_opened
+        }
+      end
+
+      describe "when its dependency problem has been solved by other teams" do
+        by_participant {
+          solve_problem_by_other_team
+          is_expected.to match_array expected_keys_for_participant_not_opened
+        }
+      end
+
+      describe "when its dependency problem has not been solved by every teams" do
+        by_participant { is_expected.to match_array expected_keys_for_participant_not_opened }
+      end
     end
   end
 
