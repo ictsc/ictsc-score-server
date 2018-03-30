@@ -142,9 +142,12 @@ class Problem < ActiveRecord::Base
     all_team_fcas = FirstCorrectAnswer.readables(user: user, action: 'all_opened')
     my_team_fcas = all_team_fcas.where(team: user.team)
 
+    # 依存問題がない
+    # 自チームが依存問題を解決
+    # 他チームが依存問題を解決していてteam_private == false
     where(problem_must_solve_before_id: nil)
-      .or(where(team_private: false, problem_must_solve_before_id: all_team_fcas.pluck(:problem_id)))
-      .or(where(team_private: true,  problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
+      .or(where(problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
+      .or(where(problem_must_solve_before_id: all_team_fcas.pluck(:problem_id), team_private: false))
   }
   private_class_method :opened
 end
