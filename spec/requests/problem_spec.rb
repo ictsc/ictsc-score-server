@@ -17,7 +17,7 @@ describe Problem do
 
     let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
     let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
-    let(:expected_keys_for_participant_not_opend) { expected_keys_for_participant_opened - %w(title text perfect_point) }
+    let(:expected_keys_for_participant_not_opened) { expected_keys_for_participant_opened - %w(title text perfect_point) }
 
     let(:response) { get '/api/problems' }
     subject { response.status }
@@ -74,7 +74,7 @@ describe Problem do
       let(:json_response_next_problem) { json_response.find{|p| p['id'] == next_problem.id } }
       subject { json_response_next_problem.keys }
 
-      by_participant { is_expected.to match_array expected_keys_for_participant_not_opend }
+      by_participant { is_expected.to match_array expected_keys_for_participant_not_opened }
     end
   end
 
