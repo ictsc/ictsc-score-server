@@ -129,7 +129,7 @@ class Problem < ActiveRecord::Base
     rel = id.nil? ?  FirstCorrectAnswer.all : FirstCorrectAnswer.where(problem_id: id)
 
     counts = rel
-      .readables(user: user, action: 'for_count')
+      .readables(user: user, action: 'all_opened')
       .group(:problem_id)
       .count(:team_id) # readables内でselectしてるからカラムの指定が必要
 

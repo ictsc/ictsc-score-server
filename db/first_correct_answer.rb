@@ -27,7 +27,7 @@ class FirstCorrectAnswer < ActiveRecord::Base
       rel_delayed = joins(:answer).merge(Answer.reply_delay)
 
       case action
-      when 'for_count'
+      when 'all_opened'
         rel_delayed
       when 'opened_problem'
         rel_delayed.joins(:problem).scoping do
