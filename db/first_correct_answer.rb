@@ -27,13 +27,8 @@ class FirstCorrectAnswer < ActiveRecord::Base
       rel_delayed = joins(:answer).merge(Answer.reply_delay)
 
       case action
-      when 'for_count'
+      when 'all_opened'
         rel_delayed
-      when 'opened_problem'
-        rel_delayed.joins(:problem).scoping do
-          where(problems: { team_private: false })
-            .or(where(problems: { team_private: true }, team: user.team))
-        end
       else
         # 通常は自チームの情報しか返さないのが正しい
         rel_delayed.where(team: user.team)

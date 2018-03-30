@@ -5,6 +5,7 @@ FactoryBot.define do
     reference_point 21
     perfect_point 42
     order 10
+    team_private false
     secret_text 'This is very secret text'
     association :creator, factory: [:member, :writer]
   end
