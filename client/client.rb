@@ -173,7 +173,7 @@ end
 # role_id: 2=admin, 3=writer 4=participant 5=viewer
 # writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
 # participantはrole_idを指定しないでもいい
-def add_member(name:, login:, password:, team_id:, registration_code:, role_id:)
+def add_member(name:, login:, password:, team_id: nil, registration_code: nil, role_id: nil)
   data = {
     name: name,
     login: login,
