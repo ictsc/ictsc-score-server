@@ -114,6 +114,8 @@ describe Problem do
   describe 'GET /api/problems/:id' do
     let!(:problem) { create(:problem) }
     let!(:next_problem) { create(:problem, problem_must_solve_before: problem) }
+    let!(:team_private_problem) { create(:problem, problem_must_solve_before: problem, team_private: true) }
+    let!(:team_private_problem_no_deps) { create(:problem, problem_must_solve_before: nil, team_private: true) }
 
     let(:response) { get "/api/problems/#{problem.id}" }
     subject { response.status }
@@ -147,6 +149,37 @@ describe Problem do
       subject { response.status }
 
       by_participant { is_expected.to eq 404 }
+    end
+
+    describe "team private problem" do
+      let(:response) { get "/api/problems/#{team_private_problem.id}" }
+      subject { response.status }
+
+      let(:solve_problem_by_own_team) { create(:score, solved: true, answer: create(:answer, problem: problem, team: current_member.team, created_at: delayed)) }
+      let(:solve_problem_by_other_team) { create(:score, solved: true,  answer: create(:answer, problem: problem, created_at: delayed)) } # solved
+
+      describe "can solve if it has not dependency problem" do
+        let(:response) { get "/api/problems/#{team_private_problem_no_deps.id}" }
+        by_participant { is_expected.to eq 200 }
+      end
+
+      describe "can solve if own team has solved its dependency problem" do
+        by_participant {
+          solve_problem_by_own_team
+          is_expected.to eq 200
+        }
+      end
+
+      describe "cannot solve even if other teams have solved its dependency problem" do
+        by_participant {
+          solve_problem_by_other_team
+          is_expected.to eq 404
+        }
+      end
+
+      describe "cannot solve if every team has not solved its dependency problem" do
+        by_participant { is_expected.to eq 404 }
+      end
     end
 
     describe '#keys' do
