@@ -14,7 +14,7 @@ def request(method, path, payload_hash = {}, headers = { content_type: :json })
   payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
 
   $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
-  $responses.last
+  JSON.parse($responses.last)
 end
 
 def parse_file(filepath)
@@ -29,17 +29,17 @@ end
 
 
 def login_as(login:, password:)
-  JSON.parse(request(:post, 'session', { login: login, password: password }))
+  request(:post, 'session', { login: login, password: password })
 end
 
 def logout
-  JSON.parse(request(:delete, 'session'))
+  request(:delete, 'session')
 end
 
 ## problem groups
 
 def list_problem_groups()
-  JSON.parse(request(:get, 'problem_groups'))
+  request(:get, 'problem_groups')
 end
 
 def add_problem_group(name:, description:, visible: true, completing_bonus_point: 0, icon_url: '', order:)
@@ -72,7 +72,7 @@ end
 
 def list_problems(with: [])
   with_params = with.empty? ? '' : "?with=#{with.join(',')}"
-  JSON.parse(request(:get, 'problems' + with_params))
+  request(:get, 'problems' + with_params)
 end
 
 def add_problem(title:, text:, secret_text: '', reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:, order: 0, team_private: false)
@@ -89,7 +89,7 @@ def add_problem(title:, text:, secret_text: '', reference_point:, perfect_point:
     problem_group_ids: problem_group_ids,
   }
 
-  JSON.parse(request(:post, 'problems', data))
+  request(:post, 'problems', data)
 end
 
 def add_problems_from_hash(problems)
@@ -120,13 +120,13 @@ end
 
 # def update_problem(id:, title:, text:, reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:)
 def update_problem(problem_hash)
-  JSON.parse(request(:put, "problems/#{problem_hash['id']}", problem_hash))
+  request(:put, "problems/#{problem_hash['id']}", problem_hash)
 end
 
 ## teams
 
 def list_teams
-  JSON.parse(request(:get, 'teams'))
+  request(:get, 'teams')
 end
 
 def add_team(name:, organization:, registration_code:)
@@ -135,7 +135,7 @@ def add_team(name:, organization:, registration_code:)
     organization: organization,
     registration_code: registration_code,
   }
-  JSON.parse(request(:post, 'teams', data))
+  request(:post, 'teams', data)
 end
 
 def add_teams_from_hash(teams)
@@ -152,22 +152,22 @@ end
 
 def add_attachments(filepath)
   full_filepath = File.expand_path(filepath)
-  JSON.parse(request(:post, 'attachments', { file: File.open(full_filepath, 'rb'),  multipart: true }, {}))
+  request(:post, 'attachments', { file: File.open(full_filepath, 'rb'),  multipart: true }, {})
 end
 
 def list_attachments
-  JSON.parse(request(:get, 'attachments'))
+  request(:get, 'attachments')
 end
 
 def download_attachments(id:, access_token:)
   path = "/api/attachments/#{id}/#{access_token}"
-  JSON.parse(request(:get, path))
+  request(:get, path)
 end
 
 ## members
 
 def list_members()
-  JSON.parse(request(:get, 'members'))
+  request(:get, 'members')
 end
 
 # role_id: 2=admin, 3=writer 4=participant 5=viewer
@@ -182,7 +182,7 @@ def add_member(name:, login:, password:, team_id:, registration_code:, role_id:)
     registration_code: registration_code,
     role_id: role_id,
   }
-  JSON.parse(request(:post, 'members', data))
+  request(:post, 'members', data)
 end
 
 def add_members_from_hash(members)
@@ -199,7 +199,7 @@ def add_members_from_hash(members)
 end
 
 def update_member(member_hash)
-  JSON.parse(request(:put, "members/#{member_hash['id']}", member_hash))
+  request(:put, "members/#{member_hash['id']}", member_hash)
 end
 
 #### 特定の処理に特化したちょい便利メソッドたち
