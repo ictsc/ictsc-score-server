@@ -93,7 +93,7 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members" do
-    @members = generate_nested_hash(klass: Member, by: current_user, params: @with_param, as_option: {except: [:hashed_password]}, apply_filter: !is_admin?)
+    @members = generate_nested_hash(klass: Member, by: current_user, params: @with_param, apply_filter: !is_admin?)
     json @members
   end
 
@@ -142,7 +142,7 @@ class MemberRoutes < Sinatra::Base
   end
 
   get "/api/members/:id" do
-    @member = generate_nested_hash(klass: Member, by: current_user, params: @with_param, id: params[:id], as_option: {except: [:hashed_password]}, apply_filter: !is_admin?)
+    @member = generate_nested_hash(klass: Member, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_admin?)
     json @member
   end
 
