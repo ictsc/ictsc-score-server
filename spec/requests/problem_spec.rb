@@ -93,7 +93,7 @@ describe Problem do
     describe "problem have solved by other team before problem must solve" do
       let(:team) { create(:team) }
       let(:response) { get "/api/problems/#{next_problem.id}" }
-      let!(:score) { create(:score, answer: create(:answer, problem: problem, team: team, created_at: created_at), point: problem.reference_point, solved: true) }
+      let!(:score) { create(:score, solved: true, answer: create(:answer, problem: problem, team: team, created_at: created_at)) }
       subject { response.status }
 
 
