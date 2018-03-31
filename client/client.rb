@@ -152,6 +152,12 @@ API_ENDPOINTS = {
   members: {
     required: %i(name login password),
     optional: { team_id: nil, registration_code: nil, role_id: nil, },
+    hooks: {
+      underscore: {
+        _role: :member_role,
+        _role_id: :member_role,
+      },
+    },
   },
   notices: {},
   problems: {
@@ -177,6 +183,11 @@ API_ENDPOINTS = {
 #   index: 一括処理中ならlist内のthisのインデックス
 module Hooks
   module_function
+
+  # _role, _role_idで文字列かシンボルでRoleを指定できる
+  def member_role(value:, this:, list:, index:)
+    this[:role_id] = ROLE_ID[value.to_sym.downcase]
+  end
 end
 
 module EndpointRequetrs
