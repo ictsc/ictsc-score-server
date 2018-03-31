@@ -64,6 +64,9 @@ def load_file(filepath)
     YAML.load(File.read(filepath))
   when '.json'
     JSON.parse(File.read(filepath))
+  else
+    error 'Unsupported file type'
+    return
   end
 end
 
