@@ -212,6 +212,17 @@ module EndpointRequetrs
 
     request(:post, endpoint_sym, data)
   end
+
+  def put(endpoint_sym:, list: nil, index: nil, **args)
+    endpoint = API_ENDPOINTS[endpoint_sym]
+
+    # 取得した値を使ってputを呼ぶからrequiredやoptionalのチェックは無し
+
+    # underscoreフックは有効
+    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+    request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
+  end
 end
 
 # _ から始まるキーのフックを実行する
@@ -250,6 +261,11 @@ API_ENDPOINTS.each do |endpoint_sym, args|
   proc_post = Proc.new{|**params| EndpointRequetrs.post(endpoint_sym: endpoint_sym, **params) }
   define_method('post_%s' % endpoint_sym.singularize, proc_post)
   define_method('add_%s' % endpoint_sym.singularize, proc_post)
+
+  ## PUT
+  proc_put = Proc.new{|**params| EndpointRequetrs.put(endpoint_sym: endpoint_sym, **params) }
+  define_method('put_%s' % endpoint_sym.singularize, proc_put)
+  define_method('update_%s' % endpoint_sym.singularize, proc_put)
 end
 
 
@@ -288,11 +304,6 @@ def add_problems(problems)
   end
 end
 
-# def update_problem(id:, title:, text:, reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:)
-def update_problem(problem)
-  request(:put, "problems/#{problem[:id]}", problem)
-end
-
 ## teams
 
 def add_teams(teams)
@@ -326,10 +337,6 @@ def add_members(members)
   members.each do |member|
     puts add_member(member)
   end
-end
-
-def update_member(member_hash)
-  request(:put, "members/#{member_hash[:id]}", member_hash)
 end
 
 #### 特定の処理に特化したちょい便利メソッドたち
