@@ -223,6 +223,15 @@ module EndpointRequetrs
 
     request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
   end
+
+  def delete(endpoint_sym:, list: nil, index: nil, **args)
+    endpoint = API_ENDPOINTS[endpoint_sym]
+
+    # underscoreフックは有効
+    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+    request(:delete, '%s/%d' % [endpoint_sym, args[:id]], args)
+  end
 end
 
 # _ から始まるキーのフックを実行する
@@ -266,6 +275,10 @@ API_ENDPOINTS.each do |endpoint_sym, args|
   proc_put = Proc.new{|**params| EndpointRequetrs.put(endpoint_sym: endpoint_sym, **params) }
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
   define_method('update_%s' % endpoint_sym.singularize, proc_put)
+
+  ## DELETE
+  proc_delete = Proc.new{|**params| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, **params) }
+  define_method('delete_%s' % endpoint_sym.singularize, proc_delete)
 end
 
 
