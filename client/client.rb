@@ -123,19 +123,32 @@ end
 
 ## API endpoints
 
+# required: クライアントからPOSTリクエストを投げるときに必要なキー
+# optional: 未指定の場合デフォルト値が入るキー
 API_ENDPOINTS = {
   answers: {},
   attachments: {},
   comments: {},
   contests: {},
   issues: {},
-  members: {},
+  members: {
+    required: %i(name login password),
+    optional: { team_id: nil, registration_code: nil, role_id: nil, },
+  },
   notices: {},
-  problems: {},
-  problem_groups: {},
+  problems: {
+    required: %i(title text reference_point perfect_point creator_id),
+    optional: { secret_text: '', team_private: false, order: 0, problem_must_solve_before_id: nil, problem_group_ids: [], },
+  },
+  problem_groups: {
+    required: %i(name),
+    optional: { order: 0, description: nil, visible: true, completing_bonus_point: 0, icon_url: '', },
+  },
   scores: {},
   scoreboard: {},
-  teams: {},
+  teams: {
+    required: %i(name organization registration_code),
+  },
 }
 
 API_ENDPOINTS.each do |endpoint_sym, args|
