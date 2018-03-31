@@ -42,6 +42,16 @@ class Array
   end
 end
 
+class Object
+  def try_send(name, *args)
+    respond_to?(name) ? send(name, *args) : nil
+  end
+
+  def try_send!(name, *args)
+    respond_to?(name) ? send(name, *args) : self
+  end
+end
+
 def error(message)
   warn "[!] #{message}"
 end
