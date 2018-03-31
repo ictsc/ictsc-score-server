@@ -73,6 +73,11 @@ def error(message)
   warn "[!] #{message}"
 end
 
+def input_password()
+  print 'password: '
+  STDIN.noecho(&:gets).chomp
+end
+
 def build_url(path)
   File.join($base_url, path.to_s)
 end
@@ -117,7 +122,7 @@ end
 
 ## session
 
-def login(login:, password:)
+def login(login:, password: input_password)
   request(:post, 'session', { login: login, password: password })
 end
 
@@ -302,11 +307,6 @@ def change_password(login:, password: input_password())
   update_member(member_hash)
 end
 
-def input_password()
-  print 'password: '
-  STDIN.noecho(&:gets).chomp
-end
-
 module ShellCommands
   module_function
 
@@ -330,7 +330,7 @@ end
 $base_url = ARGV[0] || 'http://localhost:3000/api'
 $responses = []
 
-login(login: :admin, password: input_password())
+login(login: :admin)
 
 require 'pry'
 extend ShellCommands
