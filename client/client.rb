@@ -182,6 +182,17 @@ end
 module EndpointRequetrs
   module_function
 
+  def gets(endpoint_sym:, **params)
+    # 配列でも文字列でもいい
+    params[:with] &&= params[:with].try_send!(:join, ',')
+
+    params_str = params
+      .map {|key,value| "#{key}=#{value}" }
+      .join('&')
+
+    request(:get, '%s?%s' % [endpoint_sym, params_str])
+  end
+
   def post(endpoint_sym:, list: nil, index: nil, **args)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
@@ -229,21 +240,9 @@ end
 
 API_ENDPOINTS.each do |endpoint_sym, args|
   ## GET all
-  # e.g
-  #   /api/problems?with=answers,comments
-  proc_gets = Proc.new do |**params|
-    # 配列でも文字列でもいい
-    params[:with] &&= params[:with].try_send!(:join, ',')
-
-    params_str = params
-      .map {|key,value| "#{key}=#{value}" }
-      .join('&')
-
-    request(:get, '%s?%s' % [endpoint_sym, params_str])
-  end
-
   # e.g.
   #   get_problems(with: 'answers,comments')
+  proc_gets = Proc.new{|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
   define_method('get_%s' % endpoint_sym, proc_gets)
   define_method('list_%s' % endpoint_sym, proc_gets)
 end
