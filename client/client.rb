@@ -1,9 +1,45 @@
 require 'io/console'
-require 'rest-client'
 require 'json'
 require 'yaml'
 
+require 'rest-client'
+require 'hashie'
+require 'active_support'
+require 'active_support/core_ext'
+
 ## utils
+
+class Hash
+  extend Hashie::Extensions::DeepFind
+  extend Hashie::Extensions::DeepFetch
+  include Hashie::Extensions::MethodAccess
+
+  alias :symbolize_keys :deep_symbolize_keys
+end
+
+class Array
+  def symbolize_keys
+    map(&:deep_symbolize_keys)
+  end
+
+  def where(opts = {})
+    select do |elem|
+      opts.all? {|key, value| value === elem[key] }
+    end
+  end
+
+  def where_not(opts = {})
+    select do |elem|
+      opts.none? {|key, value| value === elem[key] }
+    end
+  end
+
+  def find_by(opts = {})
+    find do |elem|
+      opts.all? {|key, value| value === elem[key] }
+    end
+  end
+end
 
 def build_url(path)
   File.join($base_url, path)
