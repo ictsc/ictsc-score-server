@@ -138,6 +138,28 @@ API_ENDPOINTS = {
   teams: {},
 }
 
+API_ENDPOINTS.each do |endpoint_sym, args|
+  ## GET all
+  # e.g
+  #   /api/problems?with=answers,comments
+  proc_gets = Proc.new do |**params|
+    # 配列でも文字列でもいい
+    params[:with] &&= params[:with].try_send!(:join, ',')
+
+    params_str = params
+      .map {|key,value| "#{key}=#{value}" }
+      .join('&')
+
+    request(:get, '%s?%s' % [endpoint_sym, params_str])
+  end
+
+  # e.g.
+  #   get_problems(with: 'answers,comments')
+  define_method('get_%s' % endpoint_sym, proc_gets)
+  define_method('list_%s' % endpoint_sym, proc_gets)
+end
+
+
 ## session
 
 def login(login:, password: input_password)
@@ -149,10 +171,6 @@ def logout
 end
 
 ## problem groups
-
-def list_problem_groups()
-  request(:get, 'problem_groups')
-end
 
 def add_problem_group(name:, description:, visible: true, completing_bonus_point: 0, icon_url: '', order:)
   data = {
@@ -174,11 +192,6 @@ def add_problem_groups(problem_groups)
 end
 
 ## problems
-
-def list_problems(with: [])
-  with_params = with.empty? ? '' : "?with=#{with.join(',')}"
-  request(:get, 'problems' + with_params)
-end
 
 def add_problem(title:, text:, secret_text: '', reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:, order: 0, team_private: false)
   data = {
@@ -219,10 +232,6 @@ end
 
 ## teams
 
-def list_teams
-  request(:get, 'teams')
-end
-
 def add_team(name:, organization:, registration_code:)
   data = {
     name: name,
@@ -249,19 +258,11 @@ def add_attachments(filepathes)
   filepathes.each {|filepath| add_attachments(filepath) }
 end
 
-def list_attachments
-  request(:get, 'attachments')
-end
-
 def download_attachment(id:, access_token:)
   request(:get, "/api/attachments/#{id}/#{access_token}")
 end
 
 ## members
-
-def list_members()
-  request(:get, 'members')
-end
 
 # role_id: 2=admin, 3=writer 4=participant 5=viewer
 # writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
