@@ -64,17 +64,28 @@ end
 
 def load_file(filepath)
   filepath = File.expand_path(filepath)
-  case File.extname(filepath)
-  when '.yml', '.yaml'
-    YAML.load(read_erb(filepath))
-  when '.json'
-    JSON.parse(read_erb(filepath))
-  when '.txt', '.md'
-    read_erb(filepath)
-  else
-    error 'Unsupported file type'
+
+  unless File.file? filepath
+    error '"%s" is not a file' % filepath
     return
   end
+
+  data = case File.extname(filepath)
+    when '.yml', '.yaml'
+      YAML.load(read_erb(filepath))
+    when '.json'
+      JSON.parse(read_erb(filepath))
+    when '.txt', '.md'
+      read_erb(filepath)
+    else
+      error 'Unsupported file type'
+      return
+    end
+
+  {
+    data: data,
+    filedir: File.dirname(filepath),
+  }
 end
 
 
