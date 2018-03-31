@@ -67,7 +67,7 @@ def error(message)
 end
 
 def build_url(path)
-  File.join($base_url, path)
+  File.join($base_url, path.to_s)
 end
 
 def request(method, path, payload_hash = {}, headers = { content_type: :json })
