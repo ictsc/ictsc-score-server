@@ -55,7 +55,7 @@ def request(method, path, payload_hash = {}, headers = { content_type: :json })
   payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
 
   $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
-  JSON.parse($responses.last)
+  JSON.parse($responses.last, symbolize_names: true)
 end
 
 def read_erb(filepath)
@@ -72,9 +72,9 @@ def load_file(filepath)
 
   data = case File.extname(filepath)
     when '.yml', '.yaml'
-      YAML.load(read_erb(filepath))
+      YAML.load(read_erb(filepath)).symbolize_keys
     when '.json'
-      JSON.parse(read_erb(filepath))
+      JSON.parse(read_erb(filepath), symbolize_names: true)
     when '.txt', '.md'
       read_erb(filepath)
     else
@@ -88,6 +88,7 @@ def load_file(filepath)
   }
 end
 
+## session
 
 def login(login:, password:)
   request(:post, 'session', { login: login, password: password })
@@ -117,15 +118,8 @@ def add_problem_group(name:, description:, visible: true, completing_bonus_point
 end
 
 def add_problem_groups(problem_groups)
-  problem_groups.each do |g|
-    puts add_problem_group(
-      name: g['name'],
-      description: g['description'],
-      visible: g['visible'],
-      completing_bonus_point: g['completing_bonus_point'],
-      icon_url: g['icon_url'],
-      order: g['order'],
-    )
+  problem_groups.each do |problem_group|
+    puts add_problem_group(problem_group)
   end
 end
 
@@ -155,33 +149,22 @@ end
 
 def add_problems(problems)
   # 先にまとめて読み込みチェック
-  problems.each do |p|
-    if p.key?('text_file')
+  problems.each do |problem|
+    if problem.key?('text_file')
       # TODO: 固有
-      filepath =  File.join('./ictsc9/', '/problem-text', (p['text_file']))
-      p['text'] = File.read(filepath)
+      filepath =  File.join('./ictsc9/', '/problem-text', (problem[:text_file]))
+      problem[:text] = File.read(filepath)
     end
   end
 
-  problems.each do |p|
-    puts add_problem(
-      title: p['title'],
-      text: p['text'],
-      secret_text: p['secret_text'],
-      order: p['order'],
-      reference_point: p['reference_point'],
-      perfect_point: p['perfect_point'],
-      team_private: p['team_private'],
-      creator_id: p['creator_id'],
-      problem_must_solve_before_id: p['problem_must_solve_before_id'],
-      problem_group_ids: p['problem_group_ids'],
-    )
+  problems.each do |problem|
+    puts add_problem(problem)
   end
 end
 
 # def update_problem(id:, title:, text:, reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:)
-def update_problem(problem_hash)
-  request(:put, "problems/#{problem_hash['id']}", problem_hash)
+def update_problem(problem)
+  request(:put, "problems/#{problem[:id]}", problem)
 end
 
 ## teams
@@ -200,12 +183,8 @@ def add_team(name:, organization:, registration_code:)
 end
 
 def add_teams(teams)
-  teams.each do |t|
-    puts add_team(
-      name: t['name'],
-      organization: t['organization'],
-      registration_code: t['registration_code'],
-    )
+  teams.each do |team|
+    puts add_team(team)
   end
 end
 
@@ -236,7 +215,7 @@ end
 
 # role_id: 2=admin, 3=writer 4=participant 5=viewer
 # writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
-# participantはrole_idを指定しないでもいい
+# participantはrole_idを指定できない
 def add_member(name:, login:, password:, team_id: nil, registration_code: nil, role_id: nil)
   data = {
     name: name,
@@ -250,34 +229,27 @@ def add_member(name:, login:, password:, team_id: nil, registration_code: nil, r
 end
 
 def add_members(members)
-  members.each do |m|
-    puts add_member(
-      name: m['name'],
-      login: m['login'],
-      password: m['password'],
-      team_id: m['team_id'],
-      registration_code: m['registration_code'],
-      role_id: m['role_id'],
-    )
+  members.each do |member|
+    puts add_member(member)
   end
 end
 
 def update_member(member_hash)
-  request(:put, "members/#{member_hash['id']}", member_hash)
+  request(:put, "members/#{member_hash[:id]}", member_hash)
 end
 
 #### 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
-  problem = list_problems.find{|e| e['id'] == problem_id }
-  problem['problem_group_ids'] = [group_id]
+  problem = list_problems.find {|problem| problem[:id] == problem_id }
+  problem[:problem_group_ids] = [group_id]
   update_problem(problem)
 end
 
 # afterをbeforeに依存させる
 def change_depends_problem(before_id:, after_id:)
-  after_problem = list_problems.find {|e| e['id'] == after_id }
-  after_problem['problem_must_solve_before_id'] = before_id
+  after_problem = list_problems.find {|problem| problem[:id] == after_id }
+  after_problem[:problem_must_solve_before_id] = before_id
   update_problem(after_problem)
 end
 
@@ -292,14 +264,14 @@ end
 
 # 指定ディレクトリをまとめてアップロードする
 def upload_dir_files(file_dir)
-  Dir.glob(File.join(file_dir, '/*')).select{|file_path| File.file?(file_path) }.each do |file_path|
-    p add_attachments(file_path)['url']
-  end
+  Dir.glob(File.join(file_dir, '/*'))
+    .select {|file_path| File.file?(file_path) }
+    .map {|file_path| add_attachments(file_path) }
 end
 
 def change_password(login:, password: input_password())
-  member_hash = list_members.find{|m| m['login'] == login }
-  member_hash['password'] = password
+  member_hash = list_members.find{|m| m[:login] == login }
+  member_hash[:password] = password
   update_member(member_hash)
 end
 
@@ -331,7 +303,7 @@ add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, pe
 
 # 問題を更新する
 problem = list_problems[0]
-problem['title'] = 'this is a title'
+problem[:title] = 'this is a title'
 puts update_problem(problem)
 
 # YAMLから問題を読み込んでまとめて追加
