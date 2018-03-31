@@ -280,12 +280,33 @@ def input_password()
   STDIN.noecho(&:gets).chomp
 end
 
+module ShellCommands
+  module_function
+
+  def _pwd
+    puts Dir.pwd
+  end
+
+  def _ls(*args)
+    system(*(['ls', '--color=always', '-F'] | args))
+  end
+
+  def _cd(dir)
+    Dir.chdir(dir)
+  end
+
+  def _cat(filepath)
+    puts File.read(filepath)
+  end
+end
+
 $base_url = ARGV[0] || 'http://localhost:3000/api'
 $responses = []
 
 login(login: :admin, password: input_password())
 
 require 'pry'
+extend ShellCommands
 binding.pry
 puts '[*] end binding'
 
