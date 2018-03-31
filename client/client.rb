@@ -140,6 +140,8 @@ alias get_roles list_roles
 
 # required: クライアントからPOSTリクエストを投げるときに必要なキー
 # optional: 未指定の場合デフォルト値が入るキー
+# hooks:
+#   underscore: `_` から始まるキーをフックする
 API_ENDPOINTS = {
   answers: {},
   attachments: {},
@@ -165,6 +167,29 @@ API_ENDPOINTS = {
     required: %i(name organization registration_code),
   },
 }
+
+# API_ENDPOINTSに登録されたフックの本体
+# 引数
+#   value: フックしたキーの値
+#   this:  処理中のハッシュ
+#   list:  一括処理中ならそのリスト
+#   index: 一括処理中ならlist内のthisのインデックス
+module Hooks
+  module_function
+end
+
+# _ から始まるキーのフックを実行する
+def call_underscore_hooks(this:, endpoint:, list:, index:)
+  underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
+
+  underscore_hooks&.each do |key, method_sym|
+    Hooks
+      .method(method_sym)
+      .call(value: this[key], this: this, list: list, index: index)
+
+    this.delete(key)
+  end
+end
 
 API_ENDPOINTS.each do |endpoint_sym, args|
   ## GET all
@@ -197,6 +222,8 @@ def base_post(endpoint_sym:, list: nil, index: nil, **args)
     puts 'optional keys: %p' % [endpoint.fetch(:optional, {}).keys - args.keys]
     return
   end
+
+  call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
   # 未指定のoptionalを取り込む(args優先)
   data = endpoint.fetch(:optional, {}).merge(args)
