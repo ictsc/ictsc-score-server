@@ -121,6 +121,21 @@ def load_file(filepath)
 end
 
 
+## Role
+ROLE_ID = {
+  admin: 2,
+  writer: 3,
+  participant: 4,
+  viewer: 5,
+  nologin: 1,
+}
+
+def list_roles
+  ROLE_ID
+end
+alias get_roles list_roles
+
+
 ## API endpoints
 
 # required: クライアントからPOSTリクエストを投げるときに必要なキー
