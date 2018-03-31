@@ -120,6 +120,24 @@ def load_file(filepath)
   }
 end
 
+
+## API endpoints
+
+API_ENDPOINTS = {
+  answers: {},
+  attachments: {},
+  comments: {},
+  contests: {},
+  issues: {},
+  members: {},
+  notices: {},
+  problems: {},
+  problem_groups: {},
+  scores: {},
+  scoreboard: {},
+  teams: {},
+}
+
 ## session
 
 def login(login:, password: input_password)
