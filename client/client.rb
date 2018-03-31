@@ -41,6 +41,10 @@ class Array
   end
 end
 
+def error(message)
+  warn "[!] #{message}"
+end
+
 def build_url(path)
   File.join($base_url, path)
 end
