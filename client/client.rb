@@ -16,6 +16,13 @@ class Hash
   include Hashie::Extensions::MethodAccess
 
   alias :symbolize_keys :deep_symbolize_keys
+
+  # { a: 10, b: 20 }.has_keys?(:a, :b)
+  def has_keys?(*arg_keys)
+    (arg_keys - keys).empty?
+  end
+  alias includes? has_keys?
+  alias members? has_keys?
 end
 
 class Array
