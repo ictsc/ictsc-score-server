@@ -1,6 +1,7 @@
 require 'io/console'
 require 'json'
 require 'yaml'
+require 'erb'
 
 require 'rest-client'
 require 'hashie'
@@ -57,13 +58,19 @@ def request(method, path, payload_hash = {}, headers = { content_type: :json })
   JSON.parse($responses.last)
 end
 
+def read_erb(filepath)
+  ERB.new(File.read(filepath)).result
+end
+
 def load_file(filepath)
   filepath = File.expand_path(filepath)
   case File.extname(filepath)
   when '.yml', '.yaml'
-    YAML.load(File.read(filepath))
+    YAML.load(read_erb(filepath))
   when '.json'
-    JSON.parse(File.read(filepath))
+    JSON.parse(read_erb(filepath))
+  when '.txt', '.md'
+    read_erb(filepath)
   else
     error 'Unsupported file type'
     return
