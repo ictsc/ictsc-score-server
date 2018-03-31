@@ -142,6 +142,7 @@ alias get_roles list_roles
 # optional: 未指定の場合デフォルト値が入るキー
 # hooks:
 #   underscore: `_` から始まるキーをフックする
+#   blank: 値が `Object#blank?` ならフックする
 API_ENDPOINTS = {
   answers: {},
   attachments: {},
@@ -191,6 +192,17 @@ def call_underscore_hooks(this:, endpoint:, list:, index:)
   end
 end
 
+# キーが空だった場合のフック
+def call_blank_hooks(this:, endpoint:, list:, index:)
+  blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
+
+  blank_hooks&.each do |key, method_sym|
+    Hooks
+      .method(method_sym)
+      .call(value: this[key], this: this, list: list, index: index)
+  end
+end
+
 API_ENDPOINTS.each do |endpoint_sym, args|
   ## GET all
   # e.g
@@ -224,6 +236,8 @@ def base_post(endpoint_sym:, list: nil, index: nil, **args)
   end
 
   call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+  call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
   # 未指定のoptionalを取り込む(args優先)
   data = endpoint.fetch(:optional, {}).merge(args)
