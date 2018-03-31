@@ -245,6 +245,11 @@ API_ENDPOINTS.each do |endpoint_sym, args|
   proc_gets = Proc.new{|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
   define_method('get_%s' % endpoint_sym, proc_gets)
   define_method('list_%s' % endpoint_sym, proc_gets)
+
+  ## POST
+  proc_post = Proc.new{|**params| EndpointRequetrs.post(endpoint_sym: endpoint_sym, **params) }
+  define_method('post_%s' % endpoint_sym.singularize, proc_post)
+  define_method('add_%s' % endpoint_sym.singularize, proc_post)
 end
 
 
@@ -260,19 +265,6 @@ end
 
 ## problem groups
 
-def add_problem_group(name:, description:, visible: true, completing_bonus_point: 0, icon_url: '', order:)
-  data = {
-    name: name,
-    description: description,
-    visible: visible,
-    completing_bonus_point: completing_bonus_point,
-    icon_url: icon_url,
-    order: order,
-  }
-
-  request(:post, 'problem_groups', data)
-end
-
 def add_problem_groups(problem_groups)
   problem_groups.each do |problem_group|
     puts add_problem_group(problem_group)
@@ -280,23 +272,6 @@ def add_problem_groups(problem_groups)
 end
 
 ## problems
-
-def add_problem(title:, text:, secret_text: '', reference_point:, perfect_point:, creator_id:, problem_group_ids:, problem_must_solve_before_id:, order: 0, team_private: false)
-  data = {
-    title: title,
-    text: text,
-    secret_text: secret_text,
-    reference_point: reference_point,
-    perfect_point: perfect_point,
-    order: order,
-    creator_id: creator_id,
-    team_private: team_private,
-    problem_must_solve_before_id: problem_must_solve_before_id,
-    problem_group_ids: problem_group_ids,
-  }
-
-  request(:post, 'problems', data)
-end
 
 def add_problems(problems)
   # 先にまとめて読み込みチェック
@@ -319,15 +294,6 @@ def update_problem(problem)
 end
 
 ## teams
-
-def add_team(name:, organization:, registration_code:)
-  data = {
-    name: name,
-    organization: organization,
-    registration_code: registration_code,
-  }
-  request(:post, 'teams', data)
-end
 
 def add_teams(teams)
   teams.each do |team|
@@ -355,17 +321,6 @@ end
 # role_id: 2=admin, 3=writer 4=participant 5=viewer
 # writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
 # participantはrole_idを指定できない
-def add_member(name:, login:, password:, team_id: nil, registration_code: nil, role_id: nil)
-  data = {
-    name: name,
-    login: login,
-    password: password,
-    team_id: team_id,
-    registration_code: registration_code,
-    role_id: role_id,
-  }
-  request(:post, 'members', data)
-end
 
 def add_members(members)
   members.each do |member|
