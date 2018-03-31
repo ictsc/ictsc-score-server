@@ -150,12 +150,15 @@ API_ENDPOINTS = {
   contests: {},
   issues: {},
   members: {
-    required: %i(name login password),
-    optional: { team_id: nil, registration_code: nil, role_id: nil, },
+    required: %i(login password),
+    optional: { name: nil, team_id: nil, registration_code: nil, role_id: nil, },
     hooks: {
       underscore: {
         _role: :member_role,
         _role_id: :member_role,
+      },
+      blank: {
+        name: :member_name,
       },
     },
   },
@@ -187,6 +190,11 @@ module Hooks
   # _role, _role_idで文字列かシンボルでRoleを指定できる
   def member_role(value:, this:, list:, index:)
     this[:role_id] = ROLE_ID[value.to_sym.downcase]
+  end
+
+  # nameを省略したらloginを使用する
+  def member_name(value:, this:, list:, index:)
+    this[:name] = this[:login]
   end
 end
 
