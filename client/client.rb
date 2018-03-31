@@ -187,6 +187,23 @@ API_ENDPOINTS.each do |endpoint_sym, args|
   define_method('list_%s' % endpoint_sym, proc_gets)
 end
 
+# POSTのベースメソッド
+def base_post(endpoint_sym:, list: nil, index: nil, **args)
+  endpoint = API_ENDPOINTS[endpoint_sym]
+
+  insufficient_keys = endpoint.fetch(:required, []) - args.keys
+  unless insufficient_keys.empty?
+    puts 'required keys: %p' % [insufficient_keys]
+    puts 'optional keys: %p' % [endpoint.fetch(:optional, {}).keys - args.keys]
+    return
+  end
+
+  # 未指定のoptionalを取り込む(args優先)
+  data = endpoint.fetch(:optional, {}).merge(args)
+
+  request(:post, endpoint_sym, data)
+end
+
 
 ## session
 
