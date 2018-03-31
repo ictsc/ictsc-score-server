@@ -179,6 +179,30 @@ module Hooks
   module_function
 end
 
+module EndpointRequetrs
+  module_function
+
+  def post(endpoint_sym:, list: nil, index: nil, **args)
+    endpoint = API_ENDPOINTS[endpoint_sym]
+
+    insufficient_keys = endpoint.fetch(:required, []) - args.keys
+    unless insufficient_keys.empty?
+      puts 'required keys: %p' % [insufficient_keys]
+      puts 'optional keys: %p' % [endpoint.fetch(:optional, {}).keys - args.keys]
+      return
+    end
+
+    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+    call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+    # 未指定のoptionalを取り込む(args優先)
+    data = endpoint.fetch(:optional, {}).merge(args)
+
+    request(:post, endpoint_sym, data)
+  end
+end
+
 # _ から始まるキーのフックを実行する
 def call_underscore_hooks(this:, endpoint:, list:, index:)
   underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
@@ -222,27 +246,6 @@ API_ENDPOINTS.each do |endpoint_sym, args|
   #   get_problems(with: 'answers,comments')
   define_method('get_%s' % endpoint_sym, proc_gets)
   define_method('list_%s' % endpoint_sym, proc_gets)
-end
-
-# POSTのベースメソッド
-def base_post(endpoint_sym:, list: nil, index: nil, **args)
-  endpoint = API_ENDPOINTS[endpoint_sym]
-
-  insufficient_keys = endpoint.fetch(:required, []) - args.keys
-  unless insufficient_keys.empty?
-    puts 'required keys: %p' % [insufficient_keys]
-    puts 'optional keys: %p' % [endpoint.fetch(:optional, {}).keys - args.keys]
-    return
-  end
-
-  call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
-
-  call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
-
-  # 未指定のoptionalを取り込む(args優先)
-  data = endpoint.fetch(:optional, {}).merge(args)
-
-  request(:post, endpoint_sym, data)
 end
 
 
