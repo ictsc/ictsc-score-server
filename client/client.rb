@@ -230,7 +230,7 @@ module EndpointRequetrs
     request(:get, '%s?%s' % [endpoint_sym, params_str])
   end
 
-  def post(endpoint_sym:, list: nil, index: nil, **args)
+  def post(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     insufficient_keys = endpoint.fetch(:required, []) - args.keys
@@ -250,7 +250,7 @@ module EndpointRequetrs
     request(:post, endpoint_sym, data)
   end
 
-  def put(endpoint_sym:, list: nil, index: nil, **args)
+  def put(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # 取得した値を使ってputを呼ぶからrequiredやoptionalのチェックは無し
@@ -261,7 +261,7 @@ module EndpointRequetrs
     request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
   end
 
-  def delete(endpoint_sym:, list: nil, index: nil, **args)
+  def delete(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # underscoreフックは有効
@@ -295,7 +295,7 @@ def call_blank_hooks(this:, endpoint:, list:, index:)
   end
 end
 
-API_ENDPOINTS.each do |endpoint_sym, args|
+API_ENDPOINTS.each do |endpoint_sym, value|
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
@@ -304,17 +304,17 @@ API_ENDPOINTS.each do |endpoint_sym, args|
   define_method('list_%s' % endpoint_sym, proc_gets)
 
   ## POST
-  proc_post = Proc.new{|**params| EndpointRequetrs.post(endpoint_sym: endpoint_sym, **params) }
+  proc_post = Proc.new{|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
   define_method('post_%s' % endpoint_sym.singularize, proc_post)
   define_method('add_%s' % endpoint_sym.singularize, proc_post)
 
   ## PUT
-  proc_put = Proc.new{|**params| EndpointRequetrs.put(endpoint_sym: endpoint_sym, **params) }
+  proc_put = Proc.new{|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
   define_method('update_%s' % endpoint_sym.singularize, proc_put)
 
   ## DELETE
-  proc_delete = Proc.new{|**params| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, **params) }
+  proc_delete = Proc.new{|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
   define_method('delete_%s' % endpoint_sym.singularize, proc_delete)
 end
 
