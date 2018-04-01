@@ -10,7 +10,6 @@
   perfect_point: 100
   problem_group_ids:
     - 1
-  solved_teams_count: 8
 - id: 11
   title: 問題11
   text: カフェラテ
@@ -34,7 +33,6 @@
   perfect_point: 480
   problem_group_ids:
     - 1
-  solved_teams_count: 4
 - id: 13
   title: 問題13
   text: エスプレッソ
@@ -49,7 +47,6 @@
     - 1
     - 7
     - 10
-  solved_teams_count: 1
 - id: 14
   title: 問題14
   text: アメリカン
@@ -62,4 +59,3 @@
   perfect_point: 78
   problem_group_ids:
     - 1
-  solved_teams_count: 5
