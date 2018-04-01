@@ -195,7 +195,7 @@ module Hooks
 
   # _role, _role_idで文字列かシンボルでRoleを指定できる
   def member_role(value:, this:, list:, index:)
-    this[:role_id] = ROLE_ID[value.to_sym.downcase]
+    this[:role_id] = list_roles[value.to_sym.downcase]
   end
 
   # nameを省略したらloginを使用する
