@@ -381,11 +381,13 @@ def update_only_problem_group(problem_id:, group_id:)
   update_problem(problem)
 end
 
-# afterをbeforeに依存させる
-def change_depends_problem(before_id:, after_id:)
-  after_problem = list_problems.find {|problem| problem[:id] == after_id }
-  after_problem[:problem_must_solve_before_id] = before_id
-  update_problem(after_problem)
+# problem_idをbefore_idに依存させる
+def change_depends_problem(problem_id:, before_id:)
+  problem = list_problems
+    .find_by(id: problem_id)
+    .merge(problem_must_solve_before_id: before_id)
+
+  update_problem(problem)
 end
 
 # グループに複数の問題を依存させる
