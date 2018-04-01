@@ -374,8 +374,10 @@ end
 #### 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
-  problem = list_problems.find {|problem| problem[:id] == problem_id }
-  problem[:problem_group_ids] = [group_id]
+  problem = list_problems
+    .find_by(id: problem_id)
+    .merge(problem_group_ids: [group_id])
+
   update_problem(problem)
 end
 
