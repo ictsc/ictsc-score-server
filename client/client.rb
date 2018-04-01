@@ -136,10 +136,10 @@ ROLE_ID = {
   nologin: 1,
 }
 
-def list_roles
+def get_roles
   ROLE_ID
 end
-alias get_roles list_roles
+alias list_roles get_roles
 
 
 ## API endpoints
@@ -195,7 +195,7 @@ module Hooks
 
   # _role, _role_idで文字列かシンボルでRoleを指定できる
   def member_role(value:, this:, list:, index:)
-    this[:role_id] = list_roles[value.to_sym.downcase]
+    this[:role_id] = get_roles[value.to_sym.downcase]
   end
 
   # nameを省略したらloginを使用する
@@ -380,7 +380,7 @@ end
 #### 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
-  problem = list_problems
+  problem = get_problems
     .find_by(id: problem_id)
     .merge(problem_group_ids: [group_id])
 
@@ -389,7 +389,7 @@ end
 
 # problem_idをbefore_idに依存させる
 def change_depends_problem(problem_id:, before_id:)
-  problem = list_problems
+  problem = get_problems
     .find_by(id: problem_id)
     .merge(problem_must_solve_before_id: before_id)
 
@@ -414,7 +414,7 @@ def upload_dir_files(file_dir)
 end
 
 def change_password(login:, password: input_secret())
-  member = list_members
+  member = get_members
     .find_by(login: login)
     .merge(password: password)
 
@@ -464,7 +464,7 @@ logout
 add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, creator_id: 3, problem_group_ids: [1], problem_must_solve_before_id: 12)
 
 # 問題を更新する
-problem = list_problems[0]
+problem = get_problems[0]
 problem[:title] = 'this is a title'
 puts update_problem(problem)
 
