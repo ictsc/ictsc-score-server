@@ -399,9 +399,10 @@ end
 
 # 指定ディレクトリをまとめてアップロードする
 def upload_dir_files(file_dir)
-  Dir.glob(File.join(file_dir, '/*'))
+  filepathes = Dir.glob(File.join(file_dir, '/*'))
     .select {|file_path| File.file?(file_path) }
-    .map {|file_path| add_attachments(file_path) }
+
+  add_attachments(filepathes)
 end
 
 def change_password(login:, password: input_password())
