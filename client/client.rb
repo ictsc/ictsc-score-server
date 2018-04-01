@@ -269,29 +269,29 @@ module EndpointRequetrs
 
     request(:delete, '%s/%d' % [endpoint_sym, args[:id]], args)
   end
-end
 
-# _ から始まるキーのフックを実行する
-def call_underscore_hooks(this:, endpoint:, list:, index:)
-  underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
+  # _ から始まるキーのフックを実行する
+  def call_underscore_hooks(this:, endpoint:, list:, index:)
+    underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
 
-  underscore_hooks&.each do |key, method_sym|
-    Hooks
-      .method(method_sym)
-      .call(value: this[key], this: this, list: list, index: index)
+    underscore_hooks&.each do |key, method_sym|
+      Hooks
+        .method(method_sym)
+        .call(value: this[key], this: this, list: list, index: index)
 
-    this.delete(key)
+      this.delete(key)
+    end
   end
-end
 
-# キーが空だった場合のフック
-def call_blank_hooks(this:, endpoint:, list:, index:)
-  blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
+  # キーが空だった場合のフック
+  def call_blank_hooks(this:, endpoint:, list:, index:)
+    blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
 
-  blank_hooks&.each do |key, method_sym|
-    Hooks
-      .method(method_sym)
-      .call(value: this[key], this: this, list: list, index: index)
+    blank_hooks&.each do |key, method_sym|
+      Hooks
+        .method(method_sym)
+        .call(value: this[key], this: this, list: list, index: index)
+    end
   end
 end
 
