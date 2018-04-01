@@ -9,7 +9,7 @@ require 'hashie'
 require 'active_support'
 require 'active_support/core_ext'
 
-## utils
+## class extensions
 
 class Hash
   extend Hashie::Extensions::DeepFind
@@ -70,6 +70,9 @@ class Object
   end
 end
 
+
+## utils
+
 module Utils
   module_function
 
@@ -127,19 +130,28 @@ end
 
 include Utils
 
-## Role
-ROLE_ID = {
-  admin: 2,
-  writer: 3,
-  participant: 4,
-  viewer: 5,
-  nologin: 1,
-}
 
-def get_roles
-  ROLE_ID
+## shell commands
+
+module ShellCommands
+  module_function
+
+  def _pwd
+    puts Dir.pwd
+  end
+
+  def _ls(*args)
+    system(*(['ls', '--color=always', '-F'] | args))
+  end
+
+  def _cd(dir)
+    Dir.chdir(dir)
+  end
+
+  def _cat(filepath)
+    puts File.read(filepath)
+  end
 end
-alias list_roles get_roles
 
 
 ## API endpoints
@@ -317,6 +329,22 @@ def logout
   request(:delete, 'session')
 end
 
+
+## role
+ROLE_ID = {
+  admin: 2,
+  writer: 3,
+  participant: 4,
+  viewer: 5,
+  nologin: 1,
+}
+
+def get_roles
+  ROLE_ID
+end
+alias list_roles get_roles
+
+
 ## problem groups
 
 def add_problem_groups(problem_groups)
@@ -377,7 +405,7 @@ def add_members(members)
   end
 end
 
-#### 特定の処理に特化したちょい便利メソッドたち
+## 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
   problem = get_problems
@@ -403,8 +431,6 @@ def register_problems_to_group(group_id:, problem_ids: [])
   end
 end
 
-## misc
-
 # 指定ディレクトリをまとめてアップロードする
 def upload_dir_files(file_dir)
   filepathes = Dir.glob(File.join(file_dir, '/*'))
@@ -419,26 +445,6 @@ def change_password(login:, password: input_secret())
     .merge(password: password)
 
   update_member(member)
-end
-
-module ShellCommands
-  module_function
-
-  def _pwd
-    puts Dir.pwd
-  end
-
-  def _ls(*args)
-    system(*(['ls', '--color=always', '-F'] | args))
-  end
-
-  def _cd(dir)
-    Dir.chdir(dir)
-  end
-
-  def _cat(filepath)
-    puts File.read(filepath)
-  end
 end
 
 $base_url = ARGV[0] || 'http://localhost:3000/api'
