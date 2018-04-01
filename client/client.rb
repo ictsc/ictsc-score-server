@@ -70,57 +70,62 @@ class Object
   end
 end
 
-def error(message)
-  warn "[!] #{message}"
-end
+module Utils
+  module_function
 
-def input_secret(name = 'password')
-  print "#{name}: "
-  STDIN.noecho(&:gets).chomp
-end
-
-def build_url(path)
-  File.join($base_url, path.to_s)
-end
-
-def request(method, path, payload_hash = {}, headers = { content_type: :json })
-  headers[:cookies] ||= $responses.last&.cookies
-  payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
-
-  $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
-  JSON.parse($responses.last, symbolize_names: true)
-end
-
-def read_erb(filepath)
-  ERB.new(File.read(filepath)).result
-end
-
-def load_file(filepath)
-  filepath = File.expand_path(filepath)
-
-  unless File.file? filepath
-    error '"%s" is not a file' % filepath
-    return
+  def error(message)
+    warn "[!] #{message}"
   end
 
-  data = case File.extname(filepath)
-    when '.yml', '.yaml'
-      YAML.load(read_erb(filepath)).symbolize_keys
-    when '.json'
-      JSON.parse(read_erb(filepath), symbolize_names: true)
-    when '.txt', '.md'
-      read_erb(filepath)
-    else
-      error 'Unsupported file type'
+  def input_secret(name = 'password')
+    print "#{name}: "
+    STDIN.noecho(&:gets).chomp
+  end
+
+  def build_url(path)
+    File.join($base_url, path.to_s)
+  end
+
+  def request(method, path, payload_hash = {}, headers = { content_type: :json })
+    headers[:cookies] ||= $responses.last&.cookies
+    payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
+
+    $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
+    JSON.parse($responses.last, symbolize_names: true)
+  end
+
+  def read_erb(filepath)
+    ERB.new(File.read(filepath)).result
+  end
+
+  def load_file(filepath)
+    filepath = File.expand_path(filepath)
+
+    unless File.file? filepath
+      error '"%s" is not a file' % filepath
       return
     end
 
-  {
-    data: data,
-    filedir: File.dirname(filepath),
-  }
+    data = case File.extname(filepath)
+      when '.yml', '.yaml'
+        YAML.load(read_erb(filepath)).symbolize_keys
+      when '.json'
+        JSON.parse(read_erb(filepath), symbolize_names: true)
+      when '.txt', '.md'
+        read_erb(filepath)
+      else
+        error 'Unsupported file type'
+        return
+      end
+
+    {
+      data: data,
+      filedir: File.dirname(filepath),
+    }
+  end
 end
 
+include Utils
 
 ## Role
 ROLE_ID = {
