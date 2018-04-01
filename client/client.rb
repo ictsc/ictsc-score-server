@@ -353,6 +353,7 @@ def add_problem_groups(problem_groups)
   end
 end
 
+
 ## problems
 
 def add_problems(problems)
@@ -370,6 +371,7 @@ def add_problems(problems)
   end
 end
 
+
 ## teams
 
 def add_teams(teams)
@@ -377,6 +379,7 @@ def add_teams(teams)
     puts add_team(team)
   end
 end
+
 
 ## attachments
 
@@ -393,17 +396,15 @@ def download_attachment(id:, access_token:)
   request(:get, "/api/attachments/#{id}/#{access_token}")
 end
 
-## members
 
-# role_id: 2=admin, 3=writer 4=participant 5=viewer
-# writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
-# participantはrole_idを指定できない
+## members
 
 def add_members(members)
   members.each do |member|
     puts add_member(member)
   end
 end
+
 
 ## 特定の処理に特化したちょい便利メソッドたち
 
@@ -439,13 +440,16 @@ def upload_dir_files(file_dir)
   add_attachments(filepathes)
 end
 
-def change_password(login:, password: input_secret())
+def change_password(login:, password: input_secret)
   member = get_members
     .find_by(login: login)
     .merge(password: password)
 
   update_member(member)
 end
+
+
+## run
 
 $base_url = ARGV[0] || 'http://localhost:3000/api'
 $responses = []
@@ -480,3 +484,10 @@ add_problems(load_file('./sample-problem-groups.yml'))
 # ファイルをアップロード(ダウンロードリンクを返す)
 attachment = add_attachments('./pry_r.rb')
 download_attachment(id: attachment[:id], access_token: attachment[:access_token])
+
+
+# メンバーの追加
+# role_id:  ROLE_ID(1~5)を指定する代わりに _role: 'writer' が使える
+#   writer,admin,viewer: team_idとregistration_codeをnullにしてrole_idを指定する
+#   participant: role_idを指定不可
+add_member(login: 'foobar', password: 'foobar', _role: 'writer')
