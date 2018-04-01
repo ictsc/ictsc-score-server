@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'io/console'
 require 'json'
 require 'yaml'
