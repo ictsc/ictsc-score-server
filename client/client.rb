@@ -406,9 +406,11 @@ def upload_dir_files(file_dir)
 end
 
 def change_password(login:, password: input_password())
-  member_hash = list_members.find{|m| m[:login] == login }
-  member_hash[:password] = password
-  update_member(member_hash)
+  member = list_members
+    .find_by(login: login)
+    .merge(password: password)
+
+  update_member(member)
 end
 
 module ShellCommands
