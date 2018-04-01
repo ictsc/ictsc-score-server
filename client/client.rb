@@ -73,8 +73,8 @@ def error(message)
   warn "[!] #{message}"
 end
 
-def input_password()
-  print 'password: '
+def input_secret(name = 'password')
+  print "#{name}: "
   STDIN.noecho(&:gets).chomp
 end
 
@@ -303,7 +303,7 @@ end
 
 ## session
 
-def login(login:, password: input_password)
+def login(login:, password: input_secret)
   request(:post, 'session', { login: login, password: password })
 end
 
@@ -407,7 +407,7 @@ def upload_dir_files(file_dir)
   add_attachments(filepathes)
 end
 
-def change_password(login:, password: input_password())
+def change_password(login:, password: input_secret())
   member = list_members
     .find_by(login: login)
     .merge(password: password)
