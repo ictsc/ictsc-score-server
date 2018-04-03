@@ -318,6 +318,11 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('post_%s' % endpoint_sym.singularize, proc_post)
   define_method('add_%s' % endpoint_sym.singularize, proc_post)
 
+  ## POST list
+  proc_posts = Proc.new{|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list ,index: index) } }
+  define_method('post_%s' % endpoint_sym.pluralize, proc_posts)
+  define_method('add_%s' % endpoint_sym.pluralize, proc_posts)
+
   ## PUT
   proc_put = Proc.new{|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
@@ -357,42 +362,6 @@ end
 alias list_roles get_roles
 
 
-## problem groups
-
-def add_problem_groups(problem_groups)
-  problem_groups.each do |problem_group|
-    puts add_problem_group(problem_group)
-  end
-end
-
-
-## problems
-
-def add_problems(problems)
-  # 先にまとめて読み込みチェック
-  problems.each do |problem|
-    if problem.key?('text_file')
-      # TODO: 固有
-      filepath =  File.join('./ictsc9/', '/problem-text', (problem[:text_file]))
-      problem[:text] = File.read(filepath)
-    end
-  end
-
-  problems.each do |problem|
-    puts add_problem(problem)
-  end
-end
-
-
-## teams
-
-def add_teams(teams)
-  teams.each do |team|
-    puts add_team(team)
-  end
-end
-
-
 ## attachments
 
 def add_attachment(filepath)
@@ -406,15 +375,6 @@ end
 
 def download_attachment(id:, access_token:)
   request(:get, "/api/attachments/#{id}/#{access_token}")
-end
-
-
-## members
-
-def add_members(members)
-  members.each do |member|
-    puts add_member(member)
-  end
 end
 
 
