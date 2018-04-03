@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'io/console'
 require 'json'
 require 'yaml'
@@ -8,7 +9,7 @@ require 'hashie'
 require 'active_support'
 require 'active_support/core_ext'
 
-## utils
+## class extensions
 
 class Hash
   extend Hashie::Extensions::DeepFind
@@ -69,71 +70,98 @@ class Object
   end
 end
 
-def error(message)
-  warn "[!] #{message}"
-end
 
-def input_password()
-  print 'password: '
-  STDIN.noecho(&:gets).chomp
-end
+## utils
 
-def build_url(path)
-  File.join($base_url, path.to_s)
-end
+module Utils
+  module_function
 
-def request(method, path, payload_hash = {}, headers = { content_type: :json })
-  headers[:cookies] ||= $responses.last&.cookies
-  payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
-
-  $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
-  JSON.parse($responses.last, symbolize_names: true)
-end
-
-def read_erb(filepath)
-  ERB.new(File.read(filepath)).result
-end
-
-def load_file(filepath)
-  filepath = File.expand_path(filepath)
-
-  unless File.file? filepath
-    error '"%s" is not a file' % filepath
-    return
+  def error(message)
+    warn "[!] #{message}"
   end
 
-  data = case File.extname(filepath)
-    when '.yml', '.yaml'
-      YAML.load(read_erb(filepath)).symbolize_keys
-    when '.json'
-      JSON.parse(read_erb(filepath), symbolize_names: true)
-    when '.txt', '.md'
-      read_erb(filepath)
+  def input_secret(name = 'password')
+    print "#{name}: "
+    STDIN.noecho(&:gets).chomp
+  end
+
+  def build_url(path)
+    File.join($base_url, path.to_s)
+  end
+
+  def request(method, path, payload_hash = {}, headers = { content_type: :json })
+    headers[:cookies] ||= $responses.last&.cookies
+    payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
+
+    $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
+
+    case $responses.last.code
+    when 204
+      true
     else
-      error 'Unsupported file type'
+      JSON.parse($responses.last, symbolize_names: true)
+    end
+
+  rescue RestClient::NotFound => e
+    error e.message
+    nil
+  end
+
+  def read_erb(filepath)
+    ERB.new(File.read(filepath)).result
+  end
+
+  def load_file(filepath)
+    filepath = File.expand_path(filepath)
+
+    unless File.file? filepath
+      error '"%s" is not a file' % filepath
       return
     end
 
-  {
-    data: data,
-    filedir: File.dirname(filepath),
-  }
+    data = case File.extname(filepath)
+      when '.yml', '.yaml'
+        YAML.load(read_erb(filepath)).symbolize_keys
+      when '.json'
+        JSON.parse(read_erb(filepath), symbolize_names: true)
+      when '.txt', '.md'
+        read_erb(filepath)
+      else
+        error 'Unsupported file type'
+        return
+      end
+
+    {
+      data: data,
+      filedir: File.dirname(filepath),
+    }
+  end
 end
 
+include Utils
 
-## Role
-ROLE_ID = {
-  admin: 2,
-  writer: 3,
-  participant: 4,
-  viewer: 5,
-  nologin: 1,
-}
 
-def list_roles
-  ROLE_ID
+## shell commands
+
+module ShellCommands
+  module_function
+
+  def _pwd
+    puts Dir.pwd
+  end
+
+  def _ls(*args)
+    system(*(['ls', '--color=always', '-F'] | args))
+  end
+
+  def _cd(dir)
+    Dir.chdir(dir)
+  end
+
+  def _cat(filepath)
+    puts File.read(filepath)
+  end
 end
-alias get_roles list_roles
 
 
 ## API endpoints
@@ -189,7 +217,7 @@ module Hooks
 
   # _role, _role_idで文字列かシンボルでRoleを指定できる
   def member_role(value:, this:, list:, index:)
-    this[:role_id] = ROLE_ID[value.to_sym.downcase]
+    this[:role_id] = get_roles[value.to_sym.downcase]
   end
 
   # nameを省略したらloginを使用する
@@ -212,7 +240,7 @@ module EndpointRequetrs
     request(:get, '%s?%s' % [endpoint_sym, params_str])
   end
 
-  def post(endpoint_sym:, list: nil, index: nil, **args)
+  def post(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     insufficient_keys = endpoint.fetch(:required, []) - args.keys
@@ -232,7 +260,7 @@ module EndpointRequetrs
     request(:post, endpoint_sym, data)
   end
 
-  def put(endpoint_sym:, list: nil, index: nil, **args)
+  def put(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # 取得した値を使ってputを呼ぶからrequiredやoptionalのチェックは無し
@@ -243,7 +271,7 @@ module EndpointRequetrs
     request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
   end
 
-  def delete(endpoint_sym:, list: nil, index: nil, **args)
+  def delete(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # underscoreフックは有効
@@ -251,98 +279,88 @@ module EndpointRequetrs
 
     request(:delete, '%s/%d' % [endpoint_sym, args[:id]], args)
   end
-end
 
-# _ から始まるキーのフックを実行する
-def call_underscore_hooks(this:, endpoint:, list:, index:)
-  underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
+  # _ から始まるキーのフックを実行する
+  def call_underscore_hooks(this:, endpoint:, list:, index:)
+    underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
 
-  underscore_hooks&.each do |key, method_sym|
-    Hooks
-      .method(method_sym)
-      .call(value: this[key], this: this, list: list, index: index)
+    underscore_hooks&.each do |key, method_sym|
+      Hooks
+        .method(method_sym)
+        .call(value: this[key], this: this, list: list, index: index)
 
-    this.delete(key)
+      this.delete(key)
+    end
+  end
+
+  # キーが空だった場合のフック
+  def call_blank_hooks(this:, endpoint:, list:, index:)
+    blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
+
+    blank_hooks&.each do |key, method_sym|
+      Hooks
+        .method(method_sym)
+        .call(value: this[key], this: this, list: list, index: index)
+    end
   end
 end
 
-# キーが空だった場合のフック
-def call_blank_hooks(this:, endpoint:, list:, index:)
-  blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
-
-  blank_hooks&.each do |key, method_sym|
-    Hooks
-      .method(method_sym)
-      .call(value: this[key], this: this, list: list, index: index)
-  end
-end
-
-API_ENDPOINTS.each do |endpoint_sym, args|
+API_ENDPOINTS.each do |endpoint_sym, value|
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
-  proc_gets = Proc.new{|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
-  define_method('get_%s' % endpoint_sym, proc_gets)
-  define_method('list_%s' % endpoint_sym, proc_gets)
+  proc_gets = Proc.new {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
+  define_method('get_%s' % endpoint_sym.pluralize, proc_gets)
+  define_method('list_%s' % endpoint_sym.pluralize, proc_gets)
 
   ## POST
-  proc_post = Proc.new{|**params| EndpointRequetrs.post(endpoint_sym: endpoint_sym, **params) }
+  proc_post = Proc.new {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
   define_method('post_%s' % endpoint_sym.singularize, proc_post)
   define_method('add_%s' % endpoint_sym.singularize, proc_post)
 
+  ## POST list
+  proc_posts = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list ,index: index) } }
+  define_method('post_%s' % endpoint_sym.pluralize, proc_posts)
+  define_method('add_%s' % endpoint_sym.pluralize, proc_posts)
+
   ## PUT
-  proc_put = Proc.new{|**params| EndpointRequetrs.put(endpoint_sym: endpoint_sym, **params) }
+  proc_put = Proc.new {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
   define_method('update_%s' % endpoint_sym.singularize, proc_put)
 
   ## DELETE
-  proc_delete = Proc.new{|**params| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, **params) }
+  proc_delete = Proc.new {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
   define_method('delete_%s' % endpoint_sym.singularize, proc_delete)
 end
 
 
 ## session
 
-def login(login:, password: input_password)
+def login(login:, password: input_secret)
   request(:post, 'session', { login: login, password: password })
+rescue Errno::ECONNREFUSED, RestClient::Unauthorized  => e
+  error e.message
 end
 
 def logout
   request(:delete, 'session')
 end
 
-## problem groups
 
-def add_problem_groups(problem_groups)
-  problem_groups.each do |problem_group|
-    puts add_problem_group(problem_group)
-  end
+## role
+ROLE_ID = {
+  admin: 2,
+  writer: 3,
+  participant: 4,
+  viewer: 5,
+  nologin: 1,
+}
+
+def get_roles
+  ROLE_ID
 end
+alias list_roles get_roles
 
-## problems
-
-def add_problems(problems)
-  # 先にまとめて読み込みチェック
-  problems.each do |problem|
-    if problem.key?('text_file')
-      # TODO: 固有
-      filepath =  File.join('./ictsc9/', '/problem-text', (problem[:text_file]))
-      problem[:text] = File.read(filepath)
-    end
-  end
-
-  problems.each do |problem|
-    puts add_problem(problem)
-  end
-end
-
-## teams
-
-def add_teams(teams)
-  teams.each do |team|
-    puts add_team(team)
-  end
-end
 
 ## attachments
 
@@ -359,31 +377,24 @@ def download_attachment(id:, access_token:)
   request(:get, "/api/attachments/#{id}/#{access_token}")
 end
 
-## members
 
-# role_id: 2=admin, 3=writer 4=participant 5=viewer
-# writer,admin,viewerは team_idとregistration_codeをnullにしてrole_idを指定する
-# participantはrole_idを指定できない
-
-def add_members(members)
-  members.each do |member|
-    puts add_member(member)
-  end
-end
-
-#### 特定の処理に特化したちょい便利メソッドたち
+## 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
-  problem = list_problems.find {|problem| problem[:id] == problem_id }
-  problem[:problem_group_ids] = [group_id]
+  problem = get_problems
+    .find_by(id: problem_id)
+    .merge(problem_group_ids: [group_id])
+
   update_problem(problem)
 end
 
-# afterをbeforeに依存させる
-def change_depends_problem(before_id:, after_id:)
-  after_problem = list_problems.find {|problem| problem[:id] == after_id }
-  after_problem[:problem_must_solve_before_id] = before_id
-  update_problem(after_problem)
+# problem_idをbefore_idに依存させる
+def change_depends_problem(problem_id:, before_id:)
+  problem = get_problems
+    .find_by(id: problem_id)
+    .merge(problem_must_solve_before_id: before_id)
+
+  update_problem(problem)
 end
 
 # グループに複数の問題を依存させる
@@ -393,40 +404,24 @@ def register_problems_to_group(group_id:, problem_ids: [])
   end
 end
 
-## misc
-
 # 指定ディレクトリをまとめてアップロードする
 def upload_dir_files(file_dir)
-  Dir.glob(File.join(file_dir, '/*'))
+  filepathes = Dir.glob(File.join(file_dir, '/*'))
     .select {|file_path| File.file?(file_path) }
-    .map {|file_path| add_attachments(file_path) }
+
+  add_attachments(filepathes)
 end
 
-def change_password(login:, password: input_password())
-  member_hash = list_members.find{|m| m[:login] == login }
-  member_hash[:password] = password
-  update_member(member_hash)
+def change_password(login:, password: input_secret)
+  member = get_members
+    .find_by(login: login)
+    .merge(password: password)
+
+  update_member(member)
 end
 
-module ShellCommands
-  module_function
 
-  def _pwd
-    puts Dir.pwd
-  end
-
-  def _ls(*args)
-    system(*(['ls', '--color=always', '-F'] | args))
-  end
-
-  def _cd(dir)
-    Dir.chdir(dir)
-  end
-
-  def _cat(filepath)
-    puts File.read(filepath)
-  end
-end
+## run
 
 $base_url = ARGV[0] || 'http://localhost:3000/api'
 $responses = []
@@ -451,13 +446,23 @@ logout
 add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, creator_id: 3, problem_group_ids: [1], problem_must_solve_before_id: 12)
 
 # 問題を更新する
-problem = list_problems[0]
+problem = get_problems[0]
 problem[:title] = 'this is a title'
 puts update_problem(problem)
 
 # YAMLから問題を読み込んでまとめて追加
-add_problems(load_file('./sample-problem-groups.yml'))
+add_problems(load_file('./sample-problem-groups.yml').data)
 
 # ファイルをアップロード(ダウンロードリンクを返す)
 attachment = add_attachments('./pry_r.rb')
 download_attachment(id: attachment[:id], access_token: attachment[:access_token])
+
+
+# メンバーの追加
+# role_id:  ROLE_ID(1~5)を指定する代わりに _role: 'writer' が使える
+#   writer,admin,viewer: team_idとregistration_codeをnullにしてrole_idを指定する
+#   participant: role_idを指定不可
+add_member(login: 'foobar', password: 'foobar', _role: 'writer')
+
+# Writerのみ削除する
+list_members.where(role_id: list_roles[:writer]).each(&method(:delete_member))
