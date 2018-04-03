@@ -94,7 +94,17 @@ module Utils
     payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
 
     $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
-    JSON.parse($responses.last, symbolize_names: true)
+
+    case $responses.last.code
+    when 204
+      true
+    else
+      JSON.parse($responses.last, symbolize_names: true)
+    end
+
+  rescue RestClient::NotFound => e
+    error e.message
+    nil
   end
 
   def read_erb(filepath)
