@@ -27,6 +27,15 @@ class Hash
 end
 
 class Array
+  def ===(value)
+    case value
+    when Array
+      self == value
+    else
+      include?(value)
+    end
+  end
+
   def symbolize_keys
     map(&:deep_symbolize_keys)
   end
