@@ -309,27 +309,27 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
-  proc_gets = Proc.new{|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
+  proc_gets = Proc.new {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
   define_method('get_%s' % endpoint_sym.pluralize, proc_gets)
   define_method('list_%s' % endpoint_sym.pluralize, proc_gets)
 
   ## POST
-  proc_post = Proc.new{|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
+  proc_post = Proc.new {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
   define_method('post_%s' % endpoint_sym.singularize, proc_post)
   define_method('add_%s' % endpoint_sym.singularize, proc_post)
 
   ## POST list
-  proc_posts = Proc.new{|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list ,index: index) } }
+  proc_posts = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list ,index: index) } }
   define_method('post_%s' % endpoint_sym.pluralize, proc_posts)
   define_method('add_%s' % endpoint_sym.pluralize, proc_posts)
 
   ## PUT
-  proc_put = Proc.new{|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
+  proc_put = Proc.new {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
   define_method('update_%s' % endpoint_sym.singularize, proc_put)
 
   ## DELETE
-  proc_delete = Proc.new{|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
+  proc_delete = Proc.new {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
   define_method('delete_%s' % endpoint_sym.singularize, proc_delete)
 end
 
