@@ -451,7 +451,7 @@ problem[:title] = 'this is a title'
 puts update_problem(problem)
 
 # YAMLから問題を読み込んでまとめて追加
-add_problems(load_file('./sample-problem-groups.yml'))
+add_problems(load_file('./sample-problem-groups.yml').data)
 
 # ファイルをアップロード(ダウンロードリンクを返す)
 attachment = add_attachments('./pry_r.rb')
@@ -463,3 +463,6 @@ download_attachment(id: attachment[:id], access_token: attachment[:access_token]
 #   writer,admin,viewer: team_idとregistration_codeをnullにしてrole_idを指定する
 #   participant: role_idを指定不可
 add_member(login: 'foobar', password: 'foobar', _role: 'writer')
+
+# Writerのみ削除する
+list_members.where(role_id: list_roles[:writer]).each(&method(:delete_member))
