@@ -310,8 +310,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # e.g.
   #   get_problems(with: 'answers,comments')
   proc_gets = Proc.new{|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
-  define_method('get_%s' % endpoint_sym, proc_gets)
-  define_method('list_%s' % endpoint_sym, proc_gets)
+  define_method('get_%s' % endpoint_sym.pluralize, proc_gets)
+  define_method('list_%s' % endpoint_sym.pluralize, proc_gets)
 
   ## POST
   proc_post = Proc.new{|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
