@@ -323,6 +323,8 @@ end
 
 def login(login:, password: input_secret)
   request(:post, 'session', { login: login, password: password })
+rescue Errno::ECONNREFUSED, RestClient::Unauthorized  => e
+  error e.message
 end
 
 def logout
