@@ -11,6 +11,24 @@ require 'active_support/core_ext'
 
 $responses = []
 
+## Exceptions
+
+# 主にフック内で依存レコードの検索を行った際に投げられる
+class RecordNotFound < StandardError
+  # endpoint: 探索先エンドポイントのシンボル
+  # key: 探索キー(find_byの引数)
+  def initialize(key:, endpoint:)
+    @endpoint = endpoint.to_sym
+    @key = key
+
+    super("#{@key} is not found in :#{@endpoint}")
+  end
+
+  attr_reader :endpoint
+  attr_reader :key
+end
+
+
 ## class extensions
 
 class Hash
