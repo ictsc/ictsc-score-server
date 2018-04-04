@@ -281,6 +281,17 @@ module EndpointRequetrs
     request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
   end
 
+  def patch(endpoint_sym:, args:, list: nil, index: nil)
+    endpoint = API_ENDPOINTS[endpoint_sym]
+
+    # 取得した値を使ってpatchを呼ぶからrequiredやoptionalのチェックは無し
+
+    # underscoreフックは有効
+    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+    request(:patch, '%s/%d' % [endpoint_sym, args[:id]], args)
+  end
+
   def delete(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
@@ -336,12 +347,20 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   ## PUT
   proc_put = Proc.new {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
-  define_method('update_%s' % endpoint_sym.singularize, proc_put)
 
   ## PUT list
   proc_puts = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
   define_method('put_%s' % endpoint_sym.pluralize, proc_puts)
-  define_method('update_%s' % endpoint_sym.pluralize, proc_puts)
+
+  ## PATCH
+  proc_patch = Proc.new {|**args| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args) }
+  define_method('patch_%s' % endpoint_sym.singularize, proc_patch)
+  define_method('update_%s' % endpoint_sym.singularize, proc_patch)
+
+  ## PATCH list
+  proc_patchs = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
+  define_method('patch_%s' % endpoint_sym.pluralize, proc_patchs)
+  define_method('update_%s' % endpoint_sym.pluralize, proc_patchs)
 
   ## DELETE
   proc_delete = Proc.new {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
