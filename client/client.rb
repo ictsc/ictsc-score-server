@@ -350,7 +350,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
 
   ## POST list
   posts_method_name = 'post_%s' % endpoint_sym.pluralize
-  proc_posts = proc {|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
+  proc_posts = proc {|list| list.map.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
   proc_alias_posts = proc {|list| send(posts_method_name, list) }
   define_method(posts_method_name, proc_posts)
   define_method('add_%s' % endpoint_sym.pluralize, proc_alias_posts)
@@ -360,7 +360,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
 
   ## PUT list
-  proc_puts = proc {|list| list.each.with_index {|args, index| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
+  proc_puts = proc {|list| list.map.with_index {|args, index| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
   define_method('put_%s' % endpoint_sym.pluralize, proc_puts)
 
   ## PATCH
@@ -372,7 +372,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
 
   ## PATCH list
   patches_method_name = 'patch_%s' % endpoint_sym.pluralize
-  proc_patches = proc {|list| list.each.with_index {|args, index| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
+  proc_patches = proc {|list| list.map.with_index {|args, index| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
   proc_alias_patches = proc {|list| send(patches_method_name, list) }
   define_method(patches_method_name, proc_patches)
   define_method('update_%s' % endpoint_sym.pluralize, proc_alias_patches)
