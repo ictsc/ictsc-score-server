@@ -9,6 +9,8 @@ require 'hashie'
 require 'active_support'
 require 'active_support/core_ext'
 
+$responses = []
+
 ## class extensions
 
 class Hash
@@ -102,8 +104,12 @@ module Utils
     File.join($base_url, path.to_s)
   end
 
+  def response
+    $responses.last
+  end
+
   def request(method, path, payload_hash = {}, headers = { content_type: :json })
-    headers[:cookies] ||= $responses.last&.cookies
+    headers[:cookies] ||= response&.cookies
     payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
 
     begin
@@ -113,11 +119,11 @@ module Utils
       error e.message
     end
 
-    case $responses.last.code
+    case response.code
     when 204
       true
     else
-      JSON.parse($responses.last, symbolize_names: true) if $responses.last.body.present?
+      JSON.parse(response, symbolize_names: true) if response.body.present?
     end
   end
 
@@ -510,7 +516,6 @@ end
 ## run
 
 $base_url = ARGV[0] || 'http://localhost:3000/api'
-$responses = []
 
 login(login: :admin)
 
