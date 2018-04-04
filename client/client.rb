@@ -358,9 +358,9 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('update_%s' % endpoint_sym.singularize, proc_patch)
 
   ## PATCH list
-  proc_patchs = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
-  define_method('patch_%s' % endpoint_sym.pluralize, proc_patchs)
-  define_method('update_%s' % endpoint_sym.pluralize, proc_patchs)
+  proc_patches = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
+  define_method('patch_%s' % endpoint_sym.pluralize, proc_patches)
+  define_method('update_%s' % endpoint_sym.pluralize, proc_patches)
 
   ## DELETE
   proc_delete = Proc.new {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
