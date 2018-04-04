@@ -326,6 +326,9 @@ module EndpointRequetrs
   end
 end
 
+# 各エンドポイントのメソッドを自動定義する
+# 一部のエンドポイントは汎用的に定義できないため、別途定義する
+# 一部のメソッドには別名も定義される
 API_ENDPOINTS.each do |endpoint_sym, value|
   ## GET all
   # e.g.
@@ -337,6 +340,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('list_%s' % endpoint_sym.pluralize, proc_alias_gets)
 
   ## POST
+  # e.g.
+  #   post_problem(title: 'hello', text: 'world', reference_point: 10, perfect_point: 20, creator_id: 2)
   post_method_name = 'post_%s' % endpoint_sym.singularize
   proc_post = proc {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
   proc_alias_post = proc {|**args| send(post_method_name, **args) }
