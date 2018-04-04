@@ -549,9 +549,9 @@ def upload(*filepathes)
   post_attachments(filepathes.flatten.map {|filepath| { _filepath: filepath } })
 end
 
-def upload_dir_files(file_dir)
-  filepathes = Dir.glob(File.join(file_dir, '/*'))
-    .select {|file_path| File.file?(file_path) }
+def upload_dir_files(filedir)
+  filepathes = Dir.glob(File.join(filedir, '/*'))
+    .select(&File.method(:file?))
 
   upload(filepathes)
 end
