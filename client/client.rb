@@ -293,10 +293,9 @@ module EndpointRequetrs
     # キーチェックより先に処理する
     call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    insufficient_keys = endpoint.fetch(:required, []) - args.keys
-    unless insufficient_keys.empty?
-      puts 'required keys: %p' % [insufficient_keys]
-      puts 'optional keys: %p' % [endpoint.fetch(:optional, {}).keys - args.keys]
+    # 必要なキーを指定しているか
+    unless (endpoint.fetch(:required, []) - args.keys).empty?
+      puts_keys(endpoint: endpoint, keys: args.keys)
       return
     end
 
@@ -371,6 +370,18 @@ module EndpointRequetrs
     else
       result
     end
+  end
+
+  # 指定できるキーの情報を出力する
+  def puts_keys(endpoint:, keys:)
+    puts 'required keys:    %p' % [endpoint.fetch(:required, []) - keys]
+    puts 'optional keys:    %p' % [endpoint.fetch(:optional, {}).keys - keys]
+
+    # hooksは減算しない
+    # underscore_hooksは先に処理されて消えるから減算できない
+    hooks = endpoint.fetch(:hooks, {})
+    puts 'underscore hooks: %p' % [hooks.fetch(:underscore, {}).keys]
+    puts 'blank hooks:      %p' % [hooks.fetch(:blank, {}).keys]
   end
 
   # _ から始まるキーのフックを実行する
