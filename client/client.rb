@@ -328,7 +328,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('add_%s' % endpoint_sym.singularize, proc_post)
 
   ## POST list
-  proc_posts = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list ,index: index) } }
+  proc_posts = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
   define_method('post_%s' % endpoint_sym.pluralize, proc_posts)
   define_method('add_%s' % endpoint_sym.pluralize, proc_posts)
 
