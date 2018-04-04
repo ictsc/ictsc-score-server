@@ -507,9 +507,9 @@ end
 alias list_roles get_roles
 
 
-## 特定の処理に特化したちょい便利メソッドたち
+## 特定の処理に特化した便利メソッド
 
-def update_only_problem_group(problem_id:, group_id:)
+def change_belongs_problem_group(problem_id:, group_id:)
   problem = get_problems
     .find_by(id: problem_id)
     .merge(problem_group_ids: [group_id])
@@ -517,20 +517,18 @@ def update_only_problem_group(problem_id:, group_id:)
   update_problem(problem)
 end
 
+# グループに複数の問題を所属させる
+def change_belonging_problems(group_id:, problem_ids: [])
+  problem_ids.map {|id| change_belongs_problem_group(problem_id: id, group_id: group_id) }
+end
+
 # problem_idをbefore_idに依存させる
-def change_depends_problem(problem_id:, before_id:)
+def change_dependency_problem(problem_id:, before_id:)
   problem = get_problems
     .find_by(id: problem_id)
     .merge(problem_must_solve_before_id: before_id)
 
-  update_problem(problem)
-end
-
-# グループに複数の問題を依存させる
-def register_problems_to_group(group_id:, problem_ids: [])
-  problem_ids.each do |id|
-    update_only_problem_group(problem_id: id, group_id: group_id)
-  end
+  patch_problem(problem)
 end
 
 def change_password(login:, password: input_secret)
@@ -538,7 +536,7 @@ def change_password(login:, password: input_secret)
     .find_by(login: login)
     .merge(password: password)
 
-  update_member(member)
+  patch_member(member)
 end
 
 def download_attachment(id:, access_token:)
