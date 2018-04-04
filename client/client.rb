@@ -413,17 +413,15 @@ alias list_roles get_roles
 
 ## attachments
 
-def add_attachment(filepath)
+# 別名(add_attachment, add_attachments)は上で定義されてる
+
+def post_attachment(filepath:)
   full_filepath = File.expand_path(filepath)
   request(:post, 'attachments', { file: File.open(full_filepath, 'rb'),  multipart: true }, {})
 end
 
-def add_attachments(filepathes)
-  filepathes.each {|filepath| add_attachments(filepath) }
-end
-
-def download_attachment(id:, access_token:)
-  request(:get, "/api/attachments/#{id}/#{access_token}")
+def post_attachments(filepathes)
+  filepathes.map {|filepath| post_attachment(filepath: filepath) }
 end
 
 
@@ -453,20 +451,27 @@ def register_problems_to_group(group_id:, problem_ids: [])
   end
 end
 
-# 指定ディレクトリをまとめてアップロードする
-def upload_dir_files(file_dir)
-  filepathes = Dir.glob(File.join(file_dir, '/*'))
-    .select {|file_path| File.file?(file_path) }
-
-  add_attachments(filepathes)
-end
-
 def change_password(login:, password: input_secret)
   member = get_members
     .find_by(login: login)
     .merge(password: password)
 
   update_member(member)
+end
+
+def download_attachment(id:, access_token:)
+  request(:get, "/api/attachments/#{id}/#{access_token}")
+end
+
+def upload(*filepathes)
+  post_attachments(filepathes.flatten)
+end
+
+def upload_dir_files(file_dir)
+  filepathes = Dir.glob(File.join(file_dir, '/*'))
+    .select {|file_path| File.file?(file_path) }
+
+  post_attachments(filepathes)
 end
 
 
