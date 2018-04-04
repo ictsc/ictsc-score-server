@@ -102,18 +102,19 @@ module Utils
     headers[:cookies] ||= $responses.last&.cookies
     payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
 
-    $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
+    begin
+      $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
+    rescue RestClient::RequestFailed => e
+      $responses << e.response
+      error e.message
+    end
 
     case $responses.last.code
     when 204
       true
     else
-      JSON.parse($responses.last, symbolize_names: true)
+      JSON.parse($responses.last, symbolize_names: true) if $responses.last.body.present?
     end
-
-  rescue RestClient::NotFound => e
-    error e.message
-    nil
   end
 
   def read_erb(filepath)
@@ -347,7 +348,7 @@ end
 
 def login(login:, password: input_secret)
   request(:post, 'session', { login: login, password: password })
-rescue Errno::ECONNREFUSED, RestClient::Unauthorized  => e
+rescue Errno::ECONNREFUSED => e
   error e.message
 end
 
