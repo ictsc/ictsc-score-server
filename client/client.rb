@@ -256,14 +256,15 @@ module EndpointRequetrs
   def post(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
+    # キーチェックより先に処理する
+    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
     insufficient_keys = endpoint.fetch(:required, []) - args.keys
     unless insufficient_keys.empty?
       puts 'required keys: %p' % [insufficient_keys]
       puts 'optional keys: %p' % [endpoint.fetch(:optional, {}).keys - args.keys]
       return
     end
-
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
