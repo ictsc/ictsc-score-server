@@ -305,7 +305,14 @@ module EndpointRequetrs
     # 未指定のoptionalを取り込む(args優先)
     data = endpoint.fetch(:optional, {}).merge(args)
 
-    request(:post, endpoint_sym, data)
+    result = request(:post, endpoint_sym, data)
+
+    case response.code
+    when 400
+      result.merge!(data: args)
+    else
+      result
+    end
   end
 
   def put(endpoint_sym:, args:, list: nil, index: nil)
@@ -316,7 +323,16 @@ module EndpointRequetrs
     # underscoreフックは有効
     call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
+    result = request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
+
+    case response.code
+    when 400
+      result.merge(data: args)
+    when 404
+      { data: args }
+    else
+      result
+    end
   end
 
   def patch(endpoint_sym:, args:, list: nil, index: nil)
@@ -327,7 +343,16 @@ module EndpointRequetrs
     # underscoreフックは有効
     call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    request(:patch, '%s/%d' % [endpoint_sym, args[:id]], args)
+    result = request(:patch, '%s/%d' % [endpoint_sym, args[:id]], args)
+
+    case response.code
+    when 400
+      result.merge(data: args)
+    when 404
+      { data: args }
+    else
+      result
+    end
   end
 
   def delete(endpoint_sym:, args:, list: nil, index: nil)
@@ -336,7 +361,16 @@ module EndpointRequetrs
     # underscoreフックは有効
     call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    request(:delete, '%s/%d' % [endpoint_sym, args[:id]], args)
+    result = request(:delete, '%s/%d' % [endpoint_sym, args[:id]], args)
+
+    case response.code
+    when 400
+      result.merge(data: args)
+    when 404
+      { data: args }
+    else
+      result
+    end
   end
 
   # _ から始まるキーのフックを実行する
