@@ -128,6 +128,11 @@ module Utils
   def load_file(filepath)
     filepath = File.expand_path(filepath)
 
+    unless File.exist? filepath
+      error '"%s" does not exist' % filepath
+      return
+    end
+
     unless File.file? filepath
       error '"%s" is not a file' % filepath
       return
