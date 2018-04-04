@@ -108,9 +108,8 @@ module Utils
     $responses.last
   end
 
-  def request(method, path, payload_hash = {}, headers = { content_type: :json })
+  def request(method, path, payload = {}, headers = {})
     headers[:cookies] ||= response&.cookies
-    payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
 
     begin
       $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
