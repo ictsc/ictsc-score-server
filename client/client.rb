@@ -197,7 +197,14 @@ end
 #   blank: 値が `Object#blank?` ならフックする
 API_ENDPOINTS = {
   answers: {},
-  attachments: {},
+  attachments: {
+    required: %i(file),
+    hooks: {
+      underscore: {
+        _filepath: :attachment_filepath,
+      },
+    },
+  },
   comments: {},
   contests: {},
   issues: {},
@@ -269,6 +276,13 @@ module Hooks
   # 一括登録時にorderを省略すると並び順になる
   def auto_order(value:, this:, list:, index:)
     this[:order] = index * 100 if list.present?
+  end
+
+  # attachmentの投稿をファイルパス指定で行う
+  def attachment_filepath(value:, this:, list:, index:)
+    abs_filepath = File.expand_path(value)
+    this[:file] = File.open(abs_filepath, 'rb')
+    this[:multipart] = true
   end
 end
 
@@ -493,20 +507,6 @@ end
 alias list_roles get_roles
 
 
-## attachments
-
-# 別名(add_attachment, add_attachments)は上で定義されてる
-
-def post_attachment(filepath:)
-  full_filepath = File.expand_path(filepath)
-  request(:post, 'attachments', { file: File.open(full_filepath, 'rb'),  multipart: true }, {})
-end
-
-def post_attachments(filepathes)
-  filepathes.map {|filepath| post_attachment(filepath: filepath) }
-end
-
-
 ## 特定の処理に特化したちょい便利メソッドたち
 
 def update_only_problem_group(problem_id:, group_id:)
@@ -546,14 +546,14 @@ def download_attachment(id:, access_token:)
 end
 
 def upload(*filepathes)
-  post_attachments(filepathes.flatten)
+  post_attachments(filepathes.flatten.map {|filepath| { _filepath: filepath } })
 end
 
 def upload_dir_files(file_dir)
   filepathes = Dir.glob(File.join(file_dir, '/*'))
     .select {|file_path| File.file?(file_path) }
 
-  post_attachments(filepathes)
+  upload(filepathes)
 end
 
 
