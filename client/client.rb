@@ -197,7 +197,6 @@ API_ENDPOINTS = {
     hooks: {
       underscore: {
         _role: :member_role,
-        _role_id: :member_role,
       },
       blank: {
         name: :member_name,
