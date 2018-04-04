@@ -338,6 +338,11 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
   define_method('update_%s' % endpoint_sym.singularize, proc_put)
 
+  ## PUT list
+  proc_puts = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
+  define_method('put_%s' % endpoint_sym.pluralize, proc_puts)
+  define_method('update_%s' % endpoint_sym.pluralize, proc_puts)
+
   ## DELETE
   proc_delete = Proc.new {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
   define_method('delete_%s' % endpoint_sym.singularize, proc_delete)
