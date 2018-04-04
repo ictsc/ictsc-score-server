@@ -524,3 +524,6 @@ add_member(login: 'foobar', password: 'foobar', _role: 'writer')
 
 # Writerのみ削除する
 list_members.where(role_id: list_roles[:writer]).each(&method(:delete_member))
+
+# Writerのパスワードを一括変更する
+update_members(list_members.where(role_id: list_roles[:writer]).update(password: 'new_password'))
