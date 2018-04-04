@@ -210,17 +210,25 @@ API_ENDPOINTS = {
   },
   notices: {},
   problems: {
-    required: %i(title text reference_point perfect_point creator_id),
-    optional: { secret_text: '', team_private: false, order: 0, problem_must_solve_before_id: nil, problem_group_ids: [], },
+    required: %i(title text reference_point perfect_point order creator_id),
+    optional: { secret_text: '', team_private: false, problem_must_solve_before_id: nil, problem_group_ids: [], },
     hooks: {
       underscore: {
         _creator: :problem_creator,
+      },
+      blank: {
+        order: :auto_order,
       },
     },
   },
   problem_groups: {
     required: %i(name),
     optional: { order: 0, description: nil, visible: true, completing_bonus_point: 0, icon_url: '', },
+    hooks: {
+      blank: {
+        order: :auto_order,
+      },
+    },
   },
   scores: {},
   scoreboard: {},
@@ -251,6 +259,11 @@ module Hooks
   # creator_idをloginで指定できる
   def problem_creator(value:, this:, list:, index:)
     this[:creator_id] = list_members.find_by(login: value)[:id]
+  end
+
+  # 一括登録時にorderを省略すると並び順になる
+  def auto_order(value:, this:, list:, index:)
+    this[:order] = index * 100 if list.present?
   end
 end
 
