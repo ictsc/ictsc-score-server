@@ -543,7 +543,7 @@ def download_attachment(id:, access_token:)
   request(:get, "/api/attachments/#{id}/#{access_token}")
 end
 
-def upload(*filepathes)
+def upload_files(*filepathes)
   post_attachments(filepathes.flatten.map {|filepath| { _filepath: filepath } })
 end
 
@@ -551,7 +551,7 @@ def upload_dir_files(filedir)
   filepathes = Dir.glob(File.join(filedir, '/*'))
     .select(&File.method(:file?))
 
-  upload(filepathes)
+  upload_files(filepathes)
 end
 
 
@@ -586,8 +586,11 @@ puts update_problem(problem)
 # YAMLから問題を読み込んでまとめて追加
 add_problems(load_file('./sample-problem-groups.yml').data)
 
-# ファイルをアップロード(ダウンロードリンクを返す)
-attachment = add_attachments('./pry_r.rb')
+# ファイルをアップロード
+attachment = upload_files('./Gemfile')[0]
+# ダウンロードリンクを表示(相対URL)
+puts attachment[:url]
+# ダウンロード
 download_attachment(id: attachment[:id], access_token: attachment[:access_token])
 
 
