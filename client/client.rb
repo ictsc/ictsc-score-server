@@ -57,6 +57,10 @@ class Array
       opts.all? {|key, value| value === elem[key] }
     end
   end
+
+  def update(**params)
+    each{|elem| elem.update(block_given? ? yield(elem) : params) }
+  end
 end
 
 class Symbol
