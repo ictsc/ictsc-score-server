@@ -330,19 +330,25 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
+  gets_method_name = 'get_%s' % endpoint_sym.pluralize
   proc_gets = proc {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
-  define_method('get_%s' % endpoint_sym.pluralize, proc_gets)
-  define_method('list_%s' % endpoint_sym.pluralize, proc_gets)
+  proc_alias_gets = proc {|**params| send(gets_method_name, **params) }
+  define_method(gets_method_name, proc_gets)
+  define_method('list_%s' % endpoint_sym.pluralize, proc_alias_gets)
 
   ## POST
+  post_method_name = 'post_%s' % endpoint_sym.singularize
   proc_post = proc {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
-  define_method('post_%s' % endpoint_sym.singularize, proc_post)
-  define_method('add_%s' % endpoint_sym.singularize, proc_post)
+  proc_alias_post = proc {|**args| send(post_method_name, **args) }
+  define_method(post_method_name, proc_post)
+  define_method('add_%s' % endpoint_sym.singularize, proc_alias_post)
 
   ## POST list
+  posts_method_name = 'post_%s' % endpoint_sym.pluralize
   proc_posts = proc {|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
-  define_method('post_%s' % endpoint_sym.pluralize, proc_posts)
-  define_method('add_%s' % endpoint_sym.pluralize, proc_posts)
+  proc_alias_posts = proc {|list| send(posts_method_name, list) }
+  define_method(posts_method_name, proc_posts)
+  define_method('add_%s' % endpoint_sym.pluralize, proc_alias_posts)
 
   ## PUT
   proc_put = proc {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
@@ -353,14 +359,18 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('put_%s' % endpoint_sym.pluralize, proc_puts)
 
   ## PATCH
+  patch_method_name = 'patch_%s' % endpoint_sym.singularize
   proc_patch = proc {|**args| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args) }
-  define_method('patch_%s' % endpoint_sym.singularize, proc_patch)
-  define_method('update_%s' % endpoint_sym.singularize, proc_patch)
+  proc_alias_patch = proc {|**args| send(patch_method_name, **args) }
+  define_method(patch_method_name, proc_patch)
+  define_method('update_%s' % endpoint_sym.singularize, proc_alias_patch)
 
   ## PATCH list
+  patches_method_name = 'patch_%s' % endpoint_sym.pluralize
   proc_patches = proc {|list| list.each.with_index {|args, index| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
-  define_method('patch_%s' % endpoint_sym.pluralize, proc_patches)
-  define_method('update_%s' % endpoint_sym.pluralize, proc_patches)
+  proc_alias_patches = proc {|list| send(patches_method_name, list) }
+  define_method(patches_method_name, proc_patches)
+  define_method('update_%s' % endpoint_sym.pluralize, proc_alias_patches)
 
   ## DELETE
   proc_delete = proc {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
