@@ -383,12 +383,9 @@ module EndpointRequests
 
     result = request(:post, endpoint_sym, args)
 
-    case response.code
-    when 400
-      result.merge(data: args)
-    else
-      result
-    end
+    { result: result, params: args, warnings: warnings, response: response }
+  rescue RelatedRecordNotFoundError => e
+    { error: e, params: args }
   end
 
   def put(endpoint_sym:, args:, list: nil, index: nil)
@@ -410,14 +407,9 @@ module EndpointRequests
 
     result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
 
-    case response.code
-    when 400
-      result.merge(data: args)
-    when 404
-      { data: args }
-    else
-      result
-    end
+    { result: result, params: args, warnings: warnings, response: response }
+  rescue RelatedRecordNotFoundError => e
+    { error: e, params: args }
   end
 
   # 指定できるキーの情報を出力する
@@ -478,8 +470,6 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   gen_send_proc = lambda do |method_name|
     lambda do |**args|
       EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args)
-    rescue RelatedRecordNotFoundError => e
-      { error: e, data: args }
     end
   end
 
@@ -488,8 +478,6 @@ API_ENDPOINTS.each do |endpoint_sym, value|
     lambda do |list|
       list.map.with_index do |args, index|
         EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-      rescue RelatedRecordNotFoundError => e
-        { error: e, data: args }
       end
     end
   end
