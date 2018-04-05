@@ -426,6 +426,13 @@ end
 # 一部のエンドポイントは汎用的に定義できないため、別途定義する
 # 一部のメソッドには別名も定義される
 API_ENDPOINTS.each do |endpoint_sym, value|
+  # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
+  gen_send_proc = lambda do |method_name|
+    lambda do |**args|
+      EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args)
+    end
+  end
+
   # POST,PUT,PATCHの一括リクエスト用Procを生成する
   gen_send_list_proc = lambda do |method_name|
     lambda do |list|
@@ -459,8 +466,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # e.g.
   #   post_problem(title: 'hello', text: 'world', reference_point: 10, perfect_point: 20, creator_id: 2)
   post_method_name = "post_#{endpoint_sym.singularize}"
-  proc_post = lambda {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
-  define_method(post_method_name, proc_post)
+  define_method(post_method_name, gen_send_proc.call(:post))
   define_method("add_#{endpoint_sym.singularize}", gen_alias_proc.call(post_method_name))
 
   ## POST list
@@ -469,16 +475,14 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method("add_#{endpoint_sym.pluralize}", gen_alias_proc.call(posts_method_name))
 
   ## PUT
-  proc_put = lambda {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
-  define_method("put_#{endpoint_sym.singularize}", proc_put)
+  define_method("put_#{endpoint_sym.singularize}", gen_send_proc.call(:put))
 
   ## PUT list
   define_method("put_#{endpoint_sym.pluralize}", gen_send_list_proc.call(:put))
 
   ## PATCH
   patch_method_name = "patch_#{endpoint_sym.singularize}"
-  proc_patch = lambda {|**args| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args) }
-  define_method(patch_method_name, proc_patch)
+  define_method(patch_method_name, gen_send_proc.call(:patch))
   define_method("update_#{endpoint_sym.singularize}", gen_alias_proc.call(patch_method_name))
 
   ## PATCH list
@@ -487,8 +491,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method("update_#{endpoint_sym.pluralize}", gen_alias_proc.call(patches_method_name))
 
   ## DELETE
-  proc_delete = lambda {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
-  define_method("delete_#{endpoint_sym.singularize}", proc_delete)
+  define_method("delete_#{endpoint_sym.singularize}", gen_send_proc.call(:delete))
 end
 
 
