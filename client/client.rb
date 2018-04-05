@@ -375,9 +375,9 @@ module EndpointRequests
     call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     # 未指定のoptionalを取り込む(args優先)
-    data = endpoint.fetch(:optional, {}).merge(args)
+    args = endpoint.fetch(:optional, {}).merge(args)
 
-    result = request(:post, endpoint_sym, data)
+    result = request(:post, endpoint_sym, args)
 
     case response.code
     when 400
