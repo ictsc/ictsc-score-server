@@ -301,7 +301,11 @@ module Hooks
 
   # _role, _role_idで文字列かシンボルでRoleを指定できる
   def member_role_by_name(value:, this:, list:, index:)
-    this[:role_id] = get_roles[value.to_sym.downcase]
+    value = value.to_sym.downcase
+    role_id = get_roles[value]
+    # 明示的にRoleを指定しようとして失敗したならエラーにする
+    raise RelatedRecordNotFoundError.new(key: { role_key: value }, endpoint: :roles) if role_id.nil?
+    this[:role_id] = role_id
   end
 
   # nameを省略したらloginを使用する
@@ -319,6 +323,7 @@ module Hooks
   # titleから依存問題を求める
   def problem_dependency_problem_by_title(value:, this:, list:, index:)
     problem = get_problems.find_by(title: value)
+    raise RelatedRecordNotFoundWarning.new(key: { title: value }, endpoint: :problems) if problem.nil?
     this[:problem_must_solve_before_id] = problem[:id]
   end
 
@@ -334,6 +339,8 @@ module Hooks
     end
 
     dependency_problem_id = list[index - 1][:id]
+
+    raise RelatedRecordNotFoundWarning.new(key: { list_index: index - 1 }, endpoint: :problems) if dependency_problem_id.nil?
 
     this[:problem_must_solve_before_id] = dependency_problem_id
   end
