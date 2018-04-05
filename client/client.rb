@@ -27,6 +27,9 @@ class RelatedRecordNotFoundError < StandardError
 
   attr_reader :endpoint
   attr_reader :key
+
+  # 初期化後に別途値を設定する
+  attr_accessor :hook
 end
 
 # 投稿処理は継続される
@@ -385,7 +388,7 @@ module EndpointRequests
 
     { result: result, params: args, warnings: warnings, response: response }
   rescue RelatedRecordNotFoundError => e
-    { error: e, params: args }
+    { error: { exception: e, hook: e.hook }, params: args }
   end
 
   def put(endpoint_sym:, args:, list: nil, index: nil)
@@ -409,7 +412,7 @@ module EndpointRequests
 
     { result: result, params: args, warnings: warnings, response: response }
   rescue RelatedRecordNotFoundError => e
-    { error: e, params: args }
+    { error: { exception: e, hook: e.hook }, params: args }
   end
 
   # 指定できるキーの情報を出力する
@@ -436,8 +439,14 @@ module EndpointRequests
         .call(value: this[key], this: this, list: list, index: index)
 
       this.delete(key)
-    rescue RelatedRecordNotFoundWarning => e
-      warnings << { warning: e, hook: key }
+
+    rescue RelatedRecordNotFoundError => e
+      e.hook = key
+      if e.instance_of?(RelatedRecordNotFoundWarning)
+        warnings << { exception: e, hook: e.hook }
+      else
+        raise e
+      end
     end
 
     warnings
@@ -454,8 +463,13 @@ module EndpointRequests
         .method(method_sym)
         .call(value: this[key], this: this, list: list, index: index)
 
-    rescue RelatedRecordNotFoundWarning => e
-      warnings << { warning: e, hook: key }
+    rescue RelatedRecordNotFoundError => e
+      e.hook = key
+      if e.instance_of?(RelatedRecordNotFoundWarning)
+        warnings << { exception: e, hook: e.hook }
+      else
+        raise e
+      end
     end
 
     warnings
