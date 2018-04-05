@@ -658,18 +658,17 @@ login(login: 'admin', password: 'admin')
 logout
 
 # 問題の追加
-add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, creator_id: 3, problem_group_ids: [1], problem_must_solve_before_id: 12)
+add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, _creator: 'writer1', problem_group_ids: [1], problem_must_solve_before_id: 12)
 
-# 問題を更新する
-problem = get_problems[0]
-problem[:title] = 'this is a title'
-puts update_problem(problem)
+# 問題のタイトルを更新する
+problem = get_problems[0].update(title: 'this is a title')
+update_problem(problem)
 
 # YAMLから問題を読み込んでまとめて追加
 add_problems(load_file('./sample-problem-groups.yml'))
 
 # ファイルをアップロード
-attachment = upload_files('./Gemfile')[0]
+attachment = upload_files('./Gemfile')[0][:result]
 # ダウンロードリンクを表示(相対URL)
 puts attachment[:url]
 # ダウンロード
