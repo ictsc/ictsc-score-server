@@ -451,7 +451,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # e.g.
   #   get_problems(with: 'answers,comments')
   gets_method_name = 'get_%s' % endpoint_sym.pluralize
-  proc_gets = proc {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
+  proc_gets = lambda {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
   define_method(gets_method_name, proc_gets)
   define_method('list_%s' % endpoint_sym.pluralize, gen_alias_proc.call(gets_method_name))
 
@@ -459,7 +459,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # e.g.
   #   post_problem(title: 'hello', text: 'world', reference_point: 10, perfect_point: 20, creator_id: 2)
   post_method_name = 'post_%s' % endpoint_sym.singularize
-  proc_post = proc {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
+  proc_post = lambda {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
   define_method(post_method_name, proc_post)
   define_method('add_%s' % endpoint_sym.singularize, gen_alias_proc.call(post_method_name))
 
@@ -469,25 +469,25 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('add_%s' % endpoint_sym.pluralize, gen_alias_proc.call(posts_method_name))
 
   ## PUT
-  proc_put = proc {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
+  proc_put = lambda {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
 
   ## PUT list
   define_method('put_%s' % endpoint_sym.pluralize, gen_send_list_proc.call(:put))
 
   ## PATCH
-  patch_method_name = 'patch_%s' % endpoint_sym.singularize
-  proc_patch = proc {|**args| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args) }
+  patch_method_name = "patch_%s#{endpoint_sym.singularize}"
+  proc_patch = lambda {|**args| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args) }
   define_method(patch_method_name, proc_patch)
   define_method('update_%s' % endpoint_sym.singularize, gen_alias_proc.call(patch_method_name))
 
   ## PATCH list
-  patches_method_name = 'patch_%s' % endpoint_sym.pluralize
+  patches_method_name = "patch_%s#{endpoint_sym.pluralize}"
   define_method(patches_method_name, gen_send_list_proc.call(:patch))
   define_method('update_%s' % endpoint_sym.pluralize, gen_alias_proc.call(patches_method_name))
 
   ## DELETE
-  proc_delete = proc {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
+  proc_delete = lambda {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
   define_method('delete_%s' % endpoint_sym.singularize, proc_delete)
 end
 
