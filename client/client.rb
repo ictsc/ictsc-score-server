@@ -426,6 +426,15 @@ end
 # 一部のエンドポイントは汎用的に定義できないため、別途定義する
 # 一部のメソッドには別名も定義される
 API_ENDPOINTS.each do |endpoint_sym, value|
+  # POST,PUT,PATCHの一括リクエスト用Procを生成する
+  gen_send_list_proc = lambda do |method_name|
+    lambda do |list|
+      list.map.with_index(1) do |args, index|
+        EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+      end
+    end
+  end
+
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
@@ -446,9 +455,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
 
   ## POST list
   posts_method_name = 'post_%s' % endpoint_sym.pluralize
-  proc_posts = proc {|list| list.map.with_index(1) {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
   proc_alias_posts = proc {|list| send(posts_method_name, list) }
-  define_method(posts_method_name, proc_posts)
+  define_method(posts_method_name, gen_send_list_proc.call(:post))
   define_method('add_%s' % endpoint_sym.pluralize, proc_alias_posts)
 
   ## PUT
@@ -456,8 +464,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   define_method('put_%s' % endpoint_sym.singularize, proc_put)
 
   ## PUT list
-  proc_puts = proc {|list| list.map.with_index(1) {|args, index| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
-  define_method('put_%s' % endpoint_sym.pluralize, proc_puts)
+  define_method('put_%s' % endpoint_sym.pluralize, gen_send_list_proc.call(:put))
 
   ## PATCH
   patch_method_name = 'patch_%s' % endpoint_sym.singularize
@@ -468,9 +475,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
 
   ## PATCH list
   patches_method_name = 'patch_%s' % endpoint_sym.pluralize
-  proc_patches = proc {|list| list.map.with_index(1) {|args, index| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args, list: list, index: index) } }
   proc_alias_patches = proc {|list| send(patches_method_name, list) }
-  define_method(patches_method_name, proc_patches)
+  define_method(patches_method_name, gen_send_list_proc.call(:patch))
   define_method('update_%s' % endpoint_sym.pluralize, proc_alias_patches)
 
   ## DELETE
