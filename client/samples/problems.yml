@@ -1,11 +1,12 @@
 ---
 # idは指定できない
+# orderとproblem_must_solve_before_idは省略すると並び順で設定してくれる
+# creator_idの代わりに_creatorでlogin名指定できる
 - title: 問題10
   text: ブラック
   order: 0
   secret_text: 秘密その0
-  creator_id: 3
-  problem_must_solve_before_id:
+  _creator: writer1
   team_private: false
   reference_point: 80
   perfect_point: 100
@@ -15,8 +16,7 @@
   text: カフェラテ
   order: 1
   secret_text: 秘密その1
-  creator_id: 3
-  problem_must_solve_before_id: 10
+  _creator: writer1
   team_private: false
   reference_point: 192
   perfect_point: 240
@@ -26,8 +26,7 @@
   text: モカ
   order: 2
   secret_text: 秘密その2
-  creator_id: 2
-  problem_must_solve_before_id: 11
+  _creator: writer2
   team_private: false
   reference_point: 384
   perfect_point: 480
@@ -37,8 +36,7 @@
   text: エスプレッソ
   order: 3
   secret_text: 秘密その3
-  creator_id: 4
-  problem_must_solve_before_id: 12
+  _creator: writer2
   team_private: false
   reference_point: 520
   perfect_point: 650
@@ -50,8 +48,7 @@
   text: アメリカン
   order: 4
   secret_text: 秘密その4
-  creator_id: 4
-  problem_must_solve_before_id: 13
+  _creator: writer3
   team_private: false
   reference_point: 62
   perfect_point: 78
