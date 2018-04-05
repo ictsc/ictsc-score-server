@@ -297,9 +297,12 @@ module Hooks
     this[:problem_must_solve_before_id] = problem[:id]
   end
 
-  # 一括登録時にorderを省略すると並び順になる
+  # 一括投稿時にorderを省略すると並び順になる
   def auto_order(value:, this:, list:, index:)
-    this[:order] = index * 100 if list.present?
+    # 一括投稿でないなら終了
+    return if list.blank?
+
+    this[:order] = index * 100
   end
 
   # attachmentの投稿をファイルパス指定で行う
