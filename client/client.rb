@@ -214,15 +214,16 @@ module ShellCommands
   end
 
   def _ls(*args)
-    system(*(['ls', '--color=always', '-F'] | args))
+    system(*(['ls', '--color=always', '-F'] | args.map(&File.method(:expand_path))))
   end
 
   def _cd(dir)
-    Dir.chdir(dir)
+    Dir.chdir(File.expand_path(dir))
+    _ls
   end
 
   def _cat(filepath)
-    puts File.read(filepath)
+    puts File.read(File.expand_path(filepath))
   end
 end
 
