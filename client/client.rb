@@ -216,7 +216,7 @@ API_ENDPOINTS = {
     required: %i(file),
     hooks: {
       underscore: {
-        _filepath: :attachment_filepath,
+        _filepath: :attachment_file_by_filepath,
       },
     },
   },
@@ -228,10 +228,10 @@ API_ENDPOINTS = {
     optional: { name: nil, team_id: nil, registration_code: nil, role_id: nil, },
     hooks: {
       underscore: {
-        _role: :member_role,
+        _role: :member_role_by_name,
       },
       blank: {
-        name: :member_name,
+        name: :member_name_by_login,
       },
     },
   },
@@ -241,8 +241,8 @@ API_ENDPOINTS = {
     optional: { secret_text: '', team_private: false, problem_must_solve_before_id: nil, problem_group_ids: [], },
     hooks: {
       underscore: {
-        _creator: :problem_creator,
-        _problem_must_solve_before_id: :problem_dependency_problem_title,
+        _creator: :problem_creator_by_login,
+        _problem_must_solve_before_id: :problem_dependency_problem_by_title,
       },
       blank: {
         order: :auto_order,
@@ -275,24 +275,24 @@ module Hooks
   module_function
 
   # _role, _role_idで文字列かシンボルでRoleを指定できる
-  def member_role(value:, this:, list:, index:)
+  def member_role_by_name(value:, this:, list:, index:)
     this[:role_id] = get_roles[value.to_sym.downcase]
   end
 
   # nameを省略したらloginを使用する
-  def member_name(value:, this:, list:, index:)
+  def member_name_by_login(value:, this:, list:, index:)
     this[:name] = this[:login]
   end
 
   # creator_idをloginで指定できる
-  def problem_creator(value:, this:, list:, index:)
+  def problem_creator_by_login(value:, this:, list:, index:)
     member = list_members.find_by(login: value)
     raise RecordNotFound.new(key: { login: value }, endpoint: :members) if member.nil?
     this[:creator_id] = member[:id]
   end
 
   # titleから依存問題を求める
-  def problem_dependency_problem_title(value:, this:, list:, index:)
+  def problem_dependency_problem_by_title(value:, this:, list:, index:)
     problem = list_problems.find_by(title: value)
     this[:problem_must_solve_before_id] = problem[:id]
   end
@@ -303,7 +303,7 @@ module Hooks
   end
 
   # attachmentの投稿をファイルパス指定で行う
-  def attachment_filepath(value:, this:, list:, index:)
+  def attachment_file_by_filepath(value:, this:, list:, index:)
     abs_filepath = File.expand_path(value)
     this[:file] = File.open(abs_filepath, 'rb')
     this[:multipart] = true
