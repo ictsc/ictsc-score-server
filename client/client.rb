@@ -358,7 +358,7 @@ module EndpointRequests
 
     # 必要なキーを指定しているか
     unless (endpoint.fetch(:required, []) - args.keys).empty?
-      puts_keys(endpoint: endpoint, keys: args.keys)
+      show_keys(endpoint: endpoint, keys: args.keys)
       return
     end
 
@@ -407,7 +407,7 @@ module EndpointRequests
   end
 
   # 指定できるキーの情報を出力する
-  def puts_keys(endpoint:, keys:)
+  def show_keys(endpoint:, keys:)
     puts 'required keys:    %p' % [endpoint.fetch(:required, []) - keys]
     puts 'optional keys:    %p' % [endpoint.fetch(:optional, {}).keys - keys]
 
