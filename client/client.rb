@@ -9,6 +9,34 @@ require 'hashie'
 require 'active_support'
 require 'active_support/core_ext'
 
+$responses = []
+
+## Exceptions
+
+# 主にフック内で関連レコードの検索を行った際に投げられる
+# 投稿処理を終了する
+class RelatedRecordNotFoundError < StandardError
+  # endpoint: 探索先エンドポイントのシンボル
+  # key: 探索キー(find_byの引数)
+  def initialize(key:, endpoint:)
+    @endpoint = endpoint.to_sym
+    @key = key
+
+    super("#{@key} is not found in :#{@endpoint}")
+  end
+
+  attr_reader :endpoint
+  attr_reader :key
+
+  # 初期化後に別途値を設定する
+  attr_accessor :hook
+end
+
+# 投稿処理は継続される
+class RelatedRecordNotFoundWarning < RelatedRecordNotFoundError
+end
+
+
 ## class extensions
 
 class Hash
@@ -27,6 +55,15 @@ class Hash
 end
 
 class Array
+  def ===(value)
+    case value
+    when Array
+      self == value
+    else
+      include?(value)
+    end
+  end
+
   def symbolize_keys
     map(&:deep_symbolize_keys)
   end
@@ -47,6 +84,16 @@ class Array
     find do |elem|
       opts.all? {|key, value| value === elem[key] }
     end
+  end
+
+  def find_index_by(opts = {})
+    find_index do |elem|
+      opts.all? {|key, value| value === elem[key] }
+    end
+  end
+
+  def update(**params)
+    each{|elem| elem.update(block_given? ? yield(elem) : params) }
   end
 end
 
@@ -70,6 +117,16 @@ class Object
   end
 end
 
+class RestClient::Response
+  def successful?
+    code / 100 == 2
+  end
+
+  def failed?
+    [4, 5].include?(code / 100)
+  end
+end
+
 
 ## utils
 
@@ -89,22 +146,26 @@ module Utils
     File.join($base_url, path.to_s)
   end
 
-  def request(method, path, payload_hash = {}, headers = { content_type: :json })
-    headers[:cookies] ||= $responses.last&.cookies
-    payload = headers[:content_type] == :json ? payload_hash.to_json : payload_hash
+  def response
+    $responses.last
+  end
 
-    $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
+  def request(method, path, payload = {}, headers = {})
+    headers[:cookies] ||= response&.cookies
 
-    case $responses.last.code
+    begin
+      $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
+    rescue RestClient::RequestFailed => e
+      $responses << e.response
+      error e.message
+    end
+
+    case response.code
     when 204
       true
     else
-      JSON.parse($responses.last, symbolize_names: true)
+      JSON.parse(response, symbolize_names: true) if response.body.present?
     end
-
-  rescue RestClient::NotFound => e
-    error e.message
-    nil
   end
 
   def read_erb(filepath)
@@ -113,6 +174,11 @@ module Utils
 
   def load_file(filepath)
     filepath = File.expand_path(filepath)
+
+    unless File.exist? filepath
+      error '"%s" does not exist' % filepath
+      return
+    end
 
     unless File.file? filepath
       error '"%s" is not a file' % filepath
@@ -131,10 +197,7 @@ module Utils
         return
       end
 
-    {
-      data: data,
-      filedir: File.dirname(filepath),
-    }
+    data
   end
 end
 
@@ -173,7 +236,14 @@ end
 #   blank: 値が `Object#blank?` ならフックする
 API_ENDPOINTS = {
   answers: {},
-  attachments: {},
+  attachments: {
+    required: %i(file),
+    hooks: {
+      underscore: {
+        _filepath: :attachment_file_by_filepath,
+      },
+    },
+  },
   comments: {},
   contests: {},
   issues: {},
@@ -182,22 +252,36 @@ API_ENDPOINTS = {
     optional: { name: nil, team_id: nil, registration_code: nil, role_id: nil, },
     hooks: {
       underscore: {
-        _role: :member_role,
-        _role_id: :member_role,
+        _role: :member_role_by_name,
       },
       blank: {
-        name: :member_name,
+        name: :member_name_by_login,
       },
     },
   },
   notices: {},
   problems: {
-    required: %i(title text reference_point perfect_point creator_id),
-    optional: { secret_text: '', team_private: false, order: 0, problem_must_solve_before_id: nil, problem_group_ids: [], },
+    required: %i(title text reference_point perfect_point order creator_id),
+    optional: { secret_text: '', team_private: false, problem_must_solve_before_id: nil, problem_group_ids: [], },
+    hooks: {
+      underscore: {
+        _creator: :problem_creator_by_login,
+        _problem_must_solve_before_id: :problem_dependency_problem_by_title,
+      },
+      blank: {
+        order: :order_auto,
+        problem_must_solve_before_id: :problem_dependency_problem_auto,
+      },
+    },
   },
   problem_groups: {
     required: %i(name),
     optional: { order: 0, description: nil, visible: true, completing_bonus_point: 0, icon_url: '', },
+    hooks: {
+      blank: {
+        order: :order_auto,
+      },
+    },
   },
   scores: {},
   scoreboard: {},
@@ -216,17 +300,67 @@ module Hooks
   module_function
 
   # _role, _role_idで文字列かシンボルでRoleを指定できる
-  def member_role(value:, this:, list:, index:)
-    this[:role_id] = get_roles[value.to_sym.downcase]
+  def member_role_by_name(value:, this:, list:, index:)
+    value = value.to_sym.downcase
+    role_id = get_roles[value]
+    # 明示的にRoleを指定しようとして失敗したならエラーにする
+    raise RelatedRecordNotFoundError.new(key: { role_key: value }, endpoint: :roles) if role_id.nil?
+    this[:role_id] = role_id
   end
 
   # nameを省略したらloginを使用する
-  def member_name(value:, this:, list:, index:)
+  def member_name_by_login(value:, this:, list:, index:)
     this[:name] = this[:login]
+  end
+
+  # creator_idをloginで指定できる
+  def problem_creator_by_login(value:, this:, list:, index:)
+    member = get_members.find_by(login: value)
+    raise RelatedRecordNotFoundError.new(key: { login: value }, endpoint: :members) if member.nil?
+    this[:creator_id] = member[:id]
+  end
+
+  # titleから依存問題を求める
+  def problem_dependency_problem_by_title(value:, this:, list:, index:)
+    problem = get_problems.find_by(title: value)
+    raise RelatedRecordNotFoundWarning.new(key: { title: value }, endpoint: :problems) if problem.nil?
+    this[:problem_must_solve_before_id] = problem[:id]
+  end
+
+  # 一括投稿時の問題順で依存問題を設定する
+  def problem_dependency_problem_auto(value:, this:, list:, index:)
+    # 一括投稿でないなら終了
+    return if list.blank?
+
+    # 最初の問題の依存関係は無し
+    if index == 0
+      this[:problem_must_solve_before_id] = nil
+      return
+    end
+
+    dependency_problem_id = list[index - 1][:id]
+
+    raise RelatedRecordNotFoundWarning.new(key: { list_index: index - 1 }, endpoint: :problems) if dependency_problem_id.nil?
+
+    this[:problem_must_solve_before_id] = dependency_problem_id
+  end
+
+  # 一括投稿時にorderを省略すると並び順になる
+  def order_auto(value:, this:, list:, index:)
+    # 一括投稿でないなら終了
+    return if list.blank?
+
+    this[:order] = (index + 1) * 100
+  end
+
+  # attachmentの投稿をファイルパス指定で行う
+  def attachment_file_by_filepath(value:, this:, list:, index:)
+    abs_filepath = File.expand_path(value)
+    this[:file] = File.open(abs_filepath, 'rb')
   end
 end
 
-module EndpointRequetrs
+module EndpointRequests
   module_function
 
   def gets(endpoint_sym:, **params)
@@ -243,46 +377,76 @@ module EndpointRequetrs
   def post(endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
-    insufficient_keys = endpoint.fetch(:required, []) - args.keys
-    unless insufficient_keys.empty?
-      puts 'required keys: %p' % [insufficient_keys]
-      puts 'optional keys: %p' % [endpoint.fetch(:optional, {}).keys - args.keys]
+    # キーチェックより先に処理する
+    warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+    # 必要なキーを指定しているか
+    unless (endpoint.fetch(:required, []) - args.keys).empty?
+      show_keys(endpoint: endpoint, keys: args.keys)
       return
     end
 
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
-
-    call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
+    warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     # 未指定のoptionalを取り込む(args優先)
-    data = endpoint.fetch(:optional, {}).merge(args)
+    args = endpoint.fetch(:optional, {}).merge(args)
 
-    request(:post, endpoint_sym, data)
+    result = request(:post, endpoint_sym, args)
+
+    if response.successful? && warnings.empty?
+      { response: response, warnings: warnings, result: result }
+    else
+      { response: response, warnings: warnings, result: result, params: args }
+    end
+  rescue RelatedRecordNotFoundError => e
+    { error: { exception: e, hook: e.hook }, params: args }
   end
 
   def put(endpoint_sym:, args:, list: nil, index: nil)
-    endpoint = API_ENDPOINTS[endpoint_sym]
+    simple_request(method: :put, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+  end
 
-    # 取得した値を使ってputを呼ぶからrequiredやoptionalのチェックは無し
-
-    # underscoreフックは有効
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
-
-    request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
+  def patch(endpoint_sym:, args:, list: nil, index: nil)
+    simple_request(method: :patch, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
   end
 
   def delete(endpoint_sym:, args:, list: nil, index: nil)
+    simple_request(method: :delete, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+  end
+
+  def simple_request(method:, endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
-    # underscoreフックは有効
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+    warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    request(:delete, '%s/%d' % [endpoint_sym, args[:id]], args)
+    result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
+
+    if response.successful? && warnings.empty?
+      { response: response, warnings: warnings, result: result }
+    else
+      { response: response, warnings: warnings, result: result, params: args }
+    end
+  rescue RelatedRecordNotFoundError => e
+    { error: { exception: e, hook: e.hook }, params: args }
+  end
+
+  # 指定できるキーの情報を出力する
+  def show_keys(endpoint:, keys:)
+    puts 'required keys:    %p' % [endpoint.fetch(:required, []) - keys]
+    puts 'optional keys:    %p' % [endpoint.fetch(:optional, {}).keys - keys]
+
+    # hooksは減算しない
+    # underscore_hooksは先に処理されて消えるから減算できない
+    hooks = endpoint.fetch(:hooks, {})
+    puts 'underscore hooks: %p' % [hooks.fetch(:underscore, {}).keys]
+    puts 'blank hooks:      %p' % [hooks.fetch(:blank, {}).keys]
   end
 
   # _ から始まるキーのフックを実行する
   def call_underscore_hooks(this:, endpoint:, list:, index:)
     underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
+
+    warnings = []
 
     underscore_hooks&.each do |key, method_sym|
       Hooks
@@ -290,47 +454,118 @@ module EndpointRequetrs
         .call(value: this[key], this: this, list: list, index: index)
 
       this.delete(key)
+
+    rescue RelatedRecordNotFoundError => e
+      e.hook = key
+      if e.instance_of?(RelatedRecordNotFoundWarning)
+        warnings << { exception: e, hook: e.hook }
+      else
+        raise e
+      end
     end
+
+    warnings
   end
 
   # キーが空だった場合のフック
   def call_blank_hooks(this:, endpoint:, list:, index:)
     blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
 
+    warnings = []
+
     blank_hooks&.each do |key, method_sym|
       Hooks
         .method(method_sym)
         .call(value: this[key], this: this, list: list, index: index)
+
+    rescue RelatedRecordNotFoundError => e
+      e.hook = key
+      if e.instance_of?(RelatedRecordNotFoundWarning)
+        warnings << { exception: e, hook: e.hook }
+      else
+        raise e
+      end
     end
+
+    warnings
   end
 end
 
+# 各エンドポイントのメソッドを自動定義する
+# 一部のエンドポイントは汎用的に定義できないため、別途定義する
+# 一部のメソッドには別名も定義される
 API_ENDPOINTS.each do |endpoint_sym, value|
+  # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
+  gen_send_proc = lambda do |method_name|
+    lambda do |**args|
+      EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args)
+    end
+  end
+
+  # POST,PUT,PATCHの一括リクエスト用Procを生成する
+  gen_send_list_proc = lambda do |method_name|
+    lambda do |list|
+      list.map.with_index do |args, index|
+        result = EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+
+        # 投稿して取得した値で更新する(IDなどを取得)
+        list[index] = result[:result].merge(args) if result[:response]&.successful?
+
+        result
+      end
+    end
+  end
+
+  # エイリアス(ソフトリンク)を動的に生成する
+  # alias_methodだとハードリンクになる
+  # ソフトリンクで定義すれば、オリジナルを独自に再定義した場合でも意図した通りに動く
+  gen_alias_proc = lambda do |method_name|
+    case method(method_name).arity
+    when -1
+      lambda {|**params| send(method_name, **params) }
+    when 1
+      lambda {|arg1| send(method_name, arg1) }
+    end
+  end
+
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
-  proc_gets = Proc.new {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
-  define_method('get_%s' % endpoint_sym.pluralize, proc_gets)
-  define_method('list_%s' % endpoint_sym.pluralize, proc_gets)
+  gets_method_name = "get_#{endpoint_sym.pluralize}"
+  proc_gets = lambda {|**params| EndpointRequests.gets(endpoint_sym: endpoint_sym, **params) }
+  define_method(gets_method_name, proc_gets)
+  define_method("list_#{endpoint_sym.pluralize}", gen_alias_proc.call(gets_method_name))
 
   ## POST
-  proc_post = Proc.new {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
-  define_method('post_%s' % endpoint_sym.singularize, proc_post)
-  define_method('add_%s' % endpoint_sym.singularize, proc_post)
+  # e.g.
+  #   post_problem(title: 'hello', text: 'world', reference_point: 10, perfect_point: 20, creator_id: 2)
+  post_method_name = "post_#{endpoint_sym.singularize}"
+  define_method(post_method_name, gen_send_proc.call(:post))
+  define_method("add_#{endpoint_sym.singularize}", gen_alias_proc.call(post_method_name))
 
   ## POST list
-  proc_posts = Proc.new {|list| list.each.with_index {|args, index| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args, list: list ,index: index) } }
-  define_method('post_%s' % endpoint_sym.pluralize, proc_posts)
-  define_method('add_%s' % endpoint_sym.pluralize, proc_posts)
+  posts_method_name = "post_#{endpoint_sym.pluralize}"
+  define_method(posts_method_name, gen_send_list_proc.call(:post))
+  define_method("add_#{endpoint_sym.pluralize}", gen_alias_proc.call(posts_method_name))
 
   ## PUT
-  proc_put = Proc.new {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
-  define_method('put_%s' % endpoint_sym.singularize, proc_put)
-  define_method('update_%s' % endpoint_sym.singularize, proc_put)
+  define_method("put_#{endpoint_sym.singularize}", gen_send_proc.call(:put))
+
+  ## PUT list
+  define_method("put_#{endpoint_sym.pluralize}", gen_send_list_proc.call(:put))
+
+  ## PATCH
+  patch_method_name = "patch_#{endpoint_sym.singularize}"
+  define_method(patch_method_name, gen_send_proc.call(:patch))
+  define_method("update_#{endpoint_sym.singularize}", gen_alias_proc.call(patch_method_name))
+
+  ## PATCH list
+  patches_method_name = "patch_#{endpoint_sym.pluralize}"
+  define_method(patches_method_name, gen_send_list_proc.call(:patch))
+  define_method("update_#{endpoint_sym.pluralize}", gen_alias_proc.call(patches_method_name))
 
   ## DELETE
-  proc_delete = Proc.new {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
-  define_method('delete_%s' % endpoint_sym.singularize, proc_delete)
+  define_method("delete_#{endpoint_sym.singularize}", gen_send_proc.call(:delete))
 end
 
 
@@ -338,7 +573,7 @@ end
 
 def login(login:, password: input_secret)
   request(:post, 'session', { login: login, password: password })
-rescue Errno::ECONNREFUSED, RestClient::Unauthorized  => e
+rescue Errno::ECONNREFUSED => e
   error e.message
 end
 
@@ -362,25 +597,9 @@ end
 alias list_roles get_roles
 
 
-## attachments
+## 特定の処理に特化した便利メソッド
 
-def add_attachment(filepath)
-  full_filepath = File.expand_path(filepath)
-  request(:post, 'attachments', { file: File.open(full_filepath, 'rb'),  multipart: true }, {})
-end
-
-def add_attachments(filepathes)
-  filepathes.each {|filepath| add_attachments(filepath) }
-end
-
-def download_attachment(id:, access_token:)
-  request(:get, "/api/attachments/#{id}/#{access_token}")
-end
-
-
-## 特定の処理に特化したちょい便利メソッドたち
-
-def update_only_problem_group(problem_id:, group_id:)
+def change_belongs_problem_group(problem_id:, group_id:)
   problem = get_problems
     .find_by(id: problem_id)
     .merge(problem_group_ids: [group_id])
@@ -388,28 +607,18 @@ def update_only_problem_group(problem_id:, group_id:)
   update_problem(problem)
 end
 
+# グループに複数の問題を所属させる
+def change_belonging_problems(group_id:, problem_ids: [])
+  problem_ids.map {|id| change_belongs_problem_group(problem_id: id, group_id: group_id) }
+end
+
 # problem_idをbefore_idに依存させる
-def change_depends_problem(problem_id:, before_id:)
+def change_dependency_problem(problem_id:, before_id:)
   problem = get_problems
     .find_by(id: problem_id)
     .merge(problem_must_solve_before_id: before_id)
 
-  update_problem(problem)
-end
-
-# グループに複数の問題を依存させる
-def register_problems_to_group(group_id:, problem_ids: [])
-  problem_ids.each do |id|
-    update_only_problem_group(problem_id: id, group_id: group_id)
-  end
-end
-
-# 指定ディレクトリをまとめてアップロードする
-def upload_dir_files(file_dir)
-  filepathes = Dir.glob(File.join(file_dir, '/*'))
-    .select {|file_path| File.file?(file_path) }
-
-  add_attachments(filepathes)
+  patch_problem(problem)
 end
 
 def change_password(login:, password: input_secret)
@@ -417,14 +626,28 @@ def change_password(login:, password: input_secret)
     .find_by(login: login)
     .merge(password: password)
 
-  update_member(member)
+  patch_member(member)
+end
+
+def download_attachment(id:, access_token:)
+  request(:get, "/api/attachments/#{id}/#{access_token}")
+end
+
+def upload_files(*filepathes)
+  post_attachments(filepathes.flatten.map {|filepath| { _filepath: filepath } })
+end
+
+def upload_dir_files(filedir)
+  filepathes = Dir.glob(File.join(filedir, '/*'))
+    .select(&File.method(:file?))
+
+  upload_files(filepathes)
 end
 
 
 ## run
 
 $base_url = ARGV[0] || 'http://localhost:3000/api'
-$responses = []
 
 login(login: :admin)
 
@@ -443,18 +666,20 @@ login(login: 'admin', password: 'admin')
 logout
 
 # 問題の追加
-add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, creator_id: 3, problem_group_ids: [1], problem_must_solve_before_id: 12)
+add_problem(title: '10時間寝たい', text: 'マジ?', reference_point: 80, perfect_point: 0x80, _creator: 'writer1', problem_group_ids: [1], problem_must_solve_before_id: 12)
 
-# 問題を更新する
-problem = get_problems[0]
-problem[:title] = 'this is a title'
-puts update_problem(problem)
+# 問題のタイトルを更新する
+problem = get_problems[0].update(title: 'this is a title')
+update_problem(problem)
 
 # YAMLから問題を読み込んでまとめて追加
-add_problems(load_file('./sample-problem-groups.yml').data)
+add_problems(load_file('./sample-problem-groups.yml'))
 
-# ファイルをアップロード(ダウンロードリンクを返す)
-attachment = add_attachments('./pry_r.rb')
+# ファイルをアップロード
+attachment = upload_files('./Gemfile')[0][:result]
+# ダウンロードリンクを表示(相対URL)
+puts attachment[:url]
+# ダウンロード
 download_attachment(id: attachment[:id], access_token: attachment[:access_token])
 
 
@@ -466,3 +691,6 @@ add_member(login: 'foobar', password: 'foobar', _role: 'writer')
 
 # Writerのみ削除する
 list_members.where(role_id: list_roles[:writer]).each(&method(:delete_member))
+
+# Writerのパスワードを一括変更する
+update_members(list_members.where(role_id: list_roles[:writer]).update(password: 'new_password'))
