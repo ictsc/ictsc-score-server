@@ -333,7 +333,6 @@ module Hooks
   def attachment_file_by_filepath(value:, this:, list:, index:)
     abs_filepath = File.expand_path(value)
     this[:file] = File.open(abs_filepath, 'rb')
-    this[:multipart] = true
   end
 end
 
