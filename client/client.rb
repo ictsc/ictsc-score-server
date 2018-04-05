@@ -253,6 +253,7 @@ API_ENDPOINTS = {
       },
       blank: {
         order: :auto_order,
+        problem_must_solve_before_id: :problem_dependency_problem_auto,
       },
     },
   },
@@ -302,6 +303,22 @@ module Hooks
   def problem_dependency_problem_by_title(value:, this:, list:, index:)
     problem = get_problems.find_by(title: value)
     this[:problem_must_solve_before_id] = problem[:id]
+  end
+
+  # 一括投稿時の問題順で依存問題を設定する
+  def problem_dependency_problem_auto(value:, this:, list:, index:)
+    # 一括投稿でないなら終了
+    return if list.blank?
+
+    # 最初の問題の依存関係は無し
+    if index == 0
+      this[:problem_must_solve_before_id] = nil
+      return
+    end
+
+    dependency_problem_id = list[index - 1][:id]
+
+    this[:problem_must_solve_before_id] = dependency_problem_id
   end
 
   # 一括投稿時にorderを省略すると並び順になる
