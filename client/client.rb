@@ -308,7 +308,7 @@ module Hooks
     # 一括投稿でないなら終了
     return if list.blank?
 
-    this[:order] = index * 100
+    this[:order] = (index + 1) * 100
   end
 
   # attachmentの投稿をファイルパス指定で行う
@@ -471,7 +471,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # POST,PUT,PATCHの一括リクエスト用Procを生成する
   gen_send_list_proc = lambda do |method_name|
     lambda do |list|
-      list.map.with_index(1) do |args, index|
+      list.map.with_index do |args, index|
         EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
       rescue RecordNotFound => e
         { error: e, data: args }
