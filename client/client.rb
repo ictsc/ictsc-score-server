@@ -337,7 +337,7 @@ module Hooks
   end
 end
 
-module EndpointRequetrs
+module EndpointRequests
   module_function
 
   def gets(endpoint_sym:, **params)
@@ -451,7 +451,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
   gen_send_proc = lambda do |method_name|
     lambda do |**args|
-      EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args)
+      EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args)
     rescue RelatedRecordNotFoundError => e
       { error: e, data: args }
     end
@@ -461,7 +461,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   gen_send_list_proc = lambda do |method_name|
     lambda do |list|
       list.map.with_index do |args, index|
-        EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+        EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
       rescue RelatedRecordNotFoundError => e
         { error: e, data: args }
       end
@@ -484,7 +484,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # e.g.
   #   get_problems(with: 'answers,comments')
   gets_method_name = "get_#{endpoint_sym.pluralize}"
-  proc_gets = lambda {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
+  proc_gets = lambda {|**params| EndpointRequests.gets(endpoint_sym: endpoint_sym, **params) }
   define_method(gets_method_name, proc_gets)
   define_method("list_#{endpoint_sym.pluralize}", gen_alias_proc.call(gets_method_name))
 
