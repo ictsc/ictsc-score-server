@@ -286,14 +286,14 @@ module Hooks
 
   # creator_idをloginで指定できる
   def problem_creator_by_login(value:, this:, list:, index:)
-    member = list_members.find_by(login: value)
+    member = get_members.find_by(login: value)
     raise RecordNotFound.new(key: { login: value }, endpoint: :members) if member.nil?
     this[:creator_id] = member[:id]
   end
 
   # titleから依存問題を求める
   def problem_dependency_problem_by_title(value:, this:, list:, index:)
-    problem = list_problems.find_by(title: value)
+    problem = get_problems.find_by(title: value)
     this[:problem_must_solve_before_id] = problem[:id]
   end
 
