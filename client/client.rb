@@ -498,7 +498,12 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   gen_send_list_proc = lambda do |method_name|
     lambda do |list|
       list.map.with_index do |args, index|
-        EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+        result = EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+
+        # 投稿して取得した値で更新する(IDなどを取得)
+        list[index] = result[:result].merge(args) if result[:response]&.successful?
+
+        result
       end
     end
   end
