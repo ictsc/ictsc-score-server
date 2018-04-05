@@ -29,6 +29,10 @@ class RelatedRecordNotFoundError < StandardError
   attr_reader :key
 end
 
+# 投稿処理は継続される
+class RelatedRecordNotFoundWarning < RelatedRecordNotFoundError
+end
+
 
 ## class extensions
 
@@ -364,7 +368,7 @@ module EndpointRequests
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # キーチェックより先に処理する
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+    warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     # 必要なキーを指定しているか
     unless (endpoint.fetch(:required, []) - args.keys).empty?
@@ -372,7 +376,7 @@ module EndpointRequests
       return
     end
 
-    call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
+    warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     # 未指定のoptionalを取り込む(args優先)
     args = endpoint.fetch(:optional, {}).merge(args)
@@ -402,7 +406,7 @@ module EndpointRequests
   def simple_request(method:, endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+    warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
 
@@ -432,24 +436,37 @@ module EndpointRequests
   def call_underscore_hooks(this:, endpoint:, list:, index:)
     underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
 
+    warnings = []
+
     underscore_hooks&.each do |key, method_sym|
       Hooks
         .method(method_sym)
         .call(value: this[key], this: this, list: list, index: index)
 
       this.delete(key)
+    rescue RelatedRecordNotFoundWarning => e
+      warnings << { warning: e, hook: key }
     end
+
+    warnings
   end
 
   # キーが空だった場合のフック
   def call_blank_hooks(this:, endpoint:, list:, index:)
     blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
 
+    warnings = []
+
     blank_hooks&.each do |key, method_sym|
       Hooks
         .method(method_sym)
         .call(value: this[key], this: this, list: list, index: index)
+
+    rescue RelatedRecordNotFoundWarning => e
+      warnings << { warning: e, hook: key }
     end
+
+    warnings
   end
 end
 
