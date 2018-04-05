@@ -354,59 +354,30 @@ module EndpointRequetrs
 
     case response.code
     when 400
-      result.merge!(data: args)
+      result.merge(data: args)
     else
       result
     end
   end
 
   def put(endpoint_sym:, args:, list: nil, index: nil)
-    endpoint = API_ENDPOINTS[endpoint_sym]
-
-    # 取得した値を使ってputを呼ぶからrequiredやoptionalのチェックは無し
-
-    # underscoreフックは有効
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
-
-    result = request(:put, '%s/%d' % [endpoint_sym, args[:id]], args)
-
-    case response.code
-    when 400
-      result.merge(data: args)
-    when 404
-      { data: args }
-    else
-      result
-    end
+    simple_request(method: :put, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
   end
 
   def patch(endpoint_sym:, args:, list: nil, index: nil)
-    endpoint = API_ENDPOINTS[endpoint_sym]
-
-    # 取得した値を使ってpatchを呼ぶからrequiredやoptionalのチェックは無し
-
-    # underscoreフックは有効
-    call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
-
-    result = request(:patch, '%s/%d' % [endpoint_sym, args[:id]], args)
-
-    case response.code
-    when 400
-      result.merge(data: args)
-    when 404
-      { data: args }
-    else
-      result
-    end
+    simple_request(method: :patch, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
   end
 
   def delete(endpoint_sym:, args:, list: nil, index: nil)
+    simple_request(method: :delete, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+  end
+
+  def simple_request(method:, endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
-    # underscoreフックは有効
     call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    result = request(:delete, '%s/%d' % [endpoint_sym, args[:id]], args)
+    result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
 
     case response.code
     when 400
