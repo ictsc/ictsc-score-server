@@ -155,10 +155,7 @@ module Utils
         return
       end
 
-    {
-      data: data,
-      filedir: File.dirname(filepath),
-    }
+    data
   end
 end
 
@@ -600,7 +597,7 @@ problem[:title] = 'this is a title'
 puts update_problem(problem)
 
 # YAMLから問題を読み込んでまとめて追加
-add_problems(load_file('./sample-problem-groups.yml').data)
+add_problems(load_file('./sample-problem-groups.yml'))
 
 # ファイルをアップロード
 attachment = upload_files('./Gemfile')[0]
