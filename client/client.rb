@@ -110,6 +110,16 @@ class Object
   end
 end
 
+class RestClient::Response
+  def successful?
+    code / 100 == 2
+  end
+
+  def failed?
+    [4, 5].include?(code / 100)
+  end
+end
+
 
 ## utils
 
