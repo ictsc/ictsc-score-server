@@ -454,6 +454,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   gen_send_proc = lambda do |method_name|
     lambda do |**args|
       EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args)
+    rescue RecordNotFound => e
+      { error: e, data: args }
     end
   end
 
@@ -462,6 +464,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
     lambda do |list|
       list.map.with_index(1) do |args, index|
         EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+      rescue RecordNotFound => e
+        { error: e, data: args }
       end
     end
   end
