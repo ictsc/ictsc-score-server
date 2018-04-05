@@ -78,6 +78,12 @@ class Array
     end
   end
 
+  def find_index_by(opts = {})
+    find_index do |elem|
+      opts.all? {|key, value| value === elem[key] }
+    end
+  end
+
   def update(**params)
     each{|elem| elem.update(block_given? ? yield(elem) : params) }
   end
