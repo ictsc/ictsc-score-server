@@ -393,7 +393,11 @@ module EndpointRequests
 
     result = request(:post, endpoint_sym, args)
 
-    { result: result, params: args, warnings: warnings, response: response }
+    if response.successful? && warnings.empty?
+      { response: response, warnings: warnings, result: result }
+    else
+      { response: response, warnings: warnings, result: result, params: args }
+    end
   rescue RelatedRecordNotFoundError => e
     { error: { exception: e, hook: e.hook }, params: args }
   end
@@ -417,7 +421,11 @@ module EndpointRequests
 
     result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
 
-    { result: result, params: args, warnings: warnings, response: response }
+    if response.successful? && warnings.empty?
+      { response: response, warnings: warnings, result: result }
+    else
+      { response: response, warnings: warnings, result: result, params: args }
+    end
   rescue RelatedRecordNotFoundError => e
     { error: { exception: e, hook: e.hook }, params: args }
   end
