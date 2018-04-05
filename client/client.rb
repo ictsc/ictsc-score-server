@@ -13,8 +13,9 @@ $responses = []
 
 ## Exceptions
 
-# 主にフック内で依存レコードの検索を行った際に投げられる
-class RecordNotFound < StandardError
+# 主にフック内で関連レコードの検索を行った際に投げられる
+# 投稿処理を終了する
+class RelatedRecordNotFoundError < StandardError
   # endpoint: 探索先エンドポイントのシンボル
   # key: 探索キー(find_byの引数)
   def initialize(key:, endpoint:)
@@ -293,7 +294,7 @@ module Hooks
   # creator_idをloginで指定できる
   def problem_creator_by_login(value:, this:, list:, index:)
     member = get_members.find_by(login: value)
-    raise RecordNotFound.new(key: { login: value }, endpoint: :members) if member.nil?
+    raise RelatedRecordNotFoundError.new(key: { login: value }, endpoint: :members) if member.nil?
     this[:creator_id] = member[:id]
   end
 
@@ -434,7 +435,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   gen_send_proc = lambda do |method_name|
     lambda do |**args|
       EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args)
-    rescue RecordNotFound => e
+    rescue RelatedRecordNotFoundError => e
       { error: e, data: args }
     end
   end
@@ -444,7 +445,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
     lambda do |list|
       list.map.with_index do |args, index|
         EndpointRequetrs.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-      rescue RecordNotFound => e
+      rescue RelatedRecordNotFoundError => e
         { error: e, data: args }
       end
     end
