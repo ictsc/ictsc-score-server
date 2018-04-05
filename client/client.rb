@@ -435,29 +435,38 @@ API_ENDPOINTS.each do |endpoint_sym, value|
     end
   end
 
+  # エイリアス(ソフトリンク)を動的に生成する
+  # alias_methodだとハードリンクになる
+  # ソフトリンクで定義すれば、オリジナルを独自に再定義した場合でも意図した通りに動く
+  gen_alias_proc = lambda do |method_name|
+    case method(method_name).arity
+    when -1
+      lambda {|**params| send(method_name, **params) }
+    when 1
+      lambda {|arg1| send(method_name, arg1) }
+    end
+  end
+
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
   gets_method_name = 'get_%s' % endpoint_sym.pluralize
   proc_gets = proc {|**params| EndpointRequetrs.gets(endpoint_sym: endpoint_sym, **params) }
-  proc_alias_gets = proc {|**params| send(gets_method_name, **params) }
   define_method(gets_method_name, proc_gets)
-  define_method('list_%s' % endpoint_sym.pluralize, proc_alias_gets)
+  define_method('list_%s' % endpoint_sym.pluralize, gen_alias_proc.call(gets_method_name))
 
   ## POST
   # e.g.
   #   post_problem(title: 'hello', text: 'world', reference_point: 10, perfect_point: 20, creator_id: 2)
   post_method_name = 'post_%s' % endpoint_sym.singularize
   proc_post = proc {|**args| EndpointRequetrs.post(endpoint_sym: endpoint_sym, args: args) }
-  proc_alias_post = proc {|**args| send(post_method_name, **args) }
   define_method(post_method_name, proc_post)
-  define_method('add_%s' % endpoint_sym.singularize, proc_alias_post)
+  define_method('add_%s' % endpoint_sym.singularize, gen_alias_proc.call(post_method_name))
 
   ## POST list
   posts_method_name = 'post_%s' % endpoint_sym.pluralize
-  proc_alias_posts = proc {|list| send(posts_method_name, list) }
   define_method(posts_method_name, gen_send_list_proc.call(:post))
-  define_method('add_%s' % endpoint_sym.pluralize, proc_alias_posts)
+  define_method('add_%s' % endpoint_sym.pluralize, gen_alias_proc.call(posts_method_name))
 
   ## PUT
   proc_put = proc {|**args| EndpointRequetrs.put(endpoint_sym: endpoint_sym, args: args) }
@@ -469,15 +478,13 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   ## PATCH
   patch_method_name = 'patch_%s' % endpoint_sym.singularize
   proc_patch = proc {|**args| EndpointRequetrs.patch(endpoint_sym: endpoint_sym, args: args) }
-  proc_alias_patch = proc {|**args| send(patch_method_name, **args) }
   define_method(patch_method_name, proc_patch)
-  define_method('update_%s' % endpoint_sym.singularize, proc_alias_patch)
+  define_method('update_%s' % endpoint_sym.singularize, gen_alias_proc.call(patch_method_name))
 
   ## PATCH list
   patches_method_name = 'patch_%s' % endpoint_sym.pluralize
-  proc_alias_patches = proc {|list| send(patches_method_name, list) }
   define_method(patches_method_name, gen_send_list_proc.call(:patch))
-  define_method('update_%s' % endpoint_sym.pluralize, proc_alias_patches)
+  define_method('update_%s' % endpoint_sym.pluralize, gen_alias_proc.call(patches_method_name))
 
   ## DELETE
   proc_delete = proc {|**args| EndpointRequetrs.delete(endpoint_sym: endpoint_sym, args: args) }
