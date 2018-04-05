@@ -252,7 +252,7 @@ API_ENDPOINTS = {
         _problem_must_solve_before_id: :problem_dependency_problem_by_title,
       },
       blank: {
-        order: :auto_order,
+        order: :order_auto,
         problem_must_solve_before_id: :problem_dependency_problem_auto,
       },
     },
@@ -262,7 +262,7 @@ API_ENDPOINTS = {
     optional: { order: 0, description: nil, visible: true, completing_bonus_point: 0, icon_url: '', },
     hooks: {
       blank: {
-        order: :auto_order,
+        order: :order_auto,
       },
     },
   },
@@ -322,7 +322,7 @@ module Hooks
   end
 
   # 一括投稿時にorderを省略すると並び順になる
-  def auto_order(value:, this:, list:, index:)
+  def order_auto(value:, this:, list:, index:)
     # 一括投稿でないなら終了
     return if list.blank?
 
