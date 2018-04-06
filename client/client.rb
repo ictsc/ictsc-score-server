@@ -294,6 +294,7 @@ API_ENDPOINTS = {
 
 # API_ENDPOINTSに登録されたフックの本体
 # 引数
+#   key: フックしたキー(hook名)
 #   value: フックしたキーの値
 #   this:  処理中のハッシュ
 #   list:  一括処理中ならそのリスト
@@ -302,7 +303,7 @@ module Hooks
   module_function
 
   # _role, _role_idで文字列かシンボルでRoleを指定できる
-  def member_role_by_name(value:, this:, list:, index:)
+  def member_role_by_name(key:, value:, this:, list:, index:)
     value = value.to_sym.downcase
     role_id = get_roles[value]
     # 明示的にRoleを指定しようとして失敗したならエラーにする
@@ -311,26 +312,26 @@ module Hooks
   end
 
   # nameを省略したらloginを使用する
-  def member_name_by_login(value:, this:, list:, index:)
+  def member_name_by_login(key:, value:, this:, list:, index:)
     this[:name] = this[:login]
   end
 
   # creator_idをloginで指定できる
-  def problem_creator_by_login(value:, this:, list:, index:)
+  def problem_creator_by_login(key:, value:, this:, list:, index:)
     member = get_members.find_by(login: value)
     raise RelatedRecordNotFoundError.new(key: { login: value }, endpoint: :members) if member.nil?
     this[:creator_id] = member[:id]
   end
 
   # titleから依存問題を求める
-  def problem_dependency_problem_by_title(value:, this:, list:, index:)
+  def problem_dependency_problem_by_title(key:, value:, this:, list:, index:)
     problem = get_problems.find_by(title: value)
     raise RelatedRecordNotFoundWarning.new(key: { title: value }, endpoint: :problems) if problem.nil?
     this[:problem_must_solve_before_id] = problem[:id]
   end
 
   # 一括投稿時の問題順で依存問題を設定する
-  def problem_dependency_problem_auto(value:, this:, list:, index:)
+  def problem_dependency_problem_auto(key:, value:, this:, list:, index:)
     # 一括投稿でないなら終了
     return if list.blank?
 
@@ -348,7 +349,7 @@ module Hooks
   end
 
   # 一括投稿時にorderを省略すると並び順になる
-  def order_auto(value:, this:, list:, index:)
+  def order_auto(key:, value:, this:, list:, index:)
     # 一括投稿でないなら終了
     return if list.blank?
 
@@ -356,7 +357,7 @@ module Hooks
   end
 
   # attachmentの投稿をファイルパス指定で行う
-  def attachment_file_by_filepath(value:, this:, list:, index:)
+  def attachment_file_by_filepath(key:, value:, this:, list:, index:)
     abs_filepath = File.expand_path(value)
     this[:file] = File.open(abs_filepath, 'rb')
   end
@@ -453,7 +454,7 @@ module EndpointRequests
     underscore_hooks&.each do |key, method_sym|
       Hooks
         .method(method_sym)
-        .call(value: this[key], this: this, list: list, index: index)
+        .call(key: key, value: this[key], this: this, list: list, index: index)
 
       this.delete(key)
 
@@ -478,7 +479,7 @@ module EndpointRequests
     blank_hooks&.each do |key, method_sym|
       Hooks
         .method(method_sym)
-        .call(value: this[key], this: this, list: list, index: index)
+        .call(key: key, value: this[key], this: this, list: list, index: index)
 
     rescue RelatedRecordNotFoundError => e
       e.hook = key
