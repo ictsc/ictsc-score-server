@@ -267,7 +267,7 @@ API_ENDPOINTS = {
     optional: { secret_text: '', team_private: false, problem_must_solve_before_id: nil, problem_group_ids: [], },
     hooks: {
       underscore: {
-        _creator: :problem_creator_by_login,
+        _creator: :member_id_by_login,
         _problem_must_solve_before_id: :problem_dependency_problem_by_title,
       },
       blank: {
@@ -317,10 +317,13 @@ module Hooks
   end
 
   # creator_idをloginで指定できる
-  def problem_creator_by_login(key:, value:, this:, list:, index:)
+  def member_id_by_login(key:, value:, this:, list:, index:)
     member = get_members.find_by(login: value)
     raise RelatedRecordNotFoundError.new(key: { login: value }, endpoint: :members) if member.nil?
-    this[:creator_id] = member[:id]
+
+    # _creator -> creator_id
+    actual_key = (key.to_s.delete_prefix('_') + '_id').to_sym
+    this[actual_key] = member[:id]
   end
 
   # titleから依存問題を求める
