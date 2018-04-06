@@ -11,31 +11,6 @@ require 'active_support/core_ext'
 
 $responses = []
 
-## Exceptions
-
-# 主にフック内で関連レコードの検索を行った際に投げられる
-# 投稿処理を終了する
-class RelatedRecordNotFoundError < StandardError
-  # endpoint: 探索先エンドポイントのシンボル
-  # key: 探索キー(find_byの引数)
-  def initialize(key:, endpoint:)
-    @endpoint = endpoint.to_sym
-    @key = key
-
-    super("#{@key} is not found in :#{@endpoint}")
-  end
-
-  attr_reader :endpoint
-  attr_reader :key
-
-  # 初期化後に別途値を設定する
-  attr_accessor :hook
-end
-
-# 投稿処理は継続される
-class RelatedRecordNotFoundWarning < RelatedRecordNotFoundError
-end
-
 
 ## class extensions
 
@@ -125,6 +100,32 @@ class RestClient::Response
   def failed?
     [4, 5].include?(code / 100)
   end
+end
+
+
+## exceptions
+
+# 主にフック内で関連レコードの検索を行った際に投げられる
+# 投稿処理を終了する
+class RelatedRecordNotFoundError < StandardError
+  # endpoint: 探索先エンドポイントのシンボル
+  # key: 探索キー(find_byの引数)
+  def initialize(key:, endpoint:)
+    @endpoint = endpoint.to_sym
+    @key = key
+
+    super("#{@key} is not found in :#{@endpoint}")
+  end
+
+  attr_reader :endpoint
+  attr_reader :key
+
+  # 初期化後に別途値を設定する
+  attr_accessor :hook
+end
+
+# 投稿処理は継続される
+class RelatedRecordNotFoundWarning < RelatedRecordNotFoundError
 end
 
 
@@ -369,7 +370,7 @@ module EndpointRequests
     params[:with] &&= params[:with].try_send!(:join, ',')
 
     params_str = params
-      .map {|key,value| "#{key}=#{value}" }
+      .map {|key, value| "#{key}=#{value}" }
       .join('&')
 
     request(:get, '%s?%s' % [endpoint_sym, params_str])
