@@ -3,6 +3,7 @@ require 'io/console'
 require 'json'
 require 'yaml'
 require 'erb'
+require 'singleton'
 
 require 'rest-client'
 require 'hashie'
@@ -276,6 +277,7 @@ end
 
 # required: クライアントからPOSTリクエストを投げるときに必要なキー
 # optional: 未指定の場合デフォルト値が入るキー
+# cache: 一括投稿系の実行前にキャッシュするエンドポイントを指定
 # hooks:
 #   underscore: `_` から始まるキーをフックする
 #   blank: 値が `Object#blank?` ならフックする
@@ -309,6 +311,7 @@ API_ENDPOINTS = {
   problems: {
     required: %i(title text reference_point perfect_point order creator_id),
     optional: { secret_text: '', team_private: false, problem_must_solve_before_id: nil, problem_group_ids: [], },
+    cache: %i(members),
     hooks: {
       underscore: {
         _text: :text_by_filepath,
@@ -448,7 +451,46 @@ end
 module EndpointRequests
   module_function
 
+  # GET allのキャッシュをする
+  # 参照カウンタ方式でキャッシュを管理する
+  class EndpointCache
+    include Singleton
+
+    # e.g. endpoint: { count: 0, data: nil }
+    @@cache = {}
+
+    def self.cache
+      @@cache
+    end
+
+    def self.get(endpoint_sym)
+      @@cache.dig(endpoint_sym, :data)
+    end
+
+    def self.set(endpoint_sym)
+      @@cache[endpoint_sym] ||= { count: 0, data: nil }
+      endpoint = @@cache[endpoint_sym]
+
+      if endpoint[:count] == 0
+        # 分岐後,リクエスト前に加算しないと無限ループになる
+        endpoint[:count] += 1
+        endpoint[:data] = EndpointRequests.gets(endpoint_sym: endpoint_sym, params: {})
+      else
+        endpoint[:count] += 1
+      end
+    end
+
+    def self.unset(endpoint_sym)
+      endpoint = @@cache[endpoint_sym]
+      endpoint[:count] -= 1
+      endpoint[:data] = nil if endpoint[:count] == 0
+    end
+  end
+
   def gets(endpoint_sym:, params:)
+    cache = EndpointCache.get(endpoint_sym)
+    return cache if cache.present?
+
     params = params.deep_dup
 
     # 配列でも文字列でもいい
@@ -513,6 +555,9 @@ module EndpointRequests
   def request_list(http_method:, endpoint_sym:, list:)
     list = list.deep_dup
 
+    # キャッシュを取得
+    API_ENDPOINTS.dig(endpoint_sym, :cache)&.each(&EndpointCache.method(:set))
+
     list.map.with_index do |params, index|
       result = request_base(http_method: http_method, endpoint_sym: endpoint_sym, params: params, list: list, index: index)
 
@@ -521,6 +566,10 @@ module EndpointRequests
 
       result
     end
+
+  ensure
+    # キャッシュを開放
+    API_ENDPOINTS.dig(endpoint_sym, :cache)&.each(&EndpointCache.method(:unset))
   end
 
   # 指定できるキーの情報を出力する
