@@ -460,52 +460,47 @@ module EndpointRequests
   end
 
   def post(endpoint_sym:, args:, list: nil, index: nil)
+    request_base(method: :post, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+  end
+
+  def put(endpoint_sym:, args:, list: nil, index: nil)
+    request_base(method: :put, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+  end
+
+  def patch(endpoint_sym:, args:, list: nil, index: nil)
+    request_base(method: :patch, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+  end
+
+  def delete(endpoint_sym:, args:, list: nil, index: nil)
+    request_base(method: :delete, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+  end
+
+  # POST, PUT, PATCH, DELETE
+  def request_base(method:, endpoint_sym:, args:, list: nil, index: nil)
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # キーチェックより先に処理する
     warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
-    warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    # 必要なキーを指定しているか
-    unless (endpoint.fetch(:required, []) - args.keys).empty?
-      show_keys(endpoint: endpoint, keys: args.keys)
-      return
+    case method
+    when :post
+      warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
+
+      # 必要なキーを指定しているか
+      unless (endpoint.fetch(:required, []) - args.keys).empty?
+        show_keys(endpoint: endpoint, keys: args.keys)
+        return
+      end
+
+      # 未指定のoptionalを取り込む
+      args.append!(endpoint.fetch(:optional, {}))
+
+      url = endpoint_sym
+    when :put, :patch, :delete
+      url = "#{endpoint_sym}/#{args[:id]}"
     end
 
-    # 未指定のoptionalを取り込む
-    args.append!(endpoint.fetch(:optional, {}))
-
-    result = request(:post, endpoint_sym, args)
-
-    if result[:response]&.successful?
-      # レスポンスの値をマージしてafterフックを呼び出す
-      warnings += call_after_hooks(this: args.merge(result[:body]), endpoint: endpoint, list: list, index: index)
-    end
-
-    result.merge!(warnings: warnings, params: args) unless warnings.empty?
-    result
-  rescue HookError => e
-    { error: e, params: args }
-  end
-
-  def put(endpoint_sym:, args:, list: nil, index: nil)
-    simple_request(method: :put, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-  end
-
-  def patch(endpoint_sym:, args:, list: nil, index: nil)
-    simple_request(method: :patch, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-  end
-
-  def delete(endpoint_sym:, args:, list: nil, index: nil)
-    simple_request(method: :delete, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-  end
-
-  def simple_request(method:, endpoint_sym:, args:, list: nil, index: nil)
-    endpoint = API_ENDPOINTS[endpoint_sym]
-
-    warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
-
-    result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
+    result = request(method, url, args)
 
     if result[:response]&.successful?
       # レスポンスの値をマージしてafterフックを呼び出す
