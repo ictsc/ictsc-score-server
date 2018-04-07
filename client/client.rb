@@ -446,7 +446,7 @@ module EndpointRequests
     result = request(:post, endpoint_sym, args)
 
     if response.successful? && warnings.empty?
-      { response: response, warnings: warnings, result: result }
+      { response: response, result: result }
     else
       { response: response, warnings: warnings, result: result, params: args }
     end
@@ -474,7 +474,7 @@ module EndpointRequests
     result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
 
     if response.successful? && warnings.empty?
-      { response: response, warnings: warnings, result: result }
+      { response: response, result: result }
     else
       { response: response, warnings: warnings, result: result, params: args }
     end
