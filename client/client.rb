@@ -460,43 +460,43 @@ module EndpointRequests
   end
 
   # POST, PUT, PATCH, DELETE
-  def request_base(endpoint_sym:, args:, list: nil, index: nil)
+  def request_base(endpoint_sym:, params:, list: nil, index: nil)
     # エイリアスの関数名からHTTPメソッドを判断する
     http_method = __callee__
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # キーチェックより先に処理する
-    warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+    warnings = call_underscore_hooks(this: params, endpoint: endpoint, list: list, index: index)
 
     case http_method
     when :post
-      warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
+      warnings += call_blank_hooks(this: params, endpoint: endpoint, list: list, index: index)
 
       # 必要なキーを指定しているか
-      unless (endpoint.fetch(:required, []) - args.keys).empty?
-        show_keys(endpoint: endpoint, keys: args.keys)
+      unless (endpoint.fetch(:required, []) - params.keys).empty?
+        show_keys(endpoint: endpoint, keys: params.keys)
         return
       end
 
       # 未指定のoptionalを取り込む
-      args.append!(endpoint.fetch(:optional, {}))
+      params.append!(endpoint.fetch(:optional, {}))
 
       url = endpoint_sym
     when :put, :patch, :delete
-      url = "#{endpoint_sym}/#{args[:id]}"
+      url = "#{endpoint_sym}/#{params[:id]}"
     end
 
-    result = request(http_method, url, args)
+    result = request(http_method, url, params)
 
     if result[:response]&.successful?
       # レスポンスの値をマージしてafterフックを呼び出す
-      warnings += call_after_hooks(this: args.merge(result[:body]), endpoint: endpoint, list: list, index: index)
+      warnings += call_after_hooks(this: params.merge(result[:body]), endpoint: endpoint, list: list, index: index)
     end
 
-    result.merge!(warnings: warnings, params: args) unless warnings.empty?
+    result.merge!(warnings: warnings, params: params) unless warnings.empty?
     result
   rescue HookError => e
-    { error: e, params: args }
+    { error: e, params: params }
   end
 
   alias post   request_base
@@ -581,8 +581,8 @@ end
 API_ENDPOINTS.each do |endpoint_sym, value|
   # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
   gen_send_proc = lambda do |http_method|
-    lambda do |**args|
-      EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, args: args.deep_dup)
+    lambda do |**params|
+      EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params.deep_dup)
     end
   end
 
@@ -590,11 +590,11 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   gen_send_list_proc = lambda do |http_method|
     lambda do |list|
       list = list.deep_dup
-      list.map.with_index do |args, index|
-        result = EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+      list.map.with_index do |params, index|
+        result = EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params.deep_dup, list: list, index: index)
 
         # 投稿して取得した値で更新する(IDなどを取得)
-        args.append!(result[:body]) if result&.fetch(:response, nil)&.successful?
+        params.append!(result[:body]) if result&.fetch(:response, nil)&.successful?
 
         result
       end
