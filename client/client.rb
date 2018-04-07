@@ -143,6 +143,16 @@ end
 class HookRelatedRecordNotFoundWarning < HookRelatedRecordNotFound
 end
 
+# フック内の外部ファイル読み込み失敗
+# 投稿処理を終了する
+class HookFileNotFound < HookError
+  attr_reader :filepath
+  def initialize(filepath:)
+    @filepath = filepath
+
+    super("#{filepath} not found")
+  end
+end
 
 ## utils
 
