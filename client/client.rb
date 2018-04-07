@@ -27,6 +27,15 @@ class Hash
   end
   alias includes? has_keys?
   alias members? has_keys?
+
+  # 既存の値優先でmerge
+  def append(**other_hash)
+    merge(other_hash) {|key, old, new| old }
+  end
+
+  def append!(**other_hash)
+    merge!(other_hash) {|key, old, new| old }
+  end
 end
 
 class Array
@@ -440,8 +449,8 @@ module EndpointRequests
 
     warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    # 未指定のoptionalを取り込む(args優先)
-    args = endpoint.fetch(:optional, {}).merge(args)
+    # 未指定のoptionalを取り込む
+    args.append!(endpoint.fetch(:optional, {}))
 
     result = request(:post, endpoint_sym, args)
 
@@ -561,7 +570,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
         result = EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
 
         # 投稿して取得した値で更新する(IDなどを取得)
-        list[index] = result[:result].merge(args) if result[:response]&.successful?
+        args.append!(result[:result]) if result[:response]&.successful?
 
         result
       end
