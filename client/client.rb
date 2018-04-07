@@ -579,13 +579,14 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
   gen_send_proc = lambda do |method_name|
     lambda do |**args|
-      EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args)
+      EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args.deep_dup)
     end
   end
 
   # POST,PUT,PATCHの一括リクエスト用Procを生成する
   gen_send_list_proc = lambda do |method_name|
     lambda do |list|
+      list = list.deep_dup
       list.map.with_index do |args, index|
         result = EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
 
@@ -612,8 +613,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
+  proc_gets = lambda {|**params| EndpointRequests.gets(endpoint_sym: endpoint_sym, **params.deep_dup) }
   gets_method_name = "get_#{endpoint_sym.pluralize}"
-  proc_gets = lambda {|**params| EndpointRequests.gets(endpoint_sym: endpoint_sym, **params) }
   define_method(gets_method_name, proc_gets)
   define_method("list_#{endpoint_sym.pluralize}", gen_alias_proc.call(gets_method_name))
 
