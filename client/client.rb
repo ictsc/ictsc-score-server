@@ -462,9 +462,8 @@ module EndpointRequests
   end
 
   # POST, PUT, PATCH, DELETE
-  def request_base(endpoint_sym:, params:, list: nil, index: nil)
-    # エイリアスの関数名からHTTPメソッドを判断する
-    http_method = __callee__
+  # エイリアス名からHTTPメソッドを判断
+  def request_base(endpoint_sym:, params:, list: nil, index: nil, http_method: __callee__)
     params = params.deep_dup
     endpoint = API_ENDPOINTS[endpoint_sym]
 
