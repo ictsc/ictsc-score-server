@@ -320,6 +320,9 @@ API_ENDPOINTS = {
       blank: {
         order: :order_auto,
       },
+      after: {
+        _problems: :problem_group_problems,
+      },
     },
   },
   scores: {},
@@ -391,6 +394,14 @@ module Hooks
     raise HookRelatedRecordNotFoundWarning.new(key: { list_index: index - 1 }, endpoint: :problems) if dependency_problem_id.nil?
 
     this[:problem_must_solve_before_id] = dependency_problem_id
+  end
+
+  # 問題グループ投稿時に、問題も投稿する(problem_group_idsが自動で付与される)
+  def problem_group_problems(key:, value:, this:, list:, index:)
+    problem_group_id = this[:id]
+    raise HookRelatedRecordNotFoundWarning.new(key: 'this', endpoint: :problem_group) if problem_group_id.nil?
+    value.update(problem_group_ids: [problem_group_id])
+    post_problems(value)
   end
 
   # 一括投稿時にorderを省略すると並び順になる
