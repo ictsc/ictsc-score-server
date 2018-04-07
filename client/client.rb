@@ -448,7 +448,7 @@ end
 module EndpointRequests
   module_function
 
-  def gets(endpoint_sym:, **params)
+  def gets(endpoint_sym:, params:)
     params = params.deep_dup
 
     # 配列でも文字列でもいい
@@ -619,9 +619,8 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   ## GET all
   # e.g.
   #   get_problems(with: 'answers,comments')
-  proc_gets = lambda {|**params| EndpointRequests.gets(endpoint_sym: endpoint_sym, **params.deep_dup) }
   gets_method_name = "get_#{endpoint_sym.pluralize}"
-  define_method(gets_method_name, proc_gets)
+  define_method(gets_method_name, gen_send_proc.call(:gets))
   define_method("list_#{endpoint_sym.pluralize}", gen_alias_proc.call(gets_method_name))
 
   ## POST
