@@ -449,6 +449,8 @@ module EndpointRequests
   module_function
 
   def gets(endpoint_sym:, **params)
+    params = params.deep_dup
+
     # 配列でも文字列でもいい
     params[:with] &&= params[:with].try_send!(:join, ',')
 
@@ -463,6 +465,7 @@ module EndpointRequests
   def request_base(endpoint_sym:, params:, list: nil, index: nil)
     # エイリアスの関数名からHTTPメソッドを判断する
     http_method = __callee__
+    params = params.deep_dup
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # キーチェックより先に処理する
@@ -582,7 +585,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
   gen_send_proc = lambda do |http_method|
     lambda do |**params|
-      EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params.deep_dup)
+      EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params)
     end
   end
 
@@ -591,7 +594,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
     lambda do |list|
       list = list.deep_dup
       list.map.with_index do |params, index|
-        result = EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params.deep_dup, list: list, index: index)
+        result = EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params, list: list, index: index)
 
         # 投稿して取得した値で更新する(IDなどを取得)
         params.append!(result[:body]) if result&.fetch(:response, nil)&.successful?
