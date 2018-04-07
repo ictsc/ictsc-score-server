@@ -195,12 +195,10 @@ module Utils
       error e.message
     end
 
-    case response.code
-    when 204
-      true
-    else
-      JSON.parse(response, symbolize_names: true) if response.body.present?
-    end
+    {
+      response: response,
+      body: response.body.present? ? JSON.parse(response, symbolize_names: true) : {},
+    }
   end
 
   def read_erb(filepath)
@@ -444,7 +442,7 @@ module EndpointRequests
       .map {|key, value| "#{key}=#{value}" }
       .join('&')
 
-    request(:get, '%s?%s' % [endpoint_sym, params_str])
+    request(:get, '%s?%s' % [endpoint_sym, params_str])[:body]
   end
 
   def post(endpoint_sym:, args:, list: nil, index: nil)
@@ -464,15 +462,11 @@ module EndpointRequests
     # 未指定のoptionalを取り込む
     args.append!(endpoint.fetch(:optional, {}))
 
-    # リクエストを送り、結果を取得する
-    result = {
-      response: response,
-      result: request(:post, endpoint_sym, args),
-    }
+    result = request(:post, endpoint_sym, args)
 
     if result[:response]&.successful?
       # レスポンスの値をマージしてafterフックを呼び出す
-      warnings += call_after_hooks(this: args.merge(result[:result]), endpoint: endpoint, list: list, index: index)
+      warnings += call_after_hooks(this: args.merge(result[:body]), endpoint: endpoint, list: list, index: index)
     end
 
     result.merge!(warnings: warnings, params: args) unless warnings.empty?
@@ -498,15 +492,11 @@ module EndpointRequests
 
     warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    # リクエストを送り、結果を取得する
-    result = {
-      response: response,
-      result: request(method, '%s/%d' % [endpoint_sym, args[:id]], args),
-    }
+    result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
 
     if result[:response]&.successful?
       # レスポンスの値をマージしてafterフックを呼び出す
-      warnings += call_after_hooks(this: args.merge(result[:result]), endpoint: endpoint, list: list, index: index)
+      warnings += call_after_hooks(this: args.merge(result[:body]), endpoint: endpoint, list: list, index: index)
     end
 
     result.merge!(warnings: warnings, params: args) unless warnings.empty?
@@ -602,7 +592,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
         result = EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
 
         # 投稿して取得した値で更新する(IDなどを取得)
-        args.append!(result[:result]) if result[:response]&.successful?
+        args.append!(result[:body]) if result&.fetch(:response, nil)&.successful?
 
         result
       end
@@ -723,7 +713,7 @@ def change_password(login:, password: input_secret)
 end
 
 def download_attachment(id:, access_token:)
-  request(:get, "/api/attachments/#{id}/#{access_token}")
+  request(:get, "/api/attachments/#{id}/#{access_token}")[:body]
 end
 
 def upload_files(*filepathes)
@@ -769,7 +759,7 @@ update_problem(problem)
 add_problems(load_file('./sample-problem-groups.yml'))
 
 # ファイルをアップロード
-attachment = upload_files('./Gemfile')[0][:result]
+attachment = upload_files('./Gemfile')[0][:body]
 # ダウンロードリンクを表示(相対URL)
 puts attachment[:url]
 # ダウンロード
