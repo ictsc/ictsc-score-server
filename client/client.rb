@@ -467,21 +467,18 @@ module EndpointRequests
     puts 'unknown keys:         %p' % [keys - required_keys - optional_keys - underscore_hook_keys]
   end
 
-  # _ から始まるキーのフックを実行する
-  def call_underscore_hooks(this:, endpoint:, list:, index:)
-    underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
-
+  # hooksを実行し、warningsを返す
+  def call_hooks(hooks:, this:, endpoint:, list:, index:)
     warnings = []
 
-    underscore_hooks&.each do |key, method_sym|
+    hooks&.each do |key, method_sym|
       Hooks
         .method(method_sym)
         .call(key: key, value: this[key], this: this, list: list, index: index)
 
-      this.delete(key)
-
     rescue RelatedRecordNotFoundError => e
       e.hook = key
+
       if e.instance_of?(RelatedRecordNotFoundWarning)
         warnings << { exception: e, hook: e.hook }
       else
@@ -492,26 +489,19 @@ module EndpointRequests
     warnings
   end
 
-  # キーが空だった場合のフック
+  # _ から始まるキーのフックを実行する
+  def call_underscore_hooks(this:, endpoint:, list:, index:)
+    underscore_hooks = endpoint.dig(:hooks, :underscore)&.select{|key, _value| this.keys.include?(key) }
+    warnings = call_hooks(hooks: underscore_hooks, endpoint: endpoint, this: this, list: list, index: index)
+    # thisからunderscore_hooksを取り除く
+    underscore_hooks&.each_key(&this.method(:delete))
+    warnings
+  end
+
+  # キーが空だった場合のフックを実行する
   def call_blank_hooks(this:, endpoint:, list:, index:)
     blank_hooks = endpoint.dig(:hooks, :blank)&.select{|key, _value| this[key].blank? }
-
-    warnings = []
-
-    blank_hooks&.each do |key, method_sym|
-      Hooks
-        .method(method_sym)
-        .call(key: key, value: this[key], this: this, list: list, index: index)
-
-    rescue RelatedRecordNotFoundError => e
-      e.hook = key
-      if e.instance_of?(RelatedRecordNotFoundWarning)
-        warnings << { exception: e, hook: e.hook }
-      else
-        raise e
-      end
-    end
-
+    warnings = call_hooks(hooks: blank_hooks, endpoint: endpoint, this: this, list: list, index: index)
     warnings
   end
 end
