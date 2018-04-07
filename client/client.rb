@@ -452,13 +452,14 @@ module EndpointRequests
     # 未指定のoptionalを取り込む
     args.append!(endpoint.fetch(:optional, {}))
 
-    result = request(:post, endpoint_sym, args)
+    # リクエストを送り、結果を取得する
+    result = {
+      response: response,
+      result: request(:post, endpoint_sym, args),
+    }
 
-    if response.successful? && warnings.empty?
-      { response: response, result: result }
-    else
-      { response: response, warnings: warnings, result: result, params: args }
-    end
+    result.merge!(warnings: warnings, params: args) unless warnings.empty?
+    result
   rescue HookError => e
     { error: e, params: args }
   end
@@ -480,13 +481,14 @@ module EndpointRequests
 
     warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    result = request(method, '%s/%d' % [endpoint_sym, args[:id]], args)
+    # リクエストを送り、結果を取得する
+    result = {
+      response: response,
+      result: request(method, '%s/%d' % [endpoint_sym, args[:id]], args),
+    }
 
-    if response.successful? && warnings.empty?
-      { response: response, result: result }
-    else
-      { response: response, warnings: warnings, result: result, params: args }
-    end
+    result.merge!(warnings: warnings, params: args) unless warnings.empty?
+    result
   rescue HookError => e
     { error: e, params: args }
   end
