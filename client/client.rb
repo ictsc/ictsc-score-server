@@ -459,24 +459,10 @@ module EndpointRequests
     request(:get, '%s?%s' % [endpoint_sym, params_str])[:body]
   end
 
-  def post(endpoint_sym:, args:, list: nil, index: nil)
-    request_base(method: :post, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-  end
-
-  def put(endpoint_sym:, args:, list: nil, index: nil)
-    request_base(method: :put, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-  end
-
-  def patch(endpoint_sym:, args:, list: nil, index: nil)
-    request_base(method: :patch, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-  end
-
-  def delete(endpoint_sym:, args:, list: nil, index: nil)
-    request_base(method: :delete, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
-  end
-
   # POST, PUT, PATCH, DELETE
-  def request_base(method:, endpoint_sym:, args:, list: nil, index: nil)
+  def request_base(endpoint_sym:, args:, list: nil, index: nil)
+    # エイリアスの関数名からHTTPメソッドを判断する
+    method = __callee__
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # キーチェックより先に処理する
@@ -512,6 +498,13 @@ module EndpointRequests
   rescue HookError => e
     { error: e, params: args }
   end
+
+  alias post   request_base
+  alias put    request_base
+  alias patch  request_base
+  alias delete request_base
+  # エイリアスは明示する必要がある
+  module_function :post, :put, :patch, :delete
 
   # 指定できるキーの情報を出力する
   def show_keys(endpoint:, keys:)
