@@ -15,8 +15,8 @@ $responses = []
 ## class extensions
 
 class Hash
-  extend Hashie::Extensions::DeepFind
-  extend Hashie::Extensions::DeepFetch
+  include Hashie::Extensions::DeepFind
+  include Hashie::Extensions::DeepFetch
   include Hashie::Extensions::MethodAccess
 
   alias :symbolize_keys :deep_symbolize_keys
