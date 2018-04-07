@@ -267,6 +267,8 @@ API_ENDPOINTS = {
     optional: { secret_text: '', team_private: false, problem_must_solve_before_id: nil, problem_group_ids: [], },
     hooks: {
       underscore: {
+        _text: :text_by_filepath,
+        _secret_text: :text_by_filepath,
         _creator: :member_id_by_login,
         _problem_must_solve_before_id: :problem_dependency_problem_by_title,
       },
@@ -357,6 +359,15 @@ module Hooks
     return if list.blank?
 
     this[:order] = (index + 1) * 100
+  end
+
+  # ファイルパスからテキストを読み込む
+  def text_by_filepath(key:, value:, this:, list:, index:)
+    text = load_file(value)
+
+    # _text -> text
+    actual_key = key.to_s.delete_prefix('_').to_sym
+    this[actual_key] = text
   end
 
   # attachmentの投稿をファイルパス指定で行う
