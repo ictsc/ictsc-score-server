@@ -1,0 +1,59 @@
+---
+members:
+  - name: ラノベ作家
+    _role: writer
+    login: writer10
+    password: writer10
+  - name: SF作家
+    _role: writer
+    login: writer20
+    password: writer20
+
+problem_groups:
+  - name: "問題グループ1"
+    description: "おにぎりにする?"
+    visible: true
+    completing_bonus_point: 0
+    icon_url:
+    _problems:
+      - title: 問題10
+        _text: text/P10.md
+        secret_text: 秘密その10
+        _creator: writer10
+        team_private: false
+        reference_point: 80
+        perfect_point: 100
+      - title: 問題11
+        _text: text/P11.md
+        secret_text: 秘密その11
+        _creator: writer10
+        team_private: false
+        reference_point: 120
+        perfect_point: 240
+  - name: "問題グループ2"
+    description: "サンドイッチにする?"
+    visible: true
+    completing_bonus_point: 0
+    icon_url:
+    _problems:
+      - title: 問題20
+        _text: text/P20.md
+        secret_text: 秘密その20
+        _creator: writer20
+        team_private: true
+        reference_point: 500
+        perfect_point: 650
+      - title: 問題21
+        _text: text/P21.md
+        secret_text: 秘密その21
+        _creator: writer20
+        team_private: true
+        reference_point: 350
+        perfect_point: 450
+      - title: 問題22
+        _text: text/P22.md
+        secret_text: 秘密その22
+        _creator: writer20
+        team_private: true
+        reference_point: 60
+        perfect_point: 80
