@@ -463,6 +463,7 @@ module EndpointRequests
 
   # POST, PUT, PATCH, DELETE
   # エイリアス名からHTTPメソッドを判断
+  # paramsは非破壊
   def request_base(endpoint_sym:, params:, list: nil, index: nil, http_method: __callee__)
     params = params.deep_dup
     endpoint = API_ENDPOINTS[endpoint_sym]
@@ -581,14 +582,14 @@ end
 # 一部のエンドポイントは汎用的に定義できないため、別途定義する
 # 一部のメソッドには別名も定義される
 API_ENDPOINTS.each do |endpoint_sym, value|
-  # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
+  # GET all, POST, PUT, PATCH, DELETEのリクエスト用Procを生成する
   gen_send_proc = lambda do |http_method|
     lambda do |**params|
       EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params)
     end
   end
 
-  # POST,PUT,PATCHの一括リクエスト用Procを生成する
+  # POST, PUT, PATCHの一括リクエスト用Procを生成する
   gen_send_list_proc = lambda do |http_method|
     lambda do |list|
       list = list.deep_dup
