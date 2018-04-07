@@ -163,6 +163,17 @@ class HookFileNotFound < HookError
   end
 end
 
+# フック内でPOSTなどのリクエストを送信した際にwarningsやerrorが発生
+# 投稿処理は継続される
+class HookNestedRequestWarning < HookError
+  attr_reader :result
+
+  def initialize(result)
+    @result = result
+    super(result)
+  end
+end
+
 ## utils
 
 module Utils
@@ -399,7 +410,10 @@ module Hooks
     problem_group_id = this[:id]
     raise HookRelatedRecordNotFoundWarning.new(key: 'this', endpoint: :problem_group) if problem_group_id.nil?
     value.update(problem_group_ids: [problem_group_id])
-    post_problems(value)
+    results = post_problems(value)
+
+    warnings = results.select {|e| e.has_key?(:error) || e.has_key?(:warnings) }
+    raise HookNestedRequestWarning.new(result: warnings) unless warnings.empty?
   end
 
   # 一括投稿時にorderを省略すると並び順になる
@@ -536,7 +550,8 @@ module EndpointRequests
     rescue HookError => e
       e.hook = key
 
-      if e.instance_of?(HookRelatedRecordNotFoundWarning)
+      case e
+      when HookRelatedRecordNotFoundWarning, HookNestedRequestWarning
         # 次のフックに移る
         warnings << e
       else
