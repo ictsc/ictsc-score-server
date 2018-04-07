@@ -449,14 +449,22 @@ module EndpointRequests
 
   # 指定できるキーの情報を出力する
   def show_keys(endpoint:, keys:)
-    puts 'required keys:    %p' % [endpoint.fetch(:required, []) - keys]
-    puts 'optional keys:    %p' % [endpoint.fetch(:optional, {}).keys - keys]
+    required_keys  = endpoint.fetch(:required, [])
+    optional_keys = endpoint.fetch(:optional, {}).keys
+    hooks = endpoint.fetch(:hooks, {})
+    underscore_hook_keys = hooks.fetch(:underscore, {}).keys
+    blank_hook_keys = hooks.fetch(:blank, {}).keys
+
+    puts 'required keys:        %p' % [required_keys - keys]
+    puts 'optional keys:        %p' % [optional_keys - keys]
 
     # hooksは減算しない
     # underscore_hooksは先に処理されて消えるから減算できない
-    hooks = endpoint.fetch(:hooks, {})
-    puts 'underscore hooks: %p' % [hooks.fetch(:underscore, {}).keys]
-    puts 'blank hooks:      %p' % [hooks.fetch(:blank, {}).keys]
+    puts 'underscore hook keys: %p' % [underscore_hook_keys]
+    puts 'blank hook keys:      %p' % [blank_hook_keys]
+
+    # blank_hooksはrequired_keysかoptional_keysに必ず含まれてる
+    puts 'unknown keys:         %p' % [keys - required_keys - optional_keys - underscore_hook_keys]
   end
 
   # _ から始まるキーのフックを実行する
