@@ -196,11 +196,11 @@ module Utils
     $responses.last
   end
 
-  def request(method, path, payload = {}, headers = {})
+  def request(http_method, path, payload = {}, headers = {})
     headers[:cookies] ||= response&.cookies
 
     begin
-      $responses << RestClient::Request.execute(method: method.to_sym, url: build_url(path), payload: payload, headers: headers)
+      $responses << RestClient::Request.execute(method: http_method.to_sym, url: build_url(path), payload: payload, headers: headers)
     rescue RestClient::RequestFailed => e
       $responses << e.response
       error e.message
@@ -462,13 +462,13 @@ module EndpointRequests
   # POST, PUT, PATCH, DELETE
   def request_base(endpoint_sym:, args:, list: nil, index: nil)
     # エイリアスの関数名からHTTPメソッドを判断する
-    method = __callee__
+    http_method = __callee__
     endpoint = API_ENDPOINTS[endpoint_sym]
 
     # キーチェックより先に処理する
     warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
-    case method
+    case http_method
     when :post
       warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
@@ -486,7 +486,7 @@ module EndpointRequests
       url = "#{endpoint_sym}/#{args[:id]}"
     end
 
-    result = request(method, url, args)
+    result = request(http_method, url, args)
 
     if result[:response]&.successful?
       # レスポンスの値をマージしてafterフックを呼び出す
@@ -580,18 +580,18 @@ end
 # 一部のメソッドには別名も定義される
 API_ENDPOINTS.each do |endpoint_sym, value|
   # POST,PUT,PATCH,DELETEのリクエスト用Procを生成する
-  gen_send_proc = lambda do |method_name|
+  gen_send_proc = lambda do |http_method|
     lambda do |**args|
-      EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args.deep_dup)
+      EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, args: args.deep_dup)
     end
   end
 
   # POST,PUT,PATCHの一括リクエスト用Procを生成する
-  gen_send_list_proc = lambda do |method_name|
+  gen_send_list_proc = lambda do |http_method|
     lambda do |list|
       list = list.deep_dup
       list.map.with_index do |args, index|
-        result = EndpointRequests.send(method_name, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
+        result = EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, args: args, list: list, index: index)
 
         # 投稿して取得した値で更新する(IDなどを取得)
         args.append!(result[:body]) if result&.fetch(:response, nil)&.successful?
