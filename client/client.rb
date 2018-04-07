@@ -319,6 +319,11 @@ API_ENDPOINTS = {
   },
 }
 
+def get_api_endpoints
+  API_ENDPOINTS
+end
+alias list_api_endpoints get_api_endpoints
+
 # API_ENDPOINTSに登録されたフックの本体
 # 引数
 #   key: フックしたキー(hook名)
