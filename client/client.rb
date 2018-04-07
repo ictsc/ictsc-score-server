@@ -270,6 +270,7 @@ end
 # hooks:
 #   underscore: `_` から始まるキーをフックする
 #   blank: 値が `Object#blank?` ならフックする
+#   after: リクエスト成功後に実行する
 API_ENDPOINTS = {
   answers: {},
   attachments: {
@@ -458,6 +459,11 @@ module EndpointRequests
       result: request(:post, endpoint_sym, args),
     }
 
+    if result[:response]&.successful?
+      # レスポンスの値をマージしてafterフックを呼び出す
+      warnings += call_after_hooks(this: args.merge(result[:result]), endpoint: endpoint, list: list, index: index)
+    end
+
     result.merge!(warnings: warnings, params: args) unless warnings.empty?
     result
   rescue HookError => e
@@ -486,6 +492,11 @@ module EndpointRequests
       response: response,
       result: request(method, '%s/%d' % [endpoint_sym, args[:id]], args),
     }
+
+    if result[:response]&.successful?
+      # レスポンスの値をマージしてafterフックを呼び出す
+      warnings += call_after_hooks(this: args.merge(result[:result]), endpoint: endpoint, list: list, index: index)
+    end
 
     result.merge!(warnings: warnings, params: args) unless warnings.empty?
     result
@@ -543,6 +554,13 @@ module EndpointRequests
     warnings = call_hooks(hooks: underscore_hooks, endpoint: endpoint, this: this, list: list, index: index)
     # thisからunderscore_hooksを取り除く
     underscore_hooks&.each_key(&this.method(:delete))
+    warnings
+  end
+
+  # リクエスト成功後に実行されるフック
+  def call_after_hooks(this:, endpoint:, list:, index:)
+    after_hooks = endpoint.dig(:hooks, :after)&.select{|key, _value| this.keys.include?(key) }
+    warnings = call_hooks(hooks: after_hooks, endpoint: endpoint, this: this, list: list, index: index)
     warnings
   end
 
