@@ -105,27 +105,42 @@ end
 
 ## exceptions
 
-# 主にフック内で関連レコードの検索を行った際に投げられる
-# 投稿処理を終了する
-class RelatedRecordNotFoundError < StandardError
+# フック処理失敗
+class HookError < StandardError
+  # フック内では自身のフック名が分からない
+  attr_accessor :hook
+
+  def initialize(error_message)
+    @error_message = error_message
+    super('')
+  end
+
+  def to_s
+    "#{hook}: #{@error_message}"
+  end
+end
+
+# フック内での関連レコード検索失敗
+class HookRelatedRecordNotFound < HookError
+  attr_reader :endpoint
+  attr_reader :key
+
   # endpoint: 探索先エンドポイントのシンボル
   # key: 探索キー(find_byの引数)
   def initialize(key:, endpoint:)
     @endpoint = endpoint.to_sym
     @key = key
 
-    super("#{@key} is not found in :#{@endpoint}")
+    super("#{@key} not found in #{@endpoint}")
   end
+end
 
-  attr_reader :endpoint
-  attr_reader :key
-
-  # 初期化後に別途値を設定する
-  attr_accessor :hook
+# 投稿処理を終了する
+class HookRelatedRecordNotFoundError < HookRelatedRecordNotFound
 end
 
 # 投稿処理は継続される
-class RelatedRecordNotFoundWarning < RelatedRecordNotFoundError
+class HookRelatedRecordNotFoundWarning < HookRelatedRecordNotFound
 end
 
 
@@ -309,7 +324,7 @@ module Hooks
     value = value.to_sym.downcase
     role_id = get_roles[value]
     # 明示的にRoleを指定しようとして失敗したならエラーにする
-    raise RelatedRecordNotFoundError.new(key: { role_key: value }, endpoint: :roles) if role_id.nil?
+    raise HookRelatedRecordNotFoundError.new(key: { role_key: value }, endpoint: :roles) if role_id.nil?
     this[:role_id] = role_id
   end
 
@@ -321,7 +336,7 @@ module Hooks
   # creator_idをloginで指定できる
   def member_id_by_login(key:, value:, this:, list:, index:)
     member = get_members.find_by(login: value)
-    raise RelatedRecordNotFoundError.new(key: { login: value }, endpoint: :members) if member.nil?
+    raise HookRelatedRecordNotFoundError.new(key: { login: value }, endpoint: :members) if member.nil?
 
     # _creator -> creator_id
     actual_key = (key.to_s.delete_prefix('_') + '_id').to_sym
@@ -331,7 +346,7 @@ module Hooks
   # titleから依存問題を求める
   def problem_dependency_problem_by_title(key:, value:, this:, list:, index:)
     problem = get_problems.find_by(title: value)
-    raise RelatedRecordNotFoundWarning.new(key: { title: value }, endpoint: :problems) if problem.nil?
+    raise HookRelatedRecordNotFoundWarning.new(key: { title: value }, endpoint: :problems) if problem.nil?
     this[:problem_must_solve_before_id] = problem[:id]
   end
 
@@ -348,7 +363,7 @@ module Hooks
 
     dependency_problem_id = list[index - 1][:id]
 
-    raise RelatedRecordNotFoundWarning.new(key: { list_index: index - 1 }, endpoint: :problems) if dependency_problem_id.nil?
+    raise HookRelatedRecordNotFoundWarning.new(key: { list_index: index - 1 }, endpoint: :problems) if dependency_problem_id.nil?
 
     this[:problem_must_solve_before_id] = dependency_problem_id
   end
@@ -415,8 +430,8 @@ module EndpointRequests
     else
       { response: response, warnings: warnings, result: result, params: args }
     end
-  rescue RelatedRecordNotFoundError => e
-    { error: { exception: e, hook: e.hook }, params: args }
+  rescue HookError => e
+    { error: e, params: args }
   end
 
   def put(endpoint_sym:, args:, list: nil, index: nil)
@@ -443,8 +458,8 @@ module EndpointRequests
     else
       { response: response, warnings: warnings, result: result, params: args }
     end
-  rescue RelatedRecordNotFoundError => e
-    { error: { exception: e, hook: e.hook }, params: args }
+  rescue HookError => e
+    { error: e, params: args }
   end
 
   # 指定できるキーの情報を出力する
@@ -476,12 +491,14 @@ module EndpointRequests
         .method(method_sym)
         .call(key: key, value: this[key], this: this, list: list, index: index)
 
-    rescue RelatedRecordNotFoundError => e
+    rescue HookError => e
       e.hook = key
 
-      if e.instance_of?(RelatedRecordNotFoundWarning)
-        warnings << { exception: e, hook: e.hook }
+      if e.instance_of?(HookRelatedRecordNotFoundWarning)
+        # 次のフックに移る
+        warnings << e
       else
+        # フック処理を終了する
         raise e
       end
     end
