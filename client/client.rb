@@ -458,13 +458,13 @@ module EndpointRequests
       .map {|key, value| "#{key}=#{value}" }
       .join('&')
 
-    request(:get, '%s?%s' % [endpoint_sym, params_str])[:body]
+    request(:get, "#{endpoint_sym}?#{params_str}")[:body]
   end
 
   # POST, PUT, PATCH, DELETE
   # エイリアス名からHTTPメソッドを判断
   # paramsは非破壊
-  def request_base(endpoint_sym:, params:, list: nil, index: nil, http_method: __callee__)
+  def request_base(http_method: __callee__, endpoint_sym:, params:, list: nil, index: nil)
     params = params.deep_dup
     endpoint = API_ENDPOINTS[endpoint_sym]
 
