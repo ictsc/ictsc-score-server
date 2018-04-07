@@ -390,6 +390,8 @@ module Hooks
   def text_by_filepath(key:, value:, this:, list:, index:)
     text = load_file(value)
 
+    raise HookFileNotFound.new(filepath: value) if text.nil?
+
     # _text -> text
     actual_key = key.to_s.delete_prefix('_').to_sym
     this[actual_key] = text
@@ -398,6 +400,9 @@ module Hooks
   # attachmentの投稿をファイルパス指定で行う
   def attachment_file_by_filepath(key:, value:, this:, list:, index:)
     abs_filepath = File.expand_path(value)
+
+    raise HookFileNotFound.new(filepath: value) unless File.file?(abs_filepath)
+
     this[:file] = File.open(abs_filepath, 'rb')
   end
 end
