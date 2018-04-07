@@ -450,14 +450,13 @@ module EndpointRequests
 
     # キーチェックより先に処理する
     warnings = call_underscore_hooks(this: args, endpoint: endpoint, list: list, index: index)
+    warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     # 必要なキーを指定しているか
     unless (endpoint.fetch(:required, []) - args.keys).empty?
       show_keys(endpoint: endpoint, keys: args.keys)
       return
     end
-
-    warnings += call_blank_hooks(this: args, endpoint: endpoint, list: list, index: index)
 
     # 未指定のoptionalを取り込む
     args.append!(endpoint.fetch(:optional, {}))
