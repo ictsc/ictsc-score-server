@@ -509,6 +509,20 @@ module EndpointRequests
   # エイリアスは明示する必要がある
   module_function :post, :put, :patch, :delete
 
+  # POST, PUT, PATCHの一括リクエスト
+  def request_list(http_method:, endpoint_sym:, list:)
+    list = list.deep_dup
+
+    list.map.with_index do |params, index|
+      result = request_base(http_method: http_method, endpoint_sym: endpoint_sym, params: params, list: list, index: index)
+
+      # 投稿して取得した値で更新する(IDなどを取得)
+      params.append!(result[:body]) if result&.fetch(:response, nil)&.successful?
+
+      result
+    end
+  end
+
   # 指定できるキーの情報を出力する
   def show_keys(endpoint:, keys:)
     required_keys  = endpoint.fetch(:required, [])
@@ -592,15 +606,7 @@ API_ENDPOINTS.each do |endpoint_sym, value|
   # POST, PUT, PATCHの一括リクエスト用Procを生成する
   gen_send_list_proc = lambda do |http_method|
     lambda do |list|
-      list = list.deep_dup
-      list.map.with_index do |params, index|
-        result = EndpointRequests.send(http_method, endpoint_sym: endpoint_sym, params: params, list: list, index: index)
-
-        # 投稿して取得した値で更新する(IDなどを取得)
-        params.append!(result[:body]) if result&.fetch(:response, nil)&.successful?
-
-        result
-      end
+      EndpointRequests.request_list(http_method: http_method, endpoint_sym: endpoint_sym, list: list)
     end
   end
 
