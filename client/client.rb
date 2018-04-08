@@ -779,7 +779,7 @@ end
 
 $base_url = ARGV[0] || 'http://localhost:3000/api'
 
-login(login: :admin)
+login(login: 'admin', password: 'admin')
 
 require 'pry'
 extend ShellCommands
