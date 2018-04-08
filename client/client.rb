@@ -460,26 +460,26 @@ module EndpointRequests
     end
 
     def self.get(endpoint_sym)
-      @@cache.dig(endpoint_sym, :data)
+      endpoint = @@cache[endpoint_sym]
+      return if endpoint[:count] <= 0
+
+      # 有効後初回アクセス時に取得
+      if endpoint[:data].blank?
+        endpoint[:data] = EndpointRequests.gets(endpoint_sym: endpoint_sym, params: {}, use_cache: false)
+      end
+
+      endpoint[:data]
     end
 
     def self.set(endpoint_sym)
       @@cache[endpoint_sym] ||= { count: 0, data: nil }
-      endpoint = @@cache[endpoint_sym]
-
-      if endpoint[:count] == 0
-        # 分岐後,リクエスト前に加算しないと無限ループになる
-        endpoint[:count] += 1
-        endpoint[:data] = EndpointRequests.gets(endpoint_sym: endpoint_sym, params: {})
-      else
-        endpoint[:count] += 1
-      end
+      @@cache[endpoint_sym][:count] += 1
     end
 
     def self.unset(endpoint_sym)
       endpoint = @@cache[endpoint_sym]
       endpoint[:count] -= 1
-      endpoint[:data] = nil if endpoint[:count] == 0
+      endpoint[:data] = nil if endpoint[:count] <= 0
     end
   end
 
