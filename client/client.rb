@@ -177,6 +177,46 @@ end
 module Utils
   module_function
 
+  # カレントディレクトリとファイルを読み込んだことのあるディレクトリからファイルを探索する
+  class UsedDirs
+    include Singleton
+    @@dirs = []
+
+    def self.dirs
+      @@dirs
+    end
+
+    # ディレクトリを追加する(引数はファイルでもディレクトリでも可)
+    def self.push(path)
+      abs_path = File.expand_path(path)
+      abs_path = File.dirname(abs_path) unless File.directory?(abs_path)
+      @@dirs.unshift(abs_path) unless @@dirs.include?(abs_path)
+    end
+
+    # ファイルを探索する
+    # 見つかったなら、そのディレクトリを記憶する
+    def self.find(filepath)
+      # ホームディレクトリなどを解釈してファイルが見つかったならそれを使用する
+      expand_path = File.expand_path(filepath)
+      if File.file?(expand_path)
+        push(expand_path)
+        return expand_path
+      end
+
+      # カレントディレクトリと過去使用したディレクトリから探す
+      dir = ([Dir.pwd] + @@dirs).find {|dirname| File.file?(File.join(dirname, filepath)) }
+
+      if dir.nil?
+        error "\"#{filepath}\" does not exist"
+        return
+      end
+
+      abs_filepath = File.join(dir, filepath)
+      push(abs_filepath)
+      abs_filepath
+    end
+  end
+
   def error(message)
     warn "[!] #{message}"
   end
@@ -215,17 +255,9 @@ module Utils
   end
 
   def load_file(filepath)
-    filepath = File.expand_path(filepath)
+    filepath = UsedDirs.find(filepath)
 
-    unless File.exist? filepath
-      error '"%s" does not exist' % filepath
-      return
-    end
-
-    unless File.file? filepath
-      error '"%s" is not a file' % filepath
-      return
-    end
+    return if filepath.nil?
 
     data = case File.extname(filepath)
       when '.yml', '.yaml'
@@ -437,11 +469,11 @@ module Hooks
 
   # attachmentの投稿をファイルパス指定で行う
   def attachment_file_by_filepath(key:, value:, this:, list:, index:)
-    abs_filepath = File.expand_path(value)
+    filepath = UsedDirs.find(value)
 
-    raise HookFileNotFound.new(hook: key, filepath: value) unless File.file?(abs_filepath)
+    raise HookFileNotFound.new(hook: key, filepath: value) if filepath.nil?
 
-    this[:file] = File.open(abs_filepath, 'rb')
+    this[:file] = File.open(filepath, 'rb')
   end
 end
 
