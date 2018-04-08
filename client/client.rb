@@ -117,16 +117,11 @@ end
 
 # フック処理失敗
 class HookError < StandardError
-  # フック内では自身のフック名が分からない
   attr_accessor :hook
 
-  def initialize(error_message)
-    @error_message = error_message
-    super('')
-  end
-
-  def to_s
-    "#{hook}: #{@error_message}"
+  def initialize(error_message, hook:)
+    @hook = hook
+    super("#{hook}: #{error_message}")
   end
 end
 
@@ -137,11 +132,11 @@ class HookRelatedRecordNotFound < HookError
 
   # endpoint: 探索先エンドポイントのシンボル
   # key: 探索キー(find_byの引数)
-  def initialize(key:, endpoint:)
+  def initialize(hook:, key:, endpoint:)
     @endpoint = endpoint.to_sym
     @key = key
 
-    super("#{@key} not found in #{@endpoint}")
+    super("#{@key} not found in #{@endpoint}", hook: hook)
   end
 end
 
@@ -157,10 +152,11 @@ end
 # 投稿処理を終了する
 class HookFileNotFound < HookError
   attr_reader :filepath
-  def initialize(filepath:)
+
+  def initialize(hook:, filepath:)
     @filepath = filepath
 
-    super("#{filepath} not found")
+    super("#{filepath} not found", hook: hook)
   end
 end
 
@@ -169,16 +165,57 @@ end
 class HookNestedRequestWarning < HookError
   attr_reader :result
 
-  def initialize(result)
+  def initialize(hook:, result:)
     @result = result
-    super(result)
+    super(result, hook: hook)
   end
 end
+
 
 ## utils
 
 module Utils
   module_function
+
+  # カレントディレクトリとファイルを読み込んだことのあるディレクトリからファイルを探索する
+  class UsedDirs
+    include Singleton
+    @@dirs = []
+
+    def self.dirs
+      @@dirs
+    end
+
+    # ディレクトリを追加する(引数はファイルでもディレクトリでも可)
+    def self.push(path)
+      abs_path = File.expand_path(path)
+      abs_path = File.dirname(abs_path) unless File.directory?(abs_path)
+      @@dirs.unshift(abs_path) unless @@dirs.include?(abs_path)
+    end
+
+    # ファイルを探索する
+    # 見つかったなら、そのディレクトリを記憶する
+    def self.find(filepath)
+      # ホームディレクトリなどを解釈してファイルが見つかったならそれを使用する
+      expand_path = File.expand_path(filepath)
+      if File.file?(expand_path)
+        push(expand_path)
+        return expand_path
+      end
+
+      # カレントディレクトリと過去使用したディレクトリから探す
+      dir = ([Dir.pwd] + @@dirs).find {|dirname| File.file?(File.join(dirname, filepath)) }
+
+      if dir.nil?
+        error "\"#{filepath}\" does not exist"
+        return
+      end
+
+      abs_filepath = File.join(dir, filepath)
+      push(abs_filepath)
+      abs_filepath
+    end
+  end
 
   def error(message)
     warn "[!] #{message}"
@@ -218,24 +255,16 @@ module Utils
   end
 
   def load_file(filepath)
-    filepath = File.expand_path(filepath)
+    filepath = UsedDirs.find(filepath)
 
-    unless File.exist? filepath
-      error '"%s" does not exist' % filepath
-      return
-    end
-
-    unless File.file? filepath
-      error '"%s" is not a file' % filepath
-      return
-    end
+    return if filepath.nil?
 
     data = case File.extname(filepath)
       when '.yml', '.yaml'
         YAML.load(read_erb(filepath)).symbolize_keys
       when '.json'
         JSON.parse(read_erb(filepath), symbolize_names: true)
-      when '.txt', '.md'
+      when '', '.txt', '.md'
         read_erb(filepath)
       else
         error 'Unsupported file type'
@@ -364,7 +393,7 @@ module Hooks
     value = value.to_sym.downcase
     role_id = get_roles[value]
     # 明示的にRoleを指定しようとして失敗したならエラーにする
-    raise HookRelatedRecordNotFoundError.new(key: { role_key: value }, endpoint: :roles) if role_id.nil?
+    raise HookRelatedRecordNotFoundError.new(hook: key, key: { role_key: value }, endpoint: :roles) if role_id.nil?
     this[:role_id] = role_id
   end
 
@@ -376,7 +405,7 @@ module Hooks
   # creator_idをloginで指定できる
   def member_id_by_login(key:, value:, this:, list:, index:)
     member = get_members.find_by(login: value)
-    raise HookRelatedRecordNotFoundError.new(key: { login: value }, endpoint: :members) if member.nil?
+    raise HookRelatedRecordNotFoundError.new(hook: key, key: { login: value }, endpoint: :members) if member.nil?
 
     # _creator -> creator_id
     actual_key = (key.to_s.delete_prefix('_') + '_id').to_sym
@@ -386,7 +415,7 @@ module Hooks
   # titleから依存問題を求める
   def problem_dependency_problem_by_title(key:, value:, this:, list:, index:)
     problem = get_problems.find_by(title: value)
-    raise HookRelatedRecordNotFoundWarning.new(key: { title: value }, endpoint: :problems) if problem.nil?
+    raise HookRelatedRecordNotFoundWarning.new(hook: key, key: { title: value }, endpoint: :problems) if problem.nil?
     this[:problem_must_solve_before_id] = problem[:id]
   end
 
@@ -403,7 +432,7 @@ module Hooks
 
     dependency_problem_id = list[index - 1][:id]
 
-    raise HookRelatedRecordNotFoundWarning.new(key: { list_index: index - 1 }, endpoint: :problems) if dependency_problem_id.nil?
+    raise HookRelatedRecordNotFoundWarning.new(hook: key, key: { list_index: index - 1 }, endpoint: :problems) if dependency_problem_id.nil?
 
     this[:problem_must_solve_before_id] = dependency_problem_id
   end
@@ -411,12 +440,12 @@ module Hooks
   # 問題グループ投稿時に、問題も投稿する(problem_group_idsが自動で付与される)
   def problem_group_problems(key:, value:, this:, list:, index:)
     problem_group_id = this[:id]
-    raise HookRelatedRecordNotFoundWarning.new(key: 'this', endpoint: :problem_group) if problem_group_id.nil?
+    raise HookRelatedRecordNotFoundWarning.new(hook: key, key: 'this', endpoint: :problem_group) if problem_group_id.nil?
     value.update(problem_group_ids: [problem_group_id])
     results = post_problems(value)
 
     warnings = results.select {|e| e.has_key?(:error) || e.has_key?(:warnings) }
-    raise HookNestedRequestWarning.new(result: warnings) unless warnings.empty?
+    raise HookNestedRequestWarning.new(hook: key, result: warnings) unless warnings.empty?
   end
 
   # 一括投稿時にorderを省略すると並び順になる
@@ -431,7 +460,7 @@ module Hooks
   def text_by_filepath(key:, value:, this:, list:, index:)
     text = load_file(value)
 
-    raise HookFileNotFound.new(filepath: value) if text.nil?
+    raise HookFileNotFound.new(hook: key, filepath: value) if text.nil?
 
     # _text -> text
     actual_key = key.to_s.delete_prefix('_').to_sym
@@ -440,14 +469,15 @@ module Hooks
 
   # attachmentの投稿をファイルパス指定で行う
   def attachment_file_by_filepath(key:, value:, this:, list:, index:)
-    abs_filepath = File.expand_path(value)
+    filepath = UsedDirs.find(value)
 
-    raise HookFileNotFound.new(filepath: value) unless File.file?(abs_filepath)
+    raise HookFileNotFound.new(hook: key, filepath: value) if filepath.nil?
 
-    this[:file] = File.open(abs_filepath, 'rb')
+    this[:file] = File.open(filepath, 'rb')
   end
 end
 
+# APIを叩くメソッドの本体
 module EndpointRequests
   module_function
 
@@ -464,32 +494,34 @@ module EndpointRequests
     end
 
     def self.get(endpoint_sym)
-      @@cache.dig(endpoint_sym, :data)
+      @@cache[endpoint_sym] ||= { count: 0, data: nil }
+
+      endpoint = @@cache[endpoint_sym]
+      return if endpoint[:count] <= 0
+
+      # 有効後初回アクセス時に取得
+      if endpoint[:data].blank?
+        endpoint[:data] = EndpointRequests.gets(endpoint_sym: endpoint_sym, params: {}, use_cache: false)
+      end
+
+      endpoint[:data]
     end
 
     def self.set(endpoint_sym)
       @@cache[endpoint_sym] ||= { count: 0, data: nil }
-      endpoint = @@cache[endpoint_sym]
-
-      if endpoint[:count] == 0
-        # 分岐後,リクエスト前に加算しないと無限ループになる
-        endpoint[:count] += 1
-        endpoint[:data] = EndpointRequests.gets(endpoint_sym: endpoint_sym, params: {})
-      else
-        endpoint[:count] += 1
-      end
+      @@cache[endpoint_sym][:count] += 1
     end
 
     def self.unset(endpoint_sym)
       endpoint = @@cache[endpoint_sym]
       endpoint[:count] -= 1
-      endpoint[:data] = nil if endpoint[:count] == 0
+      endpoint[:data] = nil if endpoint[:count] <= 0
     end
   end
 
-  def gets(endpoint_sym:, params:)
-    cache = EndpointCache.get(endpoint_sym)
-    return cache if cache.present?
+  def gets(endpoint_sym:, params:, use_cache: true)
+    data = use_cache && EndpointCache.get(endpoint_sym)
+    return data if data.present?
 
     params = params.deep_dup
 
@@ -601,17 +633,9 @@ module EndpointRequests
         .method(method_sym)
         .call(key: key, value: this[key], this: this, list: list, index: index)
 
-    rescue HookError => e
-      e.hook = key
-
-      case e
-      when HookRelatedRecordNotFoundWarning, HookNestedRequestWarning
-        # 次のフックに移る
-        warnings << e
-      else
-        # フック処理を終了する
-        raise e
-      end
+    rescue HookRelatedRecordNotFoundWarning, HookNestedRequestWarning => e
+      # フック処理を継続
+      warnings << e
     end
 
     warnings
@@ -786,12 +810,25 @@ def upload_dir_files(filedir)
   upload_files(filepathes)
 end
 
+# ファイルをアップロードしてリンクを返す
+# 主に問題文中で呼び出す
+def upload(filepath)
+  attachment = upload_files(filepath).first
+
+  if attachment.has_key?(:error) || attachment[:response].failed?
+    error 'File upload failed: "%s"' % filepath
+    return
+  end
+
+  attachment.dig(:body, :url)
+end
+
 
 ## run
 
 $base_url = ARGV[0] || 'http://localhost:3000/api'
 
-login(login: :admin)
+login(login: 'admin', password: 'admin')
 
 require 'pry'
 extend ShellCommands
