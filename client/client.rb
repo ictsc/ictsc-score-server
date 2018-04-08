@@ -264,7 +264,7 @@ module Utils
         YAML.load(read_erb(filepath)).symbolize_keys
       when '.json'
         JSON.parse(read_erb(filepath), symbolize_names: true)
-      when '.txt', '.md'
+      when '', '.txt', '.md'
         read_erb(filepath)
       else
         error 'Unsupported file type'
