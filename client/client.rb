@@ -444,6 +444,7 @@ module Hooks
   end
 end
 
+# APIを叩くメソッドの本体
 module EndpointRequests
   module_function
 
