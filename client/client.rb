@@ -460,6 +460,8 @@ module EndpointRequests
     end
 
     def self.get(endpoint_sym)
+      @@cache[endpoint_sym] ||= { count: 0, data: nil }
+
       endpoint = @@cache[endpoint_sym]
       return if endpoint[:count] <= 0
 
