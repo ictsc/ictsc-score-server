@@ -483,9 +483,9 @@ module EndpointRequests
     end
   end
 
-  def gets(endpoint_sym:, params:)
-    cache = EndpointCache.get(endpoint_sym)
-    return cache if cache.present?
+  def gets(endpoint_sym:, params:, use_cache: true)
+    data = use_cache && EndpointCache.get(endpoint_sym)
+    return data if data.present?
 
     params = params.deep_dup
 
