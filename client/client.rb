@@ -810,6 +810,19 @@ def upload_dir_files(filedir)
   upload_files(filepathes)
 end
 
+# ファイルをアップロードしてリンクを返す
+# 主に問題文中で呼び出す
+def upload(filepath)
+  attachment = upload_files(filepath).first
+
+  if attachment.has_key?(:error) || attachment[:response].failed?
+    error 'File upload failed: "%s"' % filepath
+    return
+  end
+
+  attachment.dig(:body, :url)
+end
+
 
 ## run
 
