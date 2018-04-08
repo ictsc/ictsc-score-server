@@ -171,6 +171,7 @@ class HookNestedRequestWarning < HookError
   end
 end
 
+
 ## utils
 
 module Utils
