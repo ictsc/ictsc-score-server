@@ -4,6 +4,7 @@ require 'json'
 require 'yaml'
 require 'erb'
 require 'singleton'
+require 'optparse'
 
 require 'rest-client'
 require 'hashie'
@@ -826,9 +827,18 @@ end
 
 ## run
 
-$base_url = ARGV[0] || 'http://localhost:3000/api'
+# option parser
+options = { host: 'localhost:3000', user: 'admin', password: nil }
+optparser = OptionParser.new do |o|
+  o.on('-h', '--host=localhost:3000', String) {|v| options[:host] = v }
+  o.on('-u', '--user=admin', String) {|v| options[:user] = v }
+  o.on('-p', '--password=PASSWORD_PROMPT', String) {|v| options[:password] = v }
+end
+optparser.permute!(ARGV)
 
-login(login: 'admin', password: 'admin')
+$base_url = File.join(options[:host], '/api')
+
+login(login: options[:user], password: options[:password])
 
 require 'pry'
 extend ShellCommands
