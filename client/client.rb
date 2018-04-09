@@ -738,7 +738,8 @@ end
 
 ## session
 
-def login(login:, password: input_secret)
+def login(login:, password: nil)
+  password ||= input_secret
   request(:post, 'session', { login: login, password: password })
 rescue Errno::ECONNREFUSED => e
   error e.message
