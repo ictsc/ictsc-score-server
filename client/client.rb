@@ -767,6 +767,15 @@ alias list_roles get_roles
 
 ## 特定の処理に特化した便利メソッド
 
+# 複数のデータを一括登録する
+# samples/all_in_one.ymlのような形式のデータを各エンドポイントに送信する
+def post_misc(data)
+  data.map do |key, value|
+    send("post_#{key}", value)
+  end
+end
+alias add_misc post_misc
+
 def change_belongs_problem_group(problem_id:, group_id:)
   problem = get_problems
     .find_by(id: problem_id)
