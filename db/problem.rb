@@ -149,5 +149,4 @@ class Problem < ActiveRecord::Base
       .or(where(problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
       .or(where(problem_must_solve_before_id: all_team_fcas.pluck(:problem_id), team_private: false))
   }
-  private_class_method :opened
 end
