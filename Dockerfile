@@ -1,6 +1,6 @@
 FROM ruby:2.4.3-alpine3.7
 
-LABEL maintainer "kyontan <kyontan@monora.me>"
+LABEL maintainer "ICTSC"
 
 # throw errors if Gemfile has been modified since Gemfile.lock
 # RUN bundle config --global frozen 1
