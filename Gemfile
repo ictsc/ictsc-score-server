@@ -31,6 +31,7 @@ end
 
 group :test do
   gem "factory_bot"
+  gem "rspec_junit_formatter"
   gem "rspec"
   gem "rack-test"
   gem "database_cleaner"

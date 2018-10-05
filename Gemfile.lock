@@ -77,6 +77,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
+    rspec_junit_formatter (0.4.1)
+      rspec-core (>= 2, < 4, != 2.12.0)
     seed-fu (2.3.9)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
@@ -126,6 +128,7 @@ DEPENDENCIES
   redis
   redis-rack
   rspec
+  rspec_junit_formatter
   seed-fu
   simplecov
   sinatra

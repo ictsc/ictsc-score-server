@@ -10,10 +10,7 @@ ENV LC_ALL ja_JP.UTF-8
 
 WORKDIR /usr/src/app
 
-ADD Gemfile /usr/src/app
-ADD Gemfile.lock /usr/src/app
-
-# required to build native extension of mysql2 gem
+# required to build native extension of mysql2 gem and more
 RUN apk update \
  && apk add --virtual .build-dep \
         build-base \
@@ -23,9 +20,13 @@ RUN apk update \
         mariadb-client-libs \
         less \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
- && bundle install --jobs=4 \
- && apk del .build-dep \
  && rm -rf /var/cache/apk/*
+
+ADD Gemfile /usr/src/app
+ADD Gemfile.lock /usr/src/app
+
+# install to default path
+RUN bundle install --jobs=4
 
 COPY . /usr/src/app
 
