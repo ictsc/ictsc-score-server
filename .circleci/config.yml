@@ -6,6 +6,8 @@ version: 2
 jobs:
   build:
     docker:
+      # The primary container is an instance of the first image listed. The job's commands run in this container.
+      # The secondary and later container is an instance of the listed image which is run in a common network where ports exposed on the primary container are available on localhost.
       - image: upluse10/ictsc-score-server:api
         environment:
           - TZ=Asia/Tokyo
@@ -15,7 +17,6 @@ jobs:
 
           - RACK_ENV=development
 
-          # - MYSQL_HOST=db
           - MYSQL_HOST=127.0.0.1
           - DB_PORT=3306
           - MYSQL_USER=ictsc_score_server
@@ -38,7 +39,7 @@ jobs:
           - API_CONTEST_SCOREBOARD_VIEWABLE_UP_SHOW_SCORE=true
 
           # For realtime notification
-          - REDIS_URL=redis://redis:6379/0
+          - REDIS_URL=redis://127.0.0.1:6379/0
           - API_CONTEST_REDIS_REALTIME_NOTIFICATION_CHANNEL=realtime_notification
           - PLASMA_SUBSCRIBER_REDIS_ADDR=redis:6379
           - PLASMA_SUBSCRIBER_REDIS_CHANNELS=realtime_notification
@@ -55,7 +56,6 @@ jobs:
           - DB_PORT=3306
           - MYSQL_USER=ictsc_score_server
           - MYSQL_PASSWORD=ictsc_score_server
-          # 自動で切り替えてほしい
           - MYSQL_DATABASE=ictsc_score_server
           - MYSQL_ROOT_PASSWORD=ictsc_score_server
 
@@ -63,15 +63,10 @@ jobs:
       - image: redis:4.0.11-alpine
         environment:
           - TZ=Asia/Tokyo
+          - REDIS_URL=redis://127.0.0.1:6379/0
 
     steps:
       - checkout
-
-      - run:
-          name: Install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.3.0
 
       # Download and cache dependencies
       - restore_cache:
@@ -86,15 +81,19 @@ jobs:
           # なぜか--pathを指定すると強制的に新規インストールが始まる
           command: |
             bundle install --jobs=4 --retry=3
-      - run:
-          # TODO: dockerizeいれないとなー
-          name: sleep
-          command: sleep 5
 
       - save_cache:
           key: bundle-cache-{{ checksum "Gemfile.lock" }}
           paths:
             - /usr/local/bundle
+
+      - run:
+          name: Wait for Redis
+          command: dockerize -wait tcp://127.0.0.1:6379 -timeout 10s
+
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 10s
 
       # Database setup
       - run: bundle exec rake db:setup

@@ -8,6 +8,10 @@ LABEL maintainer "ICTSC"
 ENV LANG ja_JP.UTF-8
 ENV LC_ALL ja_JP.UTF-8
 
+# Wait for DB and Redis
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget -O - https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xzv -C /usr/local/bin
+
 WORKDIR /usr/src/app
 
 # required to build native extension of mysql2 gem and more
