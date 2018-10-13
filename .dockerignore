@@ -1,4 +1,6 @@
-tmp/db/
-.bundle/
-.yardoc/
-.git/
+tmp/
+log/
+.*
+!.env.sample
+!.rspec
+!.yamllint
