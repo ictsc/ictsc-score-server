@@ -1,6 +1,6 @@
 FROM node:6-alpine AS build-temp
 
-LABEL maintainer "kyontan <kyontan@monora.me>"
+LABEL maintainer "ICTSC"
 
 WORKDIR /usr/src/app
 

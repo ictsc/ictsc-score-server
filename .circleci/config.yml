@@ -1,0 +1,119 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # The primary container is an instance of the first image listed. The job's commands run in this container.
+      # The secondary and later container is an instance of the listed image which is run in a common network where ports exposed on the primary container are available on localhost.
+      - image: upluse10/ictsc-score-server:api
+        environment:
+          - TZ=Asia/Tokyo
+          - LANG=en_US.UTF-8
+          - LANGUAGE=en_US:en
+          - LC_ALL=en_US.UTF-8
+
+          - RACK_ENV=development
+
+          - MYSQL_HOST=127.0.0.1
+          - DB_PORT=3306
+          - MYSQL_USER=ictsc_score_server
+          - MYSQL_PASSWORD=ictsc_score_server
+          - MYSQL_DATABASE=ictsc_score_server
+          - MYSQL_ROOT_PASSWORD=ictsc_score_server
+
+          - API_SESSION_COOKIE_KEY=ictsc_score_server
+          - API_SESSION_COOKIE_SECRET=change_me
+
+          - API_CONTEST_ANSWER_REPLY_DELAY_SEC=60
+          - API_CONTEST_COMPETITION_START_AT='2004-07-07 21:00:00 +0900'
+          - API_CONTEST_SCOREBOARD_HIDE_AT='2020-07-07 21:00:00 +0900'
+          - API_CONTEST_COMPETITION_END_AT='2030-09-23 00:00:00 +0900'
+
+          - API_CONTEST_SCOREBOARD_VIEWABLE_TOP=3
+          - API_CONTEST_SCOREBOARD_VIEWABLE_TOP_SHOW_TEAM=true
+          - API_CONTEST_SCOREBOARD_VIEWABLE_TOP_SHOW_SCORE=true
+          - API_CONTEST_SCOREBOARD_VIEWABLE_UP_SHOW_TEAM=false
+          - API_CONTEST_SCOREBOARD_VIEWABLE_UP_SHOW_SCORE=true
+
+          # For realtime notification
+          - REDIS_URL=redis://127.0.0.1:6379/0
+          - API_CONTEST_REDIS_REALTIME_NOTIFICATION_CHANNEL=realtime_notification
+          - PLASMA_SUBSCRIBER_REDIS_ADDR=redis:6379
+          - PLASMA_SUBSCRIBER_REDIS_CHANNELS=realtime_notification
+          # /usr/src/appを参照するのでリセット
+          - BUNDLE_GEMFILE=
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # High speed(e.g. 3min -> 2 min)
+      - image: circleci/mariadb:10.3-ram
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - DB_PORT=3306
+          - MYSQL_USER=ictsc_score_server
+          - MYSQL_PASSWORD=ictsc_score_server
+          - MYSQL_DATABASE=ictsc_score_server
+          - MYSQL_ROOT_PASSWORD=ictsc_score_server
+
+      # circleci/redisにしても早くならなかった
+      - image: redis:4.0.11-alpine
+        environment:
+          - TZ=Asia/Tokyo
+          - REDIS_URL=redis://127.0.0.1:6379/0
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - bundle-cache-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - bundle-cache-
+
+      - run:
+          name: install dependencies
+          # イメージで既にインストールされているGemを使い回すと早い
+          # なぜか--pathを指定すると強制的に新規インストールが始まる
+          command: |
+            bundle install --jobs=4 --retry=3
+
+      - save_cache:
+          key: bundle-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - /usr/local/bundle
+
+      - run:
+          name: Wait for Redis
+          command: dockerize -wait tcp://127.0.0.1:6379 -timeout 10s
+
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 10s
+
+      # Database setup
+      - run: bundle exec rake db:setup
+
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+
+            bundle exec rspec --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml \
+                            --color \
+                            $TEST_FILES
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results

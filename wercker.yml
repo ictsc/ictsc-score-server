@@ -43,7 +43,7 @@ ui-deploy:
         password: $REGISTRY_PASSWORD
         repository: $REGISTRY_REPOSITORY_UI
         tag: latest, $WERCKER_GIT_COMMIT
-        labels: "maintainer='kyontan <kyontan@monora.me>'"
+        labels: "maintainer='ICTSC'"
         disable-sync: true
   after-steps:
     - slack-notifier:
@@ -100,7 +100,7 @@ api-deploy:
         tag: latest, $WERCKER_GIT_COMMIT
         ports: 3000
         working-dir: /pipeline/source
-        labels: "maintainer='kyontan <kyontan@monora.me>'"
+        labels: "maintainer='ICTSC'"
         cmd: bundle exec rackup -p 3000 -o 0.0.0.0
         disable-sync: true
   after-steps:

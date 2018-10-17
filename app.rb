@@ -6,6 +6,9 @@ Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
 
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
 
+LOG_DIR = "#{File.dirname(__FILE__)}/log"
+FileUtils.mkdir_p(LOG_DIR)
+
 require_relative "controllers/answer"
 require_relative "controllers/attachment"
 require_relative "controllers/comment"
@@ -25,7 +28,7 @@ require_relative "db/model"
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
-  error_logger = ::File.new("#{File.dirname(__FILE__)}/log/#{ENV["RACK_ENV"]}-error.log", "a+")
+  error_logger = ::File.new("#{LOG_DIR}/#{ENV["RACK_ENV"]}-error.log", "a+")
   error_logger.sync = true
 
   use AnswerRoutes
