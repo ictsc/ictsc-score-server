@@ -78,6 +78,7 @@ Example web server settings are located `ui/h2o.conf`
 $ git clone https://github.com/ictsc/ictsc-score-server.git
 $ cd ictsc-score-server
 $ cp .env{.sample,}
+$ cat .env | grep '^EXPOSE_' >> ~/.bashrc # to execute docker-compose command in not project root directory
 $ # Edit .env
 $ docker-compose build
 $ docker-compose run --rm api rake db:setup
@@ -85,8 +86,8 @@ $ docker-compose run --rm api rake db:seed_fu # if sample data is needed
 $ docker-compose up
 ```
 
-- You can see access web front-end in http://127.0.0.1:3001
-- You can see access api in http://127.0.0.1:3000/api
+- You can see access web front-end in http://127.0.0.1:8901
+- You can see access api in http://127.0.0.1:8900/api
 
 You may want to run without `docker-compomse build` when developing. 
 You can directly attach source code to container by editing `docker-compose.yml` like below.
