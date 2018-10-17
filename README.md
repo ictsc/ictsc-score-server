@@ -1,5 +1,5 @@
 ICTSC スコアサーバー
-===
+---
 
 [![CircleCI](https://circleci.com/gh/ictsc/ictsc-score-server.svg?style=svg)](https://circleci.com/gh/ictsc/ictsc-score-server)
 
@@ -33,7 +33,7 @@ This provides whole game operations during contest:
 
 ### Production
 
-1. Ruby 2.4.0 or later
+1. Ruby 2.5.0 or later
   - `Bundler` gem (To install: `gem install bundler`)
 2. MySQL compatible DB
 
@@ -80,31 +80,26 @@ $ cd ictsc-score-server
 $ cp .env{.sample,}
 $ cat .env | grep '^EXPOSE_' >> ~/.bashrc # to execute docker-compose command in not project root directory
 $ # Edit .env
-$ docker-compose build
-$ docker-compose run --rm api rake db:setup
-$ docker-compose run --rm api rake db:seed_fu # if sample data is needed
+$ docker-compose build # or pull
+$ docker-compose run --rm api rake db:setup db:seed_fu # if sample data is needed
 $ docker-compose up
 ```
 
 - You can see access web front-end in http://127.0.0.1:8901
 - You can see access api in http://127.0.0.1:8900/api
 
-You may want to run without `docker-compomse build` when developing. 
-You can directly attach source code to container by editing `docker-compose.yml` like below.
 
-```
-  api:
-    ...
-    volumes:
-    - "./:/usr/src/app"
-```
+After that, `docker-compose run --rm api sh`, and you can develop using shell. (firsttime, you'll be need to run `bundle install` in the shell)
 
-After that, `docker-compose run sh`, and you can develop using shell. (firsttime, you'll be need to run `bundle install` in the shell)
-
-Also, helper script `pry_r.rb` is provided.
-In the shell, `pry -r ./pry_r.rb`, and you can access ActiveRecord's models.
+Also, helper rake task `:pry` is provided.
+In the shell, `docker-compose run --rm api rake pry`, and you can access ActiveRecord's models.
 
 ### Test
+
+1. Install and setup CircleCI CLI
+2. `circleci local execute`
+
+or
 
 1. `docker-compose run --rm api bundle exec rake db:setup`
 2. `docker-compose run --rm api rspec`
