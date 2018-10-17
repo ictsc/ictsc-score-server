@@ -72,6 +72,15 @@ task :pry do
   Pry::CLI.start(Pry::CLI.parse_options)
 end
 
+task :server do
+  Rake::Task['db:setup'].invoke
+rescue ActiveRecord::EnvironmentMismatchError => e
+  # 2度目以降のsetupで発生するエラーを無視
+  puts 'already db:setup'
+ensure
+  system('rackup -o 0.0.0.0 -p 3000')
+end
+
 Rake::Task["db:seed_fu"].enhance(["db:load_config"])
 
 SeedFu.fixture_paths = [
