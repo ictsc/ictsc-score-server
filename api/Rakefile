@@ -31,8 +31,8 @@ namespace :db do
       # to load files from settings.root/features/fixtures
       rake db:seed_fu FIXTURE_PATH=features/fixtures
   EOS
-  task :seed_fu => :environment do
 
+  task :seed_fu => :environment do
     if ENV["FILTER"]
       filter = /#{ENV["FILTER"].gsub(/,/, "|")}/
     end
@@ -44,11 +44,10 @@ namespace :db do
     SeedFu.seed(fixture_paths, filter)
   end
 
+  # サンプルデータを入れ直す
   task :re_seed_fu => :environment do
-    # TODO: 2回目移行のseed_fuが失敗する応急処置
     Rake::Task['db:environment:set'].invoke
-    Rake::Task['db:drop'].invoke
-    Rake::Task['db:setup'].invoke
+    Rake::Task['db:reset'].invoke
     Rake::Task['db:seed_fu'].invoke
   end
 
