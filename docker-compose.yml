@@ -5,7 +5,7 @@ services:
     image: upluse10/ictsc-score-server:api
     env_file: .env
     build:
-      context: ./
+      context: api/
     depends_on:
       - db
       - redis
@@ -15,7 +15,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - "./:/usr/src/app"
+      - "./api:/usr/src/app"
     command: |
       dockerize -wait tcp://redis:6379 -timeout 100s
       dockerize -wait tcp://db:3306 -timeout 100s
