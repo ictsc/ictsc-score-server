@@ -1,7 +1,7 @@
 ICTSC スコアサーバー
 ===
 
-[![wercker status](https://app.wercker.com/status/d08ead07412ddde08afbd39fc48505c8/s/master "wercker status")](https://app.wercker.com/project/byKey/d08ead07412ddde08afbd39fc48505c8)
+[![CircleCI](https://circleci.com/gh/ictsc/ictsc-score-server.svg?style=svg)](https://circleci.com/gh/ictsc/ictsc-score-server)
 
 # About
 
