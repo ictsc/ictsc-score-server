@@ -59,7 +59,16 @@ end
 
 task :pry do
   require 'pry'
-  require_relative 'pry_r'
+  require 'bundler'
+
+  Bundler.require
+  Bundler.require(:development)
+  Dotenv.load
+
+  require_relative 'app'
+
+  # settings.root = Dir.pwd
+  # set :run, false
 
   Pry::CLI.start(Pry::CLI.parse_options)
 end
