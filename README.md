@@ -65,12 +65,12 @@ $ bundle exec rackup
 
 ```sh
 $ # Clone repository same as API
-$ cd ui2
+$ cd ui
 $ npm install
 $ npm run build # Built static files in `dist` direcotry
 ```
 
-Example web server settings are located `ui2/h2o.conf`
+Example web server settings are located `ui/h2o.conf`
 
 ### Development
 

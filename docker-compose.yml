@@ -24,7 +24,7 @@ services:
     image: upluse10/ictsc-score-server:ui
     env_file: .env
     build:
-      context: ui2/
+      context: ui/
     depends_on:
       - api
       - plasma
