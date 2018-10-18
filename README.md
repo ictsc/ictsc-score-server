@@ -94,6 +94,12 @@ After that, `docker-compose run --rm api sh`, and you can develop using shell. (
 Also, helper rake task `:pry` is provided.
 In the shell, `docker-compose run --rm api rake pry`, and you can access ActiveRecord's models.
 
+#### Coding style
+
+* [EditorConfig](http://editorconfig.org/): return code, indent, charset, and more
+* [rubocop](https://github.com/rubocop-hq/rubocop): for Ruby (coming soon!)
+* [eslint](https://eslint.org/): for JavaScript (comin soon!)
+
 ### Test
 
 1. Install and setup CircleCI CLI
