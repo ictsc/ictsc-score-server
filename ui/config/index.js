@@ -23,23 +23,23 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 3001,
+    port: 8901,
     autoOpenBrowser: false,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/api/': {
-        target: 'http://localhost:3000/',
+        target: 'http://localhost:8900/',
         changeOrigin: true,
         logLevel: 'debug',
         proxyTimeout: 0,
         onProxyReq (proxyReq, req, res) {
           delete proxyReq._headers.referer;
-          proxyReq._headers.origin = 'http://localhost:3000';
+          proxyReq._headers.origin = 'http://localhost:8900';
         },
       },
       '/notifications': {
-        target: 'http://localhost:3002/',
+        target: 'http://localhost:8904/',
         logLevel: 'debug',
         proxyTimeout: 0,
         pathRewrite: {

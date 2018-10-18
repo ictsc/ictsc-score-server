@@ -5,7 +5,7 @@ services:
     image: upluse10/ictsc-score-server:api
     env_file: .env
     build:
-      context: ./
+      context: api/
     depends_on:
       - db
       - redis
@@ -15,17 +15,16 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - "./:/usr/src/app"
+      - "./api:/usr/src/app"
     command: |
       dockerize -wait tcp://redis:6379 -timeout 100s
       dockerize -wait tcp://db:3306 -timeout 100s
-      rackup -o 0.0.0.0 -p 3000
-
+      rake server
   ui:
     image: upluse10/ictsc-score-server:ui
     env_file: .env
     build:
-      context: ui2/
+      context: ui/
     depends_on:
       - api
       - plasma
@@ -43,8 +42,9 @@ services:
     env_file: .env
     ports:
       - "${EXPOSE_DB_PORT}:3306"
-    volumes:
-      - "./tmp/db:/var/lib/mysql"
+    # デバック用に永続化したい場合はコメントアウト
+    # volumes:
+    #   - "./tmp/db:/var/lib/mysql"
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
 
   plasma:
