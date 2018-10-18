@@ -71,19 +71,20 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - bundle-cache-{{ checksum "Gemfile.lock" }}
+            - bundle-cache-{{ checksum "api/Gemfile.lock" }}
             # fallback to using the latest cache if no exact match is found
             - bundle-cache-
 
       - run:
           name: install dependencies
+          working_directory: /root/project/api
           # イメージで既にインストールされているGemを使い回すと早い
           # なぜか--pathを指定すると強制的に新規インストールが始まる
           command: |
             bundle install --jobs=4 --retry=3
 
       - save_cache:
-          key: bundle-cache-{{ checksum "Gemfile.lock" }}
+          key: bundle-cache-{{ checksum "api/Gemfile.lock" }}
           paths:
             - /usr/local/bundle
 
@@ -95,12 +96,14 @@ jobs:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 10s
 
-      # Database setup
-      - run: bundle exec rake db:setup
+      - run:
+          name: DB setup
+          working_directory: /root/project/api
+          command: bundle exec rake db:setup
 
-      # run tests!
       - run:
           name: run tests
+          working_directory: /root/project/api
           command: |
             mkdir /tmp/test-results
             TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
