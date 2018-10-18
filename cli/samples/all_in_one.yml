@@ -57,3 +57,14 @@ problem_groups:
         team_private: true
         reference_point: 60
         perfect_point: 80
+
+teams:
+  - name: チーム1
+    organization: すごい小学校
+    registration_code: reg_code_1
+  - name: チーム2
+    organization: すごい中学校
+    registration_code: reg_code_2
+  - name: チーム3
+    organization: すごい高校
+    registration_code: reg_code_3

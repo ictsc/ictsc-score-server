@@ -739,8 +739,7 @@ end
 ## session
 
 def login(login:, password: nil)
-  password ||= input_secret
-  request(:post, 'session', { login: login, password: password })
+  request(:post, 'session', { login: login, password: password || input_secret })
 rescue Errno::ECONNREFUSED => e
   error e.message
 end
@@ -838,13 +837,13 @@ end
 ## run
 
 # option parser
-options = { host: 'localhost:3000', user: 'admin', password: nil }
-optparser = OptionParser.new do |o|
-  o.on('-h', '--host=localhost:3000', String) {|v| options[:host] = v }
-  o.on('-u', '--user=admin', String) {|v| options[:user] = v }
-  o.on('-p', '--password=PASSWORD_PROMPT', String) {|v| options[:password] = v }
+options = { host: 'localhost:8900', user: 'admin', password: nil }
+OptionParser.new do |o|
+  o.on('-h', "--host=#{options[:host]}", String)
+  o.on('-u', "--user=#{options[:user]}", String)
+  o.on('-p', '--password={password prompt}', String)
 end
-optparser.permute!(ARGV)
+  .permute!(ARGV, into: options)
 
 $base_url = File.join(options[:host], '/api')
 
@@ -893,3 +892,6 @@ list_members.where(role_id: list_roles[:writer]).each(&method(:delete_member))
 
 # Writerのパスワードを一括変更する
 update_members(list_members.where(role_id: list_roles[:writer]).update(password: 'new_password'))
+
+# 問題やチームを一括登録
+add_misc(load_file('samples/all_in_one.yml'))
