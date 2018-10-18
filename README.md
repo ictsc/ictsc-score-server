@@ -78,7 +78,6 @@ Example web server settings are located `ui/h2o.conf`
 $ git clone https://github.com/ictsc/ictsc-score-server.git
 $ cd ictsc-score-server
 $ cp .env{.sample,}
-$ cat .env | grep '^EXPOSE_' >> ~/.bashrc # to execute docker-compose command in not project root directory
 $ # Edit .env
 $ docker-compose build # or pull
 $ docker-compose run --rm api rake db:setup db:seed_fu # if sample data is needed
