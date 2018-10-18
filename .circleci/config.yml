@@ -71,7 +71,8 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - bundle-cache-{{ checksum "api/Gemfile.lock" }}
+            # 末尾のバージョンをインクリメントすることで、実質キャッシュクリアができる(restoreとsaveは揃える)
+            - bundle-cache-{{ checksum "api/Gemfile.lock" }}-v1
             # fallback to using the latest cache if no exact match is found
             - bundle-cache-
 
@@ -84,7 +85,7 @@ jobs:
             bundle install --jobs=4 --retry=3
 
       - save_cache:
-          key: bundle-cache-{{ checksum "api/Gemfile.lock" }}
+          key: bundle-cache-{{ checksum "api/Gemfile.lock" }}-v1
           paths:
             - /usr/local/bundle
 
