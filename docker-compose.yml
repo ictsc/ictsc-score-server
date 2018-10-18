@@ -11,7 +11,7 @@ services:
       - redis
     ports:
       # environment: では指定できないので.envで指定する必要がある
-      - "${EXPOSE_API_PORT}:3000"
+      - "8900:3000"
     stdin_open: true
     tty: true
     volumes:
@@ -29,19 +29,19 @@ services:
       - api
       - plasma
     ports:
-      - "${EXPOSE_UI_PORT}:80"
+      - "8901:80"
 
   redis:
     image: redis:4.0.11-alpine
     env_file: .env
     ports:
-      - "${EXPOSE_REDIS_PORT}:6379"
+      - "8902:6379"
 
   db:
     image: mariadb:10.3
     env_file: .env
     ports:
-      - "${EXPOSE_DB_PORT}:3306"
+      - "8903:3306"
     # デバック用に永続化したい場合はコメントアウト
     # volumes:
     #   - "./tmp/db:/var/lib/mysql"
@@ -53,7 +53,7 @@ services:
     depends_on:
       - redis
     ports:
-      - "${EXPOSE_PLASMA}:8080"
+      - "8904:8080"
       # - 50051:50051
 
   yamllint:
