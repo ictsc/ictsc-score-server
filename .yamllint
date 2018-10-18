@@ -8,4 +8,6 @@ rules:
   colons: disable
   empty-lines:
     max: 1
+ignore:
+  .bundle/
 ...
