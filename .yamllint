@@ -10,4 +10,6 @@ rules:
     max: 1
 ignore:
   .bundle/
+  tmp/
+  log/
 ...
