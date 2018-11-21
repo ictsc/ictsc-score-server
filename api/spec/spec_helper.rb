@@ -13,7 +13,31 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
 RSpec.configure do |config|
+  config.color = true
+  config.tty = true
+
+  # Disable verbose default logger
+  ActiveRecord::Base.logger = nil
+
+  config.before :suite do
+    DatabaseCleaner.clean_with :truncation
+  end
+
+  config.before :each do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.start
+  end
+
+  config.after :each do
+    DatabaseCleaner.clean
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -93,4 +117,8 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+end
+
+def app
+  App
 end
