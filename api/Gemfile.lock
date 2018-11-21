@@ -188,7 +188,6 @@ DEPENDENCIES
   byebug
   database_cleaner
   dotenv
-  factory_bot
   factory_bot_rails
   listen (>= 3.0.5, < 3.2)
   mysql2

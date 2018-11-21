@@ -5,3 +5,15 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+require 'factory_bot'
+
+FactoryBot.find_definitions
+
+Role.delete_all
+Member.delete_all
+
+%i(nologin admin writer participant viewer).each do |role_trait|
+  FactoryBot.create(:role, role_trait)
+end
+
+FactoryBot.create(:member, :admin, name: 'admin', login: 'admin')
