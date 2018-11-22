@@ -3,40 +3,21 @@ class ContestsController < ApplicationController
 
   # GET /contests
   def index
+    @contest_info = {
+      answer_reply_delay_sec: Setting.answer_reply_delay_sec,
+      competition_start_at: Setting.competition_start_at,
+      scoreboard_hide_at: Setting.scoreboard_hide_at,
+      competition_end_at: Setting.competition_end_at
+    }
+    json @contest_info
     @contests = Contest.all
 
     render json: @contests
   end
 
-  # GET /contests/1
-  def show
-    render json: @contest
-  end
-
-  # POST /contests
-  def create
-    @contest = Contest.new(contest_params)
-
-    if @contest.save
-      render json: @contest, status: :created, location: @contest
-    else
-      render json: @contest.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /contests/1
-  def update
-    if @contest.update(contest_params)
-      render json: @contest
-    else
-      render json: @contest.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /contests/1
-  def destroy
-    @contest.destroy
-  end
+  # get '/api/contest/health' do
+  #   render json: {status: 'success'}, status: :success
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.
