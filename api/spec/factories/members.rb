@@ -1,4 +1,4 @@
-require 'sinatra/crypt_helpers'
+# require 'sinatra/crypt_helpers'
 
 FactoryBot.define do
   factory :member do
