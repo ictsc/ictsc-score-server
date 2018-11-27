@@ -1,4 +1,4 @@
-FROM ruby:2.5.1-alpine3.7
+FROM ruby:2.5.3-alpine3.7
 
 LABEL maintainer "ICTSC"
 
