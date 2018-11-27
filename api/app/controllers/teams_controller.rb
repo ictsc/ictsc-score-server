@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-  before_action :before_action
+  before_action :before_all
   before_action :set_team, only: [:show, :update, :destroy]
 
   # GET /teams
@@ -70,8 +70,8 @@ class TeamsController < ApplicationController
     field_options = { exclude: [:hashed_registration_code], include: [:registration_code] }
 
     if request.put? and not filled_all_attributes_of?(klass: Team, **field_options)
-      status 400
-      next json required: insufficient_attribute_names_of(klass: Team, **field_options)
+      render json: { required: insufficient_attribute_names_of(klass: Team, **field_options) }, status: 400
+      return
     end
 
     @attrs = params_to_attributes_of(klass: Team)
@@ -84,8 +84,8 @@ class TeamsController < ApplicationController
     @team.attributes = @attrs
 
     if not @team.valid?
-      status 400
-      next json @team.errors
+      render json: @team.errors, status: 400
+      return
     end
 
     if @team.save

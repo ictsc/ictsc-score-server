@@ -23,8 +23,8 @@ class ProblemGroupsController < ApplicationController
     begin
       @problem_group = ProblemGroup.new(@attrs)
     rescue ActiveRecord::RecordNotFound
-      status 400
-      next json problem_ids: "存在しないレコードです"
+      render json: {problem_ids: "存在しないレコードです"}, status: 400
+      return
     end
 
     if @problem_group.save
@@ -40,23 +40,23 @@ class ProblemGroupsController < ApplicationController
   # PATCH/PUT /problem_groups/1
   def update
     if request.put? and not filled_all_attributes_of?(klass: ProblemGroup)
-      status 400
-      next json required: insufficient_attribute_names_of(klass: ProblemGroup)
+      render json: {required: insufficient_attribute_names_of(klass: ProblemGroup)}, status: 400
+      return
     end
 
     @attrs = params_to_attributes_of(klass: ProblemGroup)
     @problem_group.attributes = @attrs
 
     if not @problem_group.valid?
-      status 400
-      next json @problem_group.errors
+      render json: @problem_group.errors, status: 400
+      return
     end
 
     begin
       @problem_group.problem_ids = params[:problem_ids]
     rescue ActiveRecord::RecordNotFound
-      status 400
-      next json problem_ids: "存在しないレコードです"
+      render json: {problem_ids: "存在しないレコードです"}, status: 400
+      return
     end
 
     if @problem_group.save

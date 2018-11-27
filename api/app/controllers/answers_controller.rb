@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
+  before_action :before_all
   before_action :set_answer, only: [:show, :update, :destroy]
-  before_action :all_before
 
   # GET /answers
   def index
@@ -40,16 +40,16 @@ class AnswersController < ApplicationController
   # PATCH/PUT /answers/1
   def update
     if request.put? and not filled_all_attributes_of?(klass: Answer)
-      status 400
-      next json required: insufficient_attribute_names_of(klass: Answer)
+      render json: {required: insufficient_attribute_names_of(klass: Answer)}, status: 400
+      return
     end
 
     @attrs = params_to_attributes_of(klass: Answer)
     @answer.attributes = @attrs
 
     if not @answer.valid?
-      status 400
-      next json @answer.errors
+      render json: @answer.errors, status: 400
+      return
     end
 
     if @answer.save
@@ -76,7 +76,7 @@ class AnswersController < ApplicationController
   end
 
   private
-    def all_before
+    def before_all
       I18n.locale = :en if request.xhr?
 
       @with_param = (params[:with] || '').split(',') & Answer.allowed_nested_params(user: current_user) if request.get?

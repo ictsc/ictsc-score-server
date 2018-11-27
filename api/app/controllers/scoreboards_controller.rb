@@ -91,7 +91,7 @@ class ScoreboardsController < ApplicationController
             nil
           end
 
-        next unless display_mode
+        return unless display_mode
 
         score_info = {
           rank: current[:rank],

@@ -28,19 +28,17 @@ class MemberRoutes < Sinatra::Base
     halt 403 if logged_in?
 
     if not Member.exists?(login: params[:login])
-      status 401
-      next json status: "failed"
+      render json: {status: "failed"}, status: 401
+      return
     end
 
     @member = Member.find_by(login: params[:login])
 
     if compare_password(params[:password], @member.hashed_password)
       login_as(@member.id)
-      status 201
-      json status: "success", notification_channels: notification_channels, member: @member.as_json(except: [:hashed_password])
+      render json: {status: "success", notification_channels: notification_channels, member: @member.as_json(except: [:hashed_password])}, status: 201
     else
-      status 401
-      json status: "failed"
+      render json: {status: "failed"}, status: 401
     end
   end
 

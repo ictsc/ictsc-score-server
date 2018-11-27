@@ -42,16 +42,16 @@ class ScoresController < ApplicationController
   # PATCH/PUT /scores/1
   def update
     if request.put? and not filled_all_attributes_of?(klass: Score)
-      status 400
-      next json required: insufficient_attribute_names_of(klass: Score)
+      render json: {required: insufficient_attribute_names_of(klass: Score)}, status: 400
+      return
     end
 
     @attrs = params_to_attributes_of(klass: Score)
     @score.attributes = @attrs
 
     if not @score.valid?
-      status 400
-      next json @score.errors
+      render json: @score.errors, status: 400
+      return
     end
 
     if @score.save

@@ -1,4 +1,5 @@
 class MembersController < ApplicationController
+  before_action :before_all
   before_action :set_member, only: [:show, :update, :destroy]
 
   # GET /members
@@ -64,8 +65,8 @@ class MembersController < ApplicationController
     end
 
     if request.put? and not filled_all_attributes_of?(klass: Member, **field_options)
-      status 400
-      next json required: insufficient_attribute_names_of(klass: Member, **field_options)
+      render json: {required: insufficient_attribute_names_of(klass: Member, **field_options)}, status: 400
+      return
     end
 
     @attrs = params_to_attributes_of(klass: Member, **field_options)
@@ -78,8 +79,8 @@ class MembersController < ApplicationController
     @member.attributes = @attrs
 
     if not @member.valid?
-      status 400
-      next json @member.errors
+      render json: @member.errors, status: 400
+      return
     end
 
     if @member.save

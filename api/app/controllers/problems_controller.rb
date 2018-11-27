@@ -1,6 +1,6 @@
 class ProblemsController < ApplicationController
-  before_action :set_problem, only: [:show, :update, :destroy]
   before_action :before_all
+  before_action :set_problem, only: [:show, :update, :destroy]
 
   # GET /problems
   def index
@@ -56,8 +56,8 @@ class ProblemsController < ApplicationController
     begin
       @problem = Problem.new(@attrs)
     rescue ActiveRecord::RecordNotFound
-      status 400
-      next json problem_group_ids: "存在しないレコードです"
+      render json: {problem_group_ids: "存在しないレコードです"}, status: 400
+      return
     end
 
     if @problem.save
@@ -74,23 +74,23 @@ class ProblemsController < ApplicationController
   # PATCH/PUT /problems/1
   def update
     if request.put? and not filled_all_attributes_of?(klass: Problem)
-      status 400
-      next json required: insufficient_attribute_names_of(klass: Problem)
+      render json: {required: insufficient_attribute_names_of(klass: Problem)}, status: 400
+      return
     end
 
     @attrs = params_to_attributes_of(klass: Problem)
     @problem.attributes = @attrs
 
     if not @problem.valid?
-      status 400
-      next json @problem.errors
+      render json: @problem.errors, status: 400
+      return
     end
 
     begin
       @problem.problem_group_ids = params[:problem_group_ids]
     rescue ActiveRecord::RecordNotFound
-      status 400
-      next json problem_group_ids: "存在しないレコードです"
+      render json: {problem_group_ids: "存在しないレコードです"}, status: 400
+      return
     end
 
     if @problem.save

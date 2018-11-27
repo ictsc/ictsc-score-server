@@ -1,4 +1,5 @@
 class NoticesController < ApplicationController
+  before_action :before_all
   before_action :set_notice, only: [:show, :update, :destroy]
 
   # GET /notices
@@ -15,14 +16,13 @@ class NoticesController < ApplicationController
 
   # POST /notices
   def create
-    halt 403 if not Notice.allowed_to_create_by?(current_user)
+    render status: 403 and return if not Notice.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Notice)
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
     @notice = Notice.new(@attrs)
 
     if @notice.save
-      status 201
       headers "Location" => to("/api/notices/#{@notice.id}")
       push_notification(to: :everyone, payload: @notice.notification_payload)
       render json: @notice, status: :created, location: @notice
@@ -42,15 +42,13 @@ class NoticesController < ApplicationController
     @attrs = params_to_attributes_of(klass: Notice)
 
     if (not is_admin?) && @attrs[:member_id] != nil && @attrs[:member_id].to_i != current_user&.id
-      status 400
-      next json member_id: "can't set to other member"
+      render json: member_id: "can't set to other member", status: 400
     end
 
     @notice.attributes = @attrs
 
     if not @notice.valid?
-      status 400
-      next json @notice.errors
+      render json: @notice.errors, status: 400
     end
 
     if @notice.save
