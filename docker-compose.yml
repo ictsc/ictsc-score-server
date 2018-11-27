@@ -11,7 +11,7 @@ services:
       - redis
     ports:
       # environment: では指定できないので.envで指定する必要がある
-      - "8900:3000"
+      - "8900:8900"
     stdin_open: true
     tty: true
     volumes:
@@ -19,7 +19,7 @@ services:
     command: |
       dockerize -wait tcp://redis:6379 -timeout 100s
       dockerize -wait tcp://db:3306 -timeout 100s
-      rake server
+      bundle exec rails server -p 8900
   ui:
     image: upluse10/ictsc-score-server:ui
     env_file: .env
