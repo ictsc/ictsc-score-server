@@ -34,6 +34,6 @@ RUN bundle install --jobs=4
 
 COPY . /usr/src/app
 
-EXPOSE 3000
+EXPOSE 8900
 
-CMD ["rackup", "-o", "0.0.0.0", "-p", "3000"]
+CMD ["bundle" "exec" "rails" "server" "--port=8900" "--binding=0.0.0.0"]
