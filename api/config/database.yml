@@ -1,32 +1,28 @@
 default: &default
   adapter: mysql2
-  encoding: utf8
-  # charset: utf8mb4
-  # encoding: utf8mb4
+  # encoding: utf8
+  charset: utf8mb4
+  encoding: utf8mb4
   collation: utf8mb4_general_ci
   reconnect: true
-
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  # pool: <%= ENV['MYSQL_POOL'] || 20 %>
-  host: localhost
-  # host: <%= ENV['MYSQL_HOST'] || 'localhost' %>
-  # port: <%= ENV['MYSQL_PORT'] || 3306 %>
-  username: root
-  # username: <%= ENV['MYSQL_USER'] || 'ictsc_score_server' %>
-  password:
-  # password: <%= ENV['MYSQL_PASSWORD'] %>
-  # database: <%= ENV['MYSQL_DATABASE'] || 'ictsc_score_server' %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 20) %>
+  # pool: <%= ENV.fetch('MYSQL_POOL', 20) || 20 %>
+  host: <%= ENV.fetch('MYSQL_HOST', 'localhost') %>
+  port: <%= ENV.fetch('MYSQL_PORT', 3306) %>
+  username: <%= ENV.fetch('MYSQL_USER', 'ictsc_score_server') %>
+  password: <%= ENV.fetch('MYSQL_PASSWORD', 'ictsc_score_server') %>
+  database: <%= ENV.fetch('MYSQL_DATABASE', 'ictsc_score_server') %>
 
 development:
   <<: *default
-  database: api_development
+  # database: api_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: api_test
+  # database: api_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -49,6 +45,6 @@ test:
 #
 production:
   <<: *default
-  database: api_production
-  username: api
-  password: <%= ENV['API_DATABASE_PASSWORD'] %>
+  # database: api_production
+  # username: api
+  # password: <%= ENV['API_DATABASE_PASSWORD'] %>
