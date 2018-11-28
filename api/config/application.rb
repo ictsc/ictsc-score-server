@@ -33,6 +33,6 @@ module Api
     config.api_only = true
 
     # config.enable_dependency_loading = true
-    config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib', 'autoload')
   end
 end
