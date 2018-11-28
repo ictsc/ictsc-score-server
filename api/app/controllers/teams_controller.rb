@@ -77,7 +77,7 @@ class TeamsController < ApplicationController
     @attrs = params_to_attributes_of(klass: Team)
 
     if @attrs.key?(:registration_code)
-      @attrs[:hashed_registration_code] = hash_password(@attrs[:registration_code])
+      @attrs[:hashed_registration_code] = Crypt.hash_password(@attrs[:registration_code])
       @attrs.delete(:registration_code)
     end
 

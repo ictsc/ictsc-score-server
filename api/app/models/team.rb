@@ -1,10 +1,7 @@
-require 'sinatra/crypt_helpers'
-
 class Team < ActiveRecord::Base
   validates :name, presence: true
   validates :hashed_registration_code, presence: true
   validates_associated :notification_subscriber
-  extend Sinatra::CryptHelpers
 
   has_many :members, dependent: :nullify
   has_many :answers, dependent: :destroy
@@ -75,6 +72,6 @@ class Team < ActiveRecord::Base
   }
 
   def self.find_by_registration_code(registration_code)
-    find {|team| compare_password(registration_code, team.hashed_registration_code)}
+    find {|team| Crypt.compare_password(registration_code, team.hashed_registration_code)}
   end
 end

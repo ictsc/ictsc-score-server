@@ -1,7 +1,6 @@
 require "open3"
-require 'sinatra/crypt_helpers'
 
-extend Sinatra::CryptHelpers
+include Crypt
 
 srand(1)
 

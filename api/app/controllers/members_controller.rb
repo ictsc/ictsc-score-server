@@ -32,7 +32,7 @@ class MembersController < ApplicationController
       @attrs[:team_id] = @team.id
     end
 
-    @attrs[:hashed_password] = hash_password(@attrs[:password])
+    @attrs[:hashed_password] = Crypt.hash_password(@attrs[:password])
     @attrs.delete(:password)
     @attrs[:role_id] ||= Role.find_by(name: "Participant").id
 
@@ -72,7 +72,7 @@ class MembersController < ApplicationController
     @attrs = params_to_attributes_of(klass: Member, **field_options)
 
     if @attrs.key?(:password)
-      @attrs[:hashed_password] = hash_password(@attrs[:password])
+      @attrs[:hashed_password] = Crypt.hash_password(@attrs[:password])
       @attrs.delete(:password)
     end
 
