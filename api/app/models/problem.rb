@@ -1,6 +1,6 @@
 require 'ostruct'
 
-class Problem < ActiveRecord::Base
+class Problem < ApplicationRecord
   validates :title,     presence: true
   validates :text,      presence: true
   validates :creator,   presence: true

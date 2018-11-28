@@ -1,11 +1,3 @@
-ROLE_ID = {
-  admin: 2,
-  writer: 3,
-  participant: 4,
-  viewer: 5,
-  nologin: 1,
-}
-
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 

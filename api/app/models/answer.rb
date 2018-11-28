@@ -1,4 +1,4 @@
-class Answer < ActiveRecord::Base
+class Answer < ApplicationRecord
   validates :problem, presence: true
   validates :team,    presence: true
   validates :text,    presence: true

@@ -1,4 +1,4 @@
-class ProblemGroup < ActiveRecord::Base
+class ProblemGroup < ApplicationRecord
   validates :name, presence: true
   validates :order, presence: true
   validates :visible, inclusion: { in: [true, false] }

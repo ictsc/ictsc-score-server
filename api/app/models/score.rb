@@ -1,4 +1,4 @@
-class Score < ActiveRecord::Base
+class Score < ApplicationRecord
   validates :point,  presence: true
   validates :answer, presence: true, uniqueness: true
   validates :marker, presence: true

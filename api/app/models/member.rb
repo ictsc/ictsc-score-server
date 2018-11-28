@@ -1,4 +1,4 @@
-class Member < ActiveRecord::Base
+class Member < ApplicationRecord
   validates :name,            presence: true
   validates :login,           presence: true, uniqueness: true
   validates :hashed_password, presence: true

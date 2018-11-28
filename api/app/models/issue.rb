@@ -1,4 +1,4 @@
-class Issue < ActiveRecord::Base
+class Issue < ApplicationRecord
   validates :title,   presence: true
   validates :problem, presence: true
   validates :team, presence: true

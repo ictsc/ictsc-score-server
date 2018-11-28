@@ -1,4 +1,4 @@
-class Notice < ActiveRecord::Base
+class Notice < ApplicationRecord
   validates :title,   presence: true
   validates :text,    presence: true
   validates :pinned, inclusion: { in: [true, false] }

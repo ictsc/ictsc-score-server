@@ -1,4 +1,4 @@
-class Team < ActiveRecord::Base
+class Team < ApplicationRecord
   validates :name, presence: true
   validates :hashed_registration_code, presence: true
   validates_associated :notification_subscriber
