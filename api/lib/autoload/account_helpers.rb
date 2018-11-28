@@ -1,5 +1,3 @@
-# require_relative "../db/model"
-
 module AccountHelpers
   module_function
 

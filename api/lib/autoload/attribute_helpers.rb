@@ -1,4 +1,4 @@
-module ActiveRecordHelpers
+module AttributeHelpers
   module_function
 
   def attribute_names_of(klass:, only_required: false, **options)

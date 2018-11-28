@@ -1,5 +1,5 @@
 require 'redis'
-require "oj"
+require 'oj'
 
 Oj.mimic_JSON
 
