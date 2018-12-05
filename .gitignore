@@ -54,7 +54,7 @@ $RECYCLE.BIN/
 capybara-*.html
 .rspec
 /tmp
-**.orig
+*.orig
 rerun.txt
 pickle-email-*.html
 

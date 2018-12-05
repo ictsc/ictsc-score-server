@@ -1,4 +1,4 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
 describe Role do
   role_factory = FactoryBot.factories.find(:role)

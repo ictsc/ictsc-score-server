@@ -1,3 +1,5 @@
+require 'open3'
+
 module Crypt
   module_function
 
@@ -10,7 +12,7 @@ module Crypt
                     when /linux/;   'crypt_linux_amd64'
                     end
 
-    path = File.expand_path(File.join(__dir__, crypt_binname))
+    path = File.expand_path(File.join(__dir__, 'ext', crypt_binname))
     hash, status = Open3.capture2(path, key, salt)
 
     if status.exitstatus.zero?

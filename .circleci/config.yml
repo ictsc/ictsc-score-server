@@ -101,7 +101,7 @@ jobs:
       - run:
           name: DB setup
           working_directory: /root/project/api
-          command: bundle exec rake db:setup
+          command: RAILS_ENV=test bundle exec rake db:setup --trace
 
       - run:
           name: run tests

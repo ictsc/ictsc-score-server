@@ -2,8 +2,6 @@
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
-  FactoryBot.find_definitions
-
   config.before(:suite) do
     begin
       DatabaseCleaner.start
