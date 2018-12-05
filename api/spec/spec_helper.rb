@@ -14,16 +14,14 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-SimpleCov.start do
-  add_filter "/spec/"
-end
+# require 'active_record'
 
 RSpec.configure do |config|
   config.color = true
   config.tty = true
 
   # Disable verbose default logger
-  ActiveRecord::Base.logger = nil
+  # ActiveRecord::Base.logger = nil
 
   config.before :suite do
     DatabaseCleaner.clean_with :truncation
