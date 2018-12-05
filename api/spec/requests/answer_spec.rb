@@ -1,7 +1,7 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe Answer do
-  include ApiHelpers
+RSpec.describe "Answers", type: :request do
+  # include ApiHelpers
 
   before(:each) {
     time = DateTime.parse("2017-07-07T21:00:00+09:00")

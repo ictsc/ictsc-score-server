@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe ProblemGroup do
+RSpec.describe "ProblemGroups", type: :request do
   include ApiHelpers
 
   describe 'GET /api/problem_groups' do
@@ -26,7 +26,7 @@ describe ProblemGroup do
         subject { json_response.size }
         by_nologin     { is_expected.to eq 0 }
         by_viewer      { is_expected.to eq 2 }
-        by_participant { is_expected.to eq 2 }
+       by_participant { is_expected.to eq 2 }
         by_writer      { is_expected.to eq 2 }
         by_admin       { is_expected.to eq 2 }
       end

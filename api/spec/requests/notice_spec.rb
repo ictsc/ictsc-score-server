@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe Notice do
+RSpec.describe "Notices", type: :request do
   include ApiHelpers
 
   describe 'GET /api/notices' do

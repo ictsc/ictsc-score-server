@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe Issue do
+RSpec.describe "Issues", type: :request do
   include ApiHelpers
 
   before(:each) {

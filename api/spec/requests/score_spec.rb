@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe Score do
+RSpec.describe "Scores", type: :request do
   include ApiHelpers
 
   before(:each) {

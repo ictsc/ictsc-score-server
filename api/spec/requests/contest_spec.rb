@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe 'Contest' do
+RSpec.describe "Contests", type: :request do
   include ApiHelpers
 
   describe 'GET /api/contest' do

@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe Team do
+RSpec.describe "Teams", type: :request do
   include ApiHelpers
 
   describe 'GET /api/teams' do

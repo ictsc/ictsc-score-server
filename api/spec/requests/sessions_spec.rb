@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe 'Sessions' do
+RSpec.describe "Sessions", type: :request do
   include ApiHelpers
 
   let(:member) { create(:member) }

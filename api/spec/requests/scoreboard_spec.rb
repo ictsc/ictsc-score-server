@@ -1,6 +1,6 @@
-require_relative '../spec_helper.rb'
+require 'rails_helper'
 
-describe 'Score board' do
+RSpec.describe "Scoreboards", type: :request do
   describe 'GET /api/scoreboard' do
     # answer_reply_delay_secの影響を無くしたいときはcreated_atを指定する
     let(:created_at) { DateTime.now - Setting.answer_reply_delay_sec.seconds * 2 }
