@@ -16,7 +16,7 @@ class Problem < ApplicationRecord
 
   has_and_belongs_to_many :problem_groups, dependent: :nullify
 
-  belongs_to :problem_must_solve_before, class_name: self.to_s
+  belongs_to :problem_must_solve_before, class_name: self.to_s, optional: true
   belongs_to :creator, foreign_key: "creator_id", class_name: "Member"
 
   # method: POST

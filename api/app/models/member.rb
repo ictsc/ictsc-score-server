@@ -15,7 +15,7 @@ class Member < ApplicationRecord
   has_many :attachments, dependent: :destroy
   has_one :notification_subscriber, dependent: :destroy, as: :subscribable
 
-  belongs_to :team
+  belongs_to :team, optional: true
   belongs_to :role
 
   before_validation def build_notification_subscriber_if_not_exists

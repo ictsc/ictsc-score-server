@@ -6,7 +6,7 @@ RSpec.configure do |config|
     begin
       DatabaseCleaner.start
       # TODO: temporary disable
-      # FactoryBot.lint
+      FactoryBot.lint
     ensure
       DatabaseCleaner.clean
     end
