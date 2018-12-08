@@ -7,7 +7,7 @@ RSpec.describe "Teams", type: :request do
     let!(:teams) { create_list(:team, 2) }
 
     let(:response) { get '/api/teams' }
-    subject { response.status }
+    subject { get '/api/teams' }
 
     by_nologin     { is_expected.to eq 200 }
     by_viewer      { is_expected.to eq 200 }
@@ -19,6 +19,7 @@ RSpec.describe "Teams", type: :request do
       subject { json_response.size }
       by_nologin     { is_expected.to eq 2 }
       by_viewer      { is_expected.to eq 2 }
+      # NOTE: factoryでcurrent_userのteamが作られる?
       by_participant { is_expected.to eq 3 } # including my team
       by_writer      { is_expected.to eq 2 }
       by_admin       { is_expected.to eq 2 }

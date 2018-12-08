@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     resources :problems
     resources :scoreboards
     resources :scores
+    resources :sessions, only: [:show, :create, :destroy]
     resources :teams
   end
 end

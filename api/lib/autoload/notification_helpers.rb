@@ -4,8 +4,6 @@ require 'oj'
 Oj.mimic_JSON
 
 module NotificationHelpers
-  module_function
-
   # @params to: One of [Role, Team, Member]
   # @params payload: Hash
   def push_notification(to:, payload:)

@@ -1,6 +1,4 @@
 module NestedEntityHelpers
-  module_function
-
   # 文字列からモデルを求める
   def solve_model(entity:, parent_entity:)
     begin
@@ -11,7 +9,6 @@ module NestedEntityHelpers
     end
   end
 
-  # NOTE: 解読中
   # readablesの戻り値のidsでフィルタする
   # @param member [Member] アクセスしようとしてるユーザ
   # @param resource []
@@ -66,7 +63,6 @@ module NestedEntityHelpers
     end
   end
 
-  # NOTE: 解読中
   # データを再帰的に取得する readablesを使ってる
   # @param klass []
   # @param nested_params []

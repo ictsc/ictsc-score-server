@@ -1,6 +1,4 @@
 module AccountHelpers
-  module_function
-
   def require_login(*block)
     halt 401 unless logged_in?
   end

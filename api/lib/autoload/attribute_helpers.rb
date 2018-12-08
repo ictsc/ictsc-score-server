@@ -1,6 +1,4 @@
 module AttributeHelpers
-  module_function
-
   def attribute_names_of(klass:, only_required: false, **options)
     raise "klass must be kind of Class" unless klass.kind_of? Class
 

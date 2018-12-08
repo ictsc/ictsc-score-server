@@ -5,7 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-FactoryBot.find_definitions
+# FactoryBot.find_definitions
 
 Role.delete_all
 Member.delete_all
