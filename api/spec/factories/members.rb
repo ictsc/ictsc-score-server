@@ -4,12 +4,12 @@ FactoryBot.define do
   factory :member do
     sequence(:name) { |n| "member_#{n}" }
     sequence(:login) { |n| "member_login_#{n}" }
-    password 'test' # to tell plain password to spec
+    password { 'test' } # to tell plain password to spec
     hashed_password { Sinatra::CryptHelpers.hash_password(password) }
     role
 
     trait :admin do
-      password 'admin'
+      password { 'admin' }
       association :role, factory: [:role, :admin]
     end
 

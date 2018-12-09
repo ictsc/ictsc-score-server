@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :score do
-    point 42
+    point { 42 }
     answer
-    solved false
+    solved { false }
     association :marker, factory: [:member, :writer]
   end
 end
