@@ -2,6 +2,7 @@
 # Coding: UTF-8
 
 Dotenv.load
+Bundler.require
 Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
 
 $LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
