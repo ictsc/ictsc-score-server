@@ -1,23 +1,23 @@
 require 'rspec'
 
 module ApiHelpers
+  # def self.included(base)
+  #   base.extend(ClassMethods)
+  # end
+
   def json_response
     JSON.parse(response.body)
   end
 
-  def session
-    begin
-      { 'rack.session' => last_request.env['rack.session'] }
-    rescue Rack::Test::Error # raises if no request before
-      {}
-    end
-  end
-
-  # override methods in Rack::Test::Session to pass session
+  # NOTE: 互換性のため(そのうち消す)
+  # # override methods in Rack::Test::Session to pass session
   %i(get post put patch delete options head).each do |method|
-    define_method(method) do |uri, params = {}, env = {}, &block|
-      env.merge! session
-      super(uri, params, env, &block)
+    define_method(method) do |path, params = {}, env = {}|
+    # define_method(method) do |path, params = {}, headers: {}, as: nil, &block|
+      # super(path, params: params, &block)
+      super(path, params: params)
+      # super(path, params: params, headers: headers, as: as)
+      # def get(path, params: nil, headers: {}, as: :json)
     end
   end
 end
@@ -44,33 +44,45 @@ end
 # ```
 # same as ...:
 # `by_participant { ... }`
-%w(admin writer participant viewer).each do |role|
-  RSpec.shared_context "as_#{role}", by: role.to_sym do
-    include ApiHelpers
-    let!(:current_member) { create(:member, role.to_sym) }
+%i(admin writer participant viewer).each do |role|
+  # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer'
+  define_method(:"by_#{role}") do |&block|
+    let!(:current_member) do
+      create(:member, role).tap do |m|
+        puts "created #{role} : #{m.name} : #{m.team&.name}"
+      end
+    end
 
     before do
-      post '/api/session', { login: current_member.login, password: current_member.password }
+      post '/api/sessions', { login: current_member.login, password: current_member.password }
+      # post('/api/sessions', params: { login: current_member.login, password: current_member.password })
     end
-  end
 
-  # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer'
-  define_method("by_#{role}".to_sym) do |&block|
-    it "by #{role}", by: role.to_sym, &block
+    it "by #{role}", by: role, &block
   end
-end
-
-RSpec.shared_context "not_logged_in", by: :nologin do
-  include ApiHelpers
-  let!(:current_member) { nil }
 end
 
 def by_nologin(&block)
   it 'when not logged in', by: :nologin, &block
 end
 
+RSpec.shared_context "not_logged_in", by: :nologin do
+  let!(:current_member) { nil }
+end
+
 RSpec.shared_examples 'not logged in' do
   it 'returns unauthorized' do
     expect(response.status).to eq 401
   end
+end
+
+RSpec.configure do |config|
+  config.include AccountHelpers
+  config.include AttributeHelpers
+  config.include CompetitionHelpers
+  config.include Crypt
+  config.include JSONHelpers
+  config.include NestedEntityHelpers
+  config.include NotificationHelpers
+  config.include ApiHelpers
 end

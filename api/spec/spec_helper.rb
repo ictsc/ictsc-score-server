@@ -24,7 +24,10 @@ RSpec.configure do |config|
   # ActiveRecord::Base.logger = nil
 
   config.before :suite do
-    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.clean_with :truncation, { except: %w(role) }
+    DatabaseCleaner.strategy = :transaction
+
+    FactoryBot.create(:member, :admin, name: 'admin', login: 'admin')
   end
 
   config.before :each do

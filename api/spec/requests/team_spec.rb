@@ -1,12 +1,49 @@
 require 'rails_helper'
 
 RSpec.describe "Teams", type: :request do
+  # include ApiHelpers
+
+  describe 'GET /api/teams' do
+    let!(:teams) { create_list(:team, 2) }
+    # before { get teams_path }
+    subject {  get teams_path; response }
+
+    by_nologin     { is_expected.to have_http_status(:ok) }
+    # TODO: loginできてない -> できた
+    # by_participant { is_expected.to have_http_status(:ok) }
+
+    describe '#size' do
+      subject do
+        pp json_response
+        pp session
+        puts '---------'
+
+        json_response.size
+      end
+
+      by_nologin     {
+        require 'pry'; binding.pry
+        puts '[*] end binding'
+        is_expected.to eq 2
+      }
+
+      by_participant {
+        require 'pry'; binding.pry
+        puts '[*] end binding'
+        is_expected.to eq 3
+      } # including my team
+    end
+  end
+end
+
+return
+
+RSpec.describe "Teams", type: :request do
   include ApiHelpers
 
   describe 'GET /api/teams' do
     let!(:teams) { create_list(:team, 2) }
 
-    let(:response) { get '/api/teams' }
     subject { get '/api/teams' }
 
     by_nologin     { is_expected.to eq 200 }
