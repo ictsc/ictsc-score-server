@@ -1,8 +1,8 @@
-require "sinatra/activerecord_helpers"
-require "sinatra/json_helpers"
-require_relative "../services/account_service"
-require_relative "../services/nested_entity"
-require_relative "../services/notification_service"
+require 'sinatra/activerecord_helpers'
+require 'sinatra/json_helpers'
+require_relative '../services/account_service'
+require_relative '../services/nested_entity'
+require_relative '../services/notification_service'
 
 class NoticeRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
@@ -11,19 +11,19 @@ class NoticeRoutes < Sinatra::Base
   helpers Sinatra::AccountServiceHelpers
   helpers Sinatra::NotificationService
 
-  before "/api/notices*" do
+  before '/api/notices*' do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(',') & Notice.allowed_nested_params(user: current_user) if request.get?
+    @with_param = (params[:with] || '').split(',') & Notice.allowed_nested_params(user: current_user) if request.get?
   end
 
-  get "/api/notices" do
+  get '/api/notices' do
     @notices = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, apply_filter: !is_admin?)
     json @notices
   end
 
-  post "/api/notices" do
-    halt 403 if not Notice.allowed_to_create_by?(current_user)
+  post '/api/notices' do
+    halt 403 unless Notice.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Notice)
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
@@ -31,7 +31,7 @@ class NoticeRoutes < Sinatra::Base
 
     if @notice.save
       status 201
-      headers "Location" => to("/api/notices/#{@notice.id}")
+      headers 'Location' => to("/api/notices/#{@notice.id}")
       push_notification(to: :everyone, payload: @notice.notification_payload)
       json @notice
     else
@@ -40,17 +40,17 @@ class NoticeRoutes < Sinatra::Base
     end
   end
 
-  before "/api/notices/:id" do
+  before '/api/notices/:id' do
     @notice = Notice.find_by(id: params[:id])
-    halt 404 if not @notice&.allowed?(by: current_user, method: request.request_method)
+    halt 404 unless @notice&.allowed?(by: current_user, method: request.request_method)
   end
 
-  get "/api/notices/:id" do
+  get '/api/notices/:id' do
     @notice = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !is_admin?)
     json @notice
   end
 
-  update_notice_block = Proc.new do
+  update_notice_block = proc do
     if request.put? and not filled_all_attributes_of?(klass: Notice)
       status 400
       next json required: insufficient_attribute_names_of(klass: Notice)
@@ -58,14 +58,14 @@ class NoticeRoutes < Sinatra::Base
 
     @attrs = params_to_attributes_of(klass: Notice)
 
-    if (not is_admin?) && @attrs[:member_id] != nil && @attrs[:member_id].to_i != current_user&.id
+    if (not is_admin?) && !@attrs[:member_id].nil? && @attrs[:member_id].to_i != current_user&.id
       status 400
       next json member_id: "can't set to other member"
     end
 
     @notice.attributes = @attrs
 
-    if not @notice.valid?
+    unless @notice.valid?
       status 400
       next json @notice.errors
     end
@@ -79,16 +79,16 @@ class NoticeRoutes < Sinatra::Base
     end
   end
 
-  put "/api/notices/:id", &update_notice_block
-  patch "/api/notices/:id", &update_notice_block
+  put '/api/notices/:id', &update_notice_block
+  patch '/api/notices/:id', &update_notice_block
 
-  delete "/api/notices/:id" do
+  delete '/api/notices/:id' do
     if @notice.destroy
       status 204
-      json status: "success"
+      json status: 'success'
     else
       status 500
-      json status: "failed"
+      json status: 'failed'
     end
   end
 end

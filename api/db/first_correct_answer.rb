@@ -3,21 +3,22 @@ class FirstCorrectAnswer < ActiveRecord::Base
   belongs_to :team
   belongs_to :answer
 
-  validates :team,  presence: true
+  validates :team, presence: true
   validates :answer,  presence: true
   validates :problem, presence: true
 
   def self.readable_columns(user:, action: '', reference_keys: true)
-    self.all_column_names(reference_keys: reference_keys)
+    all_column_names(reference_keys: reference_keys)
   end
 
-  scope :filter_columns, ->(user:, action: '') {
+  scope :filter_columns, lambda {|user:, action: ''|
     cols = readable_columns(user: user, action: action, reference_keys: false)
     next none if cols.empty?
+
     select(*cols)
   }
 
-  scope :readable_records, ->(user:, action: '') {
+  scope :readable_records, lambda {|user:, action: ''|
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
@@ -39,7 +40,7 @@ class FirstCorrectAnswer < ActiveRecord::Base
   }
 
   # method: GET
-  scope :readables, ->(user:, action: '') {
+  scope :readables, lambda {|user:, action: ''|
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }

@@ -2,10 +2,10 @@ class Answer < ActiveRecord::Base
   validates :problem, presence: true
   validates :team,    presence: true
   validates :text,    presence: true
-  validates :score,   presence: true, if: Proc.new {|answer| not answer&.score&.id.nil? }
+  validates :score,   presence: true, if: proc {|answer| not answer&.score&.id.nil? }
 
   belongs_to :problem
-  has_one :score,     dependent: :destroy
+  has_one :score, dependent: :destroy
   belongs_to :team
 
   def notification_payload(state: :created, **data)
@@ -15,7 +15,7 @@ class Answer < ActiveRecord::Base
   end
 
   # method: POST
-  def self.allowed_to_create_by?(user = nil, action: "")
+  def self.allowed_to_create_by?(user = nil, action: '')
     case user&.role_id
     when ROLE_ID[:admin]
       true
@@ -31,7 +31,7 @@ class Answer < ActiveRecord::Base
   end
 
   # method: GET, PUT, PATCH, DELETE
-  def allowed?(method:, by: nil, action: "")
+  def allowed?(method:, by: nil, action: '')
     return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
@@ -47,16 +47,17 @@ class Answer < ActiveRecord::Base
   end
 
   def self.readable_columns(user:, action: '', reference_keys: true)
-    self.all_column_names(reference_keys: reference_keys)
+    all_column_names(reference_keys: reference_keys)
   end
 
-  scope :filter_columns, ->(user:, action: '') {
+  scope :filter_columns, lambda {|user:, action: ''|
     cols = readable_columns(user: user, action: action, reference_keys: false)
     next none if cols.empty?
+
     select(*cols)
   }
 
-  scope :readable_records, ->(user:, action: '') {
+  scope :readable_records, lambda {|user:, action: ''|
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
@@ -68,13 +69,13 @@ class Answer < ActiveRecord::Base
   }
 
   # method: GET
-  scope :readables, ->(user:, action: '') {
+  scope :readables, lambda {|user:, action: ''|
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
 
-  scope :reply_delay, ->() {
+  scope :reply_delay, lambda {
     # merge後に呼ばれるからテーブル名の明示が必要
-    where('answers.created_at <= :time', { time:  DateTime.now - Setting.answer_reply_delay_sec.seconds})
+    where('answers.created_at <= :time', time: DateTime.now - Setting.answer_reply_delay_sec.seconds)
   }
 end

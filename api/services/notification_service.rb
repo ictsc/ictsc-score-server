@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'redis'
-require "oj"
+require 'oj'
 require_relative '../db/model'
 
 Oj.mimic_JSON
@@ -11,15 +11,15 @@ module Sinatra
     # @params payload: Hash
     def push_notification(to:, payload:)
       if to.respond_to? :each
-        to.each{|t| push_notification(to: t, payload: payload) }
+        to.each {|t| push_notification(to: t, payload: payload) }
         return
       end
 
-      return false if not pushable? to
+      return false unless pushable? to
 
       begin
         redis_client.publish(Setting.redis_realtime_notification_channel, publish_payload(to: to, payload: payload))
-      rescue
+      rescue # rubocop:disable Style/RescueStandardError
         # Ignores error on pushing notification (because it's not critical)
         return false
       end
@@ -31,7 +31,7 @@ module Sinatra
 
     def pushable?(obj)
       return true if obj.is_a? String or obj.is_a? Symbol
-      raise TypeError, "to don't have a notification_group" if not obj.respond_to? :notification_subscriber
+      raise TypeError, "to don't have a notification_group" unless obj.respond_to? :notification_subscriber
 
       return true if obj.notification_subscriber
 
@@ -58,7 +58,7 @@ module Sinatra
     end
 
     def redis_client
-      @redis ||= Redis.new
+      @redis_client ||= Redis.new
     end
   end
 

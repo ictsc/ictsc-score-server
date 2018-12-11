@@ -8,10 +8,10 @@ module Sinatra
       return nil unless key.is_a? String
 
       crypt_binname = case RUBY_PLATFORM
-        when /darwin/;  'crypt_darwin_amd64'
-        when /freebsd/; 'crypt_freebsd_amd64'
-        when /linux/;   'crypt_linux_amd64'
-      end
+                      when /darwin/ then  'crypt_darwin_amd64'
+                      when /freebsd/ then 'crypt_freebsd_amd64'
+                      when /linux/ then   'crypt_linux_amd64'
+                      end
 
       path = File.expand_path("../../../ext/#{crypt_binname}", __FILE__)
       hash, status = Open3.capture2(path, key, salt)
@@ -26,8 +26,8 @@ module Sinatra
     def compare_password(key, hash)
       salt_len = hash.index('$', 3)
       return false if salt_len.nil?
-      salt = hash.slice(0, salt_len)
 
+      salt = hash.slice(0, salt_len)
       return hash_password(key, salt) == hash
     end
   end

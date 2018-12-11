@@ -3,6 +3,6 @@ FactoryBot.define do
     point { 42 }
     answer
     solved { false }
-    association :marker, factory: [:member, :writer]
+    association :marker, factory: %i[member writer]
   end
 end

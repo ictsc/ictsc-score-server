@@ -1,7 +1,7 @@
-require "sinatra/activerecord_helpers"
-require "sinatra/json_helpers"
-require_relative "../services/account_service"
-require_relative "../services/nested_entity"
+require 'sinatra/activerecord_helpers'
+require 'sinatra/json_helpers'
+require_relative '../services/account_service'
+require_relative '../services/nested_entity'
 
 class IssueRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
@@ -9,30 +9,30 @@ class IssueRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/api/issues*" do
+  before '/api/issues*' do
     I18n.locale = :en if request.xhr?
 
-    @with_param = (params[:with] || "").split(',') & Issue.allowed_nested_params(user: current_user) if request.get?
+    @with_param = (params[:with] || '').split(',') & Issue.allowed_nested_params(user: current_user) if request.get?
   end
 
-  get "/api/issues" do
+  get '/api/issues' do
     @issues = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, apply_filter: !is_admin?)
     json @issues
   end
 
-  before "/api/issues/:id" do
+  before '/api/issues/:id' do
     @issue = Issue.includes(:comments)
-                  .find_by(id: params[:id])
-    halt 404 if not @issue&.allowed?(by: current_user, method: request.request_method)
+      .find_by(id: params[:id])
+    halt 404 unless @issue&.allowed?(by: current_user, method: request.request_method)
   end
 
-  get "/api/issues/:id" do
+  get '/api/issues/:id' do
     @issue = generate_nested_hash(klass: Issue, by: current_user, params: @with_param, id: params[:id], apply_filter: !is_admin?)
 
     json @issue
   end
 
-  update_issue_block = Proc.new do
+  update_issue_block = proc do
     if request.put? and not filled_all_attributes_of?(klass: Issue)
       status 400
       next json required: insufficient_attribute_names_of(klass: Issue)
@@ -41,7 +41,7 @@ class IssueRoutes < Sinatra::Base
     @attrs = params_to_attributes_of(klass: Issue)
     @issue.attributes = @attrs
 
-    if not @issue.valid?
+    unless @issue.valid?
       status 400
       next json @issue.errors
     end
@@ -54,33 +54,33 @@ class IssueRoutes < Sinatra::Base
     end
   end
 
-  put "/api/issues/:id", &update_issue_block
-  patch "/api/issues/:id", &update_issue_block
+  put '/api/issues/:id', &update_issue_block
+  patch '/api/issues/:id', &update_issue_block
 
-  delete "/api/issues/:id" do
+  delete '/api/issues/:id' do
     if @issue.destroy
       status 204
-      json status: "success"
+      json status: 'success'
     else
       status 500
-      json status: "failed"
+      json status: 'failed'
     end
   end
 
-  before "/api/problems/:id/issues" do
+  before '/api/problems/:id/issues' do
     @problem = Problem.find_by(id: params[:id])
     pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET')
-    halt 404 if not @problem&.allowed?(by: current_user, method: request.request_method)
+    halt 404 unless @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
-  get "/api/problems/:id/issues" do
+  get '/api/problems/:id/issues' do
     @issues = Issue.readables(user: current_user)
-                   .where(problem_id: @problem.id)
+      .where(problem_id: @problem.id)
     json @issues
   end
 
-  post "/api/problems/:id/issues" do
-    halt 403 if not Issue.allowed_to_create_by?(current_user)
+  post '/api/problems/:id/issues' do
+    halt 403 unless Issue.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Issue)
     @attrs[:team_id] = current_user.team_id if !is_admin? && !is_writer?
@@ -89,7 +89,7 @@ class IssueRoutes < Sinatra::Base
 
     if @issue.save
       status 201
-      headers "Location" => to("/api/issues/#{@issue.id}")
+      headers 'Location' => to("/api/issues/#{@issue.id}")
       json @issue
     else
       status 400

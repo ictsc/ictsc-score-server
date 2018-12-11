@@ -97,7 +97,7 @@ In the shell, `docker-compose run --rm api rake pry`, and you can access ActiveR
 
 * [EditorConfig](http://editorconfig.org/): return code, indent, charset, and more
 * [yamllint](https://github.com/adrienverge/yamllint): for YAML files
-* [rubocop](https://github.com/rubocop-hq/rubocop): for Ruby (coming soon!)
+* [rubocop](https://github.com/rubocop-hq/rubocop): for Ruby
 * [eslint](https://eslint.org/): for JavaScript (comin soon!)
 
 ### Test

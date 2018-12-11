@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :issue do
     closed { false }
-    sequence(:title) { |n| "issue_#{n}" }
+    sequence(:title) {|n| "issue_#{n}" }
     problem
     team
 
@@ -17,7 +17,7 @@ FactoryBot.define do
           :issue_comment, evaluator.comments_count,
           member: team.members.first,
           commentable: issue
-          )
+        )
       end
     end
   end

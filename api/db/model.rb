@@ -10,6 +10,7 @@ require_relative 'problem'
 require_relative 'problem_group'
 require_relative 'role'
 require_relative 'score'
+require_relative 'score_aggregater'
 require_relative 'setting'
 require_relative 'team'
 require_relative '../lib/sinatra/competition_helpers'
@@ -20,9 +21,9 @@ ROLE_ID = {
   participant: 4,
   viewer: 5,
   nologin: 1,
-}
+}.freeze
 
-class ActiveRecord::Base
+class ActiveRecord::Base # rubocop:disable Style/ClassAndModuleChildren:
   include Sinatra::CompetitionHelpers
   extend Sinatra::CompetitionHelpers
 
@@ -33,17 +34,17 @@ class ActiveRecord::Base
     options[:exclude] ||= []
     options[:exclude].map!(&:to_sym)
 
-    fields = self.validators
-                 .reject{|x| x.options[:if] }
-                 .flat_map(&:attributes)
-                 .map do |x|
-                   reflection = self.reflections[x.to_s]
-                   if reflection&.kind_of?(ActiveRecord::Reflection::BelongsToReflection)
-                     reflection.foreign_key.to_sym
-                   else
-                     x
-                   end
-                 end
+    fields = validators
+      .reject {|x| x.options[:if] }
+      .flat_map(&:attributes)
+      .map do |x|
+        reflection = reflections[x.to_s]
+        if reflection&.kind_of?(ActiveRecord::Reflection::BelongsToReflection)
+          reflection.foreign_key.to_sym
+        else
+          x
+        end
+      end
 
     fields - options[:exclude] + options[:include]
   end
@@ -59,8 +60,8 @@ class ActiveRecord::Base
 
   # 参照キーも取得できる
   def self.all_column_names(reference_keys: true)
-    cols = self.column_names
-    cols += self.reflections.keys if reference_keys
+    cols = column_names
+    cols += reflections.keys if reference_keys
     cols
   end
 end

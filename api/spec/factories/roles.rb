@@ -1,9 +1,10 @@
+# rubocop:disable Metrics/BlockLength
 FactoryBot.define do
   factory :role do
-    sequence(:id) { |n| n }
-    sequence(:name) { |n| "role_#{n}" }
+    sequence(:id) {|n| n }
+    sequence(:name) {|n| "role_#{n}" }
     rank { 50 }
-    initialize_with { Role.find_or_create_by(id: id)}
+    initialize_with { Role.find_or_create_by(id: id) }
 
     trait :nologin do
       id { 1 }
@@ -36,3 +37,4 @@ FactoryBot.define do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

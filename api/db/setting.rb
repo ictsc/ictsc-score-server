@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Make settings could be read via `Setting.hogefuga`
 class Setting
   include Singleton
@@ -8,7 +10,7 @@ class Setting
   INTEGER_VALUES = %w(
     answer_reply_delay_sec
     scoreboard_viewable_top
-  )
+  ).freeze
 
   # scoreboard_viewable_*  公開する情報(チーム名 スコア)
   BOOLEAN_VALUES = %w(
@@ -16,13 +18,13 @@ class Setting
     scoreboard_viewable_top_show_score
     scoreboard_viewable_up_show_team
     scoreboard_viewable_up_show_score
-  )
+  ).freeze
 
   DATETIME_VALUES = %w(
     competition_start_at
     scoreboard_hide_at
     competition_end_at
-  )
+  ).freeze
 
   REQUIRED_KEYS = %w(
     redis_realtime_notification_channel
@@ -39,11 +41,11 @@ class Setting
     end
 
     value = case key
-      when *INTEGER_VALUES then env_value.to_i
-      when *DATETIME_VALUES then DateTime.parse(env_value)
-      when *BOOLEAN_VALUES then env_value == "true"
-      else env_value
-      end
+            when *INTEGER_VALUES  then env_value.to_i
+            when *DATETIME_VALUES then DateTime.parse(env_value)
+            when *BOOLEAN_VALUES  then env_value == 'true'
+            else                       env_value
+            end
 
     define_singleton_method(key.to_sym) { value }
   end
@@ -56,12 +58,12 @@ class Setting
         score: true,
       },
       top: {
-        team: self.scoreboard_viewable_top_show_team,
-        score: self.scoreboard_viewable_top_show_score,
+        team: scoreboard_viewable_top_show_team,
+        score: scoreboard_viewable_top_show_score,
       },
       up: {
-        team: self.scoreboard_viewable_up_show_team,
-        score: self.scoreboard_viewable_up_show_score,
+        team: scoreboard_viewable_up_show_team,
+        score: scoreboard_viewable_up_show_score,
       },
     }
   end

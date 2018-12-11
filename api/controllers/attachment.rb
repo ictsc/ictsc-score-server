@@ -1,8 +1,8 @@
-require "digest/sha2"
+require 'digest/sha2'
 
-require "sinatra/activerecord_helpers"
-require "sinatra/json_helpers"
-require_relative "../services/account_service"
+require 'sinatra/activerecord_helpers'
+require 'sinatra/json_helpers'
+require_relative '../services/account_service'
 
 # ファイルアップロード
 class AttachmentRoutes < Sinatra::Base
@@ -10,17 +10,17 @@ class AttachmentRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
   helpers Sinatra::AccountServiceHelpers
 
-  before "/api/attachments*" do
+  before '/api/attachments*' do
     I18n.locale = :en if request.xhr?
   end
 
-  get "/api/attachments" do
+  get '/api/attachments' do
     @attachments = Attachment.readables(user: current_user)
     json @attachments
   end
 
-  post "/api/attachments" do
-    halt 403 if not Attachment.allowed_to_create_by?(current_user)
+  post '/api/attachments' do
+    halt 403 unless Attachment.allowed_to_create_by?(current_user)
 
     file = params[:file]
     halt 400 if file.blank?
@@ -38,35 +38,35 @@ class AttachmentRoutes < Sinatra::Base
       json @attachment.errors
     else
       status 201
-      headers "Location" => to("/api/attachments/#{@attachment.id}")
+      headers 'Location' => to("/api/attachments/#{@attachment.id}")
       # dataが大きいとJSON化に失敗する
       json @attachment, methods: [:url], except: [:data]
     end
   end
 
-  before "/api/attachments/:id" do
+  before '/api/attachments/:id' do
     @attachment = Attachment.find_by(id: params[:id])
-    halt 404 if not @attachment&.allowed?(by: current_user, method: request.request_method)
+    halt 404 unless @attachment&.allowed?(by: current_user, method: request.request_method)
   end
 
   # IDからファイルの情報を取得
-  get "/api/attachments/:id" do
+  get '/api/attachments/:id' do
     @attachment = Attachment.readables(user: current_user).find_by(id: params[:id])
     json @attachment
   end
 
-  delete "/api/attachments/:id" do
+  delete '/api/attachments/:id' do
     if @attachment.destroy
       status 204
-      json status: "success"
+      json status: 'success'
     else
       status 500
-      json status: "failed"
+      json status: 'failed'
     end
   end
 
   # ファイルを取得
-  get "/api/attachments/:id/:access_token" do
+  get '/api/attachments/:id/:access_token' do
     # アクセス制限無し
     @attachment = Attachment.find_by(id: params[:id])
 
@@ -80,8 +80,8 @@ class AttachmentRoutes < Sinatra::Base
     # Sinatraのsend_fileを参考
     filename = @attachment.filename
 
-    if not response['Content-Type']
-      content_type File.extname(filename), :default => 'application/octet-stream'
+    unless response['Content-Type']
+      content_type File.extname(filename), default: 'application/octet-stream'
     end
 
     disposition = :attachment
