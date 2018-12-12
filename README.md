@@ -39,7 +39,7 @@ This provides whole game operations during contest:
 
 ### Development (using Docker)
 
-1. Docker 17.05-ce or later
+1. Docker 18.09-ce or later
 2. docker-compose
 
 ## How to use
@@ -109,3 +109,11 @@ or
 
 1. `docker-compose run --rm api bundle exec rake db:setup`
 2. `docker-compose run --rm api rspec`
+
+### Release Tips
+
+When you minimalize api image, execute this command in experimental mode.  
+
+```sh
+docker build ./api --no-cache --squash -t upluse10/ictsc-score-server:api
+```
