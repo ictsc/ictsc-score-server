@@ -1,4 +1,4 @@
-FROM ruby:2.5.1-alpine3.7
+FROM ruby:2.5.3-alpine3.8
 
 LABEL maintainer "ICTSC"
 
@@ -21,7 +21,7 @@ RUN apk update \
         mariadb-dev \
  && apk add --virtual .running-dep \
         tzdata \
-        mariadb-client-libs \
+        mariadb-client \
         less \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && rm -rf /var/cache/apk/*
