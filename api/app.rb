@@ -1,34 +1,32 @@
-#!/usr/bin/env ruby
-# Coding: UTF-8
-
 Dotenv.load
-Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
+Bundler.require
+Bundler.require(ENV['RACK_ENV']) if ENV['RACK_ENV']
 
-$LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
+$LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 
-LOG_DIR = "#{File.dirname(__FILE__)}/log"
+LOG_DIR = "#{File.dirname(__FILE__)}/log".freeze
 FileUtils.mkdir_p(LOG_DIR)
 
-require_relative "controllers/answer"
-require_relative "controllers/attachment"
-require_relative "controllers/comment"
-require_relative "controllers/issue"
-require_relative "controllers/member"
-require_relative "controllers/notification"
-require_relative "controllers/notice"
-require_relative "controllers/problem"
-require_relative "controllers/problem_group"
-require_relative "controllers/score"
-require_relative "controllers/scoreboard"
-require_relative "controllers/team"
-require_relative "controllers/contest"
+require_relative 'controllers/answer'
+require_relative 'controllers/attachment'
+require_relative 'controllers/comment'
+require_relative 'controllers/issue'
+require_relative 'controllers/member'
+require_relative 'controllers/notification'
+require_relative 'controllers/notice'
+require_relative 'controllers/problem'
+require_relative 'controllers/problem_group'
+require_relative 'controllers/score'
+require_relative 'controllers/scoreboard'
+require_relative 'controllers/team'
+require_relative 'controllers/contest'
 
-require_relative "db/model"
+require_relative 'db/model'
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
-  error_logger = ::File.new("#{LOG_DIR}/#{ENV["RACK_ENV"]}-error.log", "a+")
+  error_logger = ::File.new("#{LOG_DIR}/#{ENV['RACK_ENV']}-error.log", 'a+')
   error_logger.sync = true
 
   use AnswerRoutes
@@ -46,7 +44,7 @@ class App < Sinatra::Base
   use ContestRoutes
 
   configure do
-    Time.zone = "Tokyo"
+    Time.zone = 'Tokyo'
     ActiveRecord::Base.default_timezone = :local
 
     enable :prefixed_redirects
@@ -54,7 +52,7 @@ class App < Sinatra::Base
     set :scss, style: :expanded
 
     # I18n.enforce_available_locales = false
-    I18n.load_path = Dir[File.join(settings.root, "locales", "*.yml")]
+    I18n.load_path = Dir[File.join(settings.root, 'locales', '*.yml')]
     I18n.backend.load_translations
     I18n.locale = :ja
   end
@@ -65,17 +63,17 @@ class App < Sinatra::Base
     end
   end
 
-  options "*" do
-    response.headers["Allow"] =  "HEAD,GET,PUT,PATCH,POST,DELETE,OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Accept, Authorization, Cache-Control, Content-Type"
-    response.headers["Access-Control-Expose-Headers"] = "X-Requested-With, X-HTTP-Method-Override, X-From"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
+  options '*' do
+    response.headers['Allow'] = 'HEAD,GET,PUT,PATCH,POST,DELETE,OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Accept, Authorization, Cache-Control, Content-Type'
+    response.headers['Access-Control-Expose-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, X-From'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
 
     200
   end
 
   before do
-    env["rack.errors"] = error_logger
+    env['rack.errors'] = error_logger
   end
 
   not_found do

@@ -1,12 +1,13 @@
-require "bundler"
+require 'bundler'
 
 Bundler.require
-Bundler.require(ENV["RACK_ENV"]) if ENV["RACK_ENV"]
+Bundler.require(ENV['RACK_ENV']) if ENV['RACK_ENV']
 
-require "sinatra/activerecord/rake"
+require 'sinatra/activerecord/rake'
 
-require "rspec/core/rake_task" if ENV["RACK_ENV"] == "test"
+require 'rspec/core/rake_task' if ENV['RACK_ENV'] == 'test'
 
+# rubocop:disable Metrics/BlockLength
 namespace :db do
   desc <<-EOS
     Loads seed data for the current environment. It will look for
@@ -32,29 +33,25 @@ namespace :db do
       rake db:seed_fu FIXTURE_PATH=features/fixtures
   EOS
 
-  task :seed_fu => :environment do
-    if ENV["FILTER"]
-      filter = /#{ENV["FILTER"].gsub(/,/, "|")}/
-    end
-
-    if ENV["FIXTURE_PATH"]
-      fixture_paths = [ENV["FIXTURE_PATH"], ENV["FIXTURE_PATH"] + "/" + ENV["RACK_ENV"]]
-    end
+  task seed_fu: :environment do
+    filter = /#{ENV["FILTER"].tr(',', '|')}/ if ENV['FILTER']
+    fixture_paths = [ENV['FIXTURE_PATH'], File.join(ENV['FIXTURE_PATH'], '/', ENV['RACK_ENV'])] if ENV['FIXTURE_PATH']
 
     SeedFu.seed(fixture_paths, filter)
   end
 
   # サンプルデータを入れ直す
-  task :re_seed_fu => :environment do
+  task re_seed_fu: :environment do
     Rake::Task['db:environment:set'].invoke
     Rake::Task['db:reset'].invoke
     Rake::Task['db:seed_fu'].invoke
   end
 
   task :load_config do
-    require_relative "app"
+    require_relative 'app'
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 task :pry do
   require 'pry'
@@ -74,18 +71,18 @@ end
 
 task :server do
   Rake::Task['db:setup'].invoke
-rescue ActiveRecord::EnvironmentMismatchError => e
+rescue ActiveRecord::EnvironmentMismatchError
   # 2度目以降のsetupで発生するエラーを無視
   puts 'already db:setup'
 ensure
   system('rackup -o 0.0.0.0 -p 3000')
 end
 
-Rake::Task["db:seed_fu"].enhance(["db:load_config"])
+Rake::Task['db:seed_fu'].enhance(['db:load_config'])
 
 SeedFu.fixture_paths = [
-  File.dirname(__FILE__) + "/db/fixtures",
-  File.dirname(__FILE__) + "/db/fixtures/#{ENV["RACK_ENV"]}"
+  File.dirname(__FILE__) + '/db/fixtures',
+  File.dirname(__FILE__) + "/db/fixtures/#{ENV['RACK_ENV']}"
 ]
 
-RSpec::Core::RakeTask.new("spec") if defined? RSpec::Core::RakeTask
+RSpec::Core::RakeTask.new('spec') if defined? RSpec::Core::RakeTask

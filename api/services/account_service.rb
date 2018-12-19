@@ -1,5 +1,5 @@
-require "sinatra/base"
-require_relative "../db/model"
+require 'sinatra/base'
+require_relative '../db/model'
 
 module Sinatra
   module AccountServiceHelpers
@@ -9,16 +9,19 @@ module Sinatra
 
     def logged_in?
       return false if session[:member_id].nil?
+
       @logged_in ||= Member.exists?(id: session[:member_id])
     end
 
     def current_user
-      return nil if not logged_in?
+      return nil unless logged_in?
+
       @current_user ||= Member.includes(:role).find_by(id: session[:member_id])
     end
 
     def login_as(member_id)
-      raise if not Member.exists?(id: member_id)
+      raise unless Member.exists?(id: member_id)
+
       session[:member_id] = member_id
     end
 
@@ -35,6 +38,7 @@ module Sinatra
       }
     end
 
+    # rubocop:disable Naming/PredicateName
     def is_admin?
       return current_user&.role&.id == ROLE_ID[:admin]
     end
@@ -58,6 +62,7 @@ module Sinatra
     def is_staff?
       return is_admin? || is_writer? || is_viewer?
     end
+    # rubocop:enable Naming/PredicateName
   end
 
   helpers AccountServiceHelpers

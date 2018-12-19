@@ -1,8 +1,8 @@
-require "sinatra/activerecord_helpers"
-require "sinatra/json_helpers"
-require_relative "../services/account_service"
-require_relative "../services/nested_entity"
-require_relative "../services/notification_service"
+require 'sinatra/activerecord_helpers'
+require 'sinatra/json_helpers'
+require_relative '../services/account_service'
+require_relative '../services/nested_entity'
+require_relative '../services/notification_service'
 
 class CommentRoutes < Sinatra::Base
   helpers Sinatra::ActiveRecordHelpers
@@ -11,6 +11,7 @@ class CommentRoutes < Sinatra::Base
   helpers Sinatra::AccountServiceHelpers
   helpers Sinatra::NotificationService
 
+  # rubocop:disable Metrics/BlockLength
   # Issue 質問に対する解答
   # Problem 問題の補足
   [Issue, Problem].each do |klass|
@@ -22,29 +23,29 @@ class CommentRoutes < Sinatra::Base
       @action = "#{pluralize_name}_comments"
       @commentable_id = params[:commentable_id]
       @commentable = klass.readables(user: current_user, action: @action)
-                          .find_by(id: @commentable_id)
+        .find_by(id: @commentable_id)
       halt 404 if @commentable.nil?
 
-      @with_param = (params[:with] || "").split(',') & Comment.allowed_nested_params(user: current_user) if request.get?
+      @with_param = (params[:with] || '').split(',') & Comment.allowed_nested_params(user: current_user) if request.get?
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments" do
-      @comments = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, action: @action, where: {commentable_id: @commentable_id}, apply_filter: !is_admin?)
+      @comments = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, action: @action, where: { commentable_id: @commentable_id }, apply_filter: !is_admin?)
       json @comments
     end
 
     before "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
       @comment = Comment.find_by(id: params[:comment_id])
-      halt 404 if not @comment&.allowed?(by: current_user, method: request.request_method, action: @action)
+      halt 404 unless @comment&.allowed?(by: current_user, method: request.request_method, action: @action)
     end
 
     get "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
-      @comment = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, id: params[:comment_id], action: @action, where: {commentable_id: @commentable_id}, apply_filter: !is_admin?)
+      @comment = generate_nested_hash(klass: Comment, by: current_user, params: @with_param, id: params[:comment_id], action: @action, where: { commentable_id: @commentable_id }, apply_filter: !is_admin?)
       json @comment
     end
 
     post "/api/#{pluralize_name}/:commentable_id/comments" do
-      halt 403 if not Comment.allowed_to_create_by?(current_user, action: @action)
+      halt 403 unless Comment.allowed_to_create_by?(current_user, action: @action)
 
       @attrs = params_to_attributes_of(klass: Comment)
       @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
@@ -54,7 +55,7 @@ class CommentRoutes < Sinatra::Base
 
       if @comment.save
         status 201
-        headers "Location" => to("/api/#{pluralize_name}/:commentable_id/comments/#{@comment.id}")
+        headers 'Location' => to("/api/#{pluralize_name}/:commentable_id/comments/#{@comment.id}")
 
         case @commentable
         when Issue
@@ -77,8 +78,8 @@ class CommentRoutes < Sinatra::Base
       end
     end
 
-    update_comment_block = Proc.new do
-      if request.put? and not filled_all_attributes_of?(klass: Comment, exclude: [:commentable_type, :commentable_id])
+    update_comment_block = proc do
+      if request.put? and not filled_all_attributes_of?(klass: Comment, exclude: %i[commentable_type commentable_id])
         status 400
         next json required: insufficient_attribute_names_of(klass: Comment)
       end
@@ -86,7 +87,7 @@ class CommentRoutes < Sinatra::Base
       @attrs = params_to_attributes_of(klass: Comment)
       @comment.attributes = @attrs
 
-      if not @comment.valid?
+      unless @comment.valid?
         status 400
         next json @comment.errors
       end
@@ -105,11 +106,12 @@ class CommentRoutes < Sinatra::Base
     delete "/api/#{pluralize_name}/:commentable_id/comments/:comment_id" do
       if @comment.destroy
         status 204
-        json status: "success"
+        json status: 'success'
       else
         status 500
-        json status: "failed"
+        json status: 'failed'
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 end

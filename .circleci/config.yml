@@ -15,7 +15,7 @@ jobs:
           - LANGUAGE=en_US:en
           - LC_ALL=en_US.UTF-8
 
-          - RACK_ENV=development
+          - RACK_ENV=test
 
           - MYSQL_HOST=127.0.0.1
           - DB_PORT=3306
@@ -98,12 +98,17 @@ jobs:
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 10s
 
       - run:
-          name: DB setup
+          name: Setup DB
           working_directory: /root/project/api
           command: bundle exec rake db:setup
 
       - run:
-          name: run tests
+          name: Run rubocop
+          working_directory: /root/project/api
+          command: bundle exec rubocop
+
+      - run:
+          name: Run spec
           working_directory: /root/project/api
           command: |
             mkdir /tmp/test-results

@@ -9,7 +9,7 @@ class Attachment < ActiveRecord::Base
   belongs_to :member
 
   # method: POST
-  def self.allowed_to_create_by?(user = nil, action: "")
+  def self.allowed_to_create_by?(user = nil, action: '')
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
       true
@@ -25,7 +25,7 @@ class Attachment < ActiveRecord::Base
   end
 
   # method: GET, DELETE
-  def allowed?(method:, by: nil, action: "")
+  def allowed?(method:, by: nil, action: '')
     return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
@@ -39,7 +39,7 @@ class Attachment < ActiveRecord::Base
   end
 
   def self.readable_columns(user:, action: '', reference_keys: true)
-    col_names = self.all_column_names(reference_keys: reference_keys)
+    col_names = all_column_names(reference_keys: reference_keys)
 
     # dataのサイズが大きいとJSON化に失敗するからデフォルトでは返さない
     col_names -= %w(data) if action != 'download'
@@ -56,18 +56,20 @@ class Attachment < ActiveRecord::Base
     col_names
   end
 
-  scope :filter_columns, ->(user:, action: '') {
+  scope :filter_columns, lambda {|user:, action: ''|
     cols = readable_columns(user: user, action: action, reference_keys: false)
     next none if cols.empty?
+
     select(*cols)
   }
 
-  scope :readable_records, ->(user:, action: '') {
+  scope :readable_records, lambda {|user:, action: ''|
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer]
       all
     when ROLE_ID[:participant]
       next none unless in_competition?
+
       where(member: user)
     else # nologin, viewer
       none
@@ -75,7 +77,7 @@ class Attachment < ActiveRecord::Base
   }
 
   # method: GET
-  scope :readables, ->(user:, action: '') {
+  scope :readables, lambda {|user:, action: ''|
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }

@@ -1,39 +1,44 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "sinatra",          require: "sinatra/base"
+# require to load activesupport before sinatra
+gem 'activesupport',    require: 'active_support'
+gem 'sinatra',          require: 'sinatra/base'
+gem 'rack-contrib',     require: 'rack/contrib'
+gem 'rack-protection',  require: 'rack/protection'
+gem 'redis-rack',       require: 'rack/session/redis'
+gem 'rack-ltsv_logger'
 
-gem "rack-contrib",     require: "rack/contrib"
-gem "rack-protection",  require: "rack/protection"
-gem "redis-rack",       require: "rack/session/redis"
-gem "rack-ltsv_logger"
+gem 'redis'
+gem 'mysql2'
+gem 'sinatra-activerecord', require: 'sinatra/activerecord'
 
-gem "mysql2"
-gem "sinatra-activerecord", require: "sinatra/activerecord"
+gem 'rake'
+gem 'seed-fu'
+gem 'dotenv'
+gem 'factory_bot'
+gem 'puma', require: false
+gem 'oj'
+gem 'oj_mimic_json'
+gem 'tzinfo-data'
 
-gem "redis"
+group :development, :test do
+  gem 'database_cleaner'
+  gem 'simplecov'
 
-gem "oj"
-gem "oj_mimic_json"
+  gem 'rubocop'
+  gem 'rubocop-rspec'
 
-gem "rake"
-gem "seed-fu"
-gem "dotenv"
-
-gem "puma", require: false
-gem "tzinfo-data"
-
-group :development do
-  gem "racksh", require: false
-  gem "pry"
-  gem "pry-byebug"
-  gem "rack-lineprof"
+  gem 'rack-test'
+  gem 'rspec'
+  gem 'rspec_junit_formatter'
 end
 
-group :test do
-  gem "factory_bot"
-  gem "rspec_junit_formatter"
-  gem "rspec"
-  gem "rack-test"
-  gem "database_cleaner"
-  gem "simplecov"
+group :development do
+  gem 'racksh', require: false
+  gem 'rack-lineprof'
+
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'pry-doc'
+  gem 'pry-stack_explorer'
 end

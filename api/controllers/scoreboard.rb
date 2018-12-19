@@ -1,7 +1,7 @@
-require "sinatra/activerecord_helpers"
-require "sinatra/json_helpers"
+require 'sinatra/activerecord_helpers'
+require 'sinatra/json_helpers'
 require 'sinatra/competition_helpers'
-require_relative "../services/account_service"
+require_relative '../services/account_service'
 
 # 2日目の午後開始前まで確認可能
 # - 自分の順位と得点
@@ -15,7 +15,7 @@ class ScoreBoardRoutes < Sinatra::Base
   helpers Sinatra::AccountServiceHelpers
   helpers Sinatra::CompetitionHelpers
 
-  before "/api/scoreboard*" do
+  before '/api/scoreboard*' do
     I18n.locale = :en if request.xhr?
 
     # アクセス禁止処理
@@ -28,10 +28,12 @@ class ScoreBoardRoutes < Sinatra::Base
     end
   end
 
+  # rubocop:disable Metrics/BlockLength
   helpers do
+    # rubocop:disable Metrics/MethodLength:
     def scoreboard_for(team: nil, all: false)
       # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
-      scores = Score::Scores.new(user: current_user)
+      scores = ScoreAggregater.new(user: current_user)
 
       # -1: may happen when team has nothing score yet
       my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
@@ -61,7 +63,7 @@ class ScoreBoardRoutes < Sinatra::Base
 
         if viewable_config[display_mode][:team]
           t = Team.find_by(id: current[:team_id])
-          score_info[:team] = t.as_json(only: [:id, :name, :organization])
+          score_info[:team] = t.as_json(only: %i[id name organization])
         end
 
         if viewable_config[display_mode][:score]
@@ -73,9 +75,11 @@ class ScoreBoardRoutes < Sinatra::Base
 
       viewable_scores
     end
+    # rubocop:enable Metrics/MethodLength:
   end
+  # rubocop:enable Metrics/BlockLength
 
-  get "/api/scoreboard" do
+  get '/api/scoreboard' do
     if is_staff?
       json scoreboard_for(all: true)
     elsif is_participant?
