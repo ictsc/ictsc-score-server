@@ -28,56 +28,50 @@ class ScoreBoardRoutes < Sinatra::Base
     end
   end
 
-  # rubocop:disable Metrics/BlockLength
-  helpers do
-    # rubocop:disable Metrics/MethodLength:
-    def scoreboard_for(team: nil, all: false)
-      # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
-      scores = ScoreAggregater.new(user: current_user)
+  def scoreboard_for(team: nil, all: false) # rubocop:disable Metrics/MethodLength
+    # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
+    scores = ScoreAggregater.new(user: current_user)
 
-      # -1: may happen when team has nothing score yet
-      my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
+    # -1: may happen when team has nothing score yet
+    my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
 
-      viewable_config = Setting.scoreboard_viewable_config
+    viewable_config = Setting.scoreboard_viewable_config
 
-      viewable_scores = scores.each_with_object([]) do |current, acc|
-        # 表示する情報を決める
-        display_mode =
-          if all || current[:team_id] == team&.id
-            :all
-          elsif current[:rank] <= Setting.scoreboard_viewable_top
-            :top
-          elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
-            # 1ランク上のチーム全て
-            :up
-          else
-            # 表示しない
-            nil
-          end
-
-        next unless display_mode
-
-        score_info = {
-          rank: current[:rank],
-        }
-
-        if viewable_config[display_mode][:team]
-          t = Team.find_by(id: current[:team_id])
-          score_info[:team] = t.as_json(only: %i[id name organization])
+    viewable_scores = scores.each_with_object([]) do |current, acc|
+      # 表示する情報を決める
+      display_mode =
+        if all || current[:team_id] == team&.id
+          :all
+        elsif current[:rank] <= Setting.scoreboard_viewable_top
+          :top
+        elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
+          # 1ランク上のチーム全て
+          :up
+        else
+          # 表示しない
+          nil
         end
 
-        if viewable_config[display_mode][:score]
-          score_info[:score] = current[:score]
-        end
+      next unless display_mode
 
-        acc << score_info
+      score_info = {
+        rank: current[:rank],
+      }
+
+      if viewable_config[display_mode][:team]
+        t = Team.find_by(id: current[:team_id])
+        score_info[:team] = t.as_json(only: %i[id name organization])
       end
 
-      viewable_scores
+      if viewable_config[display_mode][:score]
+        score_info[:score] = current[:score]
+      end
+
+      acc << score_info
     end
-    # rubocop:enable Metrics/MethodLength:
+
+    viewable_scores
   end
-  # rubocop:enable Metrics/BlockLength
 
   get '/api/scoreboard' do
     if is_staff?

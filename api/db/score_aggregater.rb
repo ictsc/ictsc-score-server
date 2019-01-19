@@ -1,7 +1,6 @@
 # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
 class ScoreAggregater < Array
-  # rubocop:disable Metrics/MethodLength:
-  def initialize(user:)
+  def initialize(user:) # rubocop:disable Metrics/MethodLength
     super()
 
     # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]
@@ -33,7 +32,6 @@ class ScoreAggregater < Array
       data[:rank] = current_rank
     end
   end
-  # rubocop:enable Metrics/MethodLength:
 
   def find_by_id(team_id)
     find {|data| data[:team_id] == team_id }

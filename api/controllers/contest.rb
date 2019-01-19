@@ -5,7 +5,7 @@ require 'sinatra/json_helpers'
 class ContestRoutes < Sinatra::Base
   helpers Sinatra::JSONHelpers
 
-  before '/api/scoreboard*' do
+  before '/api/contest*' do
     I18n.locale = :en if request.xhr?
   end
 

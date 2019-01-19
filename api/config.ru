@@ -4,14 +4,11 @@ require 'logger'
 require 'securerandom'
 
 Bundler.require
-
-require_relative 'app.rb'
+require_relative 'app'
 
 ::Logger.class_eval { alias_method(:write, :<<) unless respond_to?(:write) }
 
-log_path = File.dirname(__FILE__) + '/log'
-FileUtils.makedirs(log_path)
-logger = Logger.new("#{log_path}/#{ENV['RACK_ENV']}.log", 'daily')
+logger = Logger.new(File.join(LOG_DIR, "#{ENV['RACK_ENV']}.log"), 'daily')
 
 use Rack::LtsvLogger, logger
 use Rack::PostBodyContentTypeParser

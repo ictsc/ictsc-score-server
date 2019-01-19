@@ -81,8 +81,8 @@ end
 Rake::Task['db:seed_fu'].enhance(['db:load_config'])
 
 SeedFu.fixture_paths = [
-  File.dirname(__FILE__) + '/db/fixtures',
-  File.dirname(__FILE__) + "/db/fixtures/#{ENV['RACK_ENV']}"
+  File.join(File.expand_path(__dir__), 'db', 'fixtures'),
+  File.join(File.expand_path(__dir__), 'db', 'fixtures', ENV['RACK_ENV'])
 ]
 
 RSpec::Core::RakeTask.new('spec') if defined? RSpec::Core::RakeTask

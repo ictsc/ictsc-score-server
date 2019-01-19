@@ -97,8 +97,7 @@ class MemberRoutes < Sinatra::Base
     json @members
   end
 
-  # rubocop:disable Metrics/BlockLength
-  post '/api/members' do
+  post '/api/members' do # rubocop:disable Metrics/BlockLength
     halt 403 unless Member.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
@@ -136,7 +135,6 @@ class MemberRoutes < Sinatra::Base
       json @member.errors
     end
   end
-  # rubocop:enable Metrics/BlockLength
 
   before '/api/members/:id' do
     @member = Member.find_by(id: params[:id])

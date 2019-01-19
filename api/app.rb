@@ -4,7 +4,7 @@ Bundler.require(ENV['RACK_ENV']) if ENV['RACK_ENV']
 
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 
-LOG_DIR = "#{File.dirname(__FILE__)}/log".freeze
+LOG_DIR = File.expand_path('log', __dir__).freeze
 FileUtils.mkdir_p(LOG_DIR)
 
 require_relative 'controllers/answer'
