@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # require to load activesupport before sinatra
-gem 'activesupport',    require: 'active_support'
+gem 'activesupport',    require: ['active_support', 'active_support/core_ext']
 gem 'sinatra',          require: 'sinatra/base'
 gem 'rack-contrib',     require: 'rack/contrib'
 gem 'rack-protection',  require: 'rack/protection'

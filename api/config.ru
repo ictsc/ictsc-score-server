@@ -15,7 +15,7 @@ use Rack::PostBodyContentTypeParser
 
 use Rack::Lineprof if ENV['RACK_ENV'] == 'development'
 
-default_session_expire_sec = 60 * 60 * 24 * 7 # 1 week
+default_session_expire_sec = 1.week.to_i
 
 if ENV['API_SESSION_USE_REDIS']
   use Rack::Session::Redis,

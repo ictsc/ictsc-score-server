@@ -1,5 +1,3 @@
-require 'active_support/core_ext/numeric/bytes.rb'
-
 class Attachment < ApplicationRecord
   validates :filename, presence: true
   validates :access_token, presence: true
