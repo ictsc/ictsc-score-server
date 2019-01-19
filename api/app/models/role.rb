@@ -71,4 +71,16 @@ class Role < ApplicationRecord
   def self.permitted_to_create_by?(user:, role_id:)
     readables(user: user).ids.include?(role_id)
   end
+
+  scope :admin, -> { find_by(name: 'Admin') }
+  scope :writer, -> { find_by(name: 'Writer') }
+  scope :viewer, -> { find_by(name: 'Viewer') }
+  scope :participant, -> { find_by(name: 'Participant') }
+  scope :nologin, -> { find_by(name: 'Nologin') }
+
+  scope :admin!, -> { find_by!(name: 'Admin') }
+  scope :writer!, -> { find_by!(name: 'Writer') }
+  scope :viewer!, -> { find_by!(name: 'Viewer') }
+  scope :participant!, -> { find_by!(name: 'Participant') }
+  scope :nologin!, -> { find_by!(name: 'Nologin') }
 end
