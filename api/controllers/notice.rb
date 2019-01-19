@@ -1,16 +1,6 @@
-require 'sinatra/activerecord_helpers'
-require 'sinatra/json_helpers'
-require_relative '../services/account_service'
-require_relative '../services/nested_entity'
-require_relative '../services/notification_service'
+require_relative './application_controller'
 
-class NoticeRoutes < Sinatra::Base
-  helpers Sinatra::ActiveRecordHelpers
-  helpers Sinatra::NestedEntityHelpers
-  helpers Sinatra::JSONHelpers
-  helpers Sinatra::AccountServiceHelpers
-  helpers Sinatra::NotificationService
-
+class NoticeController < ApplicationController
   before '/api/notices*' do
     I18n.locale = :en if request.xhr?
 

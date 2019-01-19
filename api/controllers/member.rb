@@ -1,16 +1,8 @@
 require 'open3'
-
-require 'sinatra/activerecord_helpers'
-require 'sinatra/json_helpers'
+require_relative './application_controller'
 require 'sinatra/crypt_helpers'
-require_relative '../services/account_service'
-require_relative '../services/nested_entity'
 
-class MemberRoutes < Sinatra::Base
-  helpers Sinatra::ActiveRecordHelpers
-  helpers Sinatra::NestedEntityHelpers
-  helpers Sinatra::JSONHelpers
-  helpers Sinatra::AccountServiceHelpers
+class MemberController < ApplicationController
   helpers Sinatra::CryptHelpers
 
   helpers do

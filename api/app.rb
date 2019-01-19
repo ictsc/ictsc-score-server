@@ -29,19 +29,19 @@ class App < Sinatra::Base
   error_logger = ::File.new("#{LOG_DIR}/#{ENV['RACK_ENV']}-error.log", 'a+')
   error_logger.sync = true
 
-  use AnswerRoutes
-  use AttachmentRoutes
-  use CommentRoutes
-  use IssueRoutes
-  use MemberRoutes
-  use NotificationRoutes
-  use NoticeRoutes
-  use ProblemRoutes
-  use ProblemGroupRoutes
-  use ScoreRoutes
-  use ScoreBoardRoutes
-  use TeamRoutes
-  use ContestRoutes
+  use AnswerController
+  use AttachmentController
+  use CommentController
+  use IssueController
+  use MemberController
+  use NotificationController
+  use NoticeController
+  use ProblemController
+  use ProblemGroupController
+  use ScoreController
+  use ScoreBoardController
+  use TeamController
+  use ContestController
 
   configure do
     Time.zone = 'Tokyo'

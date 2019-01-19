@@ -1,14 +1,7 @@
-require 'sinatra/activerecord_helpers'
-require 'sinatra/json_helpers'
-require_relative '../services/account_service'
+require_relative './application_controller'
 
-class NotificationRoutes < Sinatra::Base
-  helpers Sinatra::ActiveRecordHelpers
-  helpers Sinatra::JSONHelpers
-  helpers Sinatra::AccountServiceHelpers
-
-  # rubocop:disable Metrics/BlockLength:
-  get '/api/notifications' do
+class NotificationController < ApplicationController
+  get '/api/notifications' do # rubocop:disable Metrics/BlockLength
     notifications = []
 
     if Setting.competition_start_at <= DateTime.now
@@ -31,7 +24,7 @@ class NotificationRoutes < Sinatra::Base
       }
     end
 
-    Problem
+    Problem # rubocop:disable Metrics/BlockLength
       .readables(user: current_user)
       .includes(:comments, :answers)
       .each do |p|
@@ -148,5 +141,4 @@ class NotificationRoutes < Sinatra::Base
 
     json notifications.sort_by {|x| x[:created_at] }.reverse
   end
-  # rubocop:enable Metrics/BlockLength:
 end

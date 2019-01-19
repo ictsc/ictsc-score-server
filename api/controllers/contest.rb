@@ -1,10 +1,7 @@
-require 'sinatra/json_helpers'
+require_relative './application_controller'
 
 # 大会に関する情報を提供する
-
-class ContestRoutes < Sinatra::Base
-  helpers Sinatra::JSONHelpers
-
+class ContestController < ApplicationController
   before '/api/contest*' do
     I18n.locale = :en if request.xhr?
   end

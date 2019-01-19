@@ -1,7 +1,5 @@
-require 'sinatra/activerecord_helpers'
-require 'sinatra/json_helpers'
 require 'sinatra/competition_helpers'
-require_relative '../services/account_service'
+require_relative './application_controller'
 
 # 2日目の午後開始前まで確認可能
 # - 自分の順位と得点
@@ -9,10 +7,7 @@ require_relative '../services/account_service'
 # - 自分の1つ上のチームの得点
 # - 各問題が何チームに解かれたか
 
-class ScoreBoardRoutes < Sinatra::Base
-  helpers Sinatra::ActiveRecordHelpers
-  helpers Sinatra::JSONHelpers
-  helpers Sinatra::AccountServiceHelpers
+class ScoreBoardController < ApplicationController
   helpers Sinatra::CompetitionHelpers
 
   before '/api/scoreboard*' do

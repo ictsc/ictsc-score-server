@@ -1,15 +1,8 @@
 require 'digest/sha2'
-
-require 'sinatra/activerecord_helpers'
-require 'sinatra/json_helpers'
-require_relative '../services/account_service'
+require_relative './application_controller'
 
 # ファイルアップロード
-class AttachmentRoutes < Sinatra::Base
-  helpers Sinatra::ActiveRecordHelpers
-  helpers Sinatra::JSONHelpers
-  helpers Sinatra::AccountServiceHelpers
-
+class AttachmentController < ApplicationController
   before '/api/attachments*' do
     I18n.locale = :en if request.xhr?
   end
