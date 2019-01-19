@@ -1,5 +1,3 @@
-require_relative './application_controller'
-
 class ProblemGroupController < ApplicationController
   before '/api/problem_groups*' do
     I18n.locale = :en if request.xhr?

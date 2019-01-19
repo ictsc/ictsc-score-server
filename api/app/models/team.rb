@@ -1,20 +1,28 @@
-class Role < ActiveRecord::Base
-  validates :name, presence: true, uniqueness: true
-  validates :rank, presence: true
+require 'sinatra/crypt_helpers'
+
+class Team < ApplicationRecord
+  validates :name, presence: true
+  validates :hashed_registration_code, presence: true
   validates_associated :notification_subscriber
+  extend Sinatra::CryptHelpers
 
-  has_many :members
+  has_many :members, dependent: :nullify
+  has_many :answers, dependent: :destroy
+  has_many :issues, dependent: :destroy
   has_one :notification_subscriber, dependent: :destroy, as: :subscribable
+  has_many :first_correct_answers, dependent: :nullify
 
-  before_create def build_notification_subscriber_if_not_exists
+  before_validation def build_notification_subscriber_if_not_exists
     build_notification_subscriber unless notification_subscriber
-    notification_subscriber.valid?
   end
+
+  # For FactoryBot to pass plain registration_code to spec from factory
+  attr_accessor :registration_code
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: '')
     case user&.role_id
-    when ROLE_ID[:admin]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       true
     else # nologin, ...
       false
@@ -30,15 +38,24 @@ class Role < ActiveRecord::Base
     return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
-    when ROLE_ID[:admin]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       true
     else # nologin, ...
       false
     end
   end
 
+  def self.allowed_nested_params(user:)
+    %w(members answers answers-score issues issues-comments issues-comments-member)
+  end
+
   def self.readable_columns(user:, action: '', reference_keys: true)
-    all_column_names(reference_keys: reference_keys)
+    case user&.role_id
+    when ROLE_ID[:admin], ROLE_ID[:writer]
+      all_column_names(reference_keys: reference_keys)
+    else
+      all_column_names(reference_keys: reference_keys) - %w(hashed_registration_code)
+    end
   end
 
   scope :filter_columns, lambda {|user:, action: ''|
@@ -49,16 +66,7 @@ class Role < ActiveRecord::Base
   }
 
   scope :readable_records, lambda {|user:, action: ''|
-    case user&.role_id
-    when ROLE_ID[:admin]
-      all
-    when ROLE_ID[:writer]
-      where('rank >= ?', user.role.rank)
-    when nil # nologin
-      where('id = ?', ROLE_ID[:participant])
-    else # nologin, ...
-      none
-    end
+    all
   }
 
   # method: GET
@@ -67,8 +75,7 @@ class Role < ActiveRecord::Base
       .filter_columns(user: user, action: action)
   }
 
-  # userにそのid(Role#id)のメンバーが作成できるか
-  def self.permitted_to_create_by?(user:, role_id:)
-    readables(user: user).ids.include?(role_id)
+  def self.find_by_registration_code(registration_code)
+    find {|team| compare_password(registration_code, team.hashed_registration_code) }
   end
 end

@@ -1,4 +1,4 @@
-class NotificationSubscriber < ActiveRecord::Base
+class NotificationSubscriber < ApplicationRecord
   validates :channel_id, presence: true, uniqueness: true, format: { with: /\A[a-zA-Z0-9_-]+\z/ }
 
   belongs_to :subscribable, polymorphic: true

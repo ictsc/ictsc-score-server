@@ -1,5 +1,4 @@
 require 'sinatra/competition_helpers'
-require_relative './application_controller'
 
 class ProblemController < ApplicationController
   helpers Sinatra::CompetitionHelpers

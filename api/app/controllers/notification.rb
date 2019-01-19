@@ -1,5 +1,3 @@
-require_relative './application_controller'
-
 class NotificationController < ApplicationController
   get '/api/notifications' do # rubocop:disable Metrics/BlockLength
     notifications = []

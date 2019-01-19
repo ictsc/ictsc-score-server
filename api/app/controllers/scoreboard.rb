@@ -1,5 +1,4 @@
 require 'sinatra/competition_helpers'
-require_relative './application_controller'
 
 # 2日目の午後開始前まで確認可能
 # - 自分の順位と得点

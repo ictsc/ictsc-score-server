@@ -1,5 +1,5 @@
 require 'sinatra/base'
-require_relative '../db/model'
+require_relative '../app/models/application_record'
 
 module Sinatra
   module AccountServiceHelpers

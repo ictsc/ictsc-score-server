@@ -1,19 +1,4 @@
-require_relative 'answer'
-require_relative 'attachment'
-require_relative 'comment'
-require_relative 'first_correct_answer'
-require_relative 'issue'
-require_relative 'member'
-require_relative 'notification_subscriber'
-require_relative 'notice'
-require_relative 'problem'
-require_relative 'problem_group'
-require_relative 'role'
-require_relative 'score'
-require_relative 'score_aggregater'
-require_relative 'setting'
-require_relative 'team'
-require_relative '../lib/sinatra/competition_helpers'
+require_relative '../../lib/sinatra/competition_helpers'
 
 ROLE_ID = {
   admin: 2,
@@ -23,7 +8,9 @@ ROLE_ID = {
   nologin: 1,
 }.freeze
 
-class ActiveRecord::Base # rubocop:disable Style/ClassAndModuleChildren:
+class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
+
   include Sinatra::CompetitionHelpers
   extend Sinatra::CompetitionHelpers
 
@@ -65,3 +52,19 @@ class ActiveRecord::Base # rubocop:disable Style/ClassAndModuleChildren:
     cols
   end
 end
+
+require_relative 'answer'
+require_relative 'attachment'
+require_relative 'comment'
+require_relative 'first_correct_answer'
+require_relative 'issue'
+require_relative 'member'
+require_relative 'notification_subscriber'
+require_relative 'notice'
+require_relative 'problem'
+require_relative 'problem_group'
+require_relative 'role'
+require_relative 'score'
+require_relative 'score_aggregater'
+require_relative 'setting'
+require_relative 'team'

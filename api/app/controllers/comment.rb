@@ -1,5 +1,3 @@
-require_relative './application_controller'
-
 class CommentController < ApplicationController
   # rubocop:disable Metrics/BlockLength
   # Issue 質問に対する解答

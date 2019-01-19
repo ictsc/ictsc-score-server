@@ -1,5 +1,4 @@
 require 'sinatra/crypt_helpers'
-require_relative './application_controller'
 
 class TeamController < ApplicationController
   helpers Sinatra::CryptHelpers

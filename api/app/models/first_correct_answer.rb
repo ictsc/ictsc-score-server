@@ -1,4 +1,4 @@
-class FirstCorrectAnswer < ActiveRecord::Base
+class FirstCorrectAnswer < ApplicationRecord
   belongs_to :problem
   belongs_to :team
   belongs_to :answer

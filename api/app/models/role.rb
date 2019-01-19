@@ -1,21 +1,21 @@
-class Issue < ActiveRecord::Base
-  validates :title,   presence: true
-  validates :problem, presence: true
-  validates :team, presence: true
-  validates :closed, inclusion: { in: [true, false] }
+class Role < ApplicationRecord
+  validates :name, presence: true, uniqueness: true
+  validates :rank, presence: true
+  validates_associated :notification_subscriber
 
-  has_many :comments, dependent: :destroy, as: :commentable
+  has_many :members
+  has_one :notification_subscriber, dependent: :destroy, as: :subscribable
 
-  belongs_to :problem
-  belongs_to :team
+  before_create def build_notification_subscriber_if_not_exists
+    build_notification_subscriber unless notification_subscriber
+    notification_subscriber.valid?
+  end
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: '')
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer]
+    when ROLE_ID[:admin]
       true
-    when ROLE_ID[:participant]
-      in_competition?
     else # nologin, ...
       false
     end
@@ -30,19 +30,11 @@ class Issue < ActiveRecord::Base
     return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer]
+    when ROLE_ID[:admin]
       true
-    when ROLE_ID[:participant]
-      return false if method == 'DELETE'
-
-      team_id == by.team_id
     else # nologin, ...
       false
     end
-  end
-
-  def self.allowed_nested_params(user:)
-    %w(comments comments-member comments-member-team team problem)
   end
 
   def self.readable_columns(user:, action: '', reference_keys: true)
@@ -58,12 +50,12 @@ class Issue < ActiveRecord::Base
 
   scope :readable_records, lambda {|user:, action: ''|
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+    when ROLE_ID[:admin]
       all
-    when ROLE_ID[:participant]
-      next none unless in_competition?
-
-      where(team: user.team)
+    when ROLE_ID[:writer]
+      where('rank >= ?', user.role.rank)
+    when nil # nologin
+      where('id = ?', ROLE_ID[:participant])
     else # nologin, ...
       none
     end
@@ -74,4 +66,9 @@ class Issue < ActiveRecord::Base
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
+
+  # userにそのid(Role#id)のメンバーが作成できるか
+  def self.permitted_to_create_by?(user:, role_id:)
+    readables(user: user).ids.include?(role_id)
+  end
 end

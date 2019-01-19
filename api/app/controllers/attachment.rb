@@ -1,5 +1,4 @@
 require 'digest/sha2'
-require_relative './application_controller'
 
 # ファイルアップロード
 class AttachmentController < ApplicationController

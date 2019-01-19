@@ -1,5 +1,4 @@
 require 'open3'
-require_relative './application_controller'
 require 'sinatra/crypt_helpers'
 
 class MemberController < ApplicationController

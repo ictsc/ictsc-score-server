@@ -1,10 +1,10 @@
-class ProblemGroup < ActiveRecord::Base
-  validates :name, presence: true
-  validates :order, presence: true
-  validates :visible, inclusion: { in: [true, false] }
-  validates :completing_bonus_point, presence: true
+class Notice < ApplicationRecord
+  validates :title,   presence: true
+  validates :text,    presence: true
+  validates :pinned, inclusion: { in: [true, false] }
 
-  has_and_belongs_to_many :problems, dependent: :nullify
+  validates :member, presence: true
+  belongs_to :member
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: '')
@@ -25,15 +25,17 @@ class ProblemGroup < ActiveRecord::Base
     return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer]
+    when ROLE_ID[:admin]
       true
+    when ROLE_ID[:writer]
+      member_id == by.id
     else # nologin, ...
       false
     end
   end
 
   def self.allowed_nested_params(user:)
-    %w(problems)
+    %w(member)
   end
 
   def self.readable_columns(user:, action: '', reference_keys: true)
@@ -49,11 +51,7 @@ class ProblemGroup < ActiveRecord::Base
 
   scope :readable_records, lambda {|user:, action: ''|
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
-      all
-    when ROLE_ID[:participant]
-      next none unless in_competition?
-
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:participant], ROLE_ID[:viewer]
       all
     else # nologin, ...
       none

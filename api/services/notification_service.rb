@@ -1,7 +1,7 @@
 require 'sinatra/base'
 require 'redis'
 require 'oj'
-require_relative '../db/model'
+require_relative '../app/models/application_record'
 
 Oj.mimic_JSON
 

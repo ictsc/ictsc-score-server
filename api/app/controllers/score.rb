@@ -1,5 +1,3 @@
-require_relative './application_controller'
-
 class ScoreController < ApplicationController
   before '/api/scores*' do
     I18n.locale = :en if request.xhr?

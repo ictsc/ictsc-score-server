@@ -1,5 +1,3 @@
-require_relative './application_controller'
-
 # 大会に関する情報を提供する
 class ContestController < ApplicationController
   before '/api/contest*' do
