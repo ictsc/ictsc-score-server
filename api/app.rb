@@ -71,4 +71,26 @@ class App < Sinatra::Base
       'Not Found'
     end
   end
+
+  class << self
+    def root_dir
+      File.expand_path(__dir__)
+    end
+
+    def env
+      ENV['RACK_ENV']
+    end
+
+    def production?
+      env == 'production'
+    end
+
+    def development?
+      env == 'development'
+    end
+
+    def test?
+      env == 'test'
+    end
+  end
 end
