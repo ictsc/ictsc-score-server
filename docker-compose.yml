@@ -26,7 +26,6 @@ services:
     build:
       context: ui/
     depends_on:
-      - api
       - plasma
     ports:
       - "8901:80"
