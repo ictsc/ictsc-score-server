@@ -70,7 +70,7 @@ task :pry do
 end
 
 task :server do
-  Rake::Task['db:setup'].invoke
+  Rake::Task['db:setup'].invoke if ENV['RACK_ENV'] == 'development'
 rescue ActiveRecord::EnvironmentMismatchError
   # 2度目以降のsetupで発生するエラーを無視
   puts 'already db:setup'
