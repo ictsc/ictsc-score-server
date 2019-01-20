@@ -98,4 +98,28 @@ class Member < ApplicationRecord
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
+
+  def admin?
+    role&.id == ROLE_ID[:admin]
+  end
+
+  def writer?
+    role&.id == ROLE_ID[:writer]
+  end
+
+  def viewer?
+    role&.id == ROLE_ID[:viewer]
+  end
+
+  def participant?
+    role&.id == ROLE_ID[:participant]
+  end
+
+  def nologin?
+    role.nil? || role&.id == ROLE_ID[:nologin]
+  end
+
+  def staff?
+    admin? || writer? || viewer?
+  end
 end
