@@ -4,24 +4,11 @@ Bundler.require(ENV['RACK_ENV']) if ENV['RACK_ENV']
 
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 
-LOG_DIR = "#{File.dirname(__FILE__)}/log".freeze
+LOG_DIR = File.expand_path('log', __dir__).freeze
 FileUtils.mkdir_p(LOG_DIR)
 
-require_relative 'controllers/answer'
-require_relative 'controllers/attachment'
-require_relative 'controllers/comment'
-require_relative 'controllers/issue'
-require_relative 'controllers/member'
-require_relative 'controllers/notification'
-require_relative 'controllers/notice'
-require_relative 'controllers/problem'
-require_relative 'controllers/problem_group'
-require_relative 'controllers/score'
-require_relative 'controllers/scoreboard'
-require_relative 'controllers/team'
-require_relative 'controllers/contest'
-
-require_relative 'db/model'
+require_relative 'app/controllers/application_controller'
+require_relative 'app/models/application_record'
 
 class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
@@ -29,19 +16,19 @@ class App < Sinatra::Base
   error_logger = ::File.new("#{LOG_DIR}/#{ENV['RACK_ENV']}-error.log", 'a+')
   error_logger.sync = true
 
-  use AnswerRoutes
-  use AttachmentRoutes
-  use CommentRoutes
-  use IssueRoutes
-  use MemberRoutes
-  use NotificationRoutes
-  use NoticeRoutes
-  use ProblemRoutes
-  use ProblemGroupRoutes
-  use ScoreRoutes
-  use ScoreBoardRoutes
-  use TeamRoutes
-  use ContestRoutes
+  use AnswerController
+  use AttachmentController
+  use CommentController
+  use IssueController
+  use MemberController
+  use NotificationController
+  use NoticeController
+  use ProblemController
+  use ProblemGroupController
+  use ScoreController
+  use ScoreBoardController
+  use TeamController
+  use ContestController
 
   configure do
     Time.zone = 'Tokyo'
@@ -82,6 +69,28 @@ class App < Sinatra::Base
       { error: 'not found' }.to_json
     else
       'Not Found'
+    end
+  end
+
+  class << self
+    def root_dir
+      File.expand_path(__dir__)
+    end
+
+    def env
+      ENV['RACK_ENV']
+    end
+
+    def production?
+      env == 'production'
+    end
+
+    def development?
+      env == 'development'
+    end
+
+    def test?
+      env == 'test'
     end
   end
 end

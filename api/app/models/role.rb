@@ -1,4 +1,4 @@
-class Role < ActiveRecord::Base
+class Role < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :rank, presence: true
   validates_associated :notification_subscriber
@@ -71,4 +71,16 @@ class Role < ActiveRecord::Base
   def self.permitted_to_create_by?(user:, role_id:)
     readables(user: user).ids.include?(role_id)
   end
+
+  scope :admin, -> { find_by(name: 'Admin') }
+  scope :writer, -> { find_by(name: 'Writer') }
+  scope :viewer, -> { find_by(name: 'Viewer') }
+  scope :participant, -> { find_by(name: 'Participant') }
+  scope :nologin, -> { find_by(name: 'Nologin') }
+
+  scope :admin!, -> { find_by!(name: 'Admin') }
+  scope :writer!, -> { find_by!(name: 'Writer') }
+  scope :viewer!, -> { find_by!(name: 'Viewer') }
+  scope :participant!, -> { find_by!(name: 'Participant') }
+  scope :nologin!, -> { find_by!(name: 'Nologin') }
 end

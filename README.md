@@ -80,7 +80,7 @@ $ cd ictsc-score-server
 $ cp .env{.sample,}
 $ # Edit .env
 $ docker-compose build # or pull
-$ docker-compose run --rm api rake db:setup db:seed_fu # if sample data is needed
+$ docker-compose run --rm api rake db:seed_fu # if sample data is needed
 $ docker-compose up
 ```
 

@@ -1,5 +1,5 @@
 require 'sinatra/base'
-require_relative '../db/model'
+require_relative '../app/models/application_record'
 
 module Sinatra
   module AccountServiceHelpers
@@ -40,27 +40,27 @@ module Sinatra
 
     # rubocop:disable Naming/PredicateName
     def is_admin?
-      return current_user&.role&.id == ROLE_ID[:admin]
+      current_user&.admin?
     end
 
     def is_viewer?
-      return current_user&.role&.id == ROLE_ID[:viewer]
+      current_user&.viewer?
     end
 
     def is_participant?
-      return current_user&.role&.id == ROLE_ID[:participant]
+      current_user&.participant?
     end
 
     def is_writer?
-      return current_user&.role&.id == ROLE_ID[:writer]
+      current_user&.writer?
     end
 
     def is_nologin?
-      return current_user.nil? || current_user&.role&.id == ROLE_ID[:nologin]
+      current_user.nil? || current_user&.nologin?
     end
 
     def is_staff?
-      return is_admin? || is_writer? || is_viewer?
+      current_user&.staff?
     end
     # rubocop:enable Naming/PredicateName
   end

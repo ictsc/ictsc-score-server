@@ -24,41 +24,41 @@ Team.seed(:id, [
 ])
 
 Member.seed(:login, [
-  { name: 'admin',   login: 'admin',   hashed_password: hash_password('admin'),               role: Role.find_by(name: 'Admin') },
-  { name: 'writer1', login: 'writer1', hashed_password: hash_password('writer1'),             role: Role.find_by(name: 'Writer') },
-  { name: 'writer2', login: 'writer2', hashed_password: hash_password('writer2'),             role: Role.find_by(name: 'Writer') },
-  { name: 'writer3', login: 'writer3', hashed_password: hash_password('writer3'),             role: Role.find_by(name: 'Writer') },
-  { name: 'a_1',     login: 'a_1',     hashed_password: hash_password('a_1'),    team_id: 1,  role: Role.find_by(name: 'Participant') },
-  { name: 'a_2',     login: 'a_2',     hashed_password: hash_password('a_2'),    team_id: 1,  role: Role.find_by(name: 'Participant') },
-  { name: 'b_1',     login: 'b_1',     hashed_password: hash_password('b_1'),    team_id: 2,  role: Role.find_by(name: 'Participant') },
-  { name: 'b_2',     login: 'b_2',     hashed_password: hash_password('b_2'),    team_id: 2,  role: Role.find_by(name: 'Participant') },
-  { name: 'c_1',     login: 'c_1',     hashed_password: hash_password('c_1'),    team_id: 3,  role: Role.find_by(name: 'Participant') },
-  { name: 'c_2',     login: 'c_2',     hashed_password: hash_password('c_2'),    team_id: 3,  role: Role.find_by(name: 'Participant') },
-  { name: 'd_1',     login: 'd_1',     hashed_password: hash_password('d_1'),    team_id: 4,  role: Role.find_by(name: 'Participant') },
-  { name: 'd_2',     login: 'd_2',     hashed_password: hash_password('d_2'),    team_id: 4,  role: Role.find_by(name: 'Participant') },
-  { name: 'e_1',     login: 'e_1',     hashed_password: hash_password('e_1'),    team_id: 5,  role: Role.find_by(name: 'Participant') },
-  { name: 'e_2',     login: 'e_2',     hashed_password: hash_password('e_2'),    team_id: 5,  role: Role.find_by(name: 'Participant') },
-  { name: 'f_1',     login: 'f_1',     hashed_password: hash_password('f_1'),    team_id: 6,  role: Role.find_by(name: 'Participant') },
-  { name: 'f_2',     login: 'f_2',     hashed_password: hash_password('f_2'),    team_id: 6,  role: Role.find_by(name: 'Participant') },
-  { name: 'cocoa',   login: 'cocoa',   hashed_password: hash_password('cocoa'),  team_id: 20, role: Role.find_by(name: 'Participant') },
-  { name: 'chino',   login: 'chino',   hashed_password: hash_password('chino'),  team_id: 20, role: Role.find_by(name: 'Participant') },
-  { name: 'rise',    login: 'rise',    hashed_password: hash_password('rise'),   team_id: 20, role: Role.find_by(name: 'Participant') },
-  { name: 'aoba',    login: 'aoba',    hashed_password: hash_password('aoba'),   team_id: 21, role: Role.find_by(name: 'Participant') },
-  { name: 'hajime',  login: 'hajime',  hashed_password: hash_password('hajime'), team_id: 21, role: Role.find_by(name: 'Participant') },
-  { name: 'hifumi',  login: 'hifumi',  hashed_password: hash_password('hifumi'), team_id: 21, role: Role.find_by(name: 'Participant') },
-  { name: 'yun',     login: 'yun',     hashed_password: hash_password('yun'),    team_id: 21, role: Role.find_by(name: 'Participant') },
-  { name: 'kou',     login: 'kou',     hashed_password: hash_password('kou'),    team_id: 21, role: Role.find_by(name: 'Participant') },
-  { name: 'sakura',  login: 'sakura',  hashed_password: hash_password('sakura'), team_id: 22, role: Role.find_by(name: 'Participant') },
-  { name: 'chiya',   login: 'chiya',   hashed_password: hash_password('chiya'),  team_id: 23, role: Role.find_by(name: 'Participant') },
-  { name: 'kon',     login: 'kon',     hashed_password: hash_password('kon'),    team_id: 23, role: Role.find_by(name: 'Participant') },
-  { name: 'koume',   login: 'koume',   hashed_password: hash_password('koume'),  team_id: 23, role: Role.find_by(name: 'Participant') },
-  { name: 'nono',    login: 'nono',    hashed_password: hash_password('nono'),   team_id: 23, role: Role.find_by(name: 'Participant') },
-  { name: 'viewer',  login: 'viewer',  hashed_password: hash_password('viewer'),              role: Role.find_by(name: 'Viewer') },
+  { name: 'admin',   login: 'admin',   hashed_password: hash_password('admin'),               role: Role.admin! },
+  { name: 'writer1', login: 'writer1', hashed_password: hash_password('writer1'),             role: Role.writer! },
+  { name: 'writer2', login: 'writer2', hashed_password: hash_password('writer2'),             role: Role.writer! },
+  { name: 'writer3', login: 'writer3', hashed_password: hash_password('writer3'),             role: Role.writer! },
+  { name: 'a_1',     login: 'a_1',     hashed_password: hash_password('a_1'),    team_id: 1,  role: Role.participant! },
+  { name: 'a_2',     login: 'a_2',     hashed_password: hash_password('a_2'),    team_id: 1,  role: Role.participant! },
+  { name: 'b_1',     login: 'b_1',     hashed_password: hash_password('b_1'),    team_id: 2,  role: Role.participant! },
+  { name: 'b_2',     login: 'b_2',     hashed_password: hash_password('b_2'),    team_id: 2,  role: Role.participant! },
+  { name: 'c_1',     login: 'c_1',     hashed_password: hash_password('c_1'),    team_id: 3,  role: Role.participant! },
+  { name: 'c_2',     login: 'c_2',     hashed_password: hash_password('c_2'),    team_id: 3,  role: Role.participant! },
+  { name: 'd_1',     login: 'd_1',     hashed_password: hash_password('d_1'),    team_id: 4,  role: Role.participant! },
+  { name: 'd_2',     login: 'd_2',     hashed_password: hash_password('d_2'),    team_id: 4,  role: Role.participant! },
+  { name: 'e_1',     login: 'e_1',     hashed_password: hash_password('e_1'),    team_id: 5,  role: Role.participant! },
+  { name: 'e_2',     login: 'e_2',     hashed_password: hash_password('e_2'),    team_id: 5,  role: Role.participant! },
+  { name: 'f_1',     login: 'f_1',     hashed_password: hash_password('f_1'),    team_id: 6,  role: Role.participant! },
+  { name: 'f_2',     login: 'f_2',     hashed_password: hash_password('f_2'),    team_id: 6,  role: Role.participant! },
+  { name: 'cocoa',   login: 'cocoa',   hashed_password: hash_password('cocoa'),  team_id: 20, role: Role.participant! },
+  { name: 'chino',   login: 'chino',   hashed_password: hash_password('chino'),  team_id: 20, role: Role.participant! },
+  { name: 'rise',    login: 'rise',    hashed_password: hash_password('rise'),   team_id: 20, role: Role.participant! },
+  { name: 'aoba',    login: 'aoba',    hashed_password: hash_password('aoba'),   team_id: 21, role: Role.participant! },
+  { name: 'hajime',  login: 'hajime',  hashed_password: hash_password('hajime'), team_id: 21, role: Role.participant! },
+  { name: 'hifumi',  login: 'hifumi',  hashed_password: hash_password('hifumi'), team_id: 21, role: Role.participant! },
+  { name: 'yun',     login: 'yun',     hashed_password: hash_password('yun'),    team_id: 21, role: Role.participant! },
+  { name: 'kou',     login: 'kou',     hashed_password: hash_password('kou'),    team_id: 21, role: Role.participant! },
+  { name: 'sakura',  login: 'sakura',  hashed_password: hash_password('sakura'), team_id: 22, role: Role.participant! },
+  { name: 'chiya',   login: 'chiya',   hashed_password: hash_password('chiya'),  team_id: 23, role: Role.participant! },
+  { name: 'kon',     login: 'kon',     hashed_password: hash_password('kon'),    team_id: 23, role: Role.participant! },
+  { name: 'koume',   login: 'koume',   hashed_password: hash_password('koume'),  team_id: 23, role: Role.participant! },
+  { name: 'nono',    login: 'nono',    hashed_password: hash_password('nono'),   team_id: 23, role: Role.participant! },
+  { name: 'viewer',  login: 'viewer',  hashed_password: hash_password('viewer'),              role: Role.viewer! },
 ])
 # rubocop:enable Layout/ExtraSpacing, Layout/IndentArray
 
-admin   = Role.find_by(name: 'Admin').members.first
-writers = Role.find_by(name: 'Writer').members
+admin   = Role.admin!.members.first
+writers = Role.writer!.members
 
 # 全20問を作成
 # Problem (10, 20, ... 10n) を作成

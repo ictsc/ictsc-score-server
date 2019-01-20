@@ -1,26 +1,16 @@
-class Answer < ActiveRecord::Base
-  validates :problem, presence: true
-  validates :team,    presence: true
-  validates :text,    presence: true
-  validates :score,   presence: true, if: proc {|answer| not answer&.score&.id.nil? }
+class ProblemGroup < ApplicationRecord
+  validates :name, presence: true
+  validates :order, presence: true
+  validates :visible, inclusion: { in: [true, false] }
+  validates :completing_bonus_point, presence: true
 
-  belongs_to :problem
-  has_one :score, dependent: :destroy
-  belongs_to :team
-
-  def notification_payload(state: :created, **data)
-    payload = super
-    payload[:data].merge!(team_id: team_id, problem_id: problem_id)
-    payload
-  end
+  has_and_belongs_to_many :problems, dependent: :nullify
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: '')
     case user&.role_id
-    when ROLE_ID[:admin]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       true
-    when ROLE_ID[:participant]
-      in_competition?
     else # nologin, ...
       false
     end
@@ -35,7 +25,7 @@ class Answer < ActiveRecord::Base
     return readable?(by: by, action: action) if method == 'GET'
 
     case by&.role_id
-    when ROLE_ID[:admin]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       true
     else # nologin, ...
       false
@@ -43,7 +33,7 @@ class Answer < ActiveRecord::Base
   end
 
   def self.allowed_nested_params(user:)
-    %w(score)
+    %w(problems)
   end
 
   def self.readable_columns(user:, action: '', reference_keys: true)
@@ -62,7 +52,9 @@ class Answer < ActiveRecord::Base
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      where(team: user.team)
+      next none unless in_competition?
+
+      all
     else # nologin, ...
       none
     end
@@ -72,10 +64,5 @@ class Answer < ActiveRecord::Base
   scope :readables, lambda {|user:, action: ''|
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
-  }
-
-  scope :reply_delay, lambda {
-    # merge後に呼ばれるからテーブル名の明示が必要
-    where('answers.created_at <= :time', time: DateTime.now - Setting.answer_reply_delay_sec.seconds)
   }
 end

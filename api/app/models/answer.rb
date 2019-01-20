@@ -1,16 +1,26 @@
-class Notice < ActiveRecord::Base
-  validates :title,   presence: true
+class Answer < ApplicationRecord
+  validates :problem, presence: true
+  validates :team,    presence: true
   validates :text,    presence: true
-  validates :pinned, inclusion: { in: [true, false] }
+  validates :score,   presence: true, if: proc {|answer| not answer&.score&.id.nil? }
 
-  validates :member, presence: true
-  belongs_to :member
+  belongs_to :problem
+  has_one :score, dependent: :destroy
+  belongs_to :team
+
+  def notification_payload(state: :created, **data)
+    payload = super
+    payload[:data].merge!(team_id: team_id, problem_id: problem_id)
+    payload
+  end
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: '')
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer]
+    when ROLE_ID[:admin]
       true
+    when ROLE_ID[:participant]
+      in_competition?
     else # nologin, ...
       false
     end
@@ -27,15 +37,13 @@ class Notice < ActiveRecord::Base
     case by&.role_id
     when ROLE_ID[:admin]
       true
-    when ROLE_ID[:writer]
-      member_id == by.id
     else # nologin, ...
       false
     end
   end
 
   def self.allowed_nested_params(user:)
-    %w(member)
+    %w(score)
   end
 
   def self.readable_columns(user:, action: '', reference_keys: true)
@@ -51,8 +59,10 @@ class Notice < ActiveRecord::Base
 
   scope :readable_records, lambda {|user:, action: ''|
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:participant], ROLE_ID[:viewer]
+    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
+    when ROLE_ID[:participant]
+      where(team: user.team)
     else # nologin, ...
       none
     end
@@ -62,5 +72,10 @@ class Notice < ActiveRecord::Base
   scope :readables, lambda {|user:, action: ''|
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
+  }
+
+  scope :reply_delay, lambda {
+    # merge後に呼ばれるからテーブル名の明示が必要
+    where('answers.created_at <= :time', time: DateTime.now - Setting.answer_reply_delay_sec.seconds)
   }
 end

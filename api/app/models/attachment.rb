@@ -1,6 +1,4 @@
-require 'active_support/core_ext/numeric/bytes.rb'
-
-class Attachment < ActiveRecord::Base
+class Attachment < ApplicationRecord
   validates :filename, presence: true
   validates :access_token, presence: true
   # blobのサイズ制限はバリデーションが必須
