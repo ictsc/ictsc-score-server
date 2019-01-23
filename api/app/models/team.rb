@@ -1,16 +1,18 @@
 require 'sinatra/crypt_helpers'
 
 class Team < ApplicationRecord
-  validates :name, presence: true
-  validates :hashed_registration_code, presence: true
-  validates_associated :notification_subscriber
   extend Sinatra::CryptHelpers
 
-  has_many :members, dependent: :nullify
+  validates :name, presence: true
+  validates :organization, presence: false
+  validates :hashed_registration_code, presence: true
+  validates_associated :notification_subscriber
+
+  has_many :members, dependent: :destroy
   has_many :answers, dependent: :destroy
   has_many :issues, dependent: :destroy
+  has_many :first_correct_answers, dependent: :destroy
   has_one :notification_subscriber, dependent: :destroy, as: :subscribable
-  has_many :first_correct_answers, dependent: :nullify
 
   before_validation def build_notification_subscriber_if_not_exists
     build_notification_subscriber unless notification_subscriber

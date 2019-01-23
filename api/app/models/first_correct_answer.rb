@@ -1,11 +1,12 @@
+# 各チームの各問題の最初の正答を記録する
 class FirstCorrectAnswer < ApplicationRecord
-  belongs_to :problem
-  belongs_to :team
-  belongs_to :answer
-
-  validates :team, presence: true
   validates :answer,  presence: true
   validates :problem, presence: true
+  validates :team, presence: true
+
+  belongs_to :answer
+  belongs_to :problem
+  belongs_to :team
 
   def self.readable_columns(user:, action: '', reference_keys: true)
     all_column_names(reference_keys: reference_keys)

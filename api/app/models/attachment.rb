@@ -1,8 +1,8 @@
 class Attachment < ApplicationRecord
+  has_secure_token :access_token
   validates :filename, presence: true
-  validates :access_token, presence: true
-  # blobのサイズ制限はバリデーションが必須
   validates :data, presence: true, length: { maximum: 20.megabyte }
+  validates :member, presence: true
 
   belongs_to :member
 

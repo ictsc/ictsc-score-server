@@ -1,7 +1,7 @@
 class Issue < ApplicationRecord
   validates :title,   presence: true
   validates :problem, presence: true
-  validates :team, presence: true
+  validates :team,    presence: true
   validates :closed, inclusion: { in: [true, false] }
 
   has_many :comments, dependent: :destroy, as: :commentable

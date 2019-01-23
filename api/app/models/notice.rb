@@ -1,9 +1,9 @@
 class Notice < ApplicationRecord
   validates :title,   presence: true
-  validates :text,    presence: true
-  validates :pinned, inclusion: { in: [true, false] }
+  validates :text,    presence: true, length: { maximum: 4095 }
+  validates :pinned,  inclusion: { in: [true, false] }
+  validates :member,  presence: true
 
-  validates :member, presence: true
   belongs_to :member
 
   # method: POST

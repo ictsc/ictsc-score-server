@@ -3,7 +3,7 @@ class Role < ApplicationRecord
   validates :rank, presence: true
   validates_associated :notification_subscriber
 
-  has_many :members
+  has_many :members, dependent: :destroy
   has_one :notification_subscriber, dependent: :destroy, as: :subscribable
 
   before_create def build_notification_subscriber_if_not_exists

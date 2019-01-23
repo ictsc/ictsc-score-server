@@ -1,12 +1,14 @@
 class Answer < ApplicationRecord
+  validates :text,    presence: true, length: { maximum: 4095 }
   validates :problem, presence: true
   validates :team,    presence: true
-  validates :text,    presence: true
-  validates :score,   presence: true, if: proc {|answer| not answer&.score&.id.nil? }
+  validates :score,   presence: false
+  validates :first_correct_answer, presence: false
 
   belongs_to :problem
-  has_one :score, dependent: :destroy
   belongs_to :team
+  has_one :score, dependent: :destroy
+  has_one :first_correct_answer, dependent: :destroy
 
   def notification_payload(state: :created, **data)
     payload = super

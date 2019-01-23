@@ -1,10 +1,13 @@
 class Score < ApplicationRecord
   validates :point,  presence: true
+  validates :solved, inclusion: { in: [true, false] }
   validates :answer, presence: true, uniqueness: true
   validates :marker, presence: true
 
   belongs_to :answer
   belongs_to :marker, foreign_key: 'marker_id', class_name: 'Member'
+  has_one :problem, through: :answer
+  has_one :team, through: :answer
 
   after_save :refresh_first_correct_answer
 

@@ -1,5 +1,5 @@
 class Comment < ApplicationRecord
-  validates :text,    presence: true
+  validates :text,    presence: true, length: { maximum: 4095 }
   validates :member,  presence: true
   validates :commentable, presence: true
 
