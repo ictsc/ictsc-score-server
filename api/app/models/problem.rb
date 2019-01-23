@@ -1,5 +1,3 @@
-require 'ostruct'
-
 class Problem < ApplicationRecord
   validates :title,     presence: true
   validates :text,      presence: true, length: { maximum: 4095 }
@@ -117,9 +115,8 @@ class Problem < ApplicationRecord
 
   def readable_teams
     Team.select do |team|
-      # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性がある
-      dummy_user = OpenStruct.new({ role_id: ROLE_ID[:participant], team: team })
-      readable?(by: dummy_user)
+      # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性があるからダミーユーザーを使う
+      readable?(by: Member.new(role: Role.participant, team: team))
     end
   end
 

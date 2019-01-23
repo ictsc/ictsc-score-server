@@ -117,16 +117,18 @@ class Score < ApplicationRecord
     point + bonus_point
   end
 
+  # TODO: FirstCorrectAnswer側に移す
   def refresh_first_correct_answer
-    problem = answer.problem
-    team = answer.team
-    if answer.score.solved
-      FirstCorrectAnswer.create!(team: team, problem: problem, answer: answer) unless FirstCorrectAnswer.where(team: team, problem: problem).first
+    if solved
+      # 既に同チームで同問題のFCAがあれば作成しない
+      # TODO: 先に提出されたAnswerが後でsolvedされるとバグる. created_atで判断する必要あり
+      FirstCorrectAnswer.create!(team: team, problem: problem, answer: answer) unless FirstCorrectAnswer.exists?(team: team, problem: problem)
     else
       # 採点修正
-      fca = FirstCorrectAnswer.where(team: team, problem: problem).first
+      fca = FirstCorrectAnswer.find_by(team: team, problem: problem)
       if fca
-        fca.destroy
+        # TODO: transaction
+        fca.destroy!
         ans = Answer.where(team: team, problem: problem).joins(:score).where(scores: { solved: true }).order(:created_at).first
         FirstCorrectAnswer.create!(team: team, problem: problem, answer: ans) if ans
       end
