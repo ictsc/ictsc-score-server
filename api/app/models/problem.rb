@@ -1,21 +1,20 @@
-require 'ostruct'
-
 class Problem < ApplicationRecord
   validates :title,     presence: true
-  validates :text,      presence: true
+  validates :text,      presence: true, length: { maximum: 4095 }
   validates :creator,   presence: true
   validates :order,     presence: true
   validates :reference_point, presence: true
   validates :perfect_point,   presence: true
+  validates :secret_text,     presence: false, allow_nil: false, length: { maximum: 4095 } # allow empty, reject nil
+  validates :team_private,    inclusion: { in: [true, false] }
+  validates :problem_must_solve_before, presence: false
 
   has_many :answers,  dependent: :destroy
   has_many :comments, dependent: :destroy, as: :commentable
   has_many :issues,   dependent: :destroy
-  has_many :next_problems, class_name: to_s, foreign_key: 'problem_must_solve_before_id'
   has_many :first_correct_answer, dependent: :destroy
-
+  has_many :next_problems, class_name: to_s, foreign_key: 'problem_must_solve_before_id'
   has_and_belongs_to_many :problem_groups, dependent: :nullify
-
   belongs_to :problem_must_solve_before, class_name: to_s
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'Member'
 
@@ -116,9 +115,8 @@ class Problem < ApplicationRecord
 
   def readable_teams
     Team.select do |team|
-      # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性がある
-      dummy_user = OpenStruct.new({ role_id: ROLE_ID[:participant], team: team })
-      readable?(by: dummy_user)
+      # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性があるからダミーユーザーを使う
+      readable?(by: Member.new(role: Role.participant, team: team))
     end
   end
 

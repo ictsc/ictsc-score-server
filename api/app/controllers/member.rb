@@ -114,10 +114,7 @@ class MemberController < ApplicationController
       halt 403
     end
 
-    context = :create
-    context = :sign_up unless logged_in?
-
-    if @member.save(context: context)
+    if @member.save
       status 201
       headers 'Location' => to("/api/members/#{@member.id}")
       json @member, except: [:hashed_password]

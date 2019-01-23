@@ -357,7 +357,7 @@ API_ENDPOINTS = {
   },
   problem_groups: {
     required: %i(name),
-    optional: { order: 0, description: nil, visible: true, completing_bonus_point: 0, icon_url: '', },
+    optional: { order: 0, description: '', visible: true, completing_bonus_point: 0, icon_url: nil },
     hooks: {
       blank: {
         order: :order_auto,

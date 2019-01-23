@@ -2,19 +2,16 @@ class Member < ApplicationRecord
   validates :name,            presence: true
   validates :login,           presence: true, uniqueness: true
   validates :hashed_password, presence: true
-  validates :team,            presence: true, if: proc {|member| not member.team_id.nil? }
-  validates :team,            presence: true, on: :sign_up
+  validates :team,            presence: true, if: :participant?
   validates :role,            presence: true
   validates_associated :notification_subscriber
 
   has_many :marked_scores, foreign_key: 'marker_id', class_name: 'Score', dependent: :destroy
   has_many :created_problems, foreign_key: 'creator_id', class_name: 'Problem', dependent: :destroy
-
   has_many :comments, dependent: :destroy
   has_many :notices, dependent: :destroy
   has_many :attachments, dependent: :destroy
   has_one :notification_subscriber, dependent: :destroy, as: :subscribable
-
   belongs_to :team
   belongs_to :role
 

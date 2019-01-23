@@ -6,7 +6,7 @@ FactoryBot.define do
     sequence(:login) {|n| "member_login_#{n}" }
     password { 'test' } # to tell plain password to spec
     hashed_password { Sinatra::CryptHelpers.hash_password(password) }
-    role
+    role { build(:role, :nologin) }
 
     trait :admin do
       password { 'admin' }

@@ -1,8 +1,10 @@
 class ProblemGroup < ApplicationRecord
   validates :name, presence: true
+  validates :description, presence: false, allow_nil: false, length: { maximum: 4095 }
   validates :order, presence: true
   validates :visible, inclusion: { in: [true, false] }
   validates :completing_bonus_point, presence: true
+  validates :icon_url, presence: false, length: { maximum: 4095 }
 
   has_and_belongs_to_many :problems, dependent: :nullify
 
