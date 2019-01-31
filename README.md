@@ -80,6 +80,7 @@ $ cd ictsc-score-server
 $ cp .env{.sample,}
 $ # Edit .env
 $ docker-compose build # or pull
+$ docker-compose run --rm api rake db:setup
 $ docker-compose run --rm api rake db:seed_fu # if sample data is needed
 $ docker-compose up
 ```
@@ -88,10 +89,10 @@ $ docker-compose up
 - You can see access api in http://127.0.0.1:8900/api
 
 
-After that, `docker-compose run --rm api sh`, and you can develop using shell. (firsttime, you'll be need to run `bundle install` in the shell)
+After that, `docker-compose run --rm api sh`, and you can develop using shell. (firsttime, you'll be need to run `bundle install` in the shell)  
 
-Also, helper rake task `:pry` is provided.
-In the shell, `docker-compose run --rm api rake pry`, and you can access ActiveRecord's models.
+If you want to debug like a rails console, use instead `racksh` command.  
+In the shell, `docker-compose run --rm api racksh`, and you can access ActiveRecord's models.  
 
 #### Coding style
 

@@ -16,6 +16,7 @@ jobs:
           - LC_ALL=en_US.UTF-8
 
           - RACK_ENV=test
+          - RAILS_ENV=test
 
           - MYSQL_HOST=127.0.0.1
           - DB_PORT=3306

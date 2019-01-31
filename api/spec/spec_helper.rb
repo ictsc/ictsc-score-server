@@ -1,3 +1,6 @@
+ENV['RACK_ENV'] = 'test'
+ENV['RAILS_ENV'] ='test'
+
 require 'bundler'
 Bundler.require
 Bundler.require(:test)
