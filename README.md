@@ -89,10 +89,10 @@ $ docker-compose up
 - You can see access api in http://127.0.0.1:8900/api
 
 
-After that, `docker-compose run --rm api sh`, and you can develop using shell. (firsttime, you'll be need to run `bundle install` in the shell)
+After that, `docker-compose run --rm api sh`, and you can develop using shell. (firsttime, you'll be need to run `bundle install` in the shell)  
 
-Also, helper rake task `:console` is provided.
-In the shell, `docker-compose run --rm api rake console`, and you can access ActiveRecord's models.
+If you want to debug like a rails console, use instead `racksh` command.  
+In the shell, `docker-compose run --rm api racksh`, and you can access ActiveRecord's models.  
 
 #### Coding style
 
