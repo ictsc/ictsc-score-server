@@ -34,6 +34,6 @@ RUN rm -rf /var/cache/apk/*
 
 COPY . /usr/src/app
 
-EXPOSE 3000
+EXPOSE 8900
 
-CMD ["rackup", "-o", "0.0.0.0", "-p", "3000"]
+CMD ["rackup", "-o", "0.0.0.0", "-p", "8900"]
