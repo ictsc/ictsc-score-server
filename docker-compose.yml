@@ -29,6 +29,8 @@ services:
       - plasma
     ports:
       - "8901:80"
+    volumes:
+      - "./ui/h2o:/etc/h2o"
 
   redis:
     image: redis:4.0.11-alpine
