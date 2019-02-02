@@ -6,7 +6,7 @@ require 'sinatra/competition_helpers'
 # - 自分の1つ上のチームの得点
 # - 各問題が何チームに解かれたか
 
-class ScoreBoardController < ApplicationController
+class ScoreboardController < ApplicationController
   helpers Sinatra::CompetitionHelpers
 
   before '/api/scoreboard*' do
@@ -24,7 +24,7 @@ class ScoreBoardController < ApplicationController
 
   def scoreboard_for(team: nil, all: false) # rubocop:disable Metrics/MethodLength
     # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
-    scores = ScoreAggregater.new(user: current_user)
+    scores = Scoreboard.new(user: current_user)
 
     # -1: may happen when team has nothing score yet
     my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all

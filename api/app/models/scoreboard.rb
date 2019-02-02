@@ -1,5 +1,5 @@
 # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
-class ScoreAggregater < Array
+class Scoreboard < Array
   def initialize(user:) # rubocop:disable Metrics/MethodLength
     super()
 
