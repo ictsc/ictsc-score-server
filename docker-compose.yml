@@ -20,6 +20,7 @@ services:
       dockerize -wait tcp://redis:6379 -timeout 100s
       dockerize -wait tcp://db:3306 -timeout 100s
       rackup -o 0.0.0.0 -p 8900
+
   ui:
     image: upluse10/ictsc-score-server:ui
     env_file: .env
