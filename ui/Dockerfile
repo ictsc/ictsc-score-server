@@ -17,5 +17,5 @@ RUN yarn run build
 
 FROM lkwg82/h2o-http2-server
 
-ADD h2o.conf /etc/h2o
+ADD h2o/h2o.conf /etc/h2o
 COPY --from=build-temp /usr/src/app/dist /public
