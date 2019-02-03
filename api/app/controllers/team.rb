@@ -35,9 +35,6 @@ class TeamController < ApplicationController
 
     @attrs = params_to_attributes_of(klass: Team, exclude: [:hashed_registration_code], include: [:registration_code])
 
-    @attrs[:hashed_registration_code] = hash_password(@attrs[:registration_code])
-    @attrs.delete(:registration_code)
-
     @team = Team.new(@attrs)
     if @team.save
       status 201
@@ -81,21 +78,7 @@ class TeamController < ApplicationController
       next json required: insufficient_attribute_names_of(klass: Team, **field_options)
     end
 
-    @attrs = params_to_attributes_of(klass: Team)
-
-    if @attrs.key?(:registration_code)
-      @attrs[:hashed_registration_code] = hash_password(@attrs[:registration_code])
-      @attrs.delete(:registration_code)
-    end
-
-    @team.attributes = @attrs
-
-    if @team.invalid?
-      status 400
-      next json @team.errors
-    end
-
-    if @team.save
+    if @team.update(params_to_attributes_of(klass: Team, **field_options))
       json @team
     else
       status 400
