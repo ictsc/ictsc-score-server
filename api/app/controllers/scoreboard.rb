@@ -22,19 +22,19 @@ class ScoreboardController < ApplicationController
     end
   end
 
-  def scoreboard_for(team: nil, all: false) # rubocop:disable Metrics/MethodLength
-    # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
+  def scoreboard_for(all: false) # rubocop:disable Metrics/MethodLength
+    # [{1st_team, score, rank}, {2nd_team, score, rank}, {3rd_team, score, rank}, ...]
     scores = Scoreboard.new(user: current_user)
 
     # -1: may happen when team has nothing score yet
-    my_team_rank = scores.find_by_id(team.id)&.fetch(:rank) || -1 unless all
+    my_team_rank = scores.find_by_team(current_user.team)&.fetch(:rank) || -1 unless all
 
     viewable_config = Setting.scoreboard_viewable_config
 
     scores.map do |current|
       # 表示する情報を決める
       display_mode =
-        if all || current[:team_id] == team&.id
+        if all || current[:team] == current_user.team
           :all
         elsif current[:rank] <= Setting.scoreboard_viewable_top
           :top
@@ -53,8 +53,7 @@ class ScoreboardController < ApplicationController
       }
 
       if viewable_config[display_mode][:team]
-        t = Team.find_by(id: current[:team_id])
-        score_info[:team] = t.as_json(only: %i[id name organization])
+        score_info[:team] = current[:team].as_json(only: %i[id name organization])
       end
 
       if viewable_config[display_mode][:score]
@@ -70,9 +69,7 @@ class ScoreboardController < ApplicationController
     if is_staff?
       json scoreboard_for(all: true)
     elsif is_participant?
-      team = current_user.team
-      halt 400 if team.nil?
-      json scoreboard_for(team: team)
+      json scoreboard_for
     end
   end
 end
