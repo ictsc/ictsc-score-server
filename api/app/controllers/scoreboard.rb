@@ -12,14 +12,8 @@ class ScoreboardController < ApplicationController
   before '/api/scoreboard*' do
     I18n.locale = :en if request.xhr?
 
-    # アクセス禁止処理
     halt 400 if is_nologin?
-
-    if is_participant?
-      if !in_competition? || Setting.scoreboard_hide_at <= DateTime.now
-        halt 400
-      end
-    end
+    halt 400 if is_participant? && (!in_competition? || Setting.scoreboard_hide_at <= DateTime.now)
   end
 
   get '/api/scoreboard' do
