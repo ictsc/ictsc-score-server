@@ -134,6 +134,23 @@ describe Answer do
       by_participant { is_expected.to eq 201 }
       by_admin       { is_expected.to eq 201 }
     end
+
+    describe 'create answer with created_at' do
+      let(:new_date) { DateTime.parse('2017-07-07T21:00:00+09:00') }
+      let(:params_with_created_at) { params.merge(created_at: new_date) }
+      let(:response) { post "/api/problems/#{problem.id}/answers", params_with_created_at }
+      subject { response.status }
+
+      by_participant do
+        is_expected.to eq 201
+        expect(DateTime.parse(json_response['created_at'])).to_not eq new_date
+      end
+
+      by_admin do
+        is_expected.to eq 201
+        expect(DateTime.parse(json_response['created_at'])).to_not eq new_date
+      end
+    end
   end
 
   describe 'PUT, PATCH /api/answers' do
@@ -186,6 +203,18 @@ describe Answer do
         by_admin       { is_expected.to eq 200 }
 
         by_admin       { expect(json_response['problem_id']).to eq new_problem_id }
+      end
+
+      describe 'PUT answer with created_at' do
+        let(:new_date) { DateTime.parse('2017-07-07T21:00:00+09:00') }
+        let(:params_with_created_at) { params.merge(created_at: new_date) }
+        let(:response) { put "/api/answers/#{answer.id}", params_with_created_at }
+        subject { response.status }
+
+        by_admin do
+          is_expected.to eq 200
+          expect(DateTime.parse(json_response['created_at'])).to_not eq new_date
+        end
       end
     end
   end
