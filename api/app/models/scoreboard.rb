@@ -1,6 +1,6 @@
 # [{1st_team_id, score, rank}, {2nd_team_id, score, rank}, {3rd_team_id, score, rank}, ...]
 class Scoreboard
-  delegate :each_with_object, to: :teams_scores
+  delegate :map, to: :teams_scores
 
   def initialize(user:)
     # [{1st_team_id, score}, {2nd_team_id, score}, {3rd_team_id, score}, ...]

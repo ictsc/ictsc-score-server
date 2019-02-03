@@ -31,7 +31,7 @@ class ScoreboardController < ApplicationController
 
     viewable_config = Setting.scoreboard_viewable_config
 
-    viewable_scores = scores.each_with_object([]) do |current, acc|
+    scores.map do |current|
       # 表示する情報を決める
       display_mode =
         if all || current[:team_id] == team&.id
@@ -61,10 +61,9 @@ class ScoreboardController < ApplicationController
         score_info[:score] = current[:score]
       end
 
-      acc << score_info
+      score_info
     end
-
-    viewable_scores
+      .compact
   end
 
   get '/api/scoreboard' do
