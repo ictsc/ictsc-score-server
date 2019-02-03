@@ -26,7 +26,7 @@ class App < Sinatra::Base
   use ProblemController
   use ProblemGroupController
   use ScoreController
-  use ScoreBoardController
+  use ScoreboardController
   use TeamController
   use ContestController
 

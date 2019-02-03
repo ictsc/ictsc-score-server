@@ -193,7 +193,6 @@ class Score < ApplicationRecord
     select(*cols)
   }
 
-  # actionを'aggregate'にするとスコアボードからの集計用に競技者でも全チームの得点を参照できる
   scope :readable_records, lambda {|user:, action: ''|
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
@@ -204,7 +203,8 @@ class Score < ApplicationRecord
       rel = joins(:answer).merge(Answer.reply_delay)
 
       case action
-      when 'aggregate'
+      when 'scoreboard'
+        # スコアボードの集計用に競技者でも全チームの得点を参照できる
         rel
       else
         rel.where(answers: { team: user.team })
