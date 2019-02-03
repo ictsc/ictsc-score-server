@@ -13,7 +13,7 @@ module Sinatra
                       when /linux/ then   'crypt_linux_amd64'
                       end
 
-      path = File.join(App.root_dir, 'ext', crypt_binname)
+      path = File.join(App.settings.root, 'ext', crypt_binname)
       hash, status = Open3.capture2(path, key, salt)
 
       if status.exitstatus.zero?
