@@ -38,7 +38,7 @@ class Scoreboard
   # { [team_id, problem_id] => [score, ...], ...}
   def collect_scores_of_team_and_problem(user)
     Score
-      .readables(user: user, action: 'aggregate')
+      .readables(user: user, action: 'scoreboard')
       .joins(:answer)
       .select('answers.problem_id', 'answers.team_id', :point, 'answers.created_at', :answer_id)
       .group_by {|e| [e.team_id, e.problem_id] }
