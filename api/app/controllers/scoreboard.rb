@@ -22,23 +22,27 @@ class ScoreboardController < ApplicationController
     end
   end
 
-  def scoreboard_for(all: false) # rubocop:disable Metrics/MethodLength
+  get '/api/scoreboard' do
+    json scoreboard_for
+  end
+
+  private
+
+  def scoreboard_for
     # [{1st_team, score, rank}, {2nd_team, score, rank}, {3rd_team, score, rank}, ...]
     scores = Scoreboard.new(user: current_user)
 
-    # -1: may happen when team has nothing score yet
-    my_team_rank = scores.find_by_team(current_user.team)&.fetch(:rank) || -1 unless all
+    # when team has nothing score, this value is nil
+    my_team_rank = scores.find_by_team(current_user.team)&.fetch(:rank) unless current_user.staff?
 
-    viewable_config = Setting.scoreboard_viewable_config
-
-    scores.map do |current|
+    scores.map do |score|
       # 表示する情報を決める
       display_mode =
-        if all || current[:team] == current_user.team
+        if current_user.staff? || score[:team] == current_user.team
           :all
-        elsif current[:rank] <= Setting.scoreboard_viewable_top
+        elsif score[:rank] <= Setting.scoreboard_viewable_top
           :top
-        elsif (current[:rank] + scores.count_same_rank(current[:rank])) == my_team_rank
+        elsif (score[:rank] + scores.count_same_rank(score[:rank])) == my_team_rank
           # 1ランク上のチーム全て
           :up
         else
@@ -48,28 +52,22 @@ class ScoreboardController < ApplicationController
 
       next unless display_mode
 
-      score_info = {
-        rank: current[:rank],
-      }
-
-      if viewable_config[display_mode][:team]
-        score_info[:team] = current[:team].as_json(only: %i[id name organization])
-      end
-
-      if viewable_config[display_mode][:score]
-        score_info[:score] = current[:score]
-      end
-
-      score_info
+      build_score_info(score, display_mode)
     end
       .compact
   end
 
-  get '/api/scoreboard' do
-    if is_staff?
-      json scoreboard_for(all: true)
-    elsif is_participant?
-      json scoreboard_for
+  def build_score_info(score, display_mode)
+    score_info = { rank: score[:rank] }
+
+    if Setting.scoreboard_viewable_config[display_mode][:team]
+      score_info[:team] = score[:team].as_json(only: %i[id name organization])
     end
+
+    if Setting.scoreboard_viewable_config[display_mode][:score]
+      score_info[:score] = score[:score]
+    end
+
+    score_info
   end
 end
