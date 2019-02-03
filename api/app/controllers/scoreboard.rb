@@ -36,25 +36,26 @@ class ScoreboardController < ApplicationController
     my_team_rank = scores.find_by_team(current_user.team)&.fetch(:rank) unless current_user.staff?
 
     scores.map do |score|
-      # 表示する情報を決める
-      display_mode =
-        if current_user.staff? || score[:team] == current_user.team
-          :all
-        elsif score[:rank] <= Setting.scoreboard_viewable_top
-          :top
-        elsif (score[:rank] + scores.count_same_rank(score[:rank])) == my_team_rank
-          # 1ランク上のチーム全て
-          :up
-        else
-          # 表示しない
-          nil
-        end
-
+      display_mode = select_display_mode(current_user, scores, score, my_team_rank)
       next unless display_mode
 
       build_score_info(score, display_mode)
     end
       .compact
+  end
+
+  def select_display_mode(current_user, scores, score, my_team_rank)
+    if current_user.staff? || score[:team] == current_user.team
+      :all
+    elsif score[:rank] <= Setting.scoreboard_viewable_top
+      :top
+    elsif (score[:rank] + scores.count_same_rank(score[:rank])) == my_team_rank
+      # 1ランク上のチーム全て
+      :up
+    else
+      # 表示しない
+      nil
+    end
   end
 
   def build_score_info(score, display_mode)
