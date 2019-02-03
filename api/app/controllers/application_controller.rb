@@ -5,6 +5,11 @@ require_relative '../../services/nested_entity'
 require_relative '../../services/notification_service'
 
 class ApplicationController < Sinatra::Base
+  configure :development do
+    register Sinatra::Reloader
+    %w[app lib services].each {|dir| also_reload File.join(dir, '**', '*.rb') }
+  end
+
   helpers Sinatra::ActiveRecordHelpers
   helpers Sinatra::NestedEntityHelpers
   helpers Sinatra::JSONHelpers
