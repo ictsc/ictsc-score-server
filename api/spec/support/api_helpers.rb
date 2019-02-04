@@ -44,10 +44,10 @@ end
 # ```
 # same as ...:
 # `by_participant { ... }`
-%w(admin writer participant viewer).each do |role|
-  RSpec.shared_context "as_#{role}", by: role.to_sym do
+%i(admin writer participant viewer).each do |role|
+  RSpec.shared_context "as_#{role}", by: role do
     include ApiHelpers
-    let!(:current_member) { create(:member, role.to_sym) }
+    let!(:current_member) { create(:member, role) }
 
     before do
       post '/api/session', { login: current_member.login, password: current_member.password }
@@ -55,8 +55,8 @@ end
   end
 
   # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer'
-  define_method("by_#{role}".to_sym) do |&block|
-    it "by #{role}", by: role.to_sym, &block
+  define_method("by_#{role}") do |&block|
+    it "by #{role}", by: role, &block
   end
 end
 
