@@ -5,11 +5,8 @@ RSpec.configure do |config|
   FactoryBot.find_definitions
 
   config.before(:suite) do
-    begin
-      DatabaseCleaner.start
-      FactoryBot.lint
-    ensure
-      DatabaseCleaner.clean
+    DatabaseCleaner.cleaning do
+      FactoryBot.lint(verbose: true, traits: true)
     end
   end
 end
