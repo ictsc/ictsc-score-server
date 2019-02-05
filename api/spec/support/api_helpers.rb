@@ -1,6 +1,10 @@
 require 'rspec'
 
 module ApiHelpers
+  class << self
+    attr_accessor :current_users
+  end
+
   def json_response
     JSON.parse(response.body)
   end
@@ -47,12 +51,9 @@ end
 %i(admin writer participant viewer nologin).each do |role|
   RSpec.shared_context "as_#{role}", by: role do
     include ApiHelpers
+    let!(:current_member) { ApiHelpers.current_users[role] }
 
-    if role == :nologin
-      let!(:current_member) { nil }
-    else
-      let!(:current_member) { create(:member, role) }
-
+    if role != :nologin
       before do
         post '/api/session', { login: current_member.login, password: current_member.password }
       end

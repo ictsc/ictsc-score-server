@@ -4,8 +4,6 @@ describe Team do
   include ApiHelpers
 
   describe 'GET /api/teams' do
-    let!(:teams) { create_list(:team, 2) }
-
     let(:response) { get '/api/teams' }
     subject { response.status }
 
@@ -16,10 +14,13 @@ describe Team do
     by_admin       { is_expected.to eq 200 }
 
     describe '#size' do
+      let!(:teams) { create(:team) }
       subject { json_response.size }
+
+      # including my team
       by_nologin     { is_expected.to eq 2 }
       by_viewer      { is_expected.to eq 2 }
-      by_participant { is_expected.to eq 3 } # including my team
+      by_participant { is_expected.to eq 2 }
       by_writer      { is_expected.to eq 2 }
       by_admin       { is_expected.to eq 2 }
     end

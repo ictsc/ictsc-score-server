@@ -25,6 +25,14 @@ RSpec.configure do |config|
   config.before :suite do
     DatabaseCleaner.clean_with :truncation
     DatabaseCleaner.strategy = :transaction
+
+    ApiHelpers.current_users = {
+      admin: FactoryBot.create(:member, :admin),
+      writer: FactoryBot.create(:member, :writer),
+      viewer: FactoryBot.create(:member, :viewer),
+      participant: FactoryBot.create(:member, :participant),
+      nologin: nil
+    }
   end
 
   config.after :suite do
