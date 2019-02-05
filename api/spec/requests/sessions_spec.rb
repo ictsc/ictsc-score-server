@@ -5,6 +5,12 @@ describe 'Sessions' do
 
   let(:member) { create(:member) }
 
+  RSpec.shared_examples 'not logged in' do
+    it 'returns unauthorized' do
+      expect(response.status).to eq 401
+    end
+  end
+
   context 'Login with missing credential' do
     let(:params) do
       {

@@ -44,33 +44,23 @@ end
 # ```
 # same as ...:
 # `by_participant { ... }`
-%i(admin writer participant viewer).each do |role|
+%i(admin writer participant viewer nologin).each do |role|
   RSpec.shared_context "as_#{role}", by: role do
     include ApiHelpers
-    let!(:current_member) { create(:member, role) }
 
-    before do
-      post '/api/session', { login: current_member.login, password: current_member.password }
+    if role == :nologin
+      let!(:current_member) { nil }
+    else
+      let!(:current_member) { create(:member, role) }
+
+      before do
+        post '/api/session', { login: current_member.login, password: current_member.password }
+      end
     end
   end
 
-  # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer'
+  # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer' 'by_nologin'
   define_method("by_#{role}") do |&block|
     it "by #{role}", by: role, &block
-  end
-end
-
-RSpec.shared_context "not_logged_in", by: :nologin do
-  include ApiHelpers
-  let!(:current_member) { nil }
-end
-
-def by_nologin(&block)
-  it 'when not logged in', by: :nologin, &block
-end
-
-RSpec.shared_examples 'not logged in' do
-  it 'returns unauthorized' do
-    expect(response.status).to eq 401
   end
 end

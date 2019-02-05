@@ -1,3 +1,5 @@
+require: 'rubocop-rspec'
+
 Style/AndOr:
   Enabled: false
 Style/Not:
