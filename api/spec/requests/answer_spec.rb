@@ -114,6 +114,7 @@ describe Answer do
       by_participant do
         is_expected.to eq 201
         expect(json_response.keys).to match_array expected_keys
+        expect(json_response['team_id']).to eq current_member.team.id
         expect(json_response['team_id']).not_to eq other_team.id
         expect(json_response['problem_id']).to eq problem.id
       end
@@ -133,6 +134,48 @@ describe Answer do
 
       by_participant { is_expected.to eq 201 }
       by_admin       { is_expected.to eq 201 }
+    end
+
+    describe 'create answer with created_at' do
+      let(:new_date) { DateTime.parse('2017-07-07T21:00:00+09:00') }
+      let(:params_with_created_at) { params.merge(created_at: new_date) }
+      let(:response) { post "/api/problems/#{problem.id}/answers", params_with_created_at }
+      subject { response.status }
+
+      by_participant do
+        is_expected.to eq 201
+        expect(DateTime.parse(json_response['created_at'])).to_not eq new_date
+      end
+
+      by_admin do
+        is_expected.to eq 201
+        expect(DateTime.parse(json_response['created_at'])).to_not eq new_date
+      end
+    end
+
+    describe 'create answer of not opened problem' do
+      let!(:unsolved_problem) { create(:problem) }
+      let!(:next_problem) { create(:problem, problem_must_solve_before: unsolved_problem) }
+      let(:response) { post "/api/problems/#{next_problem.id}/answers", params}
+      let(:current_team) { current_member.team || create(:team) }
+      let(:params) do
+        {
+          text: 'hoge',
+          problem_id: next_problem.id,
+          team_id: current_team.id
+        }
+      end
+      subject { response.status }
+
+      by_participant do
+        is_expected.to eq 404
+      end
+
+      by_admin do
+        is_expected.to eq 201
+        expect(json_response['team_id']).to eq current_team.id
+        expect(json_response['problem_id']).to eq next_problem.id
+      end
     end
   end
 
@@ -186,6 +229,18 @@ describe Answer do
         by_admin       { is_expected.to eq 200 }
 
         by_admin       { expect(json_response['problem_id']).to eq new_problem_id }
+      end
+
+      describe 'PUT answer with created_at' do
+        let(:new_date) { DateTime.parse('2017-07-07T21:00:00+09:00') }
+        let(:params_with_created_at) { params.merge(created_at: new_date) }
+        let(:response) { put "/api/answers/#{answer.id}", params_with_created_at }
+        subject { response.status }
+
+        by_admin do
+          is_expected.to eq 200
+          expect(DateTime.parse(json_response['created_at'])).to_not eq new_date
+        end
       end
     end
   end

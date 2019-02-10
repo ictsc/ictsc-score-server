@@ -24,6 +24,7 @@ gem 'tzinfo-data'
 group :development, :test do
   gem 'database_cleaner'
   gem 'simplecov'
+  gem 'test-prof'
 
   gem 'rubocop'
   gem 'rubocop-rspec'

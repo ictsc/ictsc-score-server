@@ -60,28 +60,33 @@ describe 'Score board' do
       by_admin &can_get_all_results_block
     end
 
-    # 自分と同点のチームがいる
-    # *100, *90, *80, 50, (*50), 10
+    # 自分と同点のチーム複数がいる
+    # *100, *90, *80, 50, 50, (*50), 10
     describe "participant can't get the team having same points of my team" do
-      let!(:teams) { create_list(:team, 5) }
-      let!(:points) { [10, 50, 80, 90, 100] }
+      let!(:teams) { create_list(:team, 6) }
+      let!(:current_team) { current_member.team || create(:team) }
+      let!(:points) { [10, 50, 50, 80, 90, 100] }
       let!(:scores) {
         # 全のチームにスコアを登録する
         teams.zip(points).map do |team, point|
-          score = create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
+          create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
         end
       }
 
-      let!(:ours_score) {
-        score = create(:score, point: 50, answer: create(:answer, team: current_member.team, created_at: created_at))
-      }
-
+      let!(:ours_score) { create(:score, point: 50, answer: create(:answer, team: current_team, created_at: created_at)) }
       let(:response) { get '/api/scoreboard' }
 
       by_participant {
+        expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 2, 3, 4)
         expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 90, 80, 50)
         expect(json_response).to all(include('score', 'rank', 'team'))
         expect(json_response.find{|s| s['score'] == 50 }.dig('team', 'id')).to eq current_member.team_id
+      }
+
+      by_admin {
+        expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 2, 3, 4, 4, 4, 7)
+        expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 90, 80, 50, 50, 50, 10)
+        expect(json_response).to all(include('score', 'rank', 'team'))
       }
     end
 
@@ -89,7 +94,8 @@ describe 'Score board' do
     # *100, *90, *80, *50, *50, (*10)
     describe "participant can get all teams having the 1 rank upper than my team" do
       let!(:teams) { create_list(:team, 5) }
-      let!(:points) { [50, 50, 80, 90, 100] }
+      let!(:current_team) { current_member.team || create(:team) }
+      let!(:points) { [80, 50, 100, 50, 90] }
       let!(:scores) {
         teams.zip(points).map do |team, point|
           create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
@@ -97,14 +103,21 @@ describe 'Score board' do
       }
 
       let!(:ours_score) {
-        create(:score, point: 10, answer: create(:answer, team: current_member.team, created_at: created_at))
+        create(:score, point: 10, answer: create(:answer, team: current_team, created_at: created_at))
       }
 
       let(:response) { get '/api/scoreboard' }
 
       by_participant {
+        expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 2, 3, 4, 4, 6)
         expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 90, 80, 50, 50, 10)
         expect(json_response.reject{|s| s['score'] == 50 }).to all(include('score', 'rank', 'team'))
+      }
+
+      by_admin {
+        expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 2, 3, 4, 4, 6)
+        expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 90, 80, 50, 50, 10)
+        expect(json_response).to all(include('score', 'rank', 'team'))
       }
     end
 
@@ -112,29 +125,63 @@ describe 'Score board' do
     # *100, *100, *90, *90, 80, 80, *50, (*10)
     describe "participant can get all teams actually ranked TOP 3" do
       let!(:teams) { create_list(:team, 7) }
-      let!(:points) { [50, 80, 80, 90, 90, 100, 100] }
+      let!(:current_team) { current_member.team || create(:team) }
+      let!(:points) { [50, 80, 90, 80, 100, 90, 100] }
       let!(:scores) {
         teams.zip(points).map do |team, point|
           create(:score, point: point, answer: create(:answer, team: team, created_at: created_at))
         end
       }
 
-      let!(:ours_score) {
-        create(:score, point: 10, answer: create(:answer, team: current_member.team, created_at: created_at))
-      }
-
       let(:response) { get '/api/scoreboard' }
 
-      by_participant {
-        expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 100, 90, 90, 50, 10)
-        expect(json_response.reject{|s| s['score'] == 50 }).to all(include('score', 'rank', 'team'))
-      }
+      context "when ours team's score is bottom" do
+        let!(:ours_score) {
+          create(:score, point: 10, answer: create(:answer, team: current_team, created_at: created_at))
+        }
+
+        by_participant {
+          # 実順位上位3位 + 自分 + 一つ上
+          expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 1, 3, 3, 7, 8)
+          expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 100, 90, 90, 50, 10)
+          expect(json_response.reject{|s| s['score'] == 50 }).to all(include('score', 'rank', 'team'))
+        }
+
+        by_admin {
+          expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 1, 3, 3, 5, 5, 7, 8)
+          expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 100, 90, 90, 80, 80, 50, 10)
+          expect(json_response).to all(include('score', 'rank', 'team'))
+        }
+      end
+
+      context "when ours team's score is second from top" do
+        let!(:ours_score) {
+          create(:score, point: 90, answer: create(:answer, team: current_team, created_at: created_at))
+        }
+
+        by_participant {
+          expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 1, 3, 3, 3)
+          expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 100, 90, 90, 90)
+        }
+      end
+
+      context "when ours team's score is third from top" do
+        let!(:ours_score) {
+          create(:score, point: 80, answer: create(:answer, team: current_team, created_at: created_at))
+        }
+
+        by_participant {
+          expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 1, 3, 3, 5)
+          expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 100, 90, 90, 80)
+        }
+      end
     end
 
     # 自分のチームが TOP3 なら TOP3 のみ見える
     # (*100), *90, *80, 50
     describe "participant can only see the TOP 3 teams if my team ranked in TOP 3" do
       let!(:teams) { create_list(:team, 3) }
+      let!(:current_team) { current_member.team || create(:team) }
       let!(:points) { [50, 80, 90] }
       let!(:scores) {
         teams.zip(points).map do |team, point|
@@ -143,13 +190,20 @@ describe 'Score board' do
       }
 
       let!(:ours_score) {
-        create(:score, point: 100, answer: create(:answer, team: current_member.team, created_at: created_at))
+        create(:score, point: 100, answer: create(:answer, team: current_team, created_at: created_at))
       }
 
       let(:response) { get '/api/scoreboard' }
 
       by_participant {
+        expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 2, 3)
         expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 90, 80)
+        expect(json_response).to all(include('score', 'rank', 'team'))
+      }
+
+      by_admin {
+        expect(json_response.map{|s| s['rank'] }).to contain_exactly(1, 2, 3, 4)
+        expect(json_response.map{|s| s['score'] }).to contain_exactly(100, 90, 80, 50)
         expect(json_response).to all(include('score', 'rank', 'team'))
       }
     end

@@ -6,16 +6,17 @@ FactoryBot.define do
     team
 
     trait :closed do
+      closed { true }
+
       transient do
         comments_count { 3 }
       end
 
-      closed { true }
-
-      after :create do |user, evaluator|
+      after :create do |issue, evaluator|
         create_list(
-          :issue_comment, evaluator.comments_count,
-          member: team.members.first,
+          :issue_comment,
+          evaluator.comments_count,
+          member: create(:member, team: issue.team),
           commentable: issue
         )
       end

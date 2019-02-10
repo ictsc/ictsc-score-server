@@ -5,18 +5,19 @@ require 'bundler'
 Bundler.require
 Bundler.require(:test)
 
-SimpleCov.start do
-  add_filter "/spec/"
-end
-
 require_relative 'support/factory_bot'
 require_relative 'support/api_helpers'
 require_relative '../app'
 
-RSpec.configure do |config|
-  config.color = true
-  config.tty = true
+SimpleCov.coverage_dir(File.join(ENV.fetch('CIRCLE_ARTIFACTS', App.settings.root), 'coverage'))
 
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
+RSpec.configure do |config|
+  config.color_mode = true
+  config.tty = true
   config.include Rack::Test::Methods
 
   # Disable verbose default logger
@@ -24,15 +25,26 @@ RSpec.configure do |config|
 
   config.before :suite do
     DatabaseCleaner.clean_with :truncation
-  end
-
-  config.before :each do
     DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.start
+
+    ApiHelpers.current_users = {
+      admin: FactoryBot.create(:member, :admin),
+      writer: FactoryBot.create(:member, :writer),
+      viewer: FactoryBot.create(:member, :viewer),
+      participant: FactoryBot.create(:member, :participant),
+      nologin: nil
+    }
   end
 
-  config.after :each do
+  config.after :suite do
+    DatabaseCleaner.clean_with :truncation
     DatabaseCleaner.clean
+  end
+
+  config.around :each do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 end
 

@@ -144,7 +144,6 @@ describe Problem do
     end
 
     describe "problem haven't solved before problem must solve" do
-      let!(:problem) { create(:problem) }
       let(:response) { get "/api/problems/#{next_problem.id}" }
       subject { response.status }
 

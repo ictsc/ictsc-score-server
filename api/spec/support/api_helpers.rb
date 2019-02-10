@@ -1,6 +1,10 @@
 require 'rspec'
 
 module ApiHelpers
+  class << self
+    attr_accessor :current_users
+  end
+
   def json_response
     JSON.parse(response.body)
   end
@@ -44,33 +48,20 @@ end
 # ```
 # same as ...:
 # `by_participant { ... }`
-%w(admin writer participant viewer).each do |role|
-  RSpec.shared_context "as_#{role}", by: role.to_sym do
+%i(admin writer participant viewer nologin).each do |role|
+  RSpec.shared_context "as_#{role}", by: role do
     include ApiHelpers
-    let!(:current_member) { create(:member, role.to_sym) }
+    let!(:current_member) { ApiHelpers.current_users[role] }
 
-    before do
-      post '/api/session', { login: current_member.login, password: current_member.password }
+    if role != :nologin
+      before do
+        post '/api/session', { login: current_member.login, password: current_member.password }
+      end
     end
   end
 
-  # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer'
-  define_method("by_#{role}".to_sym) do |&block|
-    it "by #{role}", by: role.to_sym, &block
-  end
-end
-
-RSpec.shared_context "not_logged_in", by: :nologin do
-  include ApiHelpers
-  let!(:current_member) { nil }
-end
-
-def by_nologin(&block)
-  it 'when not logged in', by: :nologin, &block
-end
-
-RSpec.shared_examples 'not logged in' do
-  it 'returns unauthorized' do
-    expect(response.status).to eq 401
+  # define short-hand method 'by_admin' 'by_writer' 'by_participant' 'by_viewer' 'by_nologin'
+  define_method("by_#{role}") do |&block|
+    it "by #{role}", by: role, &block
   end
 end
