@@ -127,10 +127,10 @@ class Score < ApplicationRecord
       # 採点修正
       fca = FirstCorrectAnswer.find_by(team: team, problem: problem)
       if fca
-        # TODO: transaction
-        fca.destroy!
-        ans = Answer.where(team: team, problem: problem).joins(:score).where(scores: { solved: true }).order(:created_at).first
-        FirstCorrectAnswer.create!(team: team, problem: problem, answer: ans) if ans
+        ActiveRecord::Base.transaction do
+          fca.destroy!
+          FirstCorrectAnswer.create!(team: team, problem: problem, answer: Answer.find_first_correct_answer(team: team, problem: problem))
+        end
       end
     end
   end

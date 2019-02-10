@@ -80,4 +80,14 @@ class Answer < ApplicationRecord
     # merge後に呼ばれるからテーブル名の明示が必要
     where('answers.created_at <= :time', time: DateTime.now - Setting.answer_reply_delay_sec.seconds)
   }
+
+  class << self
+    def find_first_correct_answer(team:, problem:)
+      where(team: team, problem: problem)
+        .joins(:score)
+        .where(scores: { solved: true })
+        .order(:created_at)
+        .first
+    end
+  end
 end
