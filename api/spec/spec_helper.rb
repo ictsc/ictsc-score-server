@@ -5,18 +5,19 @@ require 'bundler'
 Bundler.require
 Bundler.require(:test)
 
-SimpleCov.start do
-  add_filter "/spec/"
-end
-
 require_relative 'support/factory_bot'
 require_relative 'support/api_helpers'
 require_relative '../app'
 
-RSpec.configure do |config|
-  config.color = true
-  config.tty = true
+SimpleCov.coverage_dir(File.join(ENV.fetch('CIRCLE_ARTIFACTS', App.settings.root), 'coverage'))
 
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
+RSpec.configure do |config|
+  config.color_mode = true
+  config.tty = true
   config.include Rack::Test::Methods
 
   # Disable verbose default logger
