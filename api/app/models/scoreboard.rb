@@ -76,11 +76,11 @@ class Scoreboard
     def select_display_mode(current_user, scores, score, my_team_rank)
       if current_user.staff? || score[:team] == current_user.team
         :all
-      elsif score[:rank] <= Setting.scoreboard_viewable_top
+      elsif score[:rank] <= Config.scoreboard_top
         :top
       elsif (score[:rank] + scores.count_same_rank(score[:rank])) == my_team_rank
         # 1ランク上のチーム全て
-        :up
+        :above
       else
         # 表示しない
         nil
@@ -90,11 +90,11 @@ class Scoreboard
     def build_score_info(score, display_mode)
       score_info = { rank: score[:rank] }
 
-      if Setting.scoreboard_viewable_config[display_mode][:team]
+      if Config.scoreboard_display[display_mode][:team]
         score_info[:team] = score[:team].as_json(only: %i[id name organization])
       end
 
-      if Setting.scoreboard_viewable_config[display_mode][:score]
+      if Config.scoreboard_display[display_mode][:score]
         score_info[:score] = score[:score]
       end
 

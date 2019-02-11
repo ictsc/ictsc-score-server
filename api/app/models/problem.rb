@@ -93,7 +93,7 @@ class Problem < ApplicationRecord
 
       none
     when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team.present? }
-      next none unless in_competition?
+      next none unless Config.in_competition_time?
 
       case action
       when 'not_opened'

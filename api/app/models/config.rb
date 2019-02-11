@@ -104,6 +104,14 @@ class Config < ApplicationRecord
       ]
     end
 
+    def competition_start_at
+      competition_time.first[:start_at]
+    end
+
+    def competition_end_at
+      competition_time.last[:end_at]
+    end
+
     def scoreboard
       {
         hide_at: scoreboard_hide_at,

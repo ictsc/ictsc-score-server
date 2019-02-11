@@ -1,5 +1,3 @@
-require_relative '../../lib/sinatra/competition_helpers'
-
 ROLE_ID = {
   admin: 2,
   writer: 3,
@@ -10,9 +8,6 @@ ROLE_ID = {
 
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
-
-  include Sinatra::CompetitionHelpers
-  extend Sinatra::CompetitionHelpers
 
   def self.required_attribute_names(options = {})
     options[:include] ||= []

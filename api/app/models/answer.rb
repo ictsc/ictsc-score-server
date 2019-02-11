@@ -22,7 +22,7 @@ class Answer < ApplicationRecord
     when ROLE_ID[:admin]
       true
     when ROLE_ID[:participant]
-      in_competition?
+      Config.in_competition_time?
     else # nologin, ...
       false
     end
@@ -78,7 +78,7 @@ class Answer < ApplicationRecord
 
   scope :reply_delay, lambda {
     # merge後に呼ばれるからテーブル名の明示が必要
-    where('answers.created_at <= :time', time: DateTime.now - Setting.answer_reply_delay_sec.seconds)
+    where('answers.created_at <= :time', time: DateTime.now - Config.grading_delay_sec.seconds)
   }
 
   class << self

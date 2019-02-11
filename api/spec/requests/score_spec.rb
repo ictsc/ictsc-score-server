@@ -4,11 +4,9 @@ describe Score do
   include ApiHelpers
 
   before(:each) {
-    time = DateTime.parse("2017-07-07T21:00:00+09:00")
-    allow(DateTime).to receive(:now).and_return(time)
-    allow(Setting).to receive(:competition_start_at).and_return(time - 3.year)
-    allow(Setting).to receive(:competition_end_at).and_return(time + 3.year)
-    allow(Setting).to receive(:answer_reply_delay_sec).and_return(120)
+    time = DateTime.parse('2012-09-03 10:00:00 +0900')
+    allow(DateTime).to receive(:now).and_return(Config.competition_time_day1_start_at + 10.minute)
+    allow(Config).to receive(:grading_delay_sec).and_return(120)
   }
 
   describe 'GET /api/scores' do
@@ -34,7 +32,7 @@ describe Score do
       by_writer      { is_expected.to eq 2 }
       by_admin       { is_expected.to eq 2 }
 
-      describe 'before passed Settings.answer_reply_delay_sec' do
+      describe 'before passed Settings.grading_delay_sec' do
         by_participant do
           allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
           is_expected.to eq 0
@@ -43,7 +41,7 @@ describe Score do
 
       describe 'after competition end' do
         by_participant do
-          allow(DateTime).to receive(:now).and_return(Setting.competition_end_at + 1.seconds)
+          allow(DateTime).to receive(:now).and_return(Config.competition_end_at + 10.minute)
           is_expected.to eq 0
         end
       end
@@ -78,7 +76,7 @@ describe Score do
       end
     end
 
-    describe 'before passed Settings.answer_reply_delay_sec' do
+    describe 'before passed Settings.grading_delay_sec' do
       by_participant do
         allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
         is_expected.to eq 404
@@ -87,7 +85,7 @@ describe Score do
 
     describe 'after competition end' do
       by_participant do
-        allow(DateTime).to receive(:now).and_return(Setting.competition_end_at + 1.seconds)
+        allow(DateTime).to receive(:now).and_return(Config.competition_end_at + 1.seconds)
         is_expected.to eq 404
       end
     end
@@ -141,7 +139,7 @@ describe Score do
     by_writer      { is_expected.to eq 303 }
     by_admin       { is_expected.to eq 303 }
 
-    describe 'before passed Settings.answer_reply_delay_sec' do
+    describe 'before passed Settings.grading_delay_sec' do
       by_participant do
         allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
         is_expected.to eq 404
@@ -150,7 +148,7 @@ describe Score do
 
     describe 'after competition end' do
       by_participant do
-        allow(DateTime).to receive(:now).and_return(Setting.competition_end_at + 1.seconds)
+        allow(DateTime).to receive(:now).and_return(Config.competition_end_at + 1.seconds)
         is_expected.to eq 404
       end
     end

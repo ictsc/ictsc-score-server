@@ -5,11 +5,12 @@ class ContestController < ApplicationController
   end
 
   get '/api/contest' do
+    # TODO: key修正
     @contest_info = {
-      answer_reply_delay_sec: Setting.answer_reply_delay_sec,
-      competition_start_at: Setting.competition_start_at,
-      scoreboard_hide_at: Setting.scoreboard_hide_at,
-      competition_end_at: Setting.competition_end_at
+      answer_reply_delay_sec: Config.grading_delay_sec,
+      scoreboard_hide_at: Config.scoreboard_hide_at,
+      competition_start_at: Config.competition_start_at,
+      competition_end_at: Config.competition_end_at
     }
     json @contest_info
   end
