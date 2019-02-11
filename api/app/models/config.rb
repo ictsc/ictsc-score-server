@@ -75,4 +75,90 @@ class Config < ApplicationRecord
       cast(record) != nil
     end
   end
+
+  # record accessor
+  class << self
+    attr_reader :required_keys
+
+    def record_accessor(key)
+      @required_keys ||= []
+      @required_keys << key
+      var_name = "@#{key}"
+
+      define_singleton_method(key) do
+        # キャッシュすると永続する
+        # return instance_variable_get(var_name) if instance_variable_defined?(var_name)
+        instance_variable_set(var_name, get!(key))
+      end
+
+      define_singleton_method("#{key}=") do |value|
+        set!(key, value)
+        instance_variable_set(var_name, get!(key))
+      end
+    end
+
+    def competition_time
+      [
+        { start_at: competition_time_day1_start_at, end_at: competition_time_day1_end_at },
+        { start_at: competition_time_day2_start_at, end_at: competition_time_day2_end_at }
+      ]
+    end
+
+    def scoreboard
+      {
+        hide_at: scoreboard_hide_at,
+        top: scoreboard_top,
+        display: scoreboard_display
+      }
+    end
+
+    def scoreboard_display
+      {
+        all: { # staff and current team
+          team: true,
+          score: true
+        },
+        top: {
+          team: scoreboard_display_top_team,
+          score: scoreboard_display_top_score
+        },
+        above: {
+          team: scoreboard_display_above_team,
+          score: scoreboard_display_above_score
+        }
+      }
+    end
+
+    # 構造化された設定
+    def to_h
+      {
+        competition_time: competition_time,
+        competition_stop: competition_stop,
+        problem_open_all_at: problem_open_all_at,
+        grading_delay_sec: grading_delay_sec,
+        scoreboard: scoreboard
+      }
+    end
+
+    def in_competition_time?
+      competition_time.any? {|day| DateTime.now.between?(day[:start_at], day[:end_at]) }
+    end
+  end
+
+  record_accessor :competition_time_day1_start_at
+  record_accessor :competition_time_day1_end_at
+  record_accessor :competition_time_day2_start_at
+  record_accessor :competition_time_day2_end_at
+
+  record_accessor :competition_stop
+  record_accessor :problem_open_all_at
+  record_accessor :grading_delay_sec
+
+  record_accessor :scoreboard_hide_at
+  record_accessor :scoreboard_top
+
+  record_accessor :scoreboard_display_top_team
+  record_accessor :scoreboard_display_top_score
+  record_accessor :scoreboard_display_above_team
+  record_accessor :scoreboard_display_above_score
 end
