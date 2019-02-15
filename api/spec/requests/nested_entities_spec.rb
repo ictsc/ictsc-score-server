@@ -1,6 +1,6 @@
 require_relative '../spec_helper.rb'
 
-describe 'Nested entity' do
+describe 'Nested entities' do
   include ApiHelpers
 
   before(:each) {

@@ -1,6 +1,6 @@
 require_relative '../spec_helper.rb'
 
-describe 'Contest' do
+describe 'Contests' do
   include ApiHelpers
 
   describe 'GET /api/contest' do

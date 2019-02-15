@@ -1,6 +1,6 @@
 require_relative '../spec_helper.rb'
 
-describe Attachment do
+describe 'Attachments' do
   include ApiHelpers
 
   let(:member) { current_member || create(:member) }
