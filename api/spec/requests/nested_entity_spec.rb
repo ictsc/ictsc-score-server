@@ -6,9 +6,9 @@ describe 'Nested entity' do
   before(:each) {
     time = DateTime.parse("2017-07-07T21:00:00+09:00")
     allow(DateTime).to receive(:now).and_return(time)
-    allow(Setting).to receive(:competition_start_at).and_return(time - 3.year)
-    allow(Setting).to receive(:competition_end_at).and_return(time + 3.year)
-    allow(Setting).to receive(:answer_reply_delay_sec).and_return(10.seconds)
+    allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
+    allow(Config).to receive(:competition_end_at).and_return(time + 3.year)
+    allow(Config).to receive(:grading_delay_sec).and_return(10.seconds)
   }
 
   %w(member member-team).each do |with_param|
@@ -41,7 +41,7 @@ describe 'Nested entity' do
           when :issue, :answer
             create(resource_name, team: current_member.team)
           when :score
-            answer = create(:answer, team: current_member.team, created_at: DateTime.now - Setting.answer_reply_delay_sec)
+            answer = create(:answer, team: current_member.team, created_at: DateTime.now - Config.grading_delay_sec)
             create(resource_name, answer: answer)
           when :member
             current_member

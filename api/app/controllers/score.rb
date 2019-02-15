@@ -92,7 +92,7 @@ class ScoreController < ApplicationController
     if @score.save
       @answer = @score.answer
       notification_payload = @score.notification_payload
-      push_notification(to: @answer.team, payload: notification_payload) if notification_payload.dig(:data, :notify_at) <= Setting.competition_end_at
+      push_notification(to: @answer.team, payload: notification_payload) if notification_payload.dig(:data, :notify_at) <= Config.competition_end_at
 
       status 201
       headers 'Location' => to("/api/scores/#{@score.id}")

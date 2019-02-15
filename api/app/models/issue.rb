@@ -15,7 +15,7 @@ class Issue < ApplicationRecord
     when ROLE_ID[:admin], ROLE_ID[:writer]
       true
     when ROLE_ID[:participant]
-      in_competition?
+      Config.in_competition_time?
     else # nologin, ...
       false
     end
@@ -61,7 +61,7 @@ class Issue < ApplicationRecord
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      next none unless in_competition?
+      next none unless Config.in_competition_time?
 
       where(team: user.team)
     else # nologin, ...

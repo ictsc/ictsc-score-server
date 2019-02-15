@@ -19,7 +19,7 @@ class Comment < ApplicationRecord
     role_id = user&.role_id
 
     return true if role_id == ROLE_ID[:admin]
-    return false if role_id == ROLE_ID[:participant] && !in_competition?
+    return false if role_id == ROLE_ID[:participant] && !Config.in_competition_time?
 
     case action
     when 'issues_comments'
@@ -85,7 +85,7 @@ class Comment < ApplicationRecord
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       comments
     when ROLE_ID[:participant]
-      next none unless in_competition?
+      next none unless Config.in_competition_time?
 
       case action
       when 'issues_comments'

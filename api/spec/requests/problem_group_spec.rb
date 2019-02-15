@@ -13,7 +13,7 @@ describe ProblemGroup do
       before(:each) {
         time = DateTime.parse("2017-07-07T21:00:00+09:00")
         allow(DateTime).to receive(:now).and_return(time)
-        allow(Setting).to receive(:competition_start_at).and_return(time - 3.year)
+        allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
       }
 
       by_nologin     { is_expected.to eq 200 }
@@ -48,9 +48,9 @@ describe ProblemGroup do
       subject { response.status }
 
       before(:each) {
-        time = DateTime.parse("2017-07-07T21:00:00+09:00")
-        allow(DateTime).to receive(:now).and_return(time)
-        allow(Setting).to receive(:competition_start_at).and_return(time + 1.minute)
+        time = DateTime.parse('2012-09-03 10:00:00 +0900')
+        allow(DateTime).to receive(:now).and_return(time - 1.minute)
+        allow(Config).to receive(:competition_time_day1_start_at).and_return(time)
       }
 
       by_nologin     { is_expected.to eq 200 }
@@ -80,7 +80,7 @@ describe ProblemGroup do
       before(:each) {
         time = DateTime.parse("2017-07-07T21:00:00+09:00")
         allow(DateTime).to receive(:now).and_return(time)
-        allow(Setting).to receive(:competition_start_at).and_return(time - 3.year)
+        allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
       }
 
       by_nologin     { is_expected.to eq 404 }
@@ -105,9 +105,9 @@ describe ProblemGroup do
       subject { response.status }
 
       before(:each) {
-        time = DateTime.parse("2017-07-07T21:00:00+09:00")
-        allow(DateTime).to receive(:now).and_return(time)
-        allow(Setting).to receive(:competition_start_at).and_return(time + 1.minute)
+        time = DateTime.parse('2012-09-03 10:00:00 +0900')
+        allow(DateTime).to receive(:now).and_return(time - 1.minute)
+        allow(Config).to receive(:competition_time_day1_start_at).and_return(time)
       }
 
       by_nologin     { is_expected.to eq 404 }

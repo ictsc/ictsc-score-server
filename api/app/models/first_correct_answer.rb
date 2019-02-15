@@ -24,7 +24,7 @@ class FirstCorrectAnswer < ApplicationRecord
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
-      next none unless in_competition?
+      next none unless Config.in_competition_time?
 
       rel_delayed = joins(:answer).merge(Answer.reply_delay)
 

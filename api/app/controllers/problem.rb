@@ -1,8 +1,4 @@
-require 'sinatra/competition_helpers'
-
 class ProblemController < ApplicationController
-  helpers Sinatra::CompetitionHelpers
-
   before '/api/problems*' do
     I18n.locale = :en if request.xhr?
 

@@ -20,6 +20,10 @@ Style/EmptyElse:
   Enabled: false
 Bundler/OrderedGems:
   Enabled: false
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+Style/RescueModifier:
+  Enabled: false
 
 Lint/UnusedMethodArgument:
   Enabled: false
@@ -68,6 +72,11 @@ Layout/IndentHash:
   EnforcedStyle: 'consistent'
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: 'indented'
+
+Style/FormatString:
+  EnforcedStyle: 'percent'
+Style/FormatStringToken:
+  Enabled: false
 
 # その内外すかも
 Style/FrozenStringLiteralComment:

@@ -6,10 +6,10 @@ describe Problem do
   before(:each) {
     time = DateTime.now
     allow(DateTime).to receive(:now).and_return(time)
-    allow(Setting).to receive(:competition_start_at).and_return(time - 3.year)
+    allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
   }
 
-  let!(:delayed) { DateTime.now - Setting.answer_reply_delay_sec.seconds }
+  let!(:delayed) { DateTime.now - Config.grading_delay_sec.seconds }
 
   describe 'GET /api/problems' do
     let!(:problem) { create(:problem) }

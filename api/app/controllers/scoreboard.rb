@@ -1,5 +1,3 @@
-require 'sinatra/competition_helpers'
-
 # 2日目の午後開始前まで確認可能
 # - 自分の順位と得点
 # - 上位3チームの得点とチーム名
@@ -7,13 +5,11 @@ require 'sinatra/competition_helpers'
 # - 各問題が何チームに解かれたか
 
 class ScoreboardController < ApplicationController
-  helpers Sinatra::CompetitionHelpers
-
   before '/api/scoreboard*' do
     I18n.locale = :en if request.xhr?
 
     halt 400 if is_nologin?
-    halt 400 if is_participant? && (!in_competition? || Setting.scoreboard_hide_at <= DateTime.now)
+    halt 400 if is_participant? && (!Config.in_competition_time? || Config.scoreboard_hide_at <= DateTime.now)
   end
 
   get '/api/scoreboard' do

@@ -2,23 +2,23 @@ class NotificationController < ApplicationController
   get '/api/notifications' do # rubocop:disable Metrics/BlockLength
     notifications = []
 
-    if Setting.competition_start_at <= DateTime.now
+    if Config.competition_start_at <= DateTime.now
       notifications << {
         resource: nil,
         resource_id: nil,
         type: 'competition_started',
         text: '競技が開始しました',
-        created_at: Setting.competition_start_at
+        created_at: Config.competition_start_at
       }
     end
 
-    if Setting.competition_end_at <= DateTime.now
+    if Config.competition_end_at <= DateTime.now
       notifications << {
         resource: nil,
         resource_id: nil,
         type: 'competition_finished',
         text: '競技が終了しました',
-        created_at: Setting.competition_end_at
+        created_at: Config.competition_end_at
       }
     end
 
@@ -134,7 +134,7 @@ class NotificationController < ApplicationController
       end
     end
 
-    notifications.reject! {|x| Setting.competition_end_at < x[:created_at] } if is_participant?
+    notifications.reject! {|x| Config.competition_end_at < x[:created_at] } if is_participant?
     notifications.select! {|x| filter_time_after <= x[:created_at] } if filter_time_after
 
     json notifications.sort_by {|x| x[:created_at] }.reverse

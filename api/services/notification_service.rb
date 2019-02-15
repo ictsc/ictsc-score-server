@@ -18,7 +18,7 @@ module Sinatra
       return false unless pushable? to
 
       begin
-        redis_client.publish(Setting.redis_realtime_notification_channel, publish_payload(to: to, payload: payload))
+        redis_client.publish(ENV.fetch('API_CONTEST_REDIS_REALTIME_NOTIFICATION_CHANNEL'), publish_payload(to: to, payload: payload))
       rescue # rubocop:disable Style/RescueStandardError
         # Ignores error on pushing notification (because it's not critical)
         return false

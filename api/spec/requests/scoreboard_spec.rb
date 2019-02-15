@@ -3,13 +3,13 @@ require_relative '../spec_helper.rb'
 describe 'Score board' do
   describe 'GET /api/scoreboard' do
     # answer_reply_delay_secの影響を無くしたいときはcreated_atを指定する
-    let(:created_at) { DateTime.now - Setting.answer_reply_delay_sec.seconds * 2 }
+    let(:created_at) { DateTime.now - Config.grading_delay_sec.seconds * 2 }
 
     before(:each) {
       now = DateTime.now
-      allow(Setting).to receive(:competition_start_at).and_return(now - 1.minute)
-      allow(Setting).to receive(:scoreboard_hide_at).and_return(now + 1.minute)
-      allow(Setting).to receive(:competition_end_at).and_return(now + 1.minute)
+      allow(Config).to receive(:competition_start_at).and_return(now - 1.minute)
+      allow(Config).to receive(:scoreboard_hide_at).and_return(now + 1.minute)
+      allow(Config).to receive(:competition_end_at).and_return(now + 1.minute)
     }
 
 
@@ -30,7 +30,7 @@ describe 'Score board' do
 
       before(:each) {
         time = DateTime.parse("2017-07-07T21:00:00+09:00")
-        allow(Setting).to receive(:scoreboard_hide_at).and_return(time - 3.year)
+        allow(Config).to receive(:scoreboard_hide_at).and_return(time - 3.year)
       }
 
       by_nologin     { is_expected.to eq 400 }

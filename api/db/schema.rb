@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_01_000000) do
+ActiveRecord::Schema.define(version: 2019_02_10_155023) do
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "text", limit: 4095, null: false
@@ -41,6 +41,15 @@ ActiveRecord::Schema.define(version: 2019_01_01_000000) do
     t.datetime "updated_at", null: false
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
     t.index ["member_id"], name: "index_comments_on_member_id"
+  end
+
+  create_table "configs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "value", limit: 4095, null: false
+    t.integer "value_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_configs_on_key", unique: true
   end
 
   create_table "first_correct_answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

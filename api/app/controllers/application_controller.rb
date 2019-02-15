@@ -20,6 +20,7 @@ end
 require_relative 'answer'
 require_relative 'attachment'
 require_relative 'comment'
+require_relative 'config'
 require_relative 'issue'
 require_relative 'member'
 require_relative 'notification'
