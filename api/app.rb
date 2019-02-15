@@ -19,6 +19,7 @@ class App < Sinatra::Base
   use AnswerController
   use AttachmentController
   use CommentController
+  use ConfigController
   use IssueController
   use MemberController
   use NotificationController
