@@ -1,6 +1,6 @@
 require_relative '../spec_helper.rb'
 
-describe Issue do
+describe 'Issues' do
   include ApiHelpers
 
   before(:each) {

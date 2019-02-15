@@ -1,6 +1,6 @@
 require_relative '../spec_helper.rb'
 
-describe Config do
+describe 'Configs' do
   include ApiHelpers
 
   describe 'GET /api/configs' do

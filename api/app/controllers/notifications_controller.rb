@@ -1,4 +1,4 @@
-class NotificationController < ApplicationController
+class NotificationsController < ApplicationController
   get '/api/notifications' do # rubocop:disable Metrics/BlockLength
     notifications = []
 

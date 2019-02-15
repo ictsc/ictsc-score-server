@@ -1,7 +1,7 @@
 require 'digest/sha2'
 
 # ファイルアップロード
-class AttachmentController < ApplicationController
+class AttachmentsController < ApplicationController
   before '/api/attachments*' do
     I18n.locale = :en if request.xhr?
   end

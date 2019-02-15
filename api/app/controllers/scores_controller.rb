@@ -1,4 +1,4 @@
-class ScoreController < ApplicationController
+class ScoresController < ApplicationController
   before '/api/scores*' do
     I18n.locale = :en if request.xhr?
 

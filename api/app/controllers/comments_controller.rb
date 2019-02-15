@@ -1,4 +1,4 @@
-class CommentController < ApplicationController
+class CommentsController < ApplicationController
   # rubocop:disable Metrics/BlockLength
   # Issue 質問に対する解答
   # Problem 問題の補足

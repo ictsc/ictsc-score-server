@@ -1,6 +1,6 @@
 require_relative '../spec_helper.rb'
 
-describe Member do
+describe 'Members' do
   include ApiHelpers
 
   describe 'GET /api/members' do

@@ -1,4 +1,4 @@
-class AnswerController < ApplicationController
+class AnswersController < ApplicationController
   before '/api/answers*' do
     I18n.locale = :en if request.xhr?
 

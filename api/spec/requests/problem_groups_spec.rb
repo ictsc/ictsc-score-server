@@ -1,6 +1,6 @@
 require_relative '../spec_helper.rb'
 
-describe ProblemGroup do
+describe 'ProblemGroups' do
   include ApiHelpers
 
   describe 'GET /api/problem_groups' do

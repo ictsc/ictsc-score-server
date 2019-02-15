@@ -4,7 +4,7 @@
 # - 自分の1つ上のチームの得点
 # - 各問題が何チームに解かれたか
 
-class ScoreboardController < ApplicationController
+class ScoreboardsController < ApplicationController
   before '/api/scoreboard*' do
     I18n.locale = :en if request.xhr?
 
