@@ -324,6 +324,15 @@ API_ENDPOINTS = {
   },
   comments: {},
   contests: {},
+  configs: {
+    required: %i(key value),
+    optional: { value_type: nil },
+    hooks: {
+      blank: {
+        value_type: :config_value_type_from_value
+      }
+    }
+  },
   issues: {},
   members: {
     required: %i(login password),
@@ -475,6 +484,23 @@ module Hooks
     raise HookFileNotFound.new(hook: key, filepath: value) if filepath.nil?
 
     this[:file] = File.open(filepath, 'rb')
+  end
+
+  def config_value_type_from_value(key:, value:, this:, list:, index:)
+    return if this[:value].nil?
+
+    this[:value_type] = case this[:value]
+    when TrueClass, FalseClass
+      :boolean
+    when Integer
+      :integer
+    when DateTime, ->(v) { DateTime.parse(v) rescue false }
+      :date
+    when String
+      :string
+    else
+      raise Hook.new('cannot detect config value_type', hook: key)
+    end
   end
 end
 
