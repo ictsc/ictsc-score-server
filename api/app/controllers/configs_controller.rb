@@ -1,4 +1,4 @@
-class ConfigController < ApplicationController
+class ConfigsController < ApplicationController
   before '/api/config*' do
     I18n.locale = :en if request.xhr?
     halt 404 unless is_admin?

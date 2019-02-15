@@ -1,7 +1,7 @@
 require 'open3'
 require 'sinatra/crypt_helpers'
 
-class MemberController < ApplicationController
+class MembersController < ApplicationController
   helpers Sinatra::CryptHelpers
 
   helpers do

@@ -1,4 +1,4 @@
-class NoticeController < ApplicationController
+class NoticesController < ApplicationController
   before '/api/notices*' do
     I18n.locale = :en if request.xhr?
 

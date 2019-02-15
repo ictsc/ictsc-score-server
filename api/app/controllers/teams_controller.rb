@@ -1,6 +1,6 @@
 require 'sinatra/crypt_helpers'
 
-class TeamController < ApplicationController
+class TeamsController < ApplicationController
   helpers Sinatra::CryptHelpers
 
   before '/api/teams*' do
