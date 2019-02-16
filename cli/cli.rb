@@ -6,6 +6,7 @@ require 'erb'
 require 'singleton'
 require 'optparse'
 
+require 'pry'
 require 'rest-client'
 require 'hashie'
 require 'active_support'
@@ -875,9 +876,8 @@ $base_url = File.join(options[:host], '/api')
 
 login(login: options[:user], password: options[:password])
 
-require 'pry'
 extend ShellCommands
-binding.pry
+Pry.start
 puts '[*] end binding'
 
 __END__
