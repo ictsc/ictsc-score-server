@@ -6,6 +6,7 @@ require 'erb'
 require 'singleton'
 require 'optparse'
 
+require 'pry'
 require 'rest-client'
 require 'hashie'
 require 'active_support'
@@ -224,7 +225,9 @@ module Utils
 
   def input_secret(name = 'password')
     print "#{name}: "
-    STDIN.noecho(&:gets).chomp
+    STDIN.noecho(&:gets)&.chomp
+  rescue Interrupt
+    nil
   end
 
   def build_url(path)
@@ -875,9 +878,8 @@ $base_url = File.join(options[:host], '/api')
 
 login(login: options[:user], password: options[:password])
 
-require 'pry'
 extend ShellCommands
-binding.pry
+Pry.start
 puts '[*] end binding'
 
 __END__
