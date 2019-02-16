@@ -225,7 +225,9 @@ module Utils
 
   def input_secret(name = 'password')
     print "#{name}: "
-    STDIN.noecho(&:gets).chomp
+    STDIN.noecho(&:gets)&.chomp
+  rescue Interrupt
+    nil
   end
 
   def build_url(path)
