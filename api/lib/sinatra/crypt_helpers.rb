@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'open3'
 
 module Sinatra
   module CryptHelpers

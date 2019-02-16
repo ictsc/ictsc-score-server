@@ -30,6 +30,7 @@ class App < Sinatra::Base
   use ProblemGroupsController
   use ScoresController
   use ScoreboardsController
+  use SessionsController
   use TeamsController
 
   configure do

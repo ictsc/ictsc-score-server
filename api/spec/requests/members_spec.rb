@@ -130,6 +130,20 @@ describe 'Members' do
       by_admin   { is_expected.to eq 201 }
     end
 
+    describe 'create participant member with registration_code without team_id' do
+      let(:response) { post '/api/members', params.except(:team_id) }
+      subject { response.status }
+
+      all_success_block = Proc.new do
+        is_expected.to eq 201
+        expect(json_response.keys).to match_array expected_keys
+        expect(json_response['role_id']).to eq member.role.id
+      end
+
+      by_writer &all_success_block
+      by_admin &all_success_block
+    end
+
     describe 'create admin member' do
       let(:params_with_admin_role_id) { params.merge(role_id: admin_role.id) }
       let(:response) { post '/api/members', params_with_admin_role_id }
