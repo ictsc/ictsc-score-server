@@ -3,6 +3,7 @@ var utils = require('./utils')
 var config = require('../config')
 var projectRoot = path.resolve(__dirname, '../')
 var vueLoaderConfig = require('./vue-loader.conf')
+var { VueLoaderPlugin } = require("vue-loader");
 
 var env = process.env.NODE_ENV
 
@@ -74,5 +75,6 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [new VueLoaderPlugin()]
 }
