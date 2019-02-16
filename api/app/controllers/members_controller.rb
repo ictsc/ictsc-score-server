@@ -1,8 +1,4 @@
-require 'sinatra/crypt_helpers'
-
 class MembersController < ApplicationController
-  helpers Sinatra::CryptHelpers
-
   before '/api/members*' do
     I18n.locale = :en if request.xhr?
 
@@ -30,9 +26,7 @@ class MembersController < ApplicationController
       @attrs[:team_id] = @team.id
     end
 
-    @attrs[:hashed_password] = hash_password(@attrs[:password])
-    @attrs.delete(:password)
-    @attrs[:role_id] ||= Role.find_by(name: 'Participant').id
+    @attrs[:role_id] ||= Role.participant!.id
 
     @member = Member.new(@attrs)
 
@@ -73,14 +67,7 @@ class MembersController < ApplicationController
       next json required: insufficient_attribute_names_of(klass: Member, **field_options)
     end
 
-    @attrs = params_to_attributes_of(klass: Member, **field_options)
-
-    if @attrs.key?(:password)
-      @attrs[:hashed_password] = hash_password(@attrs[:password])
-      @attrs.delete(:password)
-    end
-
-    @member.attributes = @attrs
+    @member.attributes = params_to_attributes_of(klass: Member, **field_options)
 
     unless @member.valid?
       status 400

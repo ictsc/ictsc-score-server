@@ -1,4 +1,9 @@
+require 'sinatra/crypt_helpers'
+
 class Member < ApplicationRecord
+  include Sinatra::CryptHelpers
+  extend Sinatra::CryptHelpers
+
   validates :name,            presence: true
   validates :login,           presence: true, uniqueness: true
   validates :hashed_password, presence: true
@@ -15,13 +20,25 @@ class Member < ApplicationRecord
   belongs_to :team
   belongs_to :role
 
-  before_validation def build_notification_subscriber_if_not_exists
+  before_validation :build_notification_subscriber_if_not_exists
+
+  attr_reader :password
+
+  def build_notification_subscriber_if_not_exists
     build_notification_subscriber unless notification_subscriber
     notification_subscriber.valid?
   end
 
-  # For FactoryBot to pass plain password to spec from factory
-  attr_accessor :password
+  def password=(value)
+    return if value.blank? || same_password?(value)
+
+    @password = value
+    self.hashed_password = hash_password(@password)
+  end
+
+  def same_password?(plain_password)
+    hashed_password.present? && compare_password(plain_password, hashed_password)
+  end
 
   # method: POST
   def self.allowed_to_create_by?(user = nil, action: '')
