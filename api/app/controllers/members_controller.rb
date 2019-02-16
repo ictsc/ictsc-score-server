@@ -15,7 +15,7 @@ class MembersController < ApplicationController
 
     @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
 
-    if !is_admin? && !is_writer?
+    if !(is_admin? || is_writer?) || params[:registration_code].present?
       @team = Team.find_by_registration_code(params[:registration_code])
       if @team.nil?
         status 400
