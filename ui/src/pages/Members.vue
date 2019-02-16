@@ -4,20 +4,20 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>#</th>
+          <th v-if="isAdmin || isWriter">#</th>
           <th>Name</th>
           <th>Login</th>
           <th>TeamID</th>
-          <th>Role</th>
+          <th v-if="isAdmin || isWriter">Role</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="member in members">
-          <th>{{ member.id }}</th>
+          <td v-if="isAdmin || isWriter">{{ member.id }}</td>
           <td>{{ member.name }}</td>
           <td>{{ member.login }}</td>
           <td>{{ member.team ? member.team.name : '--- None ---' }}</td>
-          <td>{{ member.role_id }}</td>
+          <td v-if="isAdmin || isWriter">{{ member.role_id }}</td>
         </tr>
       </tbody>
     </table>
@@ -31,6 +31,7 @@
 <script>
 import { SET_TITLE } from '../store/'
 import { API } from '../utils/Api'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'members',
@@ -44,6 +45,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'isAdmin',
+      'isWriter',
+    ]),
   },
   watch: {
   },
