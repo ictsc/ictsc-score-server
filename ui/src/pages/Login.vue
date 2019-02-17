@@ -6,17 +6,37 @@
         <form v-on:submit.prevent="submit()">
           <div class="form-group">
             <label for="input-member-id">メンバーID</label>
-            <input v-model="login" type="text" class="form-control form-control-lg" id="input-member-id">
-            <p class="form-text text-muted">We'll never share your email with anyone else.</p>
+            <input
+              id="input-member-id"
+              v-model="login"
+              type="text"
+              class="form-control form-control-lg"
+            >
+            <p class="form-text text-muted">
+              We'll never share your email with anyone else.
+            </p>
           </div>
           <div class="form-group">
             <label for="input-password">パスワード</label>
-            <input v-model="pass" type="password" class="form-control form-control-lg" id="input-password">
+            <input
+              id="input-password"
+              v-model="pass"
+              type="password"
+              class="form-control form-control-lg"
+            >
           </div>
           <div class="form-group">
-            <input type="submit" class="btn btn-success btn-lg btn-block" value="サインイン">
+            <input
+              type="submit"
+              class="btn btn-success btn-lg btn-block"
+              value="サインイン"
+            >
           </div>
-          <p class="text-center"><router-link :to="{ name: 'signup' }">サインアップはこちら</router-link></p>
+          <p class="text-center">
+            <router-link :to="{ name: 'signup' }">
+              サインアップはこちら
+            </router-link>
+          </p>
         </form>
       </div>
     </div>
@@ -41,17 +61,12 @@ import {
 
 
 export default {
-  name: 'login',
+  name: 'Login',
   data () {
     return {
       login: '',
       pass: '',
     }
-  },
-  asyncData: {
-    session () {
-      return API.getSession()
-    },
   },
   computed: {
   },
@@ -60,6 +75,11 @@ export default {
       if (val.status === 'logged_in') {
         this.$router.push({ name: 'dashboard' })
       }
+    },
+  },
+  asyncData: {
+    session () {
+      return API.getSession()
     },
   },
   mounted () {

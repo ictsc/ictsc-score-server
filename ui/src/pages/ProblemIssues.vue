@@ -2,22 +2,29 @@
   <div>
     <div class="row">
       <div class="col-6">
-        <problem :id="problemId"></problem>
+        <problem :id="problemId" />
       </div>
-      <div class="col-6" v-loading="issuesLoading">
+      <div
+        v-loading="issuesLoading"
+        class="col-6"
+      >
         <problem-mode-switch
           :problemId="problemId"
           :teamId="teamId"
-          :answers="answers"></problem-mode-switch>
+          :answers="answers"
+        />
         
-        <router-link v-if="isSingleIssue" :to="{name: 'problem-issues', params: {id: problemId, team: teamId }}">
+        <router-link
+          v-if="isSingleIssue"
+          :to="{name: 'problem-issues', params: {id: problemId, team: teamId }}"
+        >
           質問一覧
         </router-link>
 
         <template v-if="!isSingleIssue && isParticipant">
           <h3>新規質問</h3>
           <div class="new-issue">
-            <div class="answerExample" >
+            <div class="answerExample">
               <h3>質問例</h3>
               <p>タイトル例：xyzについて</p>
               <p>
@@ -28,18 +35,31 @@
               <p>&emsp;・○○したいのですが大丈夫でしょうか？</p>
             </div>
             <div class="form-group">
-              <input v-model="issueTitle" type="text" class="form-control"
-                placeholder="タイトルは具体的かつ端的に記入してください">
+              <input
+                v-model="issueTitle"
+                type="text"
+                class="form-control"
+                placeholder="タイトルは具体的かつ端的に記入してください"
+              >
             </div>
-            <simple-markdown-editor v-model="issueText"></simple-markdown-editor>
+            <simple-markdown-editor v-model="issueText" />
             <div class="tools">
-              <button v-on:click="postNewIssue()" class="btn btn-success btn-block" :disabled="posting">質問投稿</button>
+              <button
+                v-on:click="postNewIssue()"
+                :disabled="posting"
+                class="btn btn-success btn-block"
+              >
+                質問投稿
+              </button>
             </div>
           </div>
         </template>
 
         <template v-for="issue in currentIssues">
-          <issue :value="issue" :reload="reload"></issue>
+          <issue
+            :value="issue"
+            :reload="reload"
+          />
         </template>
       </div>
     </div>
@@ -84,7 +104,7 @@ import {
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'problem-issues',
+  name: 'ProblemIssues',
   components: {
     Problem,
     Issue,

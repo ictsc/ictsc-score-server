@@ -2,12 +2,20 @@
   <div>
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <router-link :to="{name: 'problem-issues', params: {id: problemId, team: teamId}}" class="nav-link" active-class="active">
+        <router-link
+          :to="{name: 'problem-issues', params: {id: problemId, team: teamId}}"
+          class="nav-link"
+          active-class="active"
+        >
           質問
         </router-link>
       </li>
       <li class="nav-item">
-        <router-link :to="{name: 'problem-answers', params: {id: problemId, team: teamId}}" class="nav-link"  active-class="active">
+        <router-link
+          :to="{name: 'problem-answers', params: {id: problemId, team: teamId}}"
+          class="nav-link"
+          active-class="active"
+        >
           解答
         </router-link>
       </li>
@@ -38,7 +46,7 @@ import { latestAnswer } from '../utils/Filters'
 import { nestedValue } from '../utils/Utils'
 
 export default {
-  name: 'problem-mode-switch',
+  name: 'ProblemModeSwitch',
   props: {
     problemId: String,
     teamId: String,
@@ -47,8 +55,6 @@ export default {
   data () {
     return {
     }
-  },
-  asyncData: {
   },
   computed: {
     currentAnswers () {
@@ -61,6 +67,8 @@ export default {
     },
   },
   watch: {
+  },
+  asyncData: {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ページ名');

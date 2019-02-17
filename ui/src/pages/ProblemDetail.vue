@@ -1,6 +1,6 @@
 <template>
   <div>
-    <problem :id="id"></problem>
+    <problem :id="id" />
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import Problem from '../components/Problem'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'problem-detail',
+  name: 'ProblemDetail',
   components: {
     Problem,
   },

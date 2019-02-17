@@ -1,8 +1,21 @@
 <template>
   <div>
-    <div v-if="isAdmin || isWriter" class="fixed-tool-tips">
-      <div v-on:click="showAddGroup = true" class="add"><i class="fa fa-plus"></i>新規グループ</div>
-      <div v-on:click="showAddProblem = true" class="add"><i class="fa fa-plus"></i>新規問題</div>
+    <div
+      v-if="isAdmin || isWriter"
+      class="fixed-tool-tips"
+    >
+      <div
+        v-on:click="showAddGroup = true"
+        class="add"
+      >
+        <i class="fa fa-plus" />新規グループ
+      </div>
+      <div
+        v-on:click="showAddProblem = true"
+        class="add"
+      >
+        <i class="fa fa-plus" />新規問題
+      </div>
     </div>
     <message-box v-model="showAddProblem">
       <span slot="title">新規問題</span>
@@ -10,69 +23,124 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">タイトル</label>
           <div class="col-sm-9">
-            <input v-model="newProblemObj.title" type="text" class="form-control" placeholder="タイトル">
+            <input
+              v-model="newProblemObj.title"
+              type="text"
+              class="form-control"
+              placeholder="タイトル"
+            >
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">担当者</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="newProblemObj.creator_id">
-              <option v-for="member in memberSelect" v-if="member.role_id===3" :value="member.id">{{ member.name }}</option>
+            <select
+              v-model="newProblemObj.creator_id"
+              class="form-control"
+            >
+              <option
+                v-for="member in memberSelect"
+                v-if="member.role_id===3"
+                :value="member.id"
+              >
+                {{ member.name }}
+              </option>
             </select>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">基準点</label>
           <div class="col-sm-9">
-            <input v-model="newProblemObj.reference_point" type="number" class="form-control">
+            <input
+              v-model="newProblemObj.reference_point"
+              type="number"
+              class="form-control"
+            >
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">満点</label>
           <div class="col-sm-9">
-            <input v-model="newProblemObj.perfect_point" type="number" class="form-control">
+            <input
+              v-model="newProblemObj.perfect_point"
+              type="number"
+              class="form-control"
+            >
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">依存問題</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="newProblemObj.problem_must_solve_before_id">
-              <option v-for="problem in problemSelect" :value="problem.id">{{ problem.title }}</option>
+            <select
+              v-model="newProblemObj.problem_must_solve_before_id"
+              class="form-control"
+            >
+              <option
+                v-for="problem in problemSelect"
+                :value="problem.id"
+              >
+                {{ problem.title }}
+              </option>
             </select>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 sol-form-label">チーム限定公開</label>
           <div class="col-sm-9">
-            <input type="checkbox" v-model="newProblemObj.team_private">
+            <input
+              v-model="newProblemObj.team_private"
+              type="checkbox"
+            >
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">グループ<br />(複数選択可)</label>
+          <label class="col-sm-3 col-form-label">グループ<br>(複数選択可)</label>
           <div class="col-sm-9">
-            <select class="form-control" v-model="newProblemObj.problem_group_ids" multiple>
-              <option v-for="group in problemGroups" :value="group.id">{{ group.name }}</option>
+            <select
+              v-model="newProblemObj.problem_group_ids"
+              class="form-control"
+              multiple
+            >
+              <option
+                v-for="group in problemGroups"
+                :value="group.id"
+              >
+                {{ group.name }}
+              </option>
             </select>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">表示順序(昇順)</label>
           <div class="col-sm-9">
-            <input v-model="newProblemObj.order" type="number" class="form-control">
+            <input
+              v-model="newProblemObj.order"
+              type="number"
+              class="form-control"
+            >
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">運営用テキスト</label>
           <div class="col-sm-9">
-            <input v-model="newProblemObj.secret_text" type="text" class="form-control">
+            <input
+              v-model="newProblemObj.secret_text"
+              type="text"
+              class="form-control"
+            >
           </div>
         </div>
 
-        <simple-markdown-editor v-model="newProblemObj.text"></simple-markdown-editor>
+        <simple-markdown-editor v-model="newProblemObj.text" />
       </div>
-      <template slot="buttons" scope="props">
-        <button v-on:click="addProblem()" class="btn btn-lg btn-success">
-          <i class="fa fa-plus"></i> 問題を追加する
+      <template
+        slot="buttons"
+      >
+        <button
+          v-on:click="addProblem()"
+          class="btn btn-lg btn-success"
+        >
+          <i class="fa fa-plus" /> 問題を追加する
         </button>
       </template>
     </message-box>
@@ -82,35 +150,62 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">グループ名</label>
           <div class="col-sm-9">
-            <input v-model="newGroupObj.name" type="text" class="form-control" placeholder="グループ名">
+            <input
+              v-model="newGroupObj.name"
+              type="text"
+              class="form-control"
+              placeholder="グループ名"
+            >
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">表示する</label>
           <div class="col-sm-9">
-            <select v-model="newGroupObj.visible" class="form-control" name="visibility">
-              <option :value="1">はい</option>
-              <option :value="0">いいえ</option>
+            <select
+              v-model="newGroupObj.visible"
+              class="form-control"
+              name="visibility"
+            >
+              <option :value="1">
+                はい
+              </option>
+              <option :value="0">
+                いいえ
+              </option>
             </select>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">国旗</label>
           <div class="col-sm-9">
-            <input v-model="newGroupObj.icon_url" type="text" class="form-control" placeholder="http://">
+            <input
+              v-model="newGroupObj.icon_url"
+              type="text"
+              class="form-control"
+              placeholder="http://"
+            >
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">表示順序(昇順)</label>
           <div class="col-sm-9">
-            <input v-model="newGroupObj.order" type="number" class="form-control">
+            <input
+              v-model="newGroupObj.order"
+              type="number"
+              class="form-control"
+            >
           </div>
         </div>
-        <simple-markdown-editor v-model="newGroupObj.description"></simple-markdown-editor>
+        <simple-markdown-editor v-model="newGroupObj.description" />
       </div>
-      <template slot="buttons" scope="props">
-        <button v-on:click="addGroup()" class="btn btn-lg btn-success">
-          <i class="fa fa-plus"></i> グループを追加する
+      <template
+        slot="buttons"
+      >
+        <button
+          v-on:click="addGroup()"
+          class="btn btn-lg btn-success"
+        >
+          <i class="fa fa-plus" /> グループを追加する
         </button>
       </template>
     </message-box>
@@ -138,8 +233,13 @@
           <p>満点でない場合は、高得点を目指して追加の解答も可能です。</p>
         </div>
       </div>
-      <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">問題解答の注意点</h4>
+      <div
+        class="alert alert-warning"
+        role="alert"
+      >
+        <h4 class="alert-heading">
+          問題解答の注意点
+        </h4>
         <ul>
           <li>採点結果は、採点依頼を送信してから20分後に返ってきます。</li>
           <li>採点中はその問題へ新たに解答することはできません。</li>
@@ -147,48 +247,91 @@
       </div>
     </div>
 
-    <div v-loading="asyncLoading" class="groups">
-      <div v-for="group in sortedProblemGroups" v-if="group.visible" class="group">
+    <div
+      v-loading="asyncLoading"
+      class="groups"
+    >
+      <div
+        v-for="group in sortedProblemGroups"
+        v-if="group.visible"
+        class="group"
+      >
         <div class="detail">
-          <img class="flag" v-if="group.icon_url" :src="group.icon_url">
+          <img
+            v-if="group.icon_url"
+            :src="group.icon_url"
+            class="flag"
+          >
           <h2>{{ group.name }}</h2>
-          <markdown :value="group.description"></markdown>
+          <markdown :value="group.description" />
         </div>
         <div class="problems d-flex flex-row align-content-center flex-nowrap">
-          <template v-for="problem in sortedProblems" v-if="problem.problem_group_ids.includes(group.id)">
-            <div class="arrow-next-problem"></div>
+          <template
+            v-for="problem in sortedProblems"
+            v-if="problem.problem_group_ids.includes(group.id)"
+          >
+            <div class="arrow-next-problem" />
             <router-link
               :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
-              class="problem d-flex flex-column align-items-stretch">
-              <div class="background"></div>
-              <div class="background-triangle"></div>
-              <div class="background-sealing-icon" v-if="problemGroupIconSrc(problem)"><img :src="problemGroupIconSrc(problem)"></div>
-              <div v-if="problem.title === undefined" class="overlay">
+              class="problem d-flex flex-column align-items-stretch"
+            >
+              <div class="background" />
+              <div class="background-triangle" />
+              <div
+                v-if="problemGroupIconSrc(problem)"
+                class="background-sealing-icon"
+              >
+                <img :src="problemGroupIconSrc(problem)">
+              </div>
+              <div
+                v-if="problem.title === undefined"
+                class="overlay"
+              >
                 <div class="overlay-message">
                   <div>{{ problemUnlockConditionTitle(problem.problem_must_solve_before_id) }}で解放</div>
                 </div>
               </div>
-              <div v-if="!isStaff && problemSolved(problem.answers)" class="solved">
-              </div>
+              <div
+                v-if="!isStaff && problemSolved(problem.answers)"
+                class="solved"
+              />
               <h3>{{ problem.title }}<a v-if="isStaff">({{ problem.creator.name }})</a></h3>
               <div class="bottom-wrapper d-flex align-content-end align-items-end mt-auto">
                 <div class="scores-wrapper mr-auto">
-                  <div class="scores" v-if="isParticipant">
-                    <div class="current">得点 <span class="subtotal">{{ getScoreInfo(problem.answers).subtotal }}</span><span class="perfect_point"> / {{ problem.perfect_point }}</span></div>
-                    <div class="border"></div>
+                  <div
+                    v-if="isParticipant"
+                    class="scores"
+                  >
+                    <div class="current">
+                      得点 <span class="subtotal">{{ getScoreInfo(problem.answers).subtotal }}</span><span class="perfect_point"> / {{ problem.perfect_point }}</span>
+                    </div>
+                    <div class="border" />
                     <span class="brakedown">内訳</span>
-                    <div class="point">基本点 {{ getScoreInfo(problem.answers).pure }}</div>
+                    <div class="point">
+                      基本点 {{ getScoreInfo(problem.answers).pure }}
+                    </div>
                   </div>
-                  <div class="scores" v-if="isStaff">
-                    <div class="border"></div>
-                    <div class="brakedown">内訳</div>
-                    <div class="point">満点 {{ problem.perfect_point }}</div>
-                    <div class="point">基準点 {{ problem.reference_point }}</div>
+                  <div
+                    v-if="isStaff"
+                    class="scores"
+                  >
+                    <div class="border" />
+                    <div class="brakedown">
+                      内訳
+                    </div>
+                    <div class="point">
+                      満点 {{ problem.perfect_point }}
+                    </div>
+                    <div class="point">
+                      基準点 {{ problem.reference_point }}
+                    </div>
                   </div>
                 </div>
                 <div class="tips ml-auto">
-                  <div v-if="isParticipant"><i class="fa fa-paper-plane-o"></i> {{ scoringStatusText(problem) }}</div>
-                  <div><i class="fa fa-child"></i> {{ problem.solved_teams_count }}チーム正解</div>
+                  <div v-if="isParticipant">
+                    <i class="fa fa-paper-plane-o" /> {{ scoringStatusText(problem) }}
+                  </div>
+                  <div><i class="fa fa-child" /> {{ problem.solved_teams_count }}チーム正解</div>
                 </div>
               </div>
             </router-link>
@@ -434,7 +577,7 @@ import { nestedValue } from '../utils/Utils'
 import * as _ from 'underscore';
 
 export default {
-  name: 'problems',
+  name: 'Problems',
   components: {
     Markdown,
     MessageBox,
@@ -537,6 +680,7 @@ export default {
       try {
         this.newObj.problem_group_id = val[0].id;
       } catch (e) {
+        console.error(e);
       }
     },
     session (val) {

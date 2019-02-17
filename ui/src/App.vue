@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <custom-header></custom-header>
+    <custom-header />
 
     <div class="view">
       <div class="container">
         <!--<transition name="fade" mode="out-in">-->
-          <router-view></router-view>
+        <router-view />
         <!--</transition>-->
       </div>
     </div>
@@ -18,13 +18,19 @@
           再度ログインをお願いします
         </p>
       </div>
-      <template slot="buttons" scope="props">
-        <button v-on:click="jumpLogin()" class="btn btn-secondary btn-lg">ログイン画面へ</button>
+      <template
+        slot="buttons"
+      >
+        <button
+          v-on:click="jumpLogin()"
+          class="btn btn-secondary btn-lg"
+        >
+          ログイン画面へ
+        </button>
       </template>
     </message-box>
-    <notif></notif>
-    <info-panel></info-panel>
-
+    <notif />
+    <info-panel />
   </div>
 </template>
 
@@ -40,12 +46,19 @@ import { RELOAD_CONTEST, SET_SESSION } from './store/'
 
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     CustomHeader,
     MessageBox,
     Notif,
     InfoPanel,
+  },
+  data () {
+    return {
+      authError: Subscribe(AUTH_ERROR, e => this.authErrorHandler(e)),
+      visibleAuthError: false,
+      notificationEventSource: null
+    }
   },
   watch: {
     notificationChannels: function (newChannels, oldChannels) {
@@ -55,13 +68,6 @@ export default {
       }
 
       this.subscribeNotification(newChannels);
-    }
-  },
-  data () {
-    return {
-      authError: Subscribe(AUTH_ERROR, e => this.authErrorHandler(e)),
-      visibleAuthError: false,
-      notificationEventSource: null
     }
   },
   mounted () {
@@ -77,7 +83,7 @@ export default {
     ]),
   },
   methods: {
-    authErrorHandler (e) {
+    authErrorHandler (_e) {
       this.visibleAuthError = true;
     },
     jumpLogin () {

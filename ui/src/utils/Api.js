@@ -79,7 +79,7 @@ export class API {
       .then(res => res.body)
   }
   static getTeamsWithScore (req = superagent) {
-    return RequestMiddleware(req.get(`teams?with=answers-score`))
+    return RequestMiddleware(req.get('teams?with=answers-score'))
       .then(res => res.body)
   }
   static addTeams (name, organization, regCode, req = superagent) {
@@ -125,40 +125,40 @@ export class API {
 
   // scoreboard
   static getScoreboard (req = superagent) {
-    return RequestMiddleware(req.get(`scoreboard`))
+    return RequestMiddleware(req.get('scoreboard'))
       .then(res => res.body)
   }
 
   // contest
   static getContest (req = superagent) {
-    return RequestMiddleware(req.get(`contest`))
+    return RequestMiddleware(req.get('contest'))
       .then(res => res.body)
   }
 
   // groups
   static postProblemGroup (obj, req = superagent) {
     return RequestMiddleware(
-      req.post(`problem_groups`)
+      req.post('problem_groups')
         .send(JSON.stringify(obj))
     ).then(res => res.body)
   }
 
   // problems
   static getProblemGroups (req = superagent) {
-    return RequestMiddleware(req.get(`problem_groups`))
+    return RequestMiddleware(req.get('problem_groups'))
       .then(res => res.body)
   }
   static getProblemsWithScore (req = superagent) {
-    return RequestMiddleware(req.get(`problems?with=answers-score,creator`))
+    return RequestMiddleware(req.get('problems?with=answers-score,creator'))
       .then(res => res.body)
   }
   static getProblems (req = superagent) {
-    return RequestMiddleware(req.get(`problems`))
+    return RequestMiddleware(req.get('problems'))
       .then(res => res.body)
   }
   static postProblems (obj, req = superagent) {
     return RequestMiddleware(
-      req.post(`problems`)
+      req.post('problems')
         .send(JSON.stringify(obj))
     ).then(res => res.body)
   }
@@ -175,11 +175,11 @@ export class API {
 
   // issues
   static getIssues (req = superagent) {
-    return RequestMiddleware(req.get(`issues`))
+    return RequestMiddleware(req.get('issues'))
       .then(res => res.body)
   }
   static getIssuesWithComments (req = superagent) {
-    return RequestMiddleware(req.get(`issues?with=comments-member-team,team,problem`))
+    return RequestMiddleware(req.get('issues?with=comments-member-team,team,problem'))
       .then(res => res.body)
   }
   static getIssue (id, req = superagent) {
@@ -206,7 +206,7 @@ export class API {
 
   // answers
   static getAnswers (req = superagent) {
-    return RequestMiddleware(req.get(`answers`))
+    return RequestMiddleware(req.get('answers'))
       .then(res => res.body)
   }
   static getAnswer (id, req = superagent) {
@@ -226,7 +226,7 @@ export class API {
 
   // scores
   static getScores (req = superagent) {
-    return RequestMiddleware(req.get(`scores`))
+    return RequestMiddleware(req.get('scores'))
       .then(res => res.body)
   }
   static getScore (id, req = superagent) {

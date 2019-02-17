@@ -2,18 +2,31 @@
   <div>
     <div class="row">
       <div class="col-6">
-        <problem :id="problemId"></problem>
+        <problem :id="problemId" />
       </div>
-      <div class="col-6" v-loading="answersLoading">
+      <div
+        v-loading="answersLoading"
+        class="col-6"
+      >
         <problem-mode-switch
           :problemId="problemId"
           :teamId="teamId"
-          :answers="answers"></problem-mode-switch>
+          :answers="answers"
+        />
         <template v-for="answer in currentAnswers">
-          <answer :value="answer" :reload="reload"></answer>
+          <answer
+            :value="answer"
+            :reload="reload"
+          />
         </template>
-        <div class="new-issue" v-show="!isStaff && !confirming">
-          <div class="answerExample" v-if="canAnswer">
+        <div
+          v-show="!isStaff && !confirming"
+          class="new-issue"
+        >
+          <div
+            v-if="canAnswer"
+            class="answerExample"
+          >
             <h3>解答例</h3>
             <p>
               お疲れ様です。〇〇です。<br>
@@ -32,22 +45,43 @@
               2. …
             </p>
           </div>
-          <simple-markdown-editor v-model="newAnswer"></simple-markdown-editor>
+          <simple-markdown-editor v-model="newAnswer" />
           <div class="tools">
-            <button v-on:click="showConfirmation()" class="btn btn-success">解答投稿</button>
+            <button
+              v-on:click="showConfirmation()"
+              class="btn btn-success"
+            >
+              解答投稿
+            </button>
           </div>
-          <div v-if="!canAnswer" class="overlay">
+          <div
+            v-if="!canAnswer"
+            class="overlay"
+          >
             {{ scoringCompleteTime | dateRelative }}に解答送信が可能になります。
           </div>
         </div>
-        <div v-if="confirming" class="confirm">
+        <div
+          v-if="confirming"
+          class="confirm"
+        >
           <p>以下の内容で解答を送信しますか？</p>
           <div class="markdown">
-            <markdown :value="this.newAnswer"></markdown>
+            <markdown :value="newAnswer" />
           </div>
           <div class="buttonWrapper">
-            <button v-on:click="hideConfirmation()" class="btn btn-default">修正</button>
-            <button v-on:click="postNewIssue()" class="btn btn-success">解答送信</button>
+            <button
+              v-on:click="hideConfirmation()"
+              class="btn btn-default"
+            >
+              修正
+            </button>
+            <button
+              v-on:click="postNewIssue()"
+              class="btn btn-success"
+            >
+              解答送信
+            </button>
           </div>
         </div>
       </div>
@@ -137,7 +171,7 @@ import { dateRelative } from '../utils/Filters'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'problem-answers',
+  name: 'ProblemAnswers',
   components: {
     Problem,
     SimpleMarkdownEditor,

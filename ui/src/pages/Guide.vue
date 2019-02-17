@@ -54,8 +54,6 @@
       <li>一旦解決済みへと変更しても、再度クリックすることによりステータスを戻すことができます。</li>
       <li>問題外の質問は、直接スタッフにお伝え下さい。</li>
     </ul>
-
-
   </div>
 </template>
 
@@ -76,16 +74,16 @@ h4 {
 import { SET_TITLE } from '../store/'
 
 export default {
-  name: 'empty',
+  name: 'Empty',
   data () {
     return {
     }
   },
-  asyncData: {
-  },
   computed: {
   },
   watch: {
+  },
+  asyncData: {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ページ名');

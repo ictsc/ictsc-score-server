@@ -1,5 +1,8 @@
 <template>
-  <div class="markdown-body" v-html="markdown"></div>
+  <div
+    v-html="markdown"
+    class="markdown-body"
+  />
 </template>
 
 <style>
@@ -10,10 +13,10 @@
 
 <script>
 import marked from 'marked';
-require('github-markdown-css/github-markdown.css');
+import 'github-markdown-css/github-markdown.css';
 
 export default {
-  name: 'markdown',
+  name: 'Markdown',
   props: {
     value: String,
   },
@@ -21,8 +24,6 @@ export default {
     return {
       text: '',
     }
-  },
-  asyncData: {
   },
   computed: {
     markdown () {
@@ -36,6 +37,8 @@ export default {
       if (val === this.text) return;
       this.text = val;
     },
+  },
+  asyncData: {
   },
   mounted () {
     this.text = this.value;

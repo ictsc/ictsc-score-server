@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="markdown-editor">
-      <textarea></textarea>
+      <textarea />
     </div>
   </div>
 </template>
@@ -16,11 +16,11 @@
 </style>
 
 <script>
-require('simplemde/dist/simplemde.min.css');
+import 'simplemde/dist/simplemde.min.css';
 import SimpleMDE from 'simplemde';
 
 export default {
-  name: 'simple-markdown-editor',
+  name: 'SimpleMarkdownEditor',
   props: {
     value: String,
     config: {
@@ -39,8 +39,6 @@ export default {
       simplemde: undefined,
     }
   },
-  asyncData: {
-  },
   computed: {
   },
   watch: {
@@ -48,6 +46,8 @@ export default {
       if (val === this.simplemde.value()) return;
       this.simplemde.value(val);
     },
+  },
+  asyncData: {
   },
   mounted () {
     this.init();

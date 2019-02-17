@@ -1,39 +1,106 @@
 <template>
-   <nav class="navbar fixed-top navbar-light navbar-toggleable flex-row">
-    <router-link :to="{name: 'dashboard'}" class="navbar-brand">
-      <img src="../assets/img/logo/ictsc-logo-white.svg" alt="ICTSC">
+  <nav class="navbar fixed-top navbar-light navbar-toggleable flex-row">
+    <router-link
+      :to="{name: 'dashboard'}"
+      class="navbar-brand"
+    >
+      <img
+        src="../assets/img/logo/ictsc-logo-white.svg"
+        alt="ICTSC"
+      >
     </router-link>
 
     <div class="navbar-nav  mr-auto">
       <div class="nav-item">
-        <router-link :to="{name: 'guide'}" active-class="active" class="nav-link">ガイド</router-link>
+        <router-link
+          :to="{name: 'guide'}"
+          active-class="active"
+          class="nav-link"
+        >
+          ガイド
+        </router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{name: 'members'}" active-class="active" class="nav-link">メンバー</router-link>
+        <router-link
+          :to="{name: 'members'}"
+          active-class="active"
+          class="nav-link"
+        >
+          メンバー
+        </router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{name: 'teams'}" active-class="active" class="nav-link">チーム</router-link>
+        <router-link
+          :to="{name: 'teams'}"
+          active-class="active"
+          class="nav-link"
+        >
+          チーム
+        </router-link>
       </div>
     </div>
     <div class="navbar-nav">
       <div class="nav-item">
-        <router-link :to="{name: 'dashboard'}" class="nav-link">トップ</router-link>
+        <router-link
+          :to="{name: 'dashboard'}"
+          class="nav-link"
+        >
+          トップ
+        </router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{ name: 'problems'}" active-class="active" class="nav-link">問題</router-link>
+        <router-link
+          :to="{ name: 'problems'}"
+          active-class="active"
+          class="nav-link"
+        >
+          問題
+        </router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{ name: 'issues'}" active-class="active" class="nav-link">質問</router-link>
+        <router-link
+          :to="{ name: 'issues'}"
+          active-class="active"
+          class="nav-link"
+        >
+          質問
+        </router-link>
       </div>
-      <div v-if="isStaff" class="nav-item">
-        <router-link :to="{ name: 'answers'}" active-class="active" class="nav-link">解答</router-link>
+      <div
+        v-if="isStaff"
+        class="nav-item"
+      >
+        <router-link
+          :to="{ name: 'answers'}"
+          active-class="active"
+          class="nav-link"
+        >
+          解答
+        </router-link>
       </div>
       <div class="nav-item">
-        <router-link :to="{ name: 'result'}" active-class="active" class="nav-link">グラフ</router-link>
+        <router-link
+          :to="{ name: 'result'}"
+          active-class="active"
+          class="nav-link"
+        >
+          グラフ
+        </router-link>
       </div>
       <div class="nav-item">
-        <a href="#" v-on:click="logout()" class="nav-link" v-if="!isNoLogin">ログアウト</a>
-        <router-link :to="{ name: 'login' }" class="nav-link" v-else>ログイン</router-link>
+        <a
+          v-on:click="logout()"
+          v-if="!isNoLogin"
+          href="#"
+          class="nav-link"
+        >ログアウト</a>
+        <router-link
+          :to="{ name: 'login' }"
+          v-else
+          class="nav-link"
+        >
+          ログイン
+        </router-link>
       </div>
     </div>
   </nav>
@@ -91,7 +158,7 @@ import { mapGetters } from 'vuex'
 import { CLEAR_SESSION } from '../store/'
 
 export default {
-  name: 'header',
+  name: 'Header',
   data () {
     return {
     }
@@ -103,30 +170,6 @@ export default {
       'session',
       'isNoLogin',
     ]),
-  },
-  methods: {
-    logout () {
-      Emit(REMOVE_NOTIF, msg => msg.key === 'login');
-
-      API.logout()
-        .then(res => {
-          this.$router.push({ name: 'login' })
-          this.$store.commit(CLEAR_SESSION);
-          Emit(PUSH_NOTIF, {
-            type: 'success',
-            title: 'ログアウトしました',
-            key: 'login',
-          });
-        })
-        .catch(err => {
-          console.log(err)
-          Emit(PUSH_NOTIF, {
-            type: 'error',
-            title: 'ログアウトに失敗しました',
-            key: 'login',
-          });
-        })
-    },
   },
   mounted: function () {
     var dropdown = d3
@@ -144,6 +187,30 @@ export default {
       })
   },
   destroyed: function () {
+  },
+  methods: {
+    logout () {
+      Emit(REMOVE_NOTIF, msg => msg.key === 'login');
+
+      API.logout()
+        .then(_res => {
+          this.$router.push({ name: 'login' })
+          this.$store.commit(CLEAR_SESSION);
+          Emit(PUSH_NOTIF, {
+            type: 'success',
+            title: 'ログアウトしました',
+            key: 'login',
+          });
+        })
+        .catch(err => {
+          console.log(err)
+          Emit(PUSH_NOTIF, {
+            type: 'error',
+            title: 'ログアウトに失敗しました',
+            key: 'login',
+          });
+        })
+    },
   }
 }
 </script>

@@ -1,25 +1,56 @@
 <template>
   <div>
-    <div v-if="show" v-on:click="close()" class="modal fade show">
-      <div v-on:click="clickGuard($event)" class="messagebox modal-dialog" :class="{ 'modal-lg': big }">
+    <div
+      v-if="show"
+      v-on:click="close()"
+      class="modal fade show"
+    >
+      <div
+        v-on:click="clickGuard($event)"
+        :class="{ 'modal-lg': big }"
+        class="messagebox modal-dialog"
+      >
         <div class="modal-content">
-          <button v-on:click="close()" type="button" class="close">
-            <i class="fa fa-close"></i>
+          <button
+            v-on:click="close()"
+            type="button"
+            class="close"
+          >
+            <i class="fa fa-close" />
           </button>
-          <h5 class="messagebox-title"><slot name="title"></slot></h5>
+          <h5 class="messagebox-title">
+            <slot name="title" />
+          </h5>
           <div class="messagebox-body">
-            <slot name="body"></slot>
+            <slot name="body" />
           </div>
           <div class="messagebox-footer">
-            <slot name="buttons" :close="close">
-              <button type="button" class="btn btn-secondary">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+            <slot
+              :close="close"
+              name="buttons"
+            >
+              <button
+                type="button"
+                class="btn btn-secondary"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+              >
+                Save changes
+              </button>
             </slot>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="show" class="modal-backdrop fade" :class="{ show }"></div>
+    <div
+      v-if="show"
+      :class="{ show }"
+      class="modal-backdrop fade"
+    />
   </div>
 </template>
 
@@ -74,14 +105,15 @@
 
 <script>
 export default {
-  name: 'message-box',
-  props: ['value', 'big'],
+  name: 'MessageBox',
+  props: {
+    'value': Boolean,
+    'big': Boolean
+  },
   data () {
     return {
       show: true,
     }
-  },
-  asyncData: {
   },
   computed: {
   },
@@ -94,6 +126,8 @@ export default {
         this.$emit('input', value);
       }
     },
+  },
+  asyncData: {
   },
   mounted () {
     this.show = this.value;

@@ -3,30 +3,66 @@
     <div class="row justify-content-center">
       <div class="col-4">
         <h1>サインアップ</h1>
-          <div class="form-group">
-            <label for="input-name">氏名</label>
-            <input v-model="name" type="text" class="form-control form-control-lg" id="input-name">
-          </div>
-          <div class="form-group">
-            <label for="input-register-code">登録コード</label>
-            <input v-model="registration_code" type="text" class="form-control form-control-lg" id="input-register-code">
-          </div>
-          <div class="form-group">
-            <label for="input-org">所属とチーム</label>
-            <input type="text" class="form-control form-control-lg" id="input-org" readonly :value="teamName">
-          </div>
-          <div class="form-group">
-            <label for="input-member-id">メンバーID</label>
-            <input v-model="login" type="text" class="form-control form-control-lg" id="input-member-id">
-          </div>
-          <div class="form-group">
-            <label for="input-password">パスワード</label>
-            <input v-model="password" type="password" class="form-control form-control-lg" id="input-password">
-          </div>
-          <div class="form-group">
-            <button v-on:click="submit()" type="button" class="btn btn-success btn-lg btn-block">サインアップ</button>
-          </div>
-          <p class="text-center"><router-link :to="{ name: 'login' }">ログインはこちら</router-link></p>
+        <div class="form-group">
+          <label for="input-name">氏名</label>
+          <input
+            id="input-name"
+            v-model="name"
+            type="text"
+            class="form-control form-control-lg"
+          >
+        </div>
+        <div class="form-group">
+          <label for="input-register-code">登録コード</label>
+          <input
+            id="input-register-code"
+            v-model="registration_code"
+            type="text"
+            class="form-control form-control-lg"
+          >
+        </div>
+        <div class="form-group">
+          <label for="input-org">所属とチーム</label>
+          <input
+            id="input-org"
+            :value="teamName"
+            type="text"
+            class="form-control form-control-lg"
+            readonly
+          >
+        </div>
+        <div class="form-group">
+          <label for="input-member-id">メンバーID</label>
+          <input
+            id="input-member-id"
+            v-model="login"
+            type="text"
+            class="form-control form-control-lg"
+          >
+        </div>
+        <div class="form-group">
+          <label for="input-password">パスワード</label>
+          <input
+            id="input-password"
+            v-model="password"
+            type="password"
+            class="form-control form-control-lg"
+          >
+        </div>
+        <div class="form-group">
+          <button
+            v-on:click="submit()"
+            type="button"
+            class="btn btn-success btn-lg btn-block"
+          >
+            サインアップ
+          </button>
+        </div>
+        <p class="text-center">
+          <router-link :to="{ name: 'login' }">
+            ログインはこちら
+          </router-link>
+        </p>
       </div>
     </div>
   </div>
@@ -43,7 +79,7 @@ import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import sha1 from 'sha1'
 
 export default {
-  name: 'empty',
+  name: 'Empty',
   data () {
     return {
       login: '',
@@ -51,12 +87,6 @@ export default {
       password: '',
       registration_code: '',
     }
-  },
-  asyncData: {
-    teamsDefault: [],
-    teams () {
-      return API.getTeams();
-    },
   },
   computed: {
     teamName () {
@@ -66,6 +96,12 @@ export default {
     },
   },
   watch: {
+  },
+  asyncData: {
+    teamsDefault: [],
+    teams () {
+      return API.getTeams();
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'サイト一覧');

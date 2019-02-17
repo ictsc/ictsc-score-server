@@ -1,7 +1,6 @@
 <template>
   <div>
-    <pre>
-    </pre>
+    <pre />
   </div>
 </template>
 
@@ -13,16 +12,16 @@
 import { SET_TITLE } from '../store/'
 
 export default {
-  name: 'empty',
+  name: 'Empty',
   data () {
     return {
     }
   },
-  asyncData: {
-  },
   computed: {
   },
   watch: {
+  },
+  asyncData: {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ページ名');

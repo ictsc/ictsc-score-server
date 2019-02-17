@@ -5,31 +5,67 @@
       <p>このページは解答一覧画面です。下のボタンを切り替えることで、表示される種類が絞り込めます。</p>
     </div>
     <div class="tools">
-      <button v-on:click="filterSelect = 0" :class="{ active: filterSelect == 0 }" class="btn label-secondary">全て表示</button>
-      <button v-on:click="filterSelect ^= 1" :class="{ active: filterSelect & 1 }" class="btn label-warning">未提出</button>
-      <button v-on:click="filterSelect ^= 2" :class="{ active: filterSelect & 2 }" class="btn label-danger">未採点</button>
-      <button v-on:click="filterSelect ^= 4" :class="{ active: filterSelect & 4 }" class="btn label-success">採点済</button>
+      <button
+        v-on:click="filterSelect = 0"
+        :class="{ active: filterSelect == 0 }"
+        class="btn label-secondary"
+      >
+        全て表示
+      </button>
+      <button
+        v-on:click="filterSelect ^= 1"
+        :class="{ active: filterSelect & 1 }"
+        class="btn label-warning"
+      >
+        未提出
+      </button>
+      <button
+        v-on:click="filterSelect ^= 2"
+        :class="{ active: filterSelect & 2 }"
+        class="btn label-danger"
+      >
+        未採点
+      </button>
+      <button
+        v-on:click="filterSelect ^= 4"
+        :class="{ active: filterSelect & 4 }"
+        class="btn label-success"
+      >
+        採点済
+      </button>
     </div>
     <div class="problems">
-      <div v-for="problem in problems" v-if="anyMatchesFilter(problem.answers, problem.id)" class="problem">
+      <div
+        v-for="problem in problems"
+        v-if="anyMatchesFilter(problem.answers, problem.id)"
+        class="problem"
+      >
         <h3>{{ problem.title }}</h3>
         <small>
           基準点: {{ problem.reference_point }} /
           満点: {{ problem.perfect_point }} /
           正解チーム数: {{ problem.solved_teams_count }}
           担当者: {{ problem.creator.name }}
-          </small>
+        </small>
         <div class="teams row">
-          <div v-for="team in teams" v-if="matchesFilter(problem.answers, team.id, problem.id)" class="col-3">
+          <div
+            v-for="team in teams"
+            v-if="matchesFilter(problem.answers, team.id, problem.id)"
+            class="col-3"
+          >
             <router-link
               :to="{name: 'problem-answers', params: {id: problem.id, team: team.id}}"
-              :class="'team status-' + status(problem.answers, team.id, problem.id)">
+              :class="'team status-' + status(problem.answers, team.id, problem.id)"
+            >
               {{ team.id }}. {{ team.name }} {{ score(problem.answers, team.id, problem.id) }}
-              <font color="black" v-if="status(problem.answers, team.id, problem.id) == 2">
+              <font
+                v-if="status(problem.answers, team.id, problem.id) == 2"
+                color="black"
+              >
                 (採点期限: 
-              {{ Date.parse(problem.answers.reduce((p, n) => Date.parse(p.updated_at) < Date.parse(n.updated_at) ? n : p, {updated_at: 0}).created_at)
-                + contest.answer_reply_delay_sec * 1000
-                - now | tickDuration("mm:ss") }}
+                {{ Date.parse(problem.answers.reduce((p, n) => Date.parse(p.updated_at) < Date.parse(n.updated_at) ? n : p, {updated_at: 0}).created_at)
+                  + contest.answer_reply_delay_sec * 1000
+                  - now | tickDuration("mm:ss") }}
                 )
               </font>
             </router-link>
@@ -94,7 +130,7 @@ import { tickDuration, latestAnswer } from '../utils/Filters'
 import { nestedValue } from '../utils/Utils'
 
 export default {
-  name: 'answers',
+  name: 'Answers',
   filters: {
     tickDuration,
   },

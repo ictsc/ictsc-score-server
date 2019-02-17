@@ -1,31 +1,64 @@
 <template>
   <div>
     <div class="answers">
-      <div v-if="isAdmin || isWriter" class="scoring">
+      <div
+        v-if="isAdmin || isWriter"
+        class="scoring"
+      >
         <div class="row">
           <div class="col-6">
-            <input v-model="newPoint" type="number" class="form-control">
+            <input
+              v-model="newPoint"
+              type="number"
+              class="form-control"
+            >
           </div>
           <div class="col-6">
-            <input type="checkbox" id="checkbox" v-model="solved">
+            <input
+              id="checkbox"
+              v-model="solved"
+              type="checkbox"
+            >
             <label for="checkbox">基準</label>
-            <button v-on:click="submitPoint()" type="submit" class="btn btn-primary">採点</button>
+            <button
+              v-on:click="submitPoint()"
+              type="submit"
+              class="btn btn-primary"
+            >
+              採点
+            </button>
           </div>
         </div>
       </div>
-      <div v-if="value" class="answer">
-        <markdown :value="value.text"></markdown>
+      <div
+        v-if="value"
+        class="answer"
+      >
+        <markdown :value="value.text" />
         <div class="meta">
           <small>{{ value.created_at }}</small>
         </div>
       </div>
       <div class="status">
         <template>
-          <div v-if="value.score" class="result">
+          <div
+            v-if="value.score"
+            class="result"
+          >
             得点: {{ value.score.point }}
           </div>
-          <div v-if="!value.score && !isStaff && isContestEnded" class="pending">競技時間が終了したため表示されません</div>
-          <div v-if="!value.score && (isStaff || !isContestEnded)" class="pending">採点依頼中...</div>
+          <div
+            v-if="!value.score && !isStaff && isContestEnded"
+            class="pending"
+          >
+            競技時間が終了したため表示されません
+          </div>
+          <div
+            v-if="!value.score && (isStaff || !isContestEnded)"
+            class="pending"
+          >
+            採点依頼中...
+          </div>
         </template>
       </div>
     </div>
@@ -67,16 +100,14 @@
 </style>
 
 <script>
-import SimpleMarkdownEditor from '../components/SimpleMarkdownEditor'
 import Markdown from '../components/Markdown'
 import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { API } from '../utils/Api'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'answer',
+  name: 'Answer',
   components: {
-    SimpleMarkdownEditor,
     Markdown,
   },
   props: {
@@ -108,7 +139,7 @@ export default {
     ]),
   },
   watch: {
-    value (val) {
+    value (_val) {
       this.newPoint = (this.value.score && this.value.score.point) || 0;
       this.solved = (this.value.score && this.value.score.solved) || false;
     },
@@ -136,7 +167,7 @@ export default {
       }
 
       postOrPut
-        .then(res => {
+        .then(_res => {
           console.log('Patch OK');
           Emit(PUSH_NOTIF, {
             type: 'success',

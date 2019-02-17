@@ -1,6 +1,5 @@
 <template>
-  <div>
-  </div>
+  <div />
 </template>
 
 <style>
@@ -14,11 +13,11 @@ export default {
     return {
     }
   },
-  asyncData: {
-  },
   computed: {
   },
   watch: {
+  },
+  asyncData: {
   },
   mounted () {
   },
