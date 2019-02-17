@@ -5,6 +5,10 @@ FactoryBot.define do
     problem
     team
 
+    trait :of_unopened_problem do
+      problem { create(:problem, :unopened) }
+    end
+
     trait :closed do
       closed { true }
 

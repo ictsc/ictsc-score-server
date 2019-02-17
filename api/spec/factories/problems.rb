@@ -8,5 +8,9 @@ FactoryBot.define do
     team_private { false }
     secret_text { 'This is very secret text' }
     association :creator, factory: %i[member writer]
+
+    trait :unopened do
+      association :problem_must_solve_before, factory: :problem
+    end
   end
 end
