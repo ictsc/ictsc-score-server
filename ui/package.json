@@ -11,7 +11,8 @@
     "unit:watch": "karma start test/unit/karma.conf.js",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
-    "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs"
+    "lint": "eslint --ext .js,.vue src",
+    "lint:test": "eslint -c .eslintrc.test.js --ext .js test/unit test/e2e/specs"
   },
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.6",
