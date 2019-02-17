@@ -503,10 +503,14 @@ export default {
       return _.sortBy(this.problemGroups, 'order');
     },
     problemSelect () {
-      return Array.concat([{
-        id: null,
-        title: 'Null',
-      }], this.problems);
+      return (
+        [
+          {
+            id: null,
+            title: 'Null',
+          }
+        ].concat(this.problems)
+      );
     },
     ...mapGetters([
       'contest',
@@ -517,11 +521,15 @@ export default {
       'session',
     ]),
     memberSelect () {
-      return Array.concat([{
-        id: null,
-        name: 'Null',
-        role_id: null,
-      }], this.members);
+      return (
+        [
+          {
+            id: null,
+            name: 'Null',
+            role_id: null,
+          }
+        ].concat(this.members)
+      );
     },
   },
   watch: {
