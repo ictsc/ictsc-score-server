@@ -11,12 +11,18 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    'quotes': ['error', 'single']
+    'quotes': ['error', 'single'],
+    'no-console': 'off',
+    'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+    'no-irregular-whitespace': 'off',
+    'vue/order-in-components': 'off',
+    'vue/require-default-prop': 'off',
+    'vue/no-parsing-error': 'off'
   },
   env: {
     browser: true,
   },
   globals: {
-    'EventSource': 'off'
+    'EventSource': false
   },
 }
