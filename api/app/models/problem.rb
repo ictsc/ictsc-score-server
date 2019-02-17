@@ -138,7 +138,8 @@ class Problem < ApplicationRecord
 
   # userが閲覧できる問題一覧
   # アクセス制限が無いため、publicにすると危険
-  scope :opened, lambda {|user:|
+  def self.opened(user:)
+    return all if Config.problem_open_all_at <= DateTime.now
     all_team_fcas = FirstCorrectAnswer.readables(user: user, action: 'all_opened')
     my_team_fcas = all_team_fcas.where(team: user.team)
 
@@ -148,5 +149,5 @@ class Problem < ApplicationRecord
     where(problem_must_solve_before_id: nil)
       .or(where(problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
       .or(where(problem_must_solve_before_id: all_team_fcas.pluck(:problem_id), team_private: false))
-  }
+  end
 end
