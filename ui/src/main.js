@@ -1,15 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-Vue.use(VueRouter);
 
 import Element from 'element-ui'
-Vue.use(Element);
 import 'element-ui/lib/theme-default/index.css'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 
 import { AsyncDataPlugin } from 'vue-async-data-2'
-Vue.use(AsyncDataPlugin)
 
 import App from './App'
 import { DefaultStore as store } from './store'
@@ -29,6 +26,9 @@ import Answers from './pages/Answers'
 import Guide from './pages/Guide'
 import Result from './pages/Result'
 import NotFound from './pages/NotFound'
+Vue.use(VueRouter);
+Vue.use(Element);
+Vue.use(AsyncDataPlugin)
 
 const router = new VueRouter({
   routes: [
