@@ -250,8 +250,15 @@ module Utils
 
     {
       response: response,
-      body: response.body.present? ? JSON.parse(response, symbolize_names: true) : {},
+      body: parse_body(response)
     }
+  end
+
+  def parse_body(response)
+    return {} if response.body.blank?
+    JSON.parse(response, symbolize_names: true)
+  rescue JSON::ParserError
+    { parse_error_raw_body: response.body }
   end
 
   def read_erb(filepath)
