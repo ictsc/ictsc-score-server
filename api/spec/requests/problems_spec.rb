@@ -109,6 +109,11 @@ describe 'Problems' do
         by_participant { is_expected.to match_array expected_keys_for_participant_not_opened }
       end
     end
+
+    describe 'problem_open_all_at' do
+      context 'when it is true' do
+      end
+    end
   end
 
   describe 'GET /api/problems/:id' do
@@ -116,6 +121,8 @@ describe 'Problems' do
     let!(:next_problem) { create(:problem, problem_must_solve_before: problem) }
     let!(:team_private_problem) { create(:problem, problem_must_solve_before: problem, team_private: true) }
     let!(:team_private_problem_no_deps) { create(:problem, problem_must_solve_before: nil, team_private: true) }
+    let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
+    let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
 
     let(:response) { get "/api/problems/#{problem.id}" }
     subject { response.status }
@@ -182,8 +189,6 @@ describe 'Problems' do
     end
 
     describe '#keys' do
-      let(:expected_keys) { %w(id title text solved_teams_count creator_id created_at updated_at problem_must_solve_before_id reference_point perfect_point problem_group_ids order team_private secret_text) }
-      let(:expected_keys_for_participant_opened) { expected_keys - %w(creator_id reference_point secret_text) }
       subject { json_response.keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_writer      { is_expected.to match_array expected_keys }
@@ -211,6 +216,34 @@ describe 'Problems' do
       by_participant { is_expected.to eq 1 }
       by_writer      { is_expected.to eq 1 }
       by_admin       { is_expected.to eq 1 }
+    end
+
+    describe 'unopened problem' do
+      let!(:unopened_problem) { create(:problem, :unopened) }
+      let(:response) { get "/api/problems/#{unopened_problem.id}" }
+      subject { response.status }
+      before do
+        allow(Config).to receive(:in_competition_time?).and_return(true)
+      end
+
+      context 'before problem_open_all_at' do
+        before do
+          allow(Config).to receive(:problem_open_all_at).and_return(DateTime.now + 1.minute)
+        end
+
+        by_participant { is_expected.to eq 404 }
+      end
+
+      context 'after problem_open_all_at' do
+        before do
+          allow(Config).to receive(:problem_open_all_at).and_return(DateTime.now - 1.minute)
+        end
+
+        by_participant do
+          is_expected.to eq 200
+          expect(json_response.keys).to match_array expected_keys_for_participant_opened
+        end
+      end
     end
   end
 
