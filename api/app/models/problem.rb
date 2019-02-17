@@ -83,17 +83,16 @@ class Problem < ApplicationRecord
     select(*cols)
   }
 
-  scope :readable_records, lambda {|user:, action: ''|
+  def self.readable_records(user:, action: '')
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:viewer]
       all
     when ROLE_ID[:writer]
-      next all if action.empty?
-      next where(creator: user) if action == 'problems_comments'
-
+      return all if action.empty?
+      return where(creator: user) if action == 'problems_comments'
       none
     when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team.present? }
-      next none unless Config.in_competition_time?
+      return none unless Config.in_competition_time?
 
       case action
       when 'not_opened'
@@ -105,7 +104,7 @@ class Problem < ApplicationRecord
     else
       none
     end
-  }
+  end
 
   # method: GET
   scope :readables, lambda {|user:, action: ''|
@@ -120,34 +119,38 @@ class Problem < ApplicationRecord
     end
   end
 
-  # 突破チーム数を返す
-  # idが指定されると単一の値を返す
-  # 返すハッシュのデフォルト値は0
-  def self.solved_teams_counts(user:, id: nil)
-    rel = id.nil? ? FirstCorrectAnswer.all : FirstCorrectAnswer.where(problem_id: id)
+  class << self
+    # 突破チーム数を返す
+    # idが指定されると単一の値を返す
+    # 返すハッシュのデフォルト値は0
+    def solved_teams_counts(user:, id: nil)
+      rel = id.nil? ? FirstCorrectAnswer.all : FirstCorrectAnswer.where(problem_id: id)
 
-    counts = rel
-      .readables(user: user, action: 'all_opened')
-      .group(:problem_id)
-      .count(:team_id) # readables内でselectしてるからカラムの指定が必要
+      counts = rel
+        .readables(user: user, action: 'all_opened')
+        .group(:problem_id)
+        .count(:team_id) # readables内でselectしてるからカラムの指定が必要
 
-    counts.default = 0
+      counts.default = 0
 
-    id.nil? ? counts : counts[id]
-  end
+      id.nil? ? counts : counts[id]
+    end
 
-  # userが閲覧できる問題一覧
-  # アクセス制限が無いため、publicにすると危険
-  def self.opened(user:)
-    return all if Config.problem_open_all_at <= DateTime.now
-    all_team_fcas = FirstCorrectAnswer.readables(user: user, action: 'all_opened')
-    my_team_fcas = all_team_fcas.where(team: user.team)
+    private
 
-    # 依存問題がない
-    # 自チームが依存問題を解決
-    # 他チームが依存問題を解決していてteam_private == false
-    where(problem_must_solve_before_id: nil)
-      .or(where(problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
-      .or(where(problem_must_solve_before_id: all_team_fcas.pluck(:problem_id), team_private: false))
+    # userが閲覧できる問題一覧
+    def opened(user:)
+      return all if Config.problem_open_all_at <= DateTime.now
+
+      all_team_fcas = FirstCorrectAnswer.readables(user: user, action: 'all_opened')
+      my_team_fcas = all_team_fcas.where(team: user.team)
+
+      # 依存問題がない
+      # 自チームが依存問題を解決
+      # 他チームが依存問題を解決していてteam_private == false
+      where(problem_must_solve_before_id: nil)
+        .or(where(problem_must_solve_before_id: my_team_fcas.pluck(:problem_id)))
+        .or(where(problem_must_solve_before_id: all_team_fcas.pluck(:problem_id), team_private: false))
+    end
   end
 end
