@@ -101,6 +101,7 @@ export default {
       'isParticipant',
       'isStaff',
       'session',
+      'isNoLogin',
     ]),
   },
   methods: {
