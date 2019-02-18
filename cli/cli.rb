@@ -265,24 +265,28 @@ module Utils
     ERB.new(File.read(filepath)).result
   end
 
-  def load_file(filepath)
+  def load_file_raw(filepath)
     filepath = UsedDirs.find(filepath)
-
     return if filepath.nil?
 
-    data = case File.extname(filepath)
-      when '.yml', '.yaml'
-        YAML.load(read_erb(filepath)).symbolize_keys
-      when '.json'
-        JSON.parse(read_erb(filepath), symbolize_names: true)
-      when '', '.txt', '.md'
-        read_erb(filepath)
-      else
-        error 'Unsupported file type'
-        return
-      end
+    File.read(filepath)
+  end
 
-    data
+  def load_file(filepath)
+    filepath = UsedDirs.find(filepath)
+    return if filepath.nil?
+
+    case File.extname(filepath)
+    when '.yml', '.yaml'
+      YAML.load(read_erb(filepath)).symbolize_keys
+    when '.json'
+      JSON.parse(read_erb(filepath), symbolize_names: true)
+    when '', '.txt', '.md'
+      read_erb(filepath)
+    else
+      error 'Unsupported file type'
+      return
+    end
   end
 end
 
