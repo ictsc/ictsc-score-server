@@ -10,6 +10,9 @@ module.exports = {
     extract: isProduction
   }),
   postcss: [
+    require('cssnano')({
+      preset: 'default',
+    }),
     require('autoprefixer')()
   ],
   transformToRequire: {

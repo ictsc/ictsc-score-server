@@ -36,7 +36,7 @@
     "compression-webpack-plugin": "^2.0.0",
     "connect-history-api-fallback": "^1.6.0",
     "copy-webpack-plugin": "^4.6.0",
-    "css-loader": "^0.28.0",
+    "css-loader": "^2.1.0",
     "cssnano": "^4.1.10",
     "d3": "5.9.1",
     "dateformat": "https://registry.npmjs.org/dateformat/-/dateformat-1.0.12.tgz",
