@@ -59,7 +59,9 @@ class AttachmentsController < ApplicationController
 
   # ファイルを取得
   get '/api/attachments/:id/:access_token' do
-    # アクセス制限無し
+    halt 404 if !(is_admin? || is_writer?) && !Config.in_competition_time?
+
+    # access_tokenさえ知っていればアクセス制限無し
     @attachment = Attachment.find_by(id: params[:id])
 
     halt 403 if @attachment.access_token != params[:access_token]

@@ -18,16 +18,29 @@ describe 'Answers' do
     subject { response.status }
 
     by_nologin     { is_expected.to eq 200 }
-    by_viewer      { is_expected.to eq 200 }
     by_participant { is_expected.to eq 200 }
+    by_viewer      { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
+
+    context 'when contest stop' do
+      before do
+        allow(Config).to receive(:competition_stop).and_return(true)
+      end
+
+      subject { json_response.size }
+      by_nologin     { is_expected.to eq 0 }
+      by_participant { is_expected.to eq 0 }
+      by_viewer      { is_expected.to eq 4 }
+      by_writer      { is_expected.to eq 4 }
+      by_admin       { is_expected.to eq 4 }
+    end
 
     describe '#size' do
       subject { json_response.size }
       by_nologin     { is_expected.to eq 0 }
-      by_viewer      { is_expected.to eq 4 }
       by_participant { is_expected.to eq 2 }
+      by_viewer      { is_expected.to eq 4 }
       by_writer      { is_expected.to eq 4 }
       by_admin       { is_expected.to eq 4 }
     end
@@ -46,10 +59,22 @@ describe 'Answers' do
     subject { response.status }
 
     by_nologin     { is_expected.to eq 404 }
-    by_viewer      { is_expected.to eq 200 }
     by_participant { is_expected.to eq 200 }
+    by_viewer      { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
+
+    context 'when contest stop' do
+      before do
+        allow(Config).to receive(:competition_stop).and_return(true)
+      end
+
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 200 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
 
     describe '#size' do
       subject { json_response.size }
@@ -72,6 +97,18 @@ describe 'Answers' do
     by_participant { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
+
+    context 'when contest stop' do
+      before do
+        allow(Config).to receive(:competition_stop).and_return(true)
+      end
+
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 200 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
 
     describe 'answer created by other team' do
       let!(:answer) { create(:answer, team: create(:team)) }
@@ -102,14 +139,29 @@ describe 'Answers' do
       }
     end
 
+    context 'when contest stop' do
+      let(:expected_keys) { %w(id problem_id team_id text created_at updated_at) }
+      let(:response) { post "/api/problems/#{problem.id}/answers", params }
+      subject { response.status }
+
+      before do
+        allow(Config).to receive(:competition_stop).and_return(true)
+      end
+
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 404 }
+    end
+
     describe 'create answer' do
       let(:expected_keys) { %w(id problem_id team_id text created_at updated_at) }
       let(:response) { post "/api/problems/#{problem.id}/answers", params }
       subject { response.status }
 
       by_nologin     { is_expected.to eq 404 }
-      by_viewer      { is_expected.to eq 403 }
-      by_writer      { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 404 }
 
       by_participant do
         is_expected.to eq 201
@@ -227,8 +279,17 @@ describe 'Answers' do
         it_behaves_like 'expected statuses for roles having no permission'
 
         by_admin       { is_expected.to eq 200 }
-
         by_admin       { expect(json_response['problem_id']).to eq new_problem_id }
+      end
+
+      context 'PUT when contest stop' do
+        before do
+          allow(Config).to receive(:competition_stop).and_return(true)
+        end
+
+        let(:response) { put "/api/answers/#{answer.id}", params }
+        subject { response.status }
+        it_behaves_like 'expected statuses for roles having no permission'
       end
 
       describe 'PUT answer with created_at' do

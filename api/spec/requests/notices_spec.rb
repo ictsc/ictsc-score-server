@@ -6,13 +6,28 @@ describe 'Notices' do
   describe 'GET /api/notices' do
     let!(:notices) { create_list(:notice, 2) }
     let(:response) { get '/api/notices' }
-    subject { response.status }
 
-    by_nologin     { is_expected.to eq 200 }
-    by_viewer      { is_expected.to eq 200 }
-    by_participant { is_expected.to eq 200 }
-    by_writer      { is_expected.to eq 200 }
-    by_admin       { is_expected.to eq 200 }
+    describe 'access control' do
+      subject { response.status }
+
+      by_nologin     { is_expected.to eq 200 }
+      by_viewer      { is_expected.to eq 200 }
+      by_participant { is_expected.to eq 200 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+
+      context 'when contest stop' do
+        before do
+          allow(Config).to receive(:competition_stop).and_return(true)
+        end
+
+        by_nologin     { is_expected.to eq 200 }
+        by_viewer      { is_expected.to eq 200 }
+        by_participant { is_expected.to eq 200 }
+        by_writer      { is_expected.to eq 200 }
+        by_admin       { is_expected.to eq 200 }
+      end
+    end
 
     describe '#size' do
       subject { json_response.size }
@@ -34,6 +49,18 @@ describe 'Notices' do
     by_participant { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
+
+    context 'when contest stop' do
+      before do
+        allow(Config).to receive(:competition_stop).and_return(true)
+      end
+
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 200 }
+      by_participant { is_expected.to eq 200 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
 
     describe '#keys' do
       let(:expected_keys) { %w(id title text pinned member_id created_at updated_at) }

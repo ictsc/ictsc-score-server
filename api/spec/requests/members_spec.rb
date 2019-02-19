@@ -19,6 +19,18 @@ describe 'Members' do
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
 
+      context 'when contest stop' do
+        before do
+          allow(Config).to receive(:competition_stop).and_return(:false)
+        end
+
+        by_nologin     { is_expected.to eq 200 }
+        by_viewer      { is_expected.to eq 200 }
+        by_participant { is_expected.to eq 200 }
+        by_writer      { is_expected.to eq 200 }
+        by_admin       { is_expected.to eq 200 }
+      end
+
       describe '#keys' do
         subject { json_response.map{|x| x["role_id"] }.uniq }
         by_nologin     { is_expected.to match_array [] }
@@ -45,6 +57,18 @@ describe 'Members' do
       by_viewer      { is_expected.to eq 200 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
+
+      context 'when contest stop' do
+        before do
+          # allow(Config).to receive(:competition_stop).and_return(true)
+        end
+
+        by_nologin     { is_expected.to eq 404 }
+        by_participant { is_expected.to eq 404 }
+        by_viewer      { is_expected.to eq 200 }
+        by_writer      { is_expected.to eq 200 }
+        by_admin       { is_expected.to eq 200 }
+      end
     end
 
     describe 'get participant member' do
@@ -52,10 +76,22 @@ describe 'Members' do
       subject { response.status }
 
       by_nologin     { is_expected.to eq 404 }
-      by_viewer      { is_expected.to eq 200 }
       by_participant { is_expected.to eq 200 }
+      by_viewer      { is_expected.to eq 200 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
+
+      context 'when contest stop' do
+        before do
+          allow(Config).to receive(:competition_stop).and_return(true)
+        end
+
+        by_nologin     { is_expected.to eq 404 }
+        by_participant { is_expected.to eq 200 }
+        by_viewer      { is_expected.to eq 200 }
+        by_writer      { is_expected.to eq 200 }
+        by_admin       { is_expected.to eq 200 }
+      end
     end
 
     describe 'get writer member' do
@@ -67,6 +103,18 @@ describe 'Members' do
       by_viewer      { is_expected.to eq 200 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
+
+      context 'when contest stop' do
+        before do
+          allow(Config).to receive(:competition_stop).and_return(true)
+        end
+
+        by_nologin     { is_expected.to eq 404 }
+        by_participant { is_expected.to eq 404 }
+        by_viewer      { is_expected.to eq 200 }
+        by_writer      { is_expected.to eq 200 }
+        by_admin       { is_expected.to eq 200 }
+      end
     end
 
     describe 'get admin member' do
@@ -74,10 +122,22 @@ describe 'Members' do
       subject { response.status }
 
       by_nologin     { is_expected.to eq 404 }
-      by_viewer      { is_expected.to eq 404 }
       by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
       by_writer      { is_expected.to eq 404 }
       by_admin       { is_expected.to eq 200 }
+
+      context 'when contest stop' do
+        before do
+          allow(Config).to receive(:competition_stop).and_return(true)
+        end
+
+        by_nologin     { is_expected.to eq 404 }
+        by_participant { is_expected.to eq 404 }
+        by_viewer      { is_expected.to eq 404 }
+        by_writer      { is_expected.to eq 404 }
+        by_admin       { is_expected.to eq 200 }
+      end
     end
   end
 

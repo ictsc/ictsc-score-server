@@ -70,9 +70,10 @@ class AnswersController < ApplicationController
   end
 
   before '/api/problems/:id/answers' do
-    # Problemのフィルタを使うから注意
     @problem = Problem.find_by(id: params[:id])
-    pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET')
+
+    # Problemのフィルタも使うから注意
+    pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET') and Answer.allowed_to_create_by?(current_user)
     halt 404 unless @problem&.allowed?(by: current_user, method: request.request_method)
   end
 

@@ -34,8 +34,7 @@ class NoticesController < ApplicationController
   end
 
   get '/api/notices/:id' do
-    @notice = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !is_admin?)
-    json @notice
+    json generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !is_admin?)
   end
 
   update_notice_block = proc do
