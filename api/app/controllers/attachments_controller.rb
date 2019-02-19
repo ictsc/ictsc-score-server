@@ -4,6 +4,7 @@ require 'digest/sha2'
 class AttachmentsController < ApplicationController
   before '/api/attachments*' do
     I18n.locale = :en if request.xhr?
+    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
   end
 
   get '/api/attachments' do

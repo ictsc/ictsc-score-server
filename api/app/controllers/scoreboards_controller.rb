@@ -8,6 +8,7 @@ class ScoreboardsController < ApplicationController
   before '/api/scoreboard*' do
     I18n.locale = :en if request.xhr?
 
+    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
     halt 400 if is_nologin?
     halt 400 if is_participant? && (!Config.in_competition_time? || Config.scoreboard_hide_at <= DateTime.now)
   end

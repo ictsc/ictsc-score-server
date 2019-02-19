@@ -53,17 +53,17 @@ describe 'ProblemGroups' do
         allow(Config).to receive(:competition_time_day1_start_at).and_return(time)
       }
 
-      by_nologin     { is_expected.to eq 200 }
-      by_viewer      { is_expected.to eq 200 }
-      by_participant { is_expected.to eq 200 }
+      by_nologin     { is_expected.to eq 403 }
+      by_participant { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 403 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
 
       describe '#size' do
         subject { json_response.size }
-        by_nologin     { is_expected.to eq 0 }
-        by_viewer      { is_expected.to eq 2 }
-        by_participant { is_expected.to eq 0 }
+        # by_nologin     { is_expected.to eq 0 }
+        # by_participant { is_expected.to eq 0 }
+        # by_viewer      { is_expected.to eq 2 }
         by_writer      { is_expected.to eq 2 }
         by_admin       { is_expected.to eq 2 }
       end
@@ -110,14 +110,13 @@ describe 'ProblemGroups' do
         allow(Config).to receive(:competition_time_day1_start_at).and_return(time)
       }
 
-      by_nologin     { is_expected.to eq 404 }
-      by_viewer      { is_expected.to eq 200 }
-      by_participant { is_expected.to eq 404 }
+      by_nologin     { is_expected.to eq 403 }
+      by_participant { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 403 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
     end
   end
-
 
   describe 'POST /api/problem_groups' do
     let(:problem_group) { build(:problem_group) }

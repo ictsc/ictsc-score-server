@@ -2,6 +2,8 @@ class ScoresController < ApplicationController
   before '/api/scores*' do
     I18n.locale = :en if request.xhr?
 
+    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+
     @with_param = (params[:with] || '').split(',') & Score.allowed_nested_params(user: current_user) if request.get?
   end
 

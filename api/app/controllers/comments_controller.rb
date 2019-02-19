@@ -8,6 +8,8 @@ class CommentsController < ApplicationController
     before "/api/#{pluralize_name}/:commentable_id/comments*" do
       I18n.locale = :en if request.xhr?
 
+      halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+
       @action = "#{pluralize_name}_comments"
       @commentable_id = params[:commentable_id]
       @commentable = klass.readables(user: current_user, action: @action)

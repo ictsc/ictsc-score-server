@@ -5,6 +5,7 @@ class TeamsController < ApplicationController
 
   before '/api/teams*' do
     I18n.locale = :en if request.xhr?
+    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
 
     @with_param = (params[:with] || '').split(',') & Team.allowed_nested_params(user: current_user) if request.get?
   end

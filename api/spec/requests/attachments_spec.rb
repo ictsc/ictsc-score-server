@@ -19,16 +19,14 @@ describe 'Attachments' do
     by_admin       { is_expected.to eq 200 }
 
     context 'when contest stop' do
-      before do
-        allow(Config).to receive(:competition_stop).and_return(true)
-      end
+      before { allow(Config).to receive(:competition_stop).and_return(true) }
+      subject { response.status }
 
-      subject { json_response.size }
-      by_nologin     { is_expected.to eq 0 }
-      by_participant { is_expected.to eq 0 }
-      by_viewer      { is_expected.to eq 0 }
-      by_writer      { is_expected.to eq 2 }
-      by_admin       { is_expected.to eq 2 }
+      by_nologin     { is_expected.to eq 403 }
+      by_participant { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 403 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
     end
 
     describe '#size' do
@@ -53,15 +51,12 @@ describe 'Attachments' do
     by_admin       { is_expected.to eq 200 }
 
     context 'when contest stop' do
-      before do
-        allow(Config).to receive(:competition_stop).and_return(true)
-      end
-
+      before { allow(Config).to receive(:competition_stop).and_return(true) }
       subject { response.status }
 
-      by_nologin     { is_expected.to eq 404 }
-      by_viewer      { is_expected.to eq 404 }
-      by_participant { is_expected.to eq 404 }
+      by_nologin     { is_expected.to eq 403 }
+      by_participant { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 403 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
     end
@@ -102,6 +97,18 @@ describe 'Attachments' do
         file: file_to_upload,
         member_id: attachment.member_id
       }
+    end
+
+    context 'when contest stop' do
+      let(:response) { post '/api/attachments', params }
+      subject { response.status }
+      before { allow(Config).to receive(:competition_stop).and_return(true) }
+
+      by_nologin     { is_expected.to eq 403 }
+      by_participant { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 403 }
+      by_writer      { is_expected.to eq 201 }
+      by_admin       { is_expected.to eq 201 }
     end
 
     describe 'create attachment' do
@@ -156,9 +163,9 @@ describe 'Attachments' do
             allow(Config).to receive(:competition_stop).and_return(true)
           end
 
-          by_nologin     { is_expected.to eq 404 }
-          by_participant { is_expected.to eq 404 }
-          by_viewer      { is_expected.to eq 404 }
+          by_nologin     { is_expected.to eq 403 }
+          by_participant { is_expected.to eq 403 }
+          by_viewer      { is_expected.to eq 403 }
           by_writer      { is_expected.to eq 200 }
           by_admin       { is_expected.to eq 200 }
         end
@@ -194,7 +201,7 @@ describe 'Attachments' do
       by_admin       { is_expected.to eq 404 }
     end
 
-    context "PATCH" do
+    context 'PATCH' do
       let(:response) { patch "/api/attachments/#{attachment.id}", params }
 
       it_behaves_like 'expected success statuses'
@@ -228,7 +235,7 @@ describe 'Attachments' do
 
       context 'when contest stop' do
         before { allow(Config).to receive(:competition_stop).and_return(true) }
-        by_participant { is_expected.to eq 404 }
+        by_participant { is_expected.to eq 403 }
       end
     end
 

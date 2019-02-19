@@ -25,9 +25,9 @@ describe 'Scoreboards' do
       context 'when contest stop' do
         before { allow(Config).to receive(:competition_stop).and_return(true) }
 
-        by_nologin     { is_expected.to eq 400 }
-        by_participant { is_expected.to eq 400 }
-        by_viewer      { is_expected.to eq 200 }
+        by_nologin     { is_expected.to eq 403 }
+        by_participant { is_expected.to eq 403 }
+        by_viewer      { is_expected.to eq 403 }
         by_writer      { is_expected.to eq 200 }
         by_admin       { is_expected.to eq 200 }
       end
