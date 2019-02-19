@@ -1,6 +1,6 @@
 class Answer < ApplicationRecord
   validates :text,    presence: true, length: { maximum: 4095 }
-  validates :problem, presence: true
+  validates :problem, presence: true, uniqueness: { scope: %i[team_id created_at] }
   validates :team,    presence: true
   validates :score,   presence: false
   validates :first_correct_answer, presence: false

@@ -3,5 +3,7 @@ FactoryBot.define do
     sequence(:text) {|n| "answer_text_#{n}" }
     problem
     team
+    # DateTIme.nowがallowで固定されているとunique制約に引っかかる
+    sequence(:created_at) {|n| DateTime.now + n.seconds }
   end
 end
