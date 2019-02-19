@@ -61,8 +61,10 @@ class Problem < ApplicationRecord
 
   def self.readable_columns(user:, action: '', reference_keys: true)
     case user&.role_id
-    when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
+    when ROLE_ID[:admin], ROLE_ID[:writer]
       all_column_names(reference_keys: reference_keys)
+    when ROLE_ID[:viewer]
+      all_column_names(reference_keys: reference_keys) - %w(secret_text)
     when ROLE_ID[:participant]
       case action
       when 'not_opened'
