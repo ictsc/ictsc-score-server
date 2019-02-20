@@ -33,14 +33,14 @@ spec:
   template:
     metadata:
       labels:
-        ictsc9-score: api
+        ictsc2018-score: api
     spec:
       containers:
-        - image: hotter/ictsc-score-server:api
+        - image: upluse10/ictsc-score-server:api
           imagePullPolicy: Always
           name: api
           ports:
-            - containerPort: 3000
+            - containerPort: 8900
               name: api
           envFrom:
             - configMapRef:
@@ -59,47 +59,40 @@ kind: ConfigMap
 metadata:
   name: api-env
 data:
-  API_CONTEST_ANSWER_REPLY_DELAY_SEC: "1200"
-  # API_CONTEST_COMPETITION_START_AT: 2018-03-03 10:40:00 +0900
-  # API_CONTEST_COMPETITION_START_AT: 2018-03-04 10:05:00 +0900
-  API_CONTEST_COMPETITION_START_AT: 2018-03-04 13:00:00 +0900
-  API_CONTEST_SCOREBOARD_HIDE_AT: 2018-03-04 12:00:00 +0900
-  API_CONTEST_COMPETITION_END_AT: 2018-03-04 15:40:00 +0900
-  API_SESSION_USE_REDIS: "y"
-  API_SESSION_REDIS_SERVER: "redis://redis:6379/0"
-  API_CONTEST_REDIS_REALTIME_NOTIFICATION_CHANNEL: realtime_notification
-  API_CONTEST_SCOREBOARD_VIEWABLE_TOP: "3"
-  API_CONTEST_SCOREBOARD_VIEWABLE_TOP_SHOW_SCORE: "true"
-  API_CONTEST_SCOREBOARD_VIEWABLE_TOP_SHOW_TEAM: "true"
-  API_CONTEST_SCOREBOARD_VIEWABLE_UP_SHOW_SCORE: "true"
-  API_CONTEST_SCOREBOARD_VIEWABLE_UP_SHOW_TEAM: "false"
-  API_SESSION_COOKIE_KEY: ictsc_score_server
-  API_SESSION_COOKIE_SECRET: SECRET
+  TZ: Asia/Tokyo
+  RACK_ENV: production
+  RAILS_ENV: production
+
+  MYSQL_HOST: db
+  MYSQL_PORT: 3306
+  MYSQL_USER: root
   MYSQL_DATABASE: ictsc_score_server
-  MYSQL_HOST: mysql
   MYSQL_PASSWORD: PASSWORD
   MYSQL_ROOT_PASSWORD: PASSWORD
-  MYSQL_USER: root
+
+  API_SESSION_USE_REDIS: "y"
+  API_SESSION_COOKIE_KEY: ictsc_score_server
+  API_SESSION_COOKIE_SECRET: SECRET
+  API_SESSION_REDIS_SERVER: "redis://redis:6379/0"
+  API_CONTEST_REDIS_REALTIME_NOTIFICATION_CHANNEL: realtime_notification
+
   PLASMA_SUBSCRIBER_REDIS_ADDR: redis:6379
   PLASMA_SUBSCRIBER_REDIS_CHANNELS: realtime_notification
-  RACK_ENV: development
-  # REDIS_URL: redis://redis:6379/0
   REDIS_URL: redis://redis:6379/0
-  TZ: Asia/Tokyo
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    ictsc9-score: api
+    ictsc2018-score: api
   name: api
 spec:
   ports:
     - name: api
-      port: 3000
-      targetPort: 3000
+      port: 8900
+      targetPort: 8900
   selector:
-    ictsc9-score: api
+    ictsc2018-score: api
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -124,8 +117,4 @@ spec:
           - path: /api
             backend:
               serviceName: api
-              servicePort: 3000
-          - path: /attachments
-            backend:
-              serviceName: api
-              servicePort: 3000
+              servicePort: 8900
