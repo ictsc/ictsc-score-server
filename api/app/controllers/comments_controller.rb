@@ -8,7 +8,7 @@ class CommentsController < ApplicationController
     before "/api/#{pluralize_name}/:commentable_id/comments*" do
       I18n.locale = :en if request.xhr?
 
-      halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+      halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
 
       @action = "#{pluralize_name}_comments"
       @commentable_id = params[:commentable_id]
@@ -35,7 +35,7 @@ class CommentsController < ApplicationController
     end
 
     post "/api/#{pluralize_name}/:commentable_id/comments" do
-      halt 403 unless Comment.allowed_to_create_by?(current_user, action: @action)
+      halt 404 unless Comment.allowed_to_create_by?(current_user, action: @action)
 
       @attrs = params_to_attributes_of(klass: Comment)
       @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?

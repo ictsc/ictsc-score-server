@@ -9,7 +9,7 @@ class ConfigsController < ApplicationController
   end
 
   post '/api/configs' do
-    halt 403 unless Config.allowed_to_create_by?(current_user)
+    halt 404 unless Config.allowed_to_create_by?(current_user)
 
     @config = Config.new(params_to_attributes_of(klass: Config))
 

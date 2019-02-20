@@ -1,7 +1,7 @@
 class IssuesController < ApplicationController
   before '/api/issues*' do
     I18n.locale = :en if request.xhr?
-    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
 
     @with_param = (params[:with] || '').split(',') & Issue.allowed_nested_params(user: current_user) if request.get?
   end
@@ -60,7 +60,7 @@ class IssuesController < ApplicationController
 
   before '/api/problems/:id/issues' do
     @problem = Problem.find_by(id: params[:id])
-    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
     pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET')
     halt 404 unless @problem&.allowed?(by: current_user, method: request.request_method)
   end
@@ -72,7 +72,7 @@ class IssuesController < ApplicationController
   end
 
   post '/api/problems/:id/issues' do
-    halt 403 unless Issue.allowed_to_create_by?(current_user)
+    halt 404 unless Issue.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Issue)
     @attrs[:team_id] = current_user.team_id if !is_admin? && !is_writer?

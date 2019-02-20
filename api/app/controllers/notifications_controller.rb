@@ -1,6 +1,6 @@
 class NotificationsController < ApplicationController
   get '/api/notifications' do # rubocop:disable Metrics/BlockLength
-    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
 
     notifications = []
 

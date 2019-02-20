@@ -167,8 +167,8 @@ describe 'Members' do
         expect(json_response['role_id']).to eq member.role.id
       end
 
-      by_viewer      { is_expected.to eq 403 }
-      by_participant { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
 
       all_success_block = Proc.new do
         is_expected.to eq 201
@@ -209,10 +209,10 @@ describe 'Members' do
       let(:response) { post '/api/members', params_with_admin_role_id }
       subject { response.status }
 
-      by_nologin     { is_expected.to eq 403 }
-      by_viewer      { is_expected.to eq 403 }
-      by_participant { is_expected.to eq 403 }
-      by_writer      { is_expected.to eq 403 }
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 404 }
       by_admin do
         is_expected.to eq 201
         expect(json_response.keys).to match_array expected_keys

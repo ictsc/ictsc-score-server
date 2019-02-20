@@ -11,7 +11,7 @@ class NoticesController < ApplicationController
   end
 
   post '/api/notices' do
-    halt 403 unless Notice.allowed_to_create_by?(current_user)
+    halt 404 unless Notice.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Notice)
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?

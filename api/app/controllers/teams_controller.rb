@@ -5,7 +5,7 @@ class TeamsController < ApplicationController
 
   before '/api/teams*' do
     I18n.locale = :en if request.xhr?
-    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
 
     @with_param = (params[:with] || '').split(',') & Team.allowed_nested_params(user: current_user) if request.get?
   end
@@ -32,7 +32,7 @@ class TeamsController < ApplicationController
   end
 
   post '/api/teams' do
-    halt 403 unless Team.allowed_to_create_by?(current_user)
+    halt 404 unless Team.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Team, exclude: [:hashed_registration_code], include: [:registration_code])
 

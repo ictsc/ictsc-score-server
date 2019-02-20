@@ -2,7 +2,7 @@ class ProblemGroupsController < ApplicationController
   before '/api/problem_groups*' do
     I18n.locale = :en if request.xhr?
 
-    halt 403 if !is_admin? && !is_writer? && !Config.in_competition_time?
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
 
     @with_param = (params[:with] || '').split(',') & ProblemGroup.allowed_nested_params(user: current_user) if request.get?
     @as_option = { methods: [:problem_ids] }
@@ -14,7 +14,7 @@ class ProblemGroupsController < ApplicationController
   end
 
   post '/api/problem_groups' do
-    halt 403 unless ProblemGroup.allowed_to_create_by?(current_user)
+    halt 404 unless ProblemGroup.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: ProblemGroup, include: [:problem_ids])
 

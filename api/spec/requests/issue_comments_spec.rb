@@ -30,9 +30,9 @@ describe 'Issue comments' do
       before { allow(Config).to receive(:competition_stop).and_return(true) }
       subject { response.status }
 
-      by_nologin     { is_expected.to eq 403 }
-      by_participant { is_expected.to eq 403 }
-      by_viewer      { is_expected.to eq 403 }
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
     end
@@ -118,7 +118,7 @@ describe 'Issue comments' do
       subject { response.status }
 
       by_nologin     { is_expected.to eq 404 }
-      by_viewer      { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 404 }
 
       by_participant do
           is_expected.to eq 201
