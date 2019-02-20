@@ -64,6 +64,7 @@ class Answer < ApplicationRecord
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
     when ROLE_ID[:participant]
+      next none unless Config.in_competition_time?
       where(team: user.team)
     else # nologin, ...
       none

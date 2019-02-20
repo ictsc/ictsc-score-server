@@ -11,7 +11,7 @@ class NoticesController < ApplicationController
   end
 
   post '/api/notices' do
-    halt 403 unless Notice.allowed_to_create_by?(current_user)
+    halt 404 unless Notice.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Notice)
     @attrs[:member_id] = current_user.id if (not is_admin?) || @attrs[:member_id].nil?
@@ -34,8 +34,7 @@ class NoticesController < ApplicationController
   end
 
   get '/api/notices/:id' do
-    @notice = generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !is_admin?)
-    json @notice
+    json generate_nested_hash(klass: Notice, by: current_user, params: @with_param, id: params[:id].to_i, apply_filter: !is_admin?)
   end
 
   update_notice_block = proc do

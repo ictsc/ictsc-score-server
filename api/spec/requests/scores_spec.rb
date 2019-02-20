@@ -24,6 +24,17 @@ describe 'Scores' do
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
+    context 'when contest stop' do
+      subject { response.status }
+      before { allow(Config).to receive(:competition_stop).and_return(true) }
+
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
+
     describe '#size' do
       subject { json_response.size }
       by_nologin     { is_expected.to eq 0 }
@@ -33,16 +44,20 @@ describe 'Scores' do
       by_admin       { is_expected.to eq 2 }
 
       describe 'before passed Settings.grading_delay_sec' do
+        subject { response.status }
+
         by_participant do
           allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
-          is_expected.to eq 0
+          is_expected.to eq 404
         end
       end
 
       describe 'after competition end' do
+        subject { response.status }
+
         by_participant do
           allow(DateTime).to receive(:now).and_return(Config.competition_end_at + 10.minute)
-          is_expected.to eq 0
+          is_expected.to eq 404
         end
       end
     end
@@ -139,6 +154,17 @@ describe 'Scores' do
     by_writer      { is_expected.to eq 303 }
     by_admin       { is_expected.to eq 303 }
 
+    context 'when contest stop' do
+      subject { response.status }
+      before { allow(Config).to receive(:competition_stop).and_return(true) }
+
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 303 }
+      by_admin       { is_expected.to eq 303 }
+    end
+
     describe 'before passed Settings.grading_delay_sec' do
       by_participant do
         allow(DateTime).to receive(:now).and_return(score.answer.created_at + 60.seconds)
@@ -187,8 +213,8 @@ describe 'Scores' do
       subject { response.status }
 
       by_nologin     { is_expected.to eq 404 }
-      by_viewer      { is_expected.to eq 403 }
-      by_participant { is_expected.to eq 403 }
+      by_viewer      { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
 
       all_success_block = Proc.new do
         is_expected.to eq 201

@@ -2,6 +2,8 @@ class ScoresController < ApplicationController
   before '/api/scores*' do
     I18n.locale = :en if request.xhr?
 
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
+
     @with_param = (params[:with] || '').split(',') & Score.allowed_nested_params(user: current_user) if request.get?
   end
 
@@ -82,7 +84,7 @@ class ScoresController < ApplicationController
   end
 
   post '/api/answers/:id/score' do
-    halt 403 unless Score.allowed_to_create_by?(current_user)
+    halt 404 unless Score.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Score)
     @attrs[:marker_id] = current_user.id if !is_admin? || @attrs[:marker_id].nil?

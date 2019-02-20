@@ -1,5 +1,7 @@
 class NotificationsController < ApplicationController
   get '/api/notifications' do # rubocop:disable Metrics/BlockLength
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
+
     notifications = []
 
     if Config.competition_start_at <= DateTime.now

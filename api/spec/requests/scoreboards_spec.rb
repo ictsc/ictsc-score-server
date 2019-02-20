@@ -12,16 +12,25 @@ describe 'Scoreboards' do
       allow(Config).to receive(:competition_end_at).and_return(now + 1.minute)
     }
 
-
     describe 'response status' do
       let(:response) { get '/api/scoreboard' }
       subject { response.status }
 
       by_nologin     { is_expected.to eq 400 }
-      by_viewer      { is_expected.to eq 200 }
       by_participant { is_expected.to eq 200 }
+      by_viewer      { is_expected.to eq 200 }
       by_writer      { is_expected.to eq 200 }
       by_admin       { is_expected.to eq 200 }
+
+      context 'when contest stop' do
+        before { allow(Config).to receive(:competition_stop).and_return(true) }
+
+        by_nologin     { is_expected.to eq 404 }
+        by_participant { is_expected.to eq 404 }
+        by_viewer      { is_expected.to eq 404 }
+        by_writer      { is_expected.to eq 200 }
+        by_admin       { is_expected.to eq 200 }
+      end
     end
 
     describe 'response status after scoreboard hide' do

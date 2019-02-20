@@ -41,6 +41,17 @@ describe 'Problems' do
       by_admin       { is_expected.to eq 4 }
     end
 
+    context 'when contest stop' do
+      before { allow(Config).to receive(:competition_stop).and_return(true) }
+      subject { response.status }
+
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
+
     describe '#keys for problem' do
       let(:json_response_problem) { json_response.find{|p| p['id'] == problem.id } }
       subject { json_response_problem.keys }
@@ -133,6 +144,17 @@ describe 'Problems' do
     by_viewer      { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
+
+    context 'when contest stop' do
+      before { allow(Config).to receive(:competition_stop).and_return(true) }
+      subject { response.status }
+
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
 
     describe "problem have solved by other team before problem must solve" do
       let(:team) { create(:team) }
@@ -271,9 +293,9 @@ describe 'Problems' do
       let(:response) { post '/api/problems', params }
       subject { response.status }
 
-      by_nologin     { is_expected.to eq 403 }
-      by_viewer      { is_expected.to eq 403 }
-      by_participant { is_expected.to eq 403 }
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
 
       all_success_block = Proc.new do
         is_expected.to eq 201

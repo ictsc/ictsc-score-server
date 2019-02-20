@@ -11,7 +11,7 @@ class MembersController < ApplicationController
   end
 
   post '/api/members' do
-    halt 403 unless Member.allowed_to_create_by?(current_user)
+    halt 404 unless Member.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Member, exclude: [:hashed_password], include: [:password])
 
@@ -31,7 +31,7 @@ class MembersController < ApplicationController
     @member = Member.new(@attrs)
 
     unless Role.permitted_to_create_by?(user: current_user, role_id: @member.role_id)
-      halt 403
+      halt 404
     end
 
     if @member.save

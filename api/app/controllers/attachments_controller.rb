@@ -4,6 +4,7 @@ require 'digest/sha2'
 class AttachmentsController < ApplicationController
   before '/api/attachments*' do
     I18n.locale = :en if request.xhr?
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
   end
 
   get '/api/attachments' do
@@ -12,7 +13,7 @@ class AttachmentsController < ApplicationController
   end
 
   post '/api/attachments' do
-    halt 403 unless Attachment.allowed_to_create_by?(current_user)
+    halt 404 unless Attachment.allowed_to_create_by?(current_user)
 
     file = params[:file]
     halt 400 if file.blank?
@@ -59,10 +60,12 @@ class AttachmentsController < ApplicationController
 
   # ファイルを取得
   get '/api/attachments/:id/:access_token' do
-    # アクセス制限無し
+    halt 404 if !(is_admin? || is_writer?) && !Config.in_competition_time?
+
+    # access_tokenさえ知っていればアクセス制限無し
     @attachment = Attachment.find_by(id: params[:id])
 
-    halt 403 if @attachment.access_token != params[:access_token]
+    halt 404 if @attachment.access_token != params[:access_token]
 
     send_attachment
   end

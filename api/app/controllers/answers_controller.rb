@@ -2,6 +2,8 @@ class AnswersController < ApplicationController
   before '/api/answers*' do
     I18n.locale = :en if request.xhr?
 
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
+
     @with_param = (params[:with] || '').split(',') & Answer.allowed_nested_params(user: current_user) if request.get?
   end
 
@@ -70,9 +72,12 @@ class AnswersController < ApplicationController
   end
 
   before '/api/problems/:id/answers' do
-    # Problemのフィルタを使うから注意
+    halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
+
     @problem = Problem.find_by(id: params[:id])
-    pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET')
+
+    # Problemのフィルタも使うから注意
+    pass if request.post? and @problem&.allowed?(by: current_user, method: 'GET') and Answer.allowed_to_create_by?(current_user)
     halt 404 unless @problem&.allowed?(by: current_user, method: request.request_method)
   end
 
@@ -83,7 +88,7 @@ class AnswersController < ApplicationController
   end
 
   post '/api/problems/:id/answers' do
-    halt 403 unless Answer.allowed_to_create_by?(current_user)
+    halt 404 unless Answer.allowed_to_create_by?(current_user)
 
     @attrs = params_to_attributes_of(klass: Answer)
     @attrs[:team_id] = current_user.team_id unless is_admin?

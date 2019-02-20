@@ -30,6 +30,7 @@ class Attachment < ApplicationRecord
     when ROLE_ID[:admin], ROLE_ID[:writer]
       true
     when ROLE_ID[:participant]
+      return false unless Config.in_competition_time?
       member_id == by.id
     else # nologin, ...
       false

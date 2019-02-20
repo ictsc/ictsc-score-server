@@ -13,8 +13,20 @@ describe 'Teams' do
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
 
+    context 'when contest stop' do
+      before do
+        allow(Config).to receive(:competition_stop).and_return(true)
+      end
+
+      by_nologin     { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
+
     describe '#size' do
-      let!(:teams) { create(:team) }
+     let!(:teams) { create(:team) }
       subject { json_response.size }
 
       # including my team
@@ -37,6 +49,18 @@ describe 'Teams' do
     by_participant { is_expected.to eq 200 }
     by_writer      { is_expected.to eq 200 }
     by_admin       { is_expected.to eq 200 }
+
+    context 'when contest stop' do
+      before do
+        allow(Config).to receive(:competition_stop).and_return(true)
+      end
+
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
+      by_writer      { is_expected.to eq 200 }
+      by_admin       { is_expected.to eq 200 }
+    end
 
     describe '#keys' do
       let(:expected_keys) { %w(id name organization created_at updated_at) }
@@ -65,9 +89,9 @@ describe 'Teams' do
       let(:response) { post '/api/teams', params }
       subject { response.status }
 
-      by_nologin     { is_expected.to eq 403 }
-      by_viewer      { is_expected.to eq 403 }
-      by_participant { is_expected.to eq 403 }
+      by_nologin     { is_expected.to eq 404 }
+      by_viewer      { is_expected.to eq 404 }
+      by_participant { is_expected.to eq 404 }
 
       all_success_block = Proc.new do
         is_expected.to eq 201

@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
   end
 
   post '/api/session' do
-    halt 403 if logged_in?
+    halt 404 if logged_in?
 
     unless Member.exists?(login: params[:login])
       status 401
@@ -51,7 +51,7 @@ class SessionsController < ApplicationController
       logout
       json status: 'success'
     else
-      status 403
+      status 404
       json status: 'failed'
     end
   end
