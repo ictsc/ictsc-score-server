@@ -2,16 +2,16 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    ictsc9-score: ui
+    ictsc2018-score: ui
   name: ui
 spec:
   template:
     metadata:
       labels:
-        ictsc9-score: ui
+        ictsc2018-score: ui
     spec:
       containers:
-        - image: hotter/ictsc-score-server:ui
+        - image: upluse10/ictsc-score-server:ui
           imagePullPolicy: Always
           name: ui
           ports:
@@ -23,7 +23,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    ictsc9-score: ui
+    ictsc2018-score: ui
   name: ui
 spec:
   ports:
@@ -31,7 +31,7 @@ spec:
       port: 80
       targetPort: 80
   selector:
-    ictsc9-score: ui
+    ictsc2018-score: ui
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

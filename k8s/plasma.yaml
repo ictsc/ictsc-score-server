@@ -2,14 +2,14 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    ictsc9-score: plasma
+    ictsc2018-score: plasma
   name: plasma
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        ictsc9-score: plasma
+        ictsc2018-score: plasma
     spec:
       containers:
         - image: openfresh/plasma:latest
@@ -42,7 +42,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    ictsc9-score: plasma
+    ictsc2018-score: plasma
   name: plasma
 spec:
   ports:
@@ -51,4 +51,4 @@ spec:
       targetPort: 8080
   clusterIP: None
   selector:
-    ictsc9-score: plasma
+    ictsc2018-score: plasma
