@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    ictsc9-score: redis
+  name: redis
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        ictsc9-score: redis
+    spec:
+      containers:
+      - image: redis:3.2-alpine
+        name: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    ictsc9-score: redis
+  name: redis
+spec:
+  ports:
+  - name: reids
+    port: 6379
+    targetPort: 6379
+  selector:
+    ictsc9-score: redis
+status:
+  loadBalancer: {}
