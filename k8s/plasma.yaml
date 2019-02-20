@@ -12,15 +12,15 @@ spec:
         ictsc9-score: plasma
     spec:
       containers:
-      - image: openfresh/plasma:latest
-        name: plasma
-        envFrom:
-          - configMapRef:
-              name: plasma-env
-        ports:
-        - name: plasma
-          containerPort: 8080
-      restartPolicy: Always
+        - image: openfresh/plasma:latest
+          name: plasma
+          envFrom:
+            - configMapRef:
+                name: plasma-env
+          ports:
+            - name: plasma
+              containerPort: 8080
+          restartPolicy: Always
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -46,9 +46,9 @@ metadata:
   name: plasma
 spec:
   ports:
-  - name: "plasma"
-    port: 3003
-    targetPort: 8080
+    - name: "plasma"
+      port: 3003
+      targetPort: 8080
   clusterIP: None
   selector:
     ictsc9-score: plasma

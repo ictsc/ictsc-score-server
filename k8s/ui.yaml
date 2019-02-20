@@ -11,12 +11,12 @@ spec:
         ictsc9-score: ui
     spec:
       containers:
-      - image: hotter/ictsc-score-server:ui
-        imagePullPolicy: Always
-        name: ui
-        ports:
-        - name: ui
-          containerPort: 80
+        - image: hotter/ictsc-score-server:ui
+          imagePullPolicy: Always
+          name: ui
+          ports:
+            - name: ui
+              containerPort: 80
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -27,9 +27,9 @@ metadata:
   name: ui
 spec:
   ports:
-  - name: ui
-    port: 80
-    targetPort: 80
+    - name: ui
+      port: 80
+      targetPort: 80
   selector:
     ictsc9-score: ui
 ---
@@ -46,15 +46,14 @@ metadata:
     # ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
 spec:
   tls:
-  - hosts:
-    - contest.svc.icttoracon.net
-    secretName: ui-tls
+    - hosts:
+        - contest.svc.icttoracon.net
+      secretName: ui-tls
   rules:
-  - host: contest.svc.icttoracon.net
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: ui
-          servicePort: 80
-
+    - host: contest.svc.icttoracon.net
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: ui
+              servicePort: 80
