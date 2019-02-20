@@ -10,6 +10,7 @@ class Score < ApplicationRecord
   has_one :team, through: :answer
 
   after_save :refresh_first_correct_answer
+  after_destroy :destroy_fca
 
   def notification_payload(state: :created, **data)
     payload = super
@@ -117,22 +118,16 @@ class Score < ApplicationRecord
     point + bonus_point
   end
 
-  # TODO: FirstCorrectAnswer側に移す
   def refresh_first_correct_answer
-    if solved
-      # 既に同チームで同問題のFCAがあれば作成しない
-      # TODO: 先に提出されたAnswerが後でsolvedされるとバグる. created_atで判断する必要あり
-      FirstCorrectAnswer.create!(team: team, problem: problem, answer: answer) unless FirstCorrectAnswer.exists?(team: team, problem: problem)
-    else
-      # 採点修正
-      fca = FirstCorrectAnswer.find_by(team: team, problem: problem)
-      if fca
-        ActiveRecord::Base.transaction do
-          fca.destroy!
-          FirstCorrectAnswer.create!(team: team, problem: problem, answer: Answer.find_first_correct_answer(team: team, problem: problem))
-        end
-      end
+    ActiveRecord::Base.transaction do
+      FirstCorrectAnswer.find_by(team: team, problem: problem)&.destroy!
+      fca_candidate = Answer.find_first_correct_answer(team: team, problem: problem)
+      FirstCorrectAnswer.create!(team: team, problem: problem, answer: fca_candidate) unless fca_candidate.nil?
     end
+  end
+
+  def destroy_fca
+    answer.first_correct_answer&.destroy!
   end
 
   # method: POST
