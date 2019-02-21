@@ -1,34 +1,9 @@
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: api
-spec:
-  capacity:
-    storage: 16Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Recycle
-  nfs:
-    server: 172.16.30.11
-    path: "/opt/nfs/contest_api"
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: api-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 16Gi
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
   name: api
+  namespace: default
 spec:
   template:
     metadata:
@@ -45,19 +20,13 @@ spec:
           envFrom:
             - configMapRef:
                 name: api-env
-          volumeMounts:
-            - name: api-volume
-              mountPath: /usr/src/app/uploads
       restartPolicy: Always
-      volumes:
-        - name: api-volume
-          persistentVolumeClaim:
-            claimName: api-pvc
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: api-env
+  namespace: default
 data:
   TZ: "Asia/Tokyo"
   RACK_ENV: "production"
@@ -83,6 +52,7 @@ metadata:
   labels:
     ictsc2018-score: api
   name: api
+  namespace: default
 spec:
   ports:
     - name: api
@@ -95,6 +65,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: api
+  namespace: default
   annotations:
     nginx.org/server-snippet: "proxy_ssl_verify off;"
     kubernetes.io/ingress.allow-http: "false"
