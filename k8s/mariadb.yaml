@@ -1,0 +1,100 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: storage-db
+  namespace: default
+provisioner: kubernetes.io/gce-pd
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db
+  namespace: default
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    server: 172.16.30.101
+    path: "/export/default-mariadb"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  namespace: default
+spec:
+  serviceName: "mariadb"
+  replicas: 1
+  podManagementPolicy: "Parallel"
+  updateStrategy:
+    type: "RollingUpdate"
+  selector:
+    matchLabels:
+      ictsc2018-score: db
+  template:
+    metadata:
+      labels:
+        ictsc2018-score: db
+    spec:
+      priorityClassName: system-cluster-critical
+      containers:
+        - name: mariadb
+          image: mariadb:10.2
+          volumeMounts:
+            - name: mariadb
+              mountPath: /var/lib/mariadb
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - configMapRef:
+                name: db-env
+      volumes:
+      - name: mariadb
+        persistentVolumeClaim:
+          claimName: db-pvc
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-env
+  namespace: default
+data:
+  TZ: "Asia/Tokyo"
+  MYSQL_ROOT_PASSWORD: "PASSWORD"
+  MYSQL_DATABASE: "ictsc_score_server"
+  #MYSQL_USER: "root"
+  MYSQL_PASSWORD: "PASSWORD"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    ictsc2018-score: db
+  name: db
+  namespace: default
+spec:
+  ports:
+    - name: db
+      port: 3306
+      targetPort: 3306
+      nodePort: 30306
+  selector:
+    ictsc2018-score: db
+  type: NodePort
+
