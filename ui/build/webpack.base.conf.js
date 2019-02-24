@@ -3,6 +3,7 @@ var utils = require('./utils')
 var config = require('../config')
 var projectRoot = path.resolve(__dirname, '../')
 var vueLoaderConfig = require('./vue-loader.conf')
+var { VueLoaderPlugin } = require("vue-loader");
 
 var env = process.env.NODE_ENV
 
@@ -34,10 +35,7 @@ module.exports = {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
-        include: [resolve('src'), resolve('test')],
-        options: {
-          formatter: require('eslint-friendly-formatter')
-        }
+        include: [resolve('src'), resolve('test')]
       },
       {
         test: /\.vue$/,
@@ -74,5 +72,6 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [new VueLoaderPlugin()]
 }

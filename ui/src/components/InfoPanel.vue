@@ -30,7 +30,7 @@ import * as d3 from 'd3'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'info-panel',
+  name: 'InfoPanel',
   filters: {
     tickDuration,
   },

@@ -2,19 +2,39 @@
   <div v-loading="asyncLoading">
     <h1><small>{{ team.organization }}</small> {{ team.name }}</h1>
     <div class="members d-flex justify-content-around flex-wrap">
-      <div v-for="member in team.members" class="item d-flex flex-column justify-content-center">
-        <div class="name">{{ member.name }}</div>
-        <div class="login">{{ member.login }}</div>
+      <div
+        v-for="member in team.members"
+        class="item d-flex flex-column justify-content-center"
+      >
+        <div class="name">
+          {{ member.name }}
+        </div>
+        <div class="login">
+          {{ member.login }}
+        </div>
       </div>
     </div>
-    <div v-if="isStaff" class="problems">
-      <template v-for="problem in problems" class="item">
+    <div
+      v-if="isStaff"
+      class="problems"
+    >
+      <template
+        v-for="problem in problems"
+        class="item"
+      >
         <router-link
           :to="{ name: 'problem-answers', params: { team: id, id: problem.id} }"
-          class="d-flex item">
-          <div class="id">{{ problem.id }}</div>
-          <div class="title">{{ problem.title }}</div>
-          <div class="score">{{ point(problem.id) }} 点</div>
+          class="d-flex item"
+        >
+          <div class="id">
+            {{ problem.id }}
+          </div>
+          <div class="title">
+            {{ problem.title }}
+          </div>
+          <div class="score">
+            {{ point(problem.id) }} 点
+          </div>
         </router-link>
       </template>
     </div>
@@ -66,7 +86,7 @@ import { latestAnswer } from '../utils/Filters'
 import { nestedValue } from '../utils/Utils'
 
 export default {
-  name: 'team-detail',
+  name: 'TeamDetail',
   data () {
     return {
     }

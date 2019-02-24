@@ -2,17 +2,34 @@
   <div>
     <div class="notif-container">
       <transition-group name="list">
-        <div v-for="notif in notifs" class="outer" :key="notif.id">
-          <div class="item d-flex align-items-center" :class="{ ['item-' + notif.type]: true, }" v-on:click='notifClicked(notif)'>
+        <div
+          v-for="notif in notifs"
+          :key="notif.id"
+          class="outer"
+        >
+          <div
+            :class="{ ['item-' + notif.type]: true, }"
+            v-on:click="notifClicked(notif)"
+            class="item d-flex align-items-center"
+          >
             <div class="icon">
-              <i class="fa" :class="{ ['fa-' + notif.icon]: true, }"></i>
+              <i
+                :class="{ ['fa-' + notif.icon]: true, }"
+                class="fa"
+              />
             </div>
             <div class="body">
               <h5>{{ notif.title }}</h5>
               <p>{{ notif.body }}</p>
             </div>
-            <div class="x" v-on:click="hide(notif.id)">
-              <i class="fa fa-times" aria-hidden="true"></i>
+            <div
+              v-on:click="hide(notif.id)"
+              class="x"
+            >
+              <i
+                class="fa fa-times"
+                aria-hidden="true"
+              />
             </div>
           </div>
         </div>

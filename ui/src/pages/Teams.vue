@@ -2,29 +2,59 @@
   <div v-loading="asyncLoading">
     <h1>参加チーム</h1>
     <div class="row">
-      <div v-for="item in teams" class="col-4">
-        <router-link :to="{name: 'team-detail', params: {id: item.id}}"
-          class="team d-flex align-items-center">
+      <div
+        v-for="item in teams"
+        class="col-4"
+      >
+        <router-link
+          :to="{name: 'team-detail', params: {id: item.id}}"
+          class="team d-flex align-items-center"
+        >
           <div class="detail">
             <h3>{{ item.name }}</h3>
             <hr>
-            <div class="org">{{ item.organization }}</div>
+            <div class="org">
+              {{ item.organization }}
+            </div>
             <!--<div class="score">総スコア</div>-->
           </div>
         </router-link>
       </div>
     </div>
-    <div v-if="isAdmin || isWriter" class="row justify-content-center">
+    <div
+      v-if="isAdmin || isWriter"
+      class="row justify-content-center"
+    >
       <div class="col-4">
         <div class="team d-flex align-items-center">
           <div class="detail">
-            <input v-model="teamName" type="text" class="form-control" placeholder="チーム名">
+            <input
+              v-model="teamName"
+              type="text"
+              class="form-control"
+              placeholder="チーム名"
+            >
             <hr>
-            <input v-model="teamOrg" type="text" class="form-control" placeholder="組織名">
-            <input v-model="teamRegCode" type="text" class="form-control" placeholder="登録コード">
+            <input
+              v-model="teamOrg"
+              type="text"
+              class="form-control"
+              placeholder="組織名"
+            >
+            <input
+              v-model="teamRegCode"
+              type="text"
+              class="form-control"
+              placeholder="登録コード"
+            >
           </div>
         </div>
-        <button v-on:click="addTeams()" class="btn btn-success btn-lg btn-block">追加</button>
+        <button
+          v-on:click="addTeams()"
+          class="btn btn-success btn-lg btn-block"
+        >
+          追加
+        </button>
       </div>
     </div>
   </div>
@@ -87,7 +117,7 @@ import { Emit, PUSH_NOTIF, REMOVE_NOTIF } from '../utils/EventBus'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'teams',
+  name: 'Teams',
   data () {
     return {
       teamName: '',
@@ -118,7 +148,7 @@ export default {
     addTeams () {
       Emit(REMOVE_NOTIF, msg => msg.key === 'teams');
       API.addTeams(this.teamName, this.teamOrg, this.teamRegCode)
-        .then(res => {
+        .then(_res => {
           this.asyncReload();
           Emit(PUSH_NOTIF, {
             type: 'success',

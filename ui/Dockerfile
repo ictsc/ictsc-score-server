@@ -1,4 +1,4 @@
-FROM node:6-alpine AS build-temp
+FROM node:8.15.0-alpine AS build-temp
 
 LABEL maintainer "ICTSC"
 

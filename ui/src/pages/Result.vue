@@ -2,15 +2,22 @@
   <div>
     <h1>Result</h1>
     <graph
-      title="タイトル"
-      class="graph access"
       :graph-data="result"
       :height="500"
       :notfound="false"
-      v-loading="asyncLoading"></graph>
+      v-loading="asyncLoading"
+      title="タイトル"
+      class="graph access"
+    />
     <div class="list">
-      <div v-for="item in result" class="item">
-        <i class="tag" :style="{ background: item.color }"></i> {{ item.name }}
+      <div
+        v-for="item in result"
+        class="item"
+      >
+        <i
+          :style="{ background: item.color }"
+          class="tag"
+        /> {{ item.name }}
       </div>
     </div>
   </div>
@@ -40,19 +47,13 @@ import * as _ from 'underscore'
 window.d3 = d3;
 
 export default {
-  name: 'result',
+  name: 'Result',
   components: {
     Graph,
   },
   data () {
     return {
     }
-  },
-  asyncData: {
-    teamsDefault: [],
-    teams () {
-      return API.getTeamsWithScore();
-    },
   },
   computed: {
     result () {
@@ -83,12 +84,18 @@ export default {
 
         return Object.assign({}, team, {
           answers: _.sortBy(answers, 'date'),
-          color: d3.schemeCategory20[index],
+          color: d3.interpolateSpectral(index / this.teams.length),
         });
       })
     },
   },
   watch: {
+  },
+  asyncData: {
+    teamsDefault: [],
+    teams () {
+      return API.getTeamsWithScore();
+    },
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ページ名');

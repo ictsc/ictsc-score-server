@@ -12,16 +12,16 @@
 import { SET_TITLE } from '../store/'
 
 export default {
-  name: 'not-found',
+  name: 'NotFound',
   data () {
     return {
     }
   },
-  asyncData: {
-  },
   computed: {
   },
   watch: {
+  },
+  asyncData: {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'NotFound');

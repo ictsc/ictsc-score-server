@@ -5,20 +5,66 @@
       <p>このページは質問一覧画面です。下のボタンを切り替えることで、表示される種類が絞り込めます。</p>
     </div>
     <div class="tools">
-      <button v-on:click="filterSelect = 0" :class="{ active: filterSelect == 0 }" class="btn label-secondary">全て表示</button>
-      <button v-on:click="filterSelect ^= 1" :class="{ active: filterSelect & 1 }" class="btn label-danger">未回答</button>
-      <button v-on:click="filterSelect ^= 2" :class="{ active: filterSelect & 2 }" class="btn label-warning">対応中</button>
-      <button v-on:click="filterSelect ^= 4" :class="{ active: filterSelect & 4 }" class="btn label-success">解決済</button>
+      <button
+        v-on:click="filterSelect = 0"
+        :class="{ active: filterSelect == 0 }"
+        class="btn label-secondary"
+      >
+        全て表示
+      </button>
+      <button
+        v-on:click="filterSelect ^= 1"
+        :class="{ active: filterSelect & 1 }"
+        class="btn label-danger"
+      >
+        未回答
+      </button>
+      <button
+        v-on:click="filterSelect ^= 2"
+        :class="{ active: filterSelect & 2 }"
+        class="btn label-warning"
+      >
+        対応中
+      </button>
+      <button
+        v-on:click="filterSelect ^= 4"
+        :class="{ active: filterSelect & 4 }"
+        class="btn label-success"
+      >
+        解決済
+      </button>
     </div>
-    <div v-loading="asyncLoading" class="issue-list">
-      <template v-for="item in currentIssues" class="">
+    <div
+      v-loading="asyncLoading"
+      class="issue-list"
+    >
+      <template
+        v-for="item in currentIssues"
+        class=""
+      >
         <router-link
           :to="{name: 'problem-issues', params: {id: '' + item.problem_id, team: '' + item.team_id, issue: '' + item.id}}"
-          class="item d-flex align-items-center">
+          class="item d-flex align-items-center"
+        >
           <div class="status">
-            <button v-if="item.status === 3" class="btn label-success">解決済</button>
-            <button v-else-if="item.status === 2" class="btn label-warning">対応中</button>
-            <button v-else-if="item.status === 1" class="btn label-danger">未回答</button>
+            <button
+              v-if="item.status === 3"
+              class="btn label-success"
+            >
+              解決済
+            </button>
+            <button
+              v-else-if="item.status === 2"
+              class="btn label-warning"
+            >
+              対応中
+            </button>
+            <button
+              v-else-if="item.status === 1"
+              class="btn label-danger"
+            >
+              未回答
+            </button>
           </div>
           <div class="title">
             <h4>{{ item.problem ? item.problem.title : '???' }}</h4>
@@ -31,18 +77,25 @@
             </p>
           </div>
           <div class="comments head">
-            <div class="content">{{ firstComment(item.comments).text }}</div>
-            <div class="meta">{{ firstComment(item.comments).member.name }}</div>
+            <div class="content">
+              {{ firstComment(item.comments).text }}
+            </div>
+            <div class="meta">
+              {{ firstComment(item.comments).member.name }}
+            </div>
           </div>
           <template v-if="lastResponseComment(item.comments).member">
-            <div  class="comments answer">
-              <div class="content">{{ lastResponseComment(item.comments).text }}</div>
-              <div class="meta">{{ lastResponseComment(item.comments).member.name }}</div>
+            <div class="comments answer">
+              <div class="content">
+                {{ lastResponseComment(item.comments).text }}
+              </div>
+              <div class="meta">
+                {{ lastResponseComment(item.comments).member.name }}
+              </div>
             </div>
           </template>
           <template v-else>
-            <div  class="comments answer empty">
-            </div>
+            <div class="comments answer empty" />
           </template>
         </router-link>
       </template>
@@ -123,7 +176,7 @@ import { API } from '../utils/Api'
 import { issueStatus, dateRelative } from '../utils/Filters'
 
 export default {
-  name: 'issues',
+  name: 'Issues',
   filters: {
     dateRelative,
   },
@@ -131,18 +184,6 @@ export default {
     return {
       filterSelect: 1,
     }
-  },
-  asyncData: {
-    issuesDefault: [],
-    issues () {
-      return API.getIssuesWithComments()
-        .then(res => {
-          return res.map(issue => {
-            issue.status = issueStatus(issue);
-            return issue;
-          });
-        });
-    },
   },
   computed: {
     currentIssues () {
@@ -157,6 +198,18 @@ export default {
   watch: {
     filterSelect (val) {
       window.sessionStorage.setItem('last-filter-select', val)
+    },
+  },
+  asyncData: {
+    issuesDefault: [],
+    issues () {
+      return API.getIssuesWithComments()
+        .then(res => {
+          return res.map(issue => {
+            issue.status = issueStatus(issue);
+            return issue;
+          });
+        });
     },
   },
   mounted () {

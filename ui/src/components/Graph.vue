@@ -4,18 +4,18 @@
       <svg>
         <defs>
           <clipPath class="graph-clip">
-            <rect></rect>
+            <rect />
           </clipPath>
         </defs>
         <g class="graph-area">
-          <path class="axis-background y"></path>
-          <path class="axis-background x"></path>
-          <g class="axis x"></g>
-          <g class="axis y"></g>
+          <path class="axis-background y" />
+          <path class="axis-background x" />
+          <g class="axis x" />
+          <g class="axis y" />
           <g class="graph-body">
-            <path class="graph-background"></path>
+            <path class="graph-background" />
           </g>
-          <path class="cursor"></path>
+          <path class="cursor" />
         </g>
       </svg>
     </div>
@@ -48,5 +48,5 @@
 </style>
 
 <script>
-export default require('./GraphScripts').default
+export { default } from './GraphScripts';
 </script>

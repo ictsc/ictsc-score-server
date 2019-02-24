@@ -6,22 +6,39 @@
           <div>
             <template v-if="status == 3">
               <!-- 解決済 -->
-              <button v-on:click="switchClosed()" class="btn label-success">解決済み</button>
+              <button
+                v-on:click="switchClosed()"
+                class="btn label-success"
+              >
+                解決済み
+              </button>
             </template>
             <template v-else-if="status == 2">
-              <button v-on:click="switchClosed()" class="btn label-warning">対応中</button>
+              <button
+                v-on:click="switchClosed()"
+                class="btn label-warning"
+              >
+                対応中
+              </button>
             </template>
             <template v-else-if="status == 1">
-              <button v-on:click="switchClosed()" class="btn label-danger">未回答</button>
+              <button
+                v-on:click="switchClosed()"
+                class="btn label-danger"
+              >
+                未回答
+              </button>
             </template>
           </div>
-          <div v-if="status != 3"><small>解決したら<br>クリック</small></div>
+          <div v-if="status != 3">
+            <small>解決したら<br>クリック</small>
+          </div>
         </div>
         <div class="content">
           <router-link :to="{name: 'problem-issues', params: {id: '' + value.problem_id, team: '' + value.team_id, issue: '' + value.id}}">
             <h3>{{ value.title }}</h3>
           </router-link>
-          <markdown :value="firstComment.text"></markdown>
+          <markdown :value="firstComment.text" />
         </div>
       </div>
       <div class="meta">
@@ -29,26 +46,46 @@
       </div>
     </div>
     <div class="tail">
-      <div v-for="item in tailComment" class="item" :class="{ admin: !item.member || item.member.role_id != 4 }">
+      <div
+        v-for="item in tailComment"
+        :class="{ admin: !item.member || item.member.role_id != 4 }"
+        :key="item"
+        class="item"
+      >
         <div class="comment">
-          <markdown :value="item.text"></markdown>
+          <markdown :value="item.text" />
         </div>
         <template v-if="item.member">
-          <div class="meta">投稿者: {{ item.member.name }} | {{ item.created_at }}</div>
+          <div class="meta">
+            投稿者: {{ item.member.name }} | {{ item.created_at }}
+          </div>
         </template>
         <template v-else>
-          <div class="meta">投稿者: ICTSC運営 | {{ item.created_at }}</div>
+          <div class="meta">
+            投稿者: ICTSC運営 | {{ item.created_at }}
+          </div>
         </template>
       </div>
     </div>
-    <div v-if="status != 3 && (isAdmin || isWriter || isParticipant)" class="post">
-      <simple-markdown-editor v-model="post"></simple-markdown-editor>
+    <div
+      v-if="status != 3 && (isAdmin || isWriter || isParticipant)"
+      class="post"
+    >
+      <simple-markdown-editor v-model="post" />
       <div class="tools">
-        <button v-on:click="postComment()" class="btn btn-success">投稿</button>
+        <button
+          v-on:click="postComment()"
+          class="btn btn-success"
+        >
+          投稿
+        </button>
       </div>
     </div>
-    <div v-else-if="isAdmin || isWriter || isParticipant" class="post done">
-      <i class="fa fa-check"></i> 解決済み
+    <div
+      v-else-if="isAdmin || isWriter || isParticipant"
+      class="post done"
+    >
+      <i class="fa fa-check" /> 解決済み
     </div>
   </div>
 </template>
@@ -118,7 +155,7 @@ import { issueStatus } from '../utils/Filters'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'issue',
+  name: 'Issue',
   components: {
     SimpleMarkdownEditor,
     Markdown,
@@ -172,7 +209,7 @@ export default {
       Emit(REMOVE_NOTIF, msg => msg.key === 'issue');
 
       API.addIssueComment(this.issueId, this.post)
-        .then(res => {
+        .then(_res => {
           this.post = '';
           Emit(PUSH_NOTIF, {
             type: 'success',
