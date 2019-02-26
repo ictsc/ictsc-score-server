@@ -33,17 +33,20 @@
 
 <style>
 .graph-container .axis-background.x {
-  fill: #ddd;
+  fill: #111165;
 }
 .graph-container .axis-background.y {
-  fill: #eee;
+  fill: #111165;
 }
 .graph-container .line {
   fill: none;
-  stroke-width: 1px;
+  stroke-width: 2px;
 }
 .graph-container {
-  background-color: #222;
+  background-color: #111;
+}
+text {
+  color: #ccc;
 }
 </style>
 

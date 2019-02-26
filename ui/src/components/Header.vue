@@ -80,11 +80,12 @@
       </div>
       <div class="nav-item">
         <router-link
-          :to="{ name: 'result'}"
+          :to="{ name: 'summary'}"
+          v-if="!(isNoLogin || isParticipant)"
           active-class="active"
           class="nav-link"
         >
-          グラフ
+          概要
         </router-link>
       </div>
       <div class="nav-item">
