@@ -39,7 +39,7 @@
 </template>
 
 <style scoped>
-.item, .item.item-success {
+.item, .item.item-success, .item.item-info {
   background: #07D8E0;
 }
 .item, .item.item-warn {
@@ -124,7 +124,7 @@ Notifコンポーネントは、EventBusからイベントを受け取り、通�
 ```js
 import { Emit, PUSH_NOTIF } from '../utils/EventBus'
 Emit(PUSH_NOTIF, {
-  type: 'error',  // success/warn/error
+  type: 'error',  // success/info/warn/error
   icon: 'warning',  // fontawsomeのアイコン名
   title: '設定の更新に失敗しました。',  // タイトル
   detail: 'ドメインチェックが失敗したため、サイトを有効にできません。',  // エラー文など
@@ -135,7 +135,7 @@ Emit(PUSH_NOTIF, {
 ```
 
 `autoClose` がtrueの場合、 `timeout` ミリ秒で通知を消します。
-指定がない場合は、 `type` がerror,warnの際はfalse・successの場合はtrueがデフォルトで指定されます。
+指定がない場合は、 `type` がerror,warnの際はfalse・success,infoの場合はtrueがデフォルトで指定されます。
 
 通知を消すサンプルは以下のとおりです。
 
@@ -316,6 +316,11 @@ export default {
         case 'api':
           icon = 'comments';
           autoClose = false;
+          break;
+        case 'info':
+          icon = 'exclamation';
+          autoClose = true;
+          timeout = 3000;
           break;
         default:
         case 'success':

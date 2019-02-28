@@ -102,14 +102,21 @@ export default {
           } else {
             this.unsubscribeNotification();
 
-            Emit(PUSH_NOTIF, {
-              type: 'error',
-              title: 'セッション情報の取得に失敗しました',
-              detail: '',
-              key: 'login',
-            });
+            const current_page = this.$router.currentRoute.name
+            if (current_page === 'login') {
+              // do nothing
+            } else if (current_page === 'dashboard') {
+              Emit(PUSH_NOTIF, {
+                type: 'info',
+                title: 'セッション情報の取得に失敗しました',
+                detail: '',
+                key: 'login',
+              });
 
-            this.jumpLogin()
+              this.jumpLogin()
+            } else {
+              Emit(AUTH_ERROR)
+            }
           }
         })
         .catch(err => {
