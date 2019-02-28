@@ -101,7 +101,15 @@ export default {
             setTimeout(() => this.reloadSession(), 1000 * 60);
           } else {
             this.unsubscribeNotification();
-            Emit(AUTH_ERROR);
+
+            Emit(PUSH_NOTIF, {
+              type: 'error',
+              title: 'セッション情報の取得に失敗しました',
+              detail: '',
+              key: 'login',
+            });
+
+            this.jumpLogin()
           }
         })
         .catch(err => {
