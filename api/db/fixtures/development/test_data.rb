@@ -27,16 +27,16 @@ Config.seed(:key, [
 ])
 
 Team.seed(:id, [
-  { id: 1,  name: 'Team 1',        organization: 'A学校',              hashed_registration_code: hash_password('teama') },
-  { id: 2,  name: 'Team 2',        organization: 'B学校',              hashed_registration_code: hash_password('teamb') },
-  { id: 3,  name: 'Team 3',        organization: 'C学校',              hashed_registration_code: hash_password('teamc') },
-  { id: 4,  name: 'Team 4',        organization: 'D学校',              hashed_registration_code: hash_password('teamd') },
-  { id: 5,  name: 'Team 5',        organization: 'E学校',              hashed_registration_code: hash_password('teame') },
-  { id: 6,  name: 'Team 6',        organization: 'F学校',              hashed_registration_code: hash_password('teamf') },
-  { id: 20, name: 'Daydream Café', organization: 'Rabbit house',       hashed_registration_code: hash_password('pyonpyon') },
-  { id: 21, name: 'fourfolium',    organization: 'イーグルジャンプ',   hashed_registration_code: hash_password('zoi') },
-  { id: 22, name: "\u{1F338}",     organization: 'ロゴが変わった会社', hashed_registration_code: hash_password('sakura') },
-  { id: 23, name: 'らびりんず',    organization: '棗屋',               hashed_registration_code: hash_password('kurou') },
+  { id: 1,  name: 'Team 1',        organization: 'A学校',              registration_code: 'teama' },
+  { id: 2,  name: 'Team 2',        organization: 'B学校',              registration_code: 'teamb' },
+  { id: 3,  name: 'Team 3',        organization: 'C学校',              registration_code: 'teamc' },
+  { id: 4,  name: 'Team 4',        organization: 'D学校',              registration_code: 'teamd' },
+  { id: 5,  name: 'Team 5',        organization: 'E学校',              registration_code: 'teame' },
+  { id: 6,  name: 'Team 6',        organization: 'F学校',              registration_code: 'teamf' },
+  { id: 20, name: 'Daydream Café', organization: 'Rabbit house',       registration_code: 'pyonpyon' },
+  { id: 21, name: 'fourfolium',    organization: 'イーグルジャンプ',   registration_code: 'zoi' },
+  { id: 22, name: "\u{1F338}",     organization: 'ロゴが変わった会社', registration_code: 'sakura' },
+  { id: 23, name: 'らびりんず',    organization: '棗屋',               registration_code: 'kurou' },
 ])
 
 Member.seed(:login, [

@@ -1,7 +1,7 @@
 <template>
   <div v-loading="asyncLoading">
     <div class="row justify-content-center">
-      <div class="col-4">
+      <div class="col-6">
         <h1>サインイン</h1>
         <form v-on:submit.prevent="submit()">
           <div class="form-group">
