@@ -16,7 +16,8 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "storage-db"
   nfs:
     server: 172.16.30.101
     path: "/export/default-mariadb"
@@ -27,6 +28,7 @@ metadata:
   name: db-pvc
   namespace: default
 spec:
+  storageClassName: "storage-db"
   accessModes:
     - ReadWriteOnce
   resources:
@@ -58,7 +60,7 @@ spec:
           image: mariadb:10.2
           volumeMounts:
             - name: mariadb
-              mountPath: /var/lib/mariadb
+              mountPath: /var/lib/mysql
           ports:
             - containerPort: 3306
           envFrom:
