@@ -296,52 +296,52 @@ describe Config do
       subject { Config.in_competition_time? }
 
       it 'before day1 start' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day1_start_at - 1.second)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day1_start_at - 1.second)
         expect(Config.in_competition_time?).to eq false
       end
 
       it 'after day1 end' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day1_end_at + 1.second)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day1_end_at + 1.second)
         expect(Config.in_competition_time?).to eq false
       end
 
       it 'same as day1 start' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day1_start_at)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day1_start_at)
         expect(Config.in_competition_time?).to eq true
       end
 
       it 'same as day1 end' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day1_end_at)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day1_end_at)
         expect(Config.in_competition_time?).to eq true
       end
 
       it 'between day 1' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day1_start_at + 1.second)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day1_start_at + 1.second)
         expect(Config.in_competition_time?).to eq true
       end
 
       it 'before day2 start' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day2_start_at - 1.second)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day2_start_at - 1.second)
         expect(Config.in_competition_time?).to eq false
       end
 
       it 'after day2 end' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day2_end_at + 1.second)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day2_end_at + 1.second)
         expect(Config.in_competition_time?).to eq false
       end
 
       it 'same as day2 start' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day2_start_at)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day2_start_at)
         expect(Config.in_competition_time?).to eq true
       end
 
       it 'same as day2 end' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day2_end_at)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day2_end_at)
         expect(Config.in_competition_time?).to eq true
       end
 
       it 'between day 1' do
-        allow(DateTime).to receive(:now).and_return(Config.competition_time_day2_start_at + 1.second)
+        allow(DateTime).to receive(:current).and_return(Config.competition_time_day2_start_at + 1.second)
         expect(Config.in_competition_time?).to eq true
       end
     end

@@ -92,8 +92,8 @@ def create_problem(id, text, creator, must_solve_before, max, group_id = []) # r
     p.reference_point              = max * 0.8
     p.perfect_point                = max
     p.problem_group_ids            = group_id
-    p.created_at                   = DateTime.now
-    p.updated_at                   = DateTime.now
+    p.created_at                   = DateTime.current
+    p.updated_at                   = DateTime.current
   end
 end
 
@@ -149,7 +149,7 @@ Team.all.each do |team|
         a.text         = hiragana[100]
 
         if last_answer
-          date = last_answer.created_at + 1.minutes + rand(120).seconds
+          date = last_answer.created_at + 1.minute + rand(120).seconds
           a.created_at = date
           a.updated_at = date
         end
@@ -187,7 +187,7 @@ Team.all.each do |team|
         a.problem_id = p.id
         a.team_id    = team.id
         a.text       = hiragana[100]
-        date = last_score.created_at + 1.minutes + rand(120).seconds
+        date = last_score.created_at + 1.minute + rand(120).seconds
         a.created_at = date
         a.updated_at = date
       end.first
@@ -281,7 +281,7 @@ end
     n.text      = hiragana[50]
     n.pinned    = rand(3).zero? # 1/3
     n.member_id = member.id
-    date = DateTime.now + rand(480).minutes
+    date = DateTime.current + rand(480).minute
     n.created_at = date
     n.updated_at = date
   end

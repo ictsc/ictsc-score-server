@@ -22,7 +22,7 @@ FactoryBot.define do
 
     trait :date do
       value_type { :date }
-      value { DateTime.now }
+      value { DateTime.current }
     end
   end
 end

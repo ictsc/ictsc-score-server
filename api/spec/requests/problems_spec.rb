@@ -4,12 +4,12 @@ describe 'Problems' do
   include ApiHelpers
 
   before(:each) {
-    time = DateTime.now
-    allow(DateTime).to receive(:now).and_return(time)
+    time = DateTime.current
+    allow(DateTime).to receive(:current).and_return(time)
     allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
   }
 
-  let!(:delayed) { DateTime.now - Config.grading_delay_sec.seconds }
+  let!(:delayed) { DateTime.current - Config.grading_delay_sec.seconds }
 
   describe 'GET /api/problems' do
     let!(:problem) { create(:problem) }
@@ -163,8 +163,8 @@ describe 'Problems' do
       subject { response.status }
 
 
-      describe '(answer created at now)' do
-        let!(:created_at) { DateTime.now }
+      describe '(answer created at current)' do
+        let!(:created_at) { DateTime.current }
         by_participant { is_expected.to eq 404 }
       end
 
@@ -252,7 +252,7 @@ describe 'Problems' do
 
       context 'before problem_open_all_at' do
         before do
-          allow(Config).to receive(:problem_open_all_at).and_return(DateTime.now + 1.minute)
+          allow(Config).to receive(:problem_open_all_at).and_return(DateTime.current + 1.minute)
         end
 
         by_participant { is_expected.to eq 404 }
@@ -260,7 +260,7 @@ describe 'Problems' do
 
       context 'after problem_open_all_at' do
         before do
-          allow(Config).to receive(:problem_open_all_at).and_return(DateTime.now - 1.minute)
+          allow(Config).to receive(:problem_open_all_at).and_return(DateTime.current - 1.minute)
         end
 
         by_participant do
