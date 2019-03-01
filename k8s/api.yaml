@@ -73,10 +73,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - contest.icttoracon.net
+        - CONTEST_FQDN
       secretName: contest
   rules:
-    - host: contest.icttoracon.net
+    - host: CONTEST_FQDN
       http:
         paths:
           - path: /api
