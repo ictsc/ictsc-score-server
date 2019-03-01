@@ -2,7 +2,7 @@
   <div class="host">
     <div
       v-loading="scoreboardLoading"
-      v-if="scoreboard && scoreboard.length"
+      v-if="scoreboardLoading || (scoreboard && scoreboard.length)"
       class="scoreboard"
     >
       <div class="team-list">
@@ -12,30 +12,115 @@
             class="team-item"
           >
             <div
-              :style="{ background: (result.find(x => x.id === item.team.id) || { color: 'black'}).color }"
+              :style="{ background: (graphData.find(x => x.id === item.team.id) || { color: 'black'}).color }"
               class="team-item-color"
             >
               {{ item.rank }}位
             </div>
             <div
+              v-if="item.team"
               class="team-item-content"
             >
-              <div v-if="item.team">{{ item.team.organization }}</div>
-              <div v-if="item.team">{{ item.team.name }}</div>
+              <div>
+                {{ item.team.organization }}
+              </div>
+              <div>
+                <div>
+                  {{ item.team.name }}
+                </div>
+                <div>
+                  {{ item.score }}<span class="unit">点</span>
+                </div>
+              </div>
             </div>
           </router-link>
         </template>
       </div>
     </div>
-    <div>
-      <graph
-        :graph-data="result"
-        :height="650"
-        :notfound="false"
-        v-loading="asyncLoading"
-        title="タイトル"
-        class="graph access"
-      />
+    <div
+      class="right-content"
+    >
+      <div
+        v-if="$route.query.content === 'answer-table' && problems"
+      >
+        <table
+          class="answer-table"
+        >
+          <tr>
+            <td />
+            <template v-for="item in problems">
+              <th>
+                {{ item.title }}
+              </th>
+            </template>
+          </tr>
+          <template v-for="item in tableData">
+            <tr
+              v-bind:key="item.id"
+            >
+              <td
+                class="team_name"
+              >
+                {{ item.team_name }}
+              </td>
+              <template v-for="point in item.points">
+                <td>
+                  {{ point }}
+                </td>
+              </template>
+            </tr>
+          </template>
+        </table>
+      </div>
+      <div
+        v-else
+      >
+        <graph
+          :graph-data="graphData"
+          :height="650"
+          :notfound="false"
+          v-loading="asyncLoading"
+          title="タイトル"
+          class="graph"
+        />
+      </div>
+      <div
+        class="controller"
+      >
+        <div>
+          <div class="form-check">
+            <input
+              id="auto-move-checkbox"
+              v-model="isAutoTransition"
+              type="checkbox"
+              class="form-check-input"
+            >
+            <label
+              class="form-check-label"
+              for="auto-move-checkbox"
+            >
+              自動遷移
+            </label>
+          </div>
+          <input
+            v-model="intervalSec"
+            type="number"
+            placeholder="遷移までの時間(秒)"
+          >
+        </div>
+        <router-link
+          :to="{name: 'summary', query: {content: 'graph'}}"
+          class="button"
+        >
+          グラフ
+        </router-link>
+        <router-link
+          :to="{name: 'summary', query: {content: 'answer-table'}}"
+          class="button"
+        >
+          解答表
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -43,7 +128,10 @@
 <style scoped>
 .host {
   display: flex;
+  /* 大型ディスプレイで遠くから見ることを想定し、コンテンツの横幅を拡張 */
   width: 100%;
+  min-height: max-content;
+  height: 100%;
   position: absolute;
   left: 0;
   right: 0;
@@ -51,13 +139,47 @@
   background-color: #34393e;
   padding: 12px 1rem 90px 1rem;
 }
-.host > :nth-child(2) {
-  flex-grow: 1;
+
+.right-content {
+  width: 75%;
+}
+
+.graph {
   margin-left: 1rem;
+  box-shadow: 0px 0px 7px 1px rgba(0,0,0,.3);
+}
+
+.answer-table {
+  margin-left: 1rem;
+  color: white;
+  border: 1px solid #ddd;
+}
+
+.answer-table td,
+.answer-table th {
+  text-align: right;
+  border: 1px solid #ddd;
+  padding: 0 5px;
+}
+
+.team_name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 8rem;
+  max-width: 8rem;
+}
+
+.controller {
+  display: flex;
+  color: white;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .scoreboard {
-  width: fit-content;
+  min-width: 25rem;
+  width: 25%;
 }
 
 .team-list {
@@ -68,6 +190,7 @@
   font-weight: bold;
   background-color: #111;
   width: 100%;
+  box-shadow: 0px 0px 7px 1px rgba(0,0,0,.3);
 }
 
 .team-item {
@@ -114,12 +237,50 @@
 }
 
 .team-item-content > :nth-child(2) {
+  display: flex;
   color: #fafbfd;
+}
+
+.team-item-content > :nth-child(2) > :nth-child(1) {
   font-size: 1.5rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   width: 12rem;
+}
+
+.team-item-content > :nth-child(2) > :nth-child(2) {
+  font-size: 1.5rem;
+  white-space: nowrap;
+  width: 4rem;
+  padding-left: 1rem;
+}
+
+.team-item-content .unit {
+  font-size: 1rem;
+  padding: 0 4px;
+}
+
+.controller {
+  display: flex;
+  float: right;
+  margin: 1rem;
+}
+
+.button {
+  margin: 0 1rem;
+  color: #ddd;
+  border: solid 1px #ddd;
+  font-size: 1.5rem;
+  padding: .5rem 1.5rem;
+  border-radius: 2px;
+  transition: all .3s ease-out;
+}
+
+.button:hover {
+  color: #fff;
+  border: solid 1px #fff;
+  background-color: rgba(0, 0, 0, .3)
 }
 
 .tag {
@@ -145,6 +306,9 @@ export default {
   },
   data () {
     return {
+      intervalId: undefined,
+      intervalSec: 6,
+      isAutoTransition: false
     }
   },
   asyncData: {
@@ -152,12 +316,49 @@ export default {
     teams () {
       return API.getTeamsWithScore();
     },
+    problems () {
+      return API.getProblemsWithScore();
+    },
     scoreboard () {
       return API.getScoreboard();
     },
   },
+  watch: {
+    isAutoTransition (val) {
+      if (val) {
+        this.clearAutoTransition();
+      } else {
+        this.autoTransition();
+      }
+    },
+    intervalSec () {
+      this.clearAutoTransition();
+      if (this.isAutoTransition) {
+        this.autoTransition();
+      }
+    }
+  },
+  methods: {
+    autoTransition () {
+      console.log('start auto transition page');
+      clearInterval(this.intervalId);
+      setInterval(
+        this.$router.push({
+          name: 'summary',
+          query: {
+            content: this.$route.query.content === 'answer-table' ? 'graph' : 'answer-table'
+          }
+        }),
+        this.intervalSec
+      );
+    },
+    clearAutoTransition () {
+      clearInterval(this.intervalId);
+      this.intervalId = undefined;
+    }
+  },
   computed: {
-    result () {
+    graphData () {
       return this.teams.map((team, index) => {
         // その時点での合計スコア
         const getPileSubtotal = (answers, date) => {
@@ -189,14 +390,25 @@ export default {
         });
       })
     },
+    tableData () {
+      return this.teams.map(team => (
+        {
+          team_name: team.name,
+          points: this.problems.map(x => {
+            const answers = Array.from(x.answers.filter(x => x.team_id === team.id))
+              .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
+            return (answers[0] && answers[0].score) ? answers[0].score.point : 0
+          })
+        }
+      ))
+    }
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ダッシュボード');
   },
   destroyed () {
-  },
-  methods: {
-  },
+    clearInterval(this.intervalId);
+  }
 }
 </script>
 

@@ -47,6 +47,7 @@
 }
 text {
   color: #ccc;
+  font-size: 1rem;
 }
 </style>
 
