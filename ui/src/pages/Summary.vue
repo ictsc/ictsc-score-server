@@ -343,13 +343,13 @@ export default {
       console.log('start auto transition page');
       clearInterval(this.intervalId);
       setInterval(
-        this.$router.push({
+        () => this.$router.push({
           name: 'summary',
           query: {
             content: this.$route.query.content === 'answer-table' ? 'graph' : 'answer-table'
           }
         }),
-        this.intervalSec
+        this.intervalSec * 1000
       );
     },
     clearAutoTransition () {
