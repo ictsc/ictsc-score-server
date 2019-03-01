@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_28_165051) do
+ActiveRecord::Schema.define(version: 2019_03_01_152622) do
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "text", limit: 4095, null: false
+    t.string "text", limit: 10240, null: false
     t.bigint "problem_id", null: false
     t.bigint "team_id", null: false
     t.datetime "created_at", null: false
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2019_02_28_165051) do
   end
 
   create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "text", limit: 4095, null: false
+    t.string "text", limit: 10240, null: false
     t.bigint "member_id", null: false
     t.string "commentable_type", null: false
     t.bigint "commentable_id", null: false
@@ -91,7 +91,7 @@ ActiveRecord::Schema.define(version: 2019_02_28_165051) do
 
   create_table "notices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "title", null: false
-    t.string "text", limit: 4095, null: false
+    t.string "text", limit: 10240, null: false
     t.boolean "pinned", default: false, null: false
     t.bigint "member_id", null: false
     t.datetime "created_at", null: false
@@ -131,7 +131,7 @@ ActiveRecord::Schema.define(version: 2019_02_28_165051) do
 
   create_table "problems", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "title", null: false
-    t.string "text", limit: 4095, null: false
+    t.string "text", limit: 10240, null: false
     t.integer "reference_point", null: false
     t.integer "perfect_point", null: false
     t.boolean "team_private", default: false, null: false
