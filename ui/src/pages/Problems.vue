@@ -262,7 +262,7 @@
             :src="group.icon_url"
             class="flag"
           >
-          <h2>{{ group.name }}</h2>
+          <h2>{{ group.name }}</h2> <div class="problem-numbers">(全{{ problems.filter(x => x.problem_group_ids.includes(group.id)).length }}問)</div>
           <markdown :value="group.description" />
         </div>
         <div class="problems d-flex flex-row align-content-center flex-nowrap">
@@ -381,7 +381,10 @@
   margin-right: .2em;
   vertical-align: top;
 }
-
+.group .problem-numbers {
+  display: inline-block;
+  font-size: 1.5rem;
+}
 .group .detail {
   width: 100%;
 }
@@ -440,7 +443,7 @@
   min-height: 13em;
   max-height: 13em;
   min-width: 23em;
-  max-width: 24em;
+  max-width: 23em;
 
   flex: 1;
 }
@@ -455,7 +458,7 @@
   content: '';
   width: 0;
   height: 0;
-  margin: 0 10px;
+  margin: 0 7px 0 9px;
   border-style: solid;
   border-width: 14px 0 14px 15px;
   border-color: transparent transparent transparent #e0e0e0;
