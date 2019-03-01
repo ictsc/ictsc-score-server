@@ -1,8 +1,4 @@
-require 'sinatra/crypt_helpers'
-
 class TeamsController < ApplicationController
-  helpers Sinatra::CryptHelpers
-
   before '/api/teams*' do
     I18n.locale = :en if request.xhr?
     halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?

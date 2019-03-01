@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_19_194031) do
+ActiveRecord::Schema.define(version: 2019_02_28_165051) do
 
   create_table "answers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "text", limit: 4095, null: false
@@ -167,10 +167,10 @@ ActiveRecord::Schema.define(version: 2019_02_19_194031) do
   create_table "teams", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
     t.string "organization"
-    t.string "hashed_registration_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["hashed_registration_code"], name: "index_teams_on_hashed_registration_code", unique: true
+    t.string "hashed_registration_code", null: false
+    t.string "registration_code", null: false
   end
 
 end
