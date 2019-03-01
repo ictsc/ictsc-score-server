@@ -4,6 +4,6 @@ FactoryBot.define do
     problem
     team
     # DateTIme.nowがallowで固定されているとunique制約に引っかかる
-    sequence(:created_at) {|n| DateTime.now + n.seconds }
+    sequence(:created_at) {|n| DateTime.current + n.second }
   end
 end

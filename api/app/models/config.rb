@@ -206,7 +206,7 @@ class Config < ApplicationRecord
     end
 
     def in_competition_time?
-      !competition_stop && competition_time.any? {|day| DateTime.now.between?(day[:start_at], day[:end_at]) }
+      !competition_stop && competition_time.any? {|day| DateTime.current.between?(day[:start_at], day[:end_at]) }
     end
   end
 

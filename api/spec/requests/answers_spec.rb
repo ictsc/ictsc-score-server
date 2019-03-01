@@ -5,7 +5,7 @@ describe 'Answers' do
 
   before(:each) {
     time = DateTime.parse("2017-07-07T21:00:00+09:00")
-    allow(DateTime).to receive(:now).and_return(time)
+    allow(DateTime).to receive(:current).and_return(time)
     allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
   }
 
