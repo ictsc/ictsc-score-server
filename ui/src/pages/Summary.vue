@@ -262,6 +262,9 @@
 }
 
 .controller {
+  position: fixed;
+  right: 0;
+  bottom: 0;
   display: flex;
   float: right;
   margin: 1rem;
@@ -329,20 +332,22 @@ export default {
         this.autoTransition();
       } else {
         this.clearAutoTransition();
+        this.isAutoTransition = false;
       }
     },
     intervalSec () {
-      this.clearAutoTransition();
       if (this.isAutoTransition) {
+        this.clearAutoTransition();
         this.autoTransition();
+        this.isAutoTransition = true;
       }
     }
   },
   methods: {
     autoTransition () {
-      console.log('start auto transition page');
+      console.log('start auto transition of page');
       clearInterval(this.intervalId);
-      setInterval(
+      this.intervalId = setInterval(
         () => this.$router.push({
           name: 'summary',
           query: {
@@ -353,6 +358,7 @@ export default {
       );
     },
     clearAutoTransition () {
+      console.log('end auto transition of page');
       clearInterval(this.intervalId);
       this.intervalId = undefined;
     }
