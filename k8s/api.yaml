@@ -58,10 +58,8 @@ spec:
     - name: api
       port: 8900
       targetPort: 8900
-      nodePort: 30080
   selector:
     ictsc2018-score: api
-  type: NodePort
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

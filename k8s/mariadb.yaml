@@ -57,7 +57,12 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
         - name: mariadb
-          image: mariadb:10.2
+          image: mariadb:10.3.13
+          securityContext:
+            runAsUser: 0
+          args:
+          - "--character-set-server=utf8mb4"
+          - "--collation-server=utf8mb4_unicode_ci"
           volumeMounts:
             - name: mariadb
               mountPath: /var/lib/mysql
@@ -80,8 +85,8 @@ data:
   TZ: "Asia/Tokyo"
   MYSQL_ROOT_PASSWORD: "PASSWORD"
   MYSQL_DATABASE: "ictsc_score_server"
-  #MYSQL_USER: "root"
   MYSQL_PASSWORD: "PASSWORD"
+  MYSQL_START_TIMEOUT: "900"
 ---
 apiVersion: v1
 kind: Service
@@ -95,8 +100,6 @@ spec:
     - name: db
       port: 3306
       targetPort: 3306
-      nodePort: 30306
   selector:
     ictsc2018-score: db
-  type: NodePort
 
