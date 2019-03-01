@@ -5,9 +5,17 @@ MYSQL_ROOT_PASSWORD=""
 CONTEST_FQDN=""
 API_SESSION_COOKIE_SECRET=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
 
+echo -n "CONTEST_FQDN: "; read CONTEST_FQDN
 echo -n "MYSQL_PASSWORD: "; read MYSQL_PASSWORD
 echo -n "MYSQL_ROOT_PASSWORD: "; read MYSQL_ROOT_PASSWORD
-echo -n "CONTEST_FQDN: "; read CONTEST_FQDN
+
+if kubectl get secret contest > /dev/null; then
+  CERT_PATH=""
+  CERT_KEY_PATH=""
+  echo -n"$CONTEST_FQDN's cert path: "; read CERT_KEY_PATH
+  echo -n"$CONTEST_FQDN's key path: "; read CERT_KEY_PATH
+  kubectl create secret tls contest --cert=$CERT_PATH --key=$CERT_KEY_PATH
+fi
 
 kubectl apply -f <(cat api.yaml \
   | perl -pe 's|^(  MYSQL_ROOT_PASSWORD: )"PASSWORD"$|$1"'$MYSQL_ROOT_PASSWORD'"|g' \
