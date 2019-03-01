@@ -326,9 +326,9 @@ export default {
   watch: {
     isAutoTransition (val) {
       if (val) {
-        this.clearAutoTransition();
-      } else {
         this.autoTransition();
+      } else {
+        this.clearAutoTransition();
       }
     },
     intervalSec () {
