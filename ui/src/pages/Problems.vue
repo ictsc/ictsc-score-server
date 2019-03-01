@@ -681,7 +681,7 @@ export default {
   watch: {
     problemGroups (val) {
       try {
-        this.newObj.problem_group_id = val[0].id;
+        this.newProblemObj.problem_group_id = val[0].id;
       } catch (e) {
         console.error(e);
       }
