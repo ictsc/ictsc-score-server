@@ -30,6 +30,7 @@ export default {
           spellChecker: false,
           showIcons: ['code', 'horizontal-rule', 'link', 'table'],
           guide: '/#/guide',
+          status: false,
         };
       },
     }
