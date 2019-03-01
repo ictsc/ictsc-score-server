@@ -142,7 +142,7 @@ class Problem < ApplicationRecord
 
     # userが閲覧できる問題一覧
     def opened(user:)
-      return all if Config.problem_open_all_at <= DateTime.now
+      return all if Config.problem_open_all_at <= DateTime.current
 
       all_team_fcas = FirstCorrectAnswer.readables(user: user, action: 'all_opened')
       my_team_fcas = all_team_fcas.where(team: user.team)

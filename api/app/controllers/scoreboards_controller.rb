@@ -10,7 +10,7 @@ class ScoreboardsController < ApplicationController
 
     halt 404 if !is_admin? && !is_writer? && !Config.in_competition_time?
     halt 400 if is_nologin?
-    halt 400 if is_participant? && (!Config.in_competition_time? || Config.scoreboard_hide_at <= DateTime.now)
+    halt 400 if is_participant? && (!Config.in_competition_time? || Config.scoreboard_hide_at <= DateTime.current)
   end
 
   get '/api/scoreboard' do
