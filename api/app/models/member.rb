@@ -11,11 +11,11 @@ class Member < ApplicationRecord
   validates :role,            presence: true
   validates_associated :notification_subscriber
 
-  has_many :marked_scores, foreign_key: 'marker_id', class_name: 'Score', dependent: :destroy
-  has_many :created_problems, foreign_key: 'creator_id', class_name: 'Problem', dependent: :destroy
-  has_many :comments, dependent: :destroy
-  has_many :notices, dependent: :destroy
-  has_many :attachments, dependent: :destroy
+  has_many :marked_scores, foreign_key: 'marker_id', class_name: 'Score', dependent: :nullify
+  has_many :created_problems, foreign_key: 'creator_id', class_name: 'Problem', dependent: :nullify
+  has_many :comments, dependent: :nullify
+  has_many :notices, dependent: :nullify
+  has_many :attachments, dependent: :nullify
   has_one :notification_subscriber, dependent: :destroy, as: :subscribable
   belongs_to :team
   belongs_to :role
