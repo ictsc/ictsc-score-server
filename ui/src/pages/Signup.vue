@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row justify-content-center">
-      <div class="col-4">
+      <div class="col-6">
         <h1>サインアップ</h1>
         <div class="form-group">
           <label for="input-name">氏名</label>
@@ -22,9 +22,19 @@
           >
         </div>
         <div class="form-group">
-          <label for="input-org">所属とチーム</label>
+          <label for="input-organization">所属</label>
           <input
-            id="input-org"
+            id="input-organization"
+            :value="organizationName"
+            type="text"
+            class="form-control form-control-lg"
+            readonly
+          >
+        </div>
+        <div class="form-group">
+          <label for="input-team">チーム名</label>
+          <input
+            id="input-team"
             :value="teamName"
             type="text"
             class="form-control form-control-lg"
@@ -89,6 +99,11 @@ export default {
     }
   },
   computed: {
+    organizationName () {
+      var team = this.teams.find(t => t.hashed_registration_code === sha1(this.registration_code));
+      if (team) return team.organization;
+      else return '-----';
+    },
     teamName () {
       var team = this.teams.find(t => t.hashed_registration_code === sha1(this.registration_code));
       if (team) return team.name;
