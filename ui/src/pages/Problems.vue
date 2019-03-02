@@ -274,6 +274,7 @@
             <div class="arrow-next-problem" />
             <router-link
               :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
+              :style="{ pointerEvents: (problem.title === undefined) ? 'none' : 'all' }"
               class="problem d-flex flex-column align-items-stretch"
             >
               <div class="background" />

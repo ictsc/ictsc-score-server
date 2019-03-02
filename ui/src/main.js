@@ -24,7 +24,7 @@ import ProblemAnswers from './pages/ProblemAnswers'
 import Issues from './pages/Issues'
 import Answers from './pages/Answers'
 import Guide from './pages/Guide'
-import Result from './pages/Result'
+import Summary from './pages/Summary'
 import NotFound from './pages/NotFound'
 Vue.use(VueRouter);
 Vue.use(Element);
@@ -45,7 +45,7 @@ const router = new VueRouter({
     { path: '/issues', component: Issues, name: 'issues' },
     { path: '/answers', component: Answers, name: 'answers' },
     { path: '/guide', component: Guide, name: 'guide' },
-    { path: '/result', component: Result, name: 'result' },
+    { path: '/summary', component: Summary, name: 'summary' },
     { path: '*', component: NotFound, name: 'not-found' },
   ]
 })

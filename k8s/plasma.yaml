@@ -12,7 +12,7 @@ spec:
         ictsc2018-score: plasma
     spec:
       containers:
-        - image: openfresh/plasma:latest
+        - image: openfresh/plasma:0.2.2
           name: plasma
           envFrom:
           - configMapRef:
@@ -20,7 +20,7 @@ spec:
           ports:
           - name: plasma
             containerPort: 8080
-      restartPolicy: Always
+      #restartPolicy: Always
 ---
 apiVersion: v1
 kind: ConfigMap

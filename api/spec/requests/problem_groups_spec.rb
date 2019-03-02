@@ -12,7 +12,7 @@ describe 'ProblemGroups' do
 
       before(:each) {
         time = DateTime.parse("2017-07-07T21:00:00+09:00")
-        allow(DateTime).to receive(:now).and_return(time)
+        allow(DateTime).to receive(:current).and_return(time)
         allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
       }
 
@@ -49,7 +49,7 @@ describe 'ProblemGroups' do
 
       before(:each) {
         time = DateTime.parse('2012-09-03 10:00:00 +0900')
-        allow(DateTime).to receive(:now).and_return(time - 1.minute)
+        allow(DateTime).to receive(:current).and_return(time - 1.minute)
         allow(Config).to receive(:competition_time_day1_start_at).and_return(time)
       }
 
@@ -79,7 +79,7 @@ describe 'ProblemGroups' do
 
       before(:each) {
         time = DateTime.parse("2017-07-07T21:00:00+09:00")
-        allow(DateTime).to receive(:now).and_return(time)
+        allow(DateTime).to receive(:current).and_return(time)
         allow(Config).to receive(:competition_start_at).and_return(time - 3.year)
       }
 
@@ -106,7 +106,7 @@ describe 'ProblemGroups' do
 
       before(:each) {
         time = DateTime.parse('2012-09-03 10:00:00 +0900')
-        allow(DateTime).to receive(:now).and_return(time - 1.minute)
+        allow(DateTime).to receive(:current).and_return(time - 1.minute)
         allow(Config).to receive(:competition_time_day1_start_at).and_return(time)
       }
 

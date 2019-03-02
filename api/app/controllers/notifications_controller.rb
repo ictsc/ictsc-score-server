@@ -4,7 +4,7 @@ class NotificationsController < ApplicationController
 
     notifications = []
 
-    if Config.competition_start_at <= DateTime.now
+    if Config.competition_start_at <= DateTime.current
       notifications << {
         resource: nil,
         resource_id: nil,
@@ -14,7 +14,7 @@ class NotificationsController < ApplicationController
       }
     end
 
-    if Config.competition_end_at <= DateTime.now
+    if Config.competition_end_at <= DateTime.current
       notifications << {
         resource: nil,
         resource_id: nil,
