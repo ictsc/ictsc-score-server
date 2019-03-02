@@ -39,6 +39,7 @@ export default {
       currentDate: new Date(),
       sumPurePoint: 0,
       scoredPurePoint: 0,
+      isCompetitionStop: false
     }
   },
   asyncData: {
@@ -52,7 +53,10 @@ export default {
       var end = this.contest.competition_end_at;
       if (end) {
         let duration = new Date(end).valueOf() - this.currentDate.valueOf();
-        if (duration > 0) {
+
+        if (this.isCompetitionStop) {
+          return 'Contest has stopped';
+        } else if (duration > 0) {
           return duration;
         } else {
           return 'Contest has finished';
@@ -87,6 +91,17 @@ export default {
       refreshDate();
     }, 200);
     refreshDate();
+
+    // 30秒おきに、一時停止中か確認を行う
+    const checkCompetitionStop = () => setTimeout(
+      async () => {
+        const configs = await API.getConfigs();
+        this.isCompetitionStop = (configs.find(x => x.key === 'competition_stop') || {}).value === '0' ? false : true;
+        checkCompetitionStop();
+      },
+      30000
+    );
+    checkCompetitionStop();
 
     setInterval(() => {
       this.asyncReload();

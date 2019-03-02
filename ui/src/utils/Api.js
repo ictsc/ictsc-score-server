@@ -246,4 +246,10 @@ export class API {
     return RequestMiddleware(req.put(`scores/${id}`).send(JSON.stringify(obj)))
       .then(res => res.body)
   }
+
+  // configs
+  static getConfigs (req = superagent) {
+    return RequestMiddleware(req.get('configs'))
+      .then(res => res.body)
+  }
 }
