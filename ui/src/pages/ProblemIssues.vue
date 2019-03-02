@@ -43,10 +43,13 @@
               >
             </div>
             <simple-markdown-editor v-model="issueText" />
+            <div class="text-length">
+              {{ issueText.length }} / {{ issueMaxLength }}文字 (目安)
+            </div>
             <div class="tools">
               <button
                 v-on:click="postNewIssue()"
-                :disabled="posting"
+                v-bind:disabled="!canPushSubmitButton"
                 class="btn btn-success btn-block"
               >
                 質問投稿
@@ -83,8 +86,12 @@
   margin-bottom: 1.2rem;
 }
 
-.answereExaample p:last-child {
+.answerExample p:last-child {
   margin-bottom: inherit;
+}
+
+.new-issue .text-length {
+  text-align: right;
 }
 
 </style>
@@ -115,6 +122,7 @@ export default {
     return {
       issueTitle: '',
       issueText: '',
+      issueMaxLength: 4095,
       posting: false,
     }
   },
@@ -147,6 +155,10 @@ export default {
         .filter(i => '' + i.problem_id === this.problemId)
         .filter(i => '' + i.team_id === this.teamId)
         // .filter(i => this.issueId === undefined || '' + i.id === this.issueId);
+    },
+    // 文字数が文字数制限以下かどうか
+    canPushSubmitButton () {
+      return this.issueText.length <= this.issueMaxLength && !this.posting;
     },
     ...mapGetters([
       'isParticipant',

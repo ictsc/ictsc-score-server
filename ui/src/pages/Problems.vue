@@ -262,9 +262,8 @@
             :src="group.icon_url"
             class="flag"
           >
-          <h2>{{ group.name }}</h2> <div class="problem-numbers">
-            (全{{ problems.filter(x => x.problem_group_ids.includes(group.id)).length }}問)
-          </div>
+          <h2>{{ group.name }}</h2>
+          <div class="problem-numbers">(全{{ problems.filter(x => x.problem_group_ids.includes(group.id)).length }}問)</div>
           <markdown :value="group.description" />
         </div>
         <div class="problems d-flex flex-row align-content-center flex-nowrap">

@@ -46,9 +46,13 @@
             </p>
           </div>
           <simple-markdown-editor v-model="newAnswer" />
+          <div class="text-length">
+            {{ newAnswer.length }} / {{ answerMaxLength }}文字 (目安)
+          </div>
           <div class="tools">
             <button
               v-on:click="showConfirmation()"
+              v-bind:disabled="!canPushSubmitButton"
               class="btn btn-success"
             >
               解答投稿
@@ -129,6 +133,10 @@
   padding-top: 15rem;
 }
 
+.new-issue .text-length {
+  text-align: right;
+}
+
 .confirm {
   background: white;
   padding: 0;
@@ -187,6 +195,7 @@ export default {
       newAnswer: '',
       currentDate: new Date(),
       confirming: false,
+      answerMaxLength: 4095,
     }
   },
   asyncData: {
@@ -219,7 +228,7 @@ export default {
         .filter(ans => `${ans.problem_id}` === this.problemId)
         .filter(ans => !ans.score)
     },
-    // 回答可能かどうか
+    // 回答可能時間内かどうか
     canAnswer () {
       return this.scoringCompleteTime < new Date(this.currentDate).valueOf();
     },
@@ -227,6 +236,10 @@ export default {
     scoringCompleteTime () {
       return this.scoringAnswers
         .reduce((p, n) => Math.max(p, new Date(n.created_at).valueOf() + this.delay), 0)
+    },
+    // 文字数が文字数制限以下かどうか && canAnswer
+    canPushSubmitButton () {
+      return this.newAnswer.length <= this.answerMaxLength && this.canAnswer;
     },
     ...mapGetters([
       'contest',
