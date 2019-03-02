@@ -63,7 +63,13 @@
                 color="black"
               >
                 (採点期限: 
-                {{ Date.parse(problem.answers.reduce((p, n) => Date.parse(p.updated_at) < Date.parse(n.updated_at) ? n : p, {updated_at: 0}).created_at)
+                {{ Date.parse(
+                    problem.answers
+                      .filter(x => x.team_id === team.id)
+                      .reduce((p, n) =>
+                        Date.parse(p.updated_at) < Date.parse(n.updated_at) ? n : p, {updated_at: 0}
+                      ).created_at
+                  )
                   + contest.answer_reply_delay_sec * 1000
                   - now | tickDuration("mm:ss") }}
                 )
