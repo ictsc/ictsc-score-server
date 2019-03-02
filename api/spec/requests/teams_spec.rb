@@ -63,19 +63,19 @@ describe 'Teams' do
     end
 
     describe '#keys' do
-      let(:expected_keys) { %w(id name organization created_at updated_at hashed_registration_code) }
+      let(:expected_keys) { %w(id name organization created_at updated_at) }
       subject { json_response.keys }
       by_nologin     { is_expected.to match_array expected_keys }
       by_viewer      { is_expected.to match_array expected_keys }
       by_participant { is_expected.to match_array expected_keys }
-      by_writer      { is_expected.to match_array expected_keys + %w(registration_code) }
-      by_admin       { is_expected.to match_array expected_keys + %w(registration_code) }
+      by_writer      { is_expected.to match_array expected_keys + %w(hashed_registration_code) }
+      by_admin       { is_expected.to match_array expected_keys + %w(hashed_registration_code) }
     end
   end
 
   describe 'POST /api/teams' do
     let(:team) { build(:team) }
-    let(:post_response_keys) { %w(id name organization created_at updated_at registration_code hashed_registration_code) }
+    let(:post_response_keys) { %w(id name organization created_at updated_at hashed_registration_code) }
 
     let(:params) do
       {

@@ -1,11 +1,14 @@
-require 'digest/sha1'
+require 'sinatra/crypt_helpers'
 
 class Team < ApplicationRecord
+  include Sinatra::CryptHelpers
+  extend Sinatra::CryptHelpers
+
   validates :name, presence: true
   validates :organization, presence: false
-  validates :registration_code, presence: true, uniqueness: true
   validates :hashed_registration_code, presence: true
   validates_associated :notification_subscriber
+  validate :validate_registration_code_uniqueness, if: :will_save_change_to_registration_code?
 
   has_many :members, dependent: :destroy
   has_many :answers, dependent: :destroy
@@ -15,13 +18,39 @@ class Team < ApplicationRecord
 
   before_validation :build_notification_subscriber_if_not_exists
 
-  def registration_code=(value)
-    super(value)
-    self.hashed_registration_code = Digest::SHA1.hexdigest(value)
-  end
+  attr_reader :registration_code
 
   def build_notification_subscriber_if_not_exists
     build_notification_subscriber unless notification_subscriber
+  end
+
+  def will_save_change_to_registration_code?
+    new_record? || will_save_change_to_hashed_registration_code?
+  end
+
+  def validate_registration_code_uniqueness
+    if registration_code.blank?
+      errors.add(:registration_code, 'should not be blank')
+      return false
+    end
+
+    if self.class.registration_code_exists?(registration_code)
+      errors.add(:registration_code, 'already exists')
+      return false
+    end
+
+    true
+  end
+
+  def registration_code=(value)
+    return if value.blank? || same_registration_code?(value)
+
+    @registration_code = value
+    self.hashed_registration_code = hash_password(@registration_code)
+  end
+
+  def same_registration_code?(code)
+    hashed_registration_code.present? && compare_password(code, hashed_registration_code)
   end
 
   # method: POST
@@ -59,7 +88,7 @@ class Team < ApplicationRecord
     when ROLE_ID[:admin], ROLE_ID[:writer]
       all_column_names(reference_keys: reference_keys)
     else
-      all_column_names(reference_keys: reference_keys) - %w(registration_code)
+      all_column_names(reference_keys: reference_keys) - %w(hashed_registration_code)
     end
   end
 
@@ -79,4 +108,14 @@ class Team < ApplicationRecord
     readable_records(user: user, action: action)
       .filter_columns(user: user, action: action)
   }
+
+  def self.find_by_registration_code(registration_code)
+    find {|team| compare_password(registration_code, team.hashed_registration_code) }
+  end
+
+  def self.registration_code_exists?(registration_code, ignore: nil)
+    raise ArgumentError, 'registration_code should not be blank' if registration_code.blank?
+
+    Team.pluck(:hashed_registration_code).any? {|hash| compare_password(registration_code, hash) }
+  end
 end
