@@ -306,10 +306,10 @@ export default {
   },
   computed: {
     problemSelect () {
-      return Array.concat([{
+      return [{
         id: null,
         title: 'Null',
-      }], this.problems);
+      }].concat(this.problems);
     },
     ...mapGetters([
       'isAdmin',
