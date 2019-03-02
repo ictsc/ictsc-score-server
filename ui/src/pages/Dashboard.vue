@@ -72,7 +72,7 @@
       </div>
       <div
         v-loading="scoreboardLoading"
-        v-if="scoreboard.length"
+        v-if="scoreboardLoading || scoreboard.length"
         class="col-4 scoreboard"
       >
         <h3>順位</h3>
@@ -103,7 +103,7 @@
             <p>type: {{ item.type }}</p>
             <p>{{ item.resource }}: {{ item.resource_id }} / {{ item.sub_resource_id }}. {{ item.text }}</p>
             <small>{{ item.created_at }}</small>
-          </div>
+          </div>v
         </div>
       </div>
     </div>
