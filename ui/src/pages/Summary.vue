@@ -316,6 +316,7 @@ export default {
   data () {
     return {
       intervalId: undefined,
+      reloadDataIntervalId: undefined,
       intervalSec: 6,
       isAutoTransition: false
     }
@@ -371,6 +372,7 @@ export default {
   },
   computed: {
     graphData () {
+      console.log('>>>>>>>>>> computed graphData');
       return this.teams.map((team, index) => {
         // その時点での合計スコア
         const getPileSubtotal = (answers, date) => {
@@ -403,7 +405,7 @@ export default {
       })
     },
     tableData () {
-      console.log('p', this.problems);
+      console.log('>>>>>>>>>> computed tableData');
       return this.teams.map(team => (
         {
           team_name: team.name,
@@ -421,9 +423,19 @@ export default {
   },
   mounted () {
     this.$store.dispatch(SET_TITLE, 'ダッシュボード');
+    // 5分おきにデータを更新
+    this.reloadDataIntervalId = setInterval(
+      async () => {
+        this.teams      = await API.getTeamsWithScore();
+        this.problems   = await API.getProblemsWithScore();
+        this.scoreboard = await API.getScoreboard();
+      },
+      300000
+    )
   },
   destroyed () {
     clearInterval(this.intervalId);
+    clearInterval(this.reloadDataIntervalId);
   }
 }
 </script>
