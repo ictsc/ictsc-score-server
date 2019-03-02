@@ -63,9 +63,11 @@
               >
                 {{ item.team_name }}
               </td>
-              <template v-for="point in item.points">
-                <td>
-                  {{ point }}
+              <template v-for="score in item.scores">
+                <td
+                  :class="{ solved: score.solved }"
+                >
+                  {{ score.point }}
                 </td>
               </template>
             </tr>
@@ -160,6 +162,10 @@
   text-align: right;
   border: 1px solid #ddd;
   padding: 0 5px;
+}
+
+.answer-table td.solved {
+  background-color: green;
 }
 
 .team_name {
@@ -397,13 +403,17 @@ export default {
       })
     },
     tableData () {
+      console.log('p', this.problems);
       return this.teams.map(team => (
         {
           team_name: team.name,
-          points: this.problems.map(x => {
-            const answers = Array.from(x.answers.filter(x => x.team_id === team.id))
+          scores: this.problems.map(problem => {
+            const answers = Array.from(problem.answers.filter(x => x.team_id === team.id))
               .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
-            return (answers[0] && answers[0].score) ? answers[0].score.point : 0
+            return (
+              (answers[0] && answers[0].score) ? ({ ...answers[0].score })
+            :                                    ({ point: 0, solved: false })
+            );
           })
         }
       ))
