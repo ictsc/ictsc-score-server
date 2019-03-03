@@ -50,7 +50,7 @@
             <td />
             <template v-for="item in problems">
               <th>
-                {{ item.title }}
+                <span>{{ item.title }}</span>
               </th>
             </template>
           </tr>
@@ -138,12 +138,14 @@
   left: 0;
   right: 0;
   margin: -1rem 0;
+  padding-bottom: 3rem;
   background-color: #34393e;
   padding: 12px 1rem 90px 1rem;
 }
 
 .right-content {
-  width: 75%;
+  width: 74%;
+  overflow-x: auto;
 }
 
 .graph {
@@ -162,6 +164,22 @@
   text-align: right;
   border: 1px solid #ddd;
   padding: 0 5px;
+}
+
+.answer-table th {
+  vertical-align: top;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.answer-table th span {
+  display: block;
+  margin: 1rem auto;
+  -webkit-writing-mode: vertical-rl;
+  max-height: 8rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .answer-table td.solved {
@@ -184,8 +202,8 @@
 }
 
 .scoreboard {
-  min-width: 25rem;
-  width: 25%;
+  min-width: 26rem;
+  width: 26%;
 }
 
 .team-list {
@@ -258,8 +276,10 @@
 .team-item-content > :nth-child(2) > :nth-child(2) {
   font-size: 1.5rem;
   white-space: nowrap;
-  width: 4rem;
+  width: 6rem;
   padding-left: 1rem;
+  flex-grow: 1;
+  text-align: right;
 }
 
 .team-item-content .unit {
