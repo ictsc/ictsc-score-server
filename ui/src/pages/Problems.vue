@@ -736,10 +736,14 @@ export default {
       if (this.contest && (new Date(this.contest.competition_end_at) < Date.now())) return nothing;
 
       const answer = latestAnswer(answers)
+      const pure = nestedValue(answer, 'score', 'point');
+      const bonus = nestedValue(answer, 'score', 'bonus_point');
+      const subtotal = nestedValue(answer, 'score', 'subtotal_point');
+
       return {
-        pure: nestedValue(answer, 'score', 'point') || '採点中',
-        bonus: nestedValue(answer, 'score', 'bonus_point') || '採点中',
-        subtotal: nestedValue(answer, 'score', 'subtotal_point') || '採点中',
+        pure:  pure != undefined ? pure : '採点中',
+        bonus: bonus != undefined ? pure : '採点中',
+        subtotal: subtotal != undefined ? pure : '採点中',
       }
     },
     problemUnlockConditionTitle (id) {
