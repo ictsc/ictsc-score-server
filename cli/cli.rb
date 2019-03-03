@@ -68,6 +68,10 @@ class Array
   end
 
   def find_by(opts = {})
+    # return super(&yield) if block_given?
+
+    raise ArgumentError if opts.blank?
+
     find do |elem|
       opts.all? {|key, value| value === elem[key] }
     end
