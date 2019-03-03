@@ -103,7 +103,7 @@
             <p>type: {{ item.type }}</p>
             <p>{{ item.resource }}: {{ item.resource_id }} / {{ item.sub_resource_id }}. {{ item.text }}</p>
             <small>{{ item.created_at }}</small>
-          </div>v
+          </div>
         </div>
       </div>
     </div>
