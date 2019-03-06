@@ -140,6 +140,26 @@ describe 'Problem comment' do
       end
     end
 
+    describe 'create comment with other creator' do
+      let!(:other_member) { create(:member) }
+      let(:problem) { create(:problem, creator: other_member) }
+      let(:comment) { build(:problem_comment) }
+      let(:params) do
+        {
+          text: comment.text,
+          member_id: other_member.id
+        }
+      end
+      let(:expected_keys) { %w(id text member_id created_at updated_at commentable_type commentable_id) }
+      let(:response) { post "/api/problems/#{problem.id}/comments", params }
+      subject { response.status }
+
+      by_writer do
+        is_expected.to eq 201
+        expect(json_response.keys).to match_array expected_keys
+      end
+    end
+
     describe 'create comment with missing text' do
       let(:params_without_text) { params.except(:text) }
       let(:response) { post "/api/problems/#{problem.id}/comments", params_without_text }
