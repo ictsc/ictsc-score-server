@@ -89,8 +89,8 @@ class Problem < ApplicationRecord
     case user&.role_id
     when ROLE_ID[:admin], ROLE_ID[:writer], ROLE_ID[:viewer]
       all
-    when ->(role_id) { role_id == ROLE_ID[:participant] || user&.team.present? }
-      return none unless Config.in_competition_time?
+    when ROLE_ID[:participant]
+      return none if user&.team.blank? || !Config.in_competition_time?
 
       case action
       when 'not_opened'
