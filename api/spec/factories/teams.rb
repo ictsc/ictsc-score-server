@@ -1,5 +1,3 @@
-require 'digest/sha1'
-
 FactoryBot.define do
   factory :team do
     sequence(:name) {|n| "team_#{n}" }

@@ -108,7 +108,7 @@ describe 'Problem comment' do
 
   describe "POST /api/problems/:problem_id/comments" do
     let!(:other_member) { create(:member) }
-    let(:comment) { build(:"problem_comment") }
+    let(:comment) { build(:problem_comment) }
 
     let(:params) do
       {
@@ -129,6 +129,7 @@ describe 'Problem comment' do
       by_writer do
           is_expected.to eq 201
           expect(json_response.keys).to match_array expected_keys
+          # member_idは偽造できない
           expect(json_response['member_id']).not_to eq other_member.id
       end
 

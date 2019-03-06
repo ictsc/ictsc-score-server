@@ -12,8 +12,7 @@ class CommentsController < ApplicationController
 
       @action = "#{pluralize_name}_comments"
       @commentable_id = params[:commentable_id]
-      @commentable = klass.readables(user: current_user, action: @action)
-        .find_by(id: @commentable_id)
+      @commentable = klass.readables(user: current_user, action: @action).find_by(id: @commentable_id)
       halt 404 if @commentable.nil?
 
       @with_param = (params[:with] || '').split(',') & Comment.allowed_nested_params(user: current_user) if request.get?

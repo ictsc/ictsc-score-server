@@ -117,7 +117,7 @@ class Problem < ApplicationRecord
   def readable_teams
     Team.select do |team|
       # 適当にチームからユーザを取得してもいいが、想定外の動作をする可能性があるからダミーユーザーを使う
-      readable?(by: Member.new(role: Role.participant, team: team))
+      readable?(by: Member.new(role: Role.participant!, team: team))
     end
   end
 
