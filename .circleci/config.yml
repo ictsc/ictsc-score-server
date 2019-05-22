@@ -1,59 +1,34 @@
 # Ruby CircleCI 2.0 configuration file
-#
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
-#
+
 version: 2
 jobs:
   build:
+    environment:
+      - TZ=Asia/Tokyo
+
+      - POSTGRES_DB=127.0.0.1
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+      - REDIS_URL=redis://127.0.0.1:6379/0
+
     docker:
       # The primary container is an instance of the first image listed. The job's commands run in this container.
       # The secondary and later container is an instance of the listed image which is run in a common network where ports exposed on the primary container are available on localhost.
       - image: upluse10/ictsc-score-server:api
         environment:
-          - TZ=Asia/Tokyo
-          - LANG=en_US.UTF-8
-          - LANGUAGE=en_US:en
-          - LC_ALL=en_US.UTF-8
-
-          - RACK_ENV=test
           - RAILS_ENV=test
+          - API_STAFF_PASSWORD=staff
 
-          - MYSQL_HOST=127.0.0.1
-          - DB_PORT=3306
-          - MYSQL_USER=ictsc_score_server
-          - MYSQL_PASSWORD=ictsc_score_server
-          - MYSQL_DATABASE=ictsc_score_server
-          - MYSQL_ROOT_PASSWORD=ictsc_score_server
-
-          - API_SESSION_COOKIE_KEY=ictsc_score_server
-          - API_SESSION_COOKIE_SECRET=change_me
-
-          # For realtime notification
-          - REDIS_URL=redis://127.0.0.1:6379/0
-          - API_CONTEST_REDIS_REALTIME_NOTIFICATION_CHANNEL=realtime_notification
-          - PLASMA_SUBSCRIBER_REDIS_ADDR=redis:6379
-          - PLASMA_SUBSCRIBER_REDIS_CHANNELS=realtime_notification
-          # /usr/src/appを参照するのでリセット
+          # 空にしないと/usr/src/appを参照する
           - BUNDLE_GEMFILE=
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # High speed(e.g. 3min -> 2 min)
-      - image: circleci/mariadb:10.3-ram
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - DB_PORT=3306
-          - MYSQL_USER=ictsc_score_server
-          - MYSQL_PASSWORD=ictsc_score_server
-          - MYSQL_DATABASE=ictsc_score_server
-          - MYSQL_ROOT_PASSWORD=ictsc_score_server
+      # テスト高速化(3min -> 2min)
+      - image: circleci/postgres:11.3-alpine-postgis-ram
 
       # circleci/redisにしても早くならなかった
-      - image: redis:4.0.11-alpine
-        environment:
-          - TZ=Asia/Tokyo
-          - REDIS_URL=redis://127.0.0.1:6379/0
+      - image: redis:5.0.4-alpine
 
     steps:
       - checkout
@@ -68,7 +43,7 @@ jobs:
 
       - run:
           name: install dependencies
-          working_directory: /root/project/api
+          working_directory: /root/project/api2
           # イメージで既にインストールされているGemを使い回すと早い
           # なぜか--pathを指定すると強制的に新規インストールが始まる
           command: |
@@ -85,34 +60,44 @@ jobs:
 
       - run:
           name: Wait for DB
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 10s
+          command: dockerize -wait tcp://127.0.0.1:5432 -timeout 10s
 
       - run:
           name: Setup DB
-          working_directory: /root/project/api
+          working_directory: /root/project/api2
           command: bundle exec rake db:setup
 
       - run:
           name: Run rubocop
-          working_directory: /root/project/api
+          working_directory: /root/project/api2
           command: bundle exec rubocop
 
       - run:
           name: Run spec
-          working_directory: /root/project/api
+          working_directory: /root/project/api2
           command: |
-            mkdir /tmp/test-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out test_results/rspec.xml \
+                              --format progress \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+      - run:
+          name: Update audit gemes
+          working_directory: /root/project/api2
+          command: bundle update bundler-audit brakeman
 
-            bundle exec rspec --format progress \
-                            --format RspecJunitFormatter \
-                            --out /tmp/test-results/rspec.xml \
-                            --color \
-                            $TEST_FILES
+      - run:
+          name: Run bundler-audit
+          working_directory: /root/project/api2
+          command: bundle audit check --update
 
-      # collect reports
+      - run:
+          name: Run brakeman
+          working_directory: /root/project/api2
+          command: bundle exec brakeman
+
+      # Save test results for timing analysis
       - store_test_results:
-          path: /tmp/test-results
-      - store_artifacts:
-          path: /tmp/test-results
-          destination: test-results
+          # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: test_results
+          # See https://circleci.com/docs/2.0/deployment-integrations/ for example deploy configs
