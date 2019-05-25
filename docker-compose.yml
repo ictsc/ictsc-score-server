@@ -1,67 +1,57 @@
 version: '3'
 
 services:
-  api:
-    image: upluse10/ictsc-score-server:api
+  api_old:
+    image: upluse10/ictsc-score-server:api-old
     env_file: .env
     build:
       context: api/
     depends_on:
-      - db
-      - redis
+      - db_old
+      - redis_old
     ports:
-      # environment: では指定できないので.envで指定する必要がある
-      - "8900:8900"
+      - "8910:3000"
     stdin_open: true
     tty: true
     volumes:
       - "./api:/usr/src/app"
-    command: |
-      dockerize -wait tcp://redis:6379 -timeout 100s
-      dockerize -wait tcp://db:3306 -timeout 100s
-      rackup -o 0.0.0.0 -p 8900
+    command: >
+      sh -c "
+      dockerize -wait tcp://redis_old:6379 -timeout 100s &&
+      dockerize -wait tcp://db_old:3306 -timeout 100s &&
+      rake db:setup db:seed_fu &&
+      rackup -o 0.0.0.0 -p 3000
+      "
 
-  ui:
-    image: upluse10/ictsc-score-server:ui
+  ui_old:
+    image: upluse10/ictsc-score-server:ui-old
     env_file: .env
     build:
       context: ui/
     depends_on:
-      - plasma
+      - plasma_old
     ports:
-      - "8901:80"
+      - "8911:80"
     volumes:
       - "./ui/h2o:/etc/h2o"
 
-  redis:
+  redis_old:
     image: redis:4.0.11-alpine
     env_file: .env
     ports:
-      - "8902:6379"
+      - "8912:6379"
 
-  db:
+  db_old:
     image: mariadb:10.3
     env_file: .env
     ports:
-      - "8903:3306"
-    # デバック用に永続化したい場合はコメントアウト
-    # volumes:
-    #   - "./tmp/db:/var/lib/mysql"
+      - "8913:3306"
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
 
-  plasma:
+  plasma_old:
     image: openfresh/plasma:latest
     env_file: .env
     depends_on:
-      - redis
+      - redis_old
     ports:
-      - "8904:8080"
-      # - 50051:50051
-
-  yamllint:
-    image: upluse10/ictsc-score-server:yamllint
-    build:
-      context: yamllint/
-    volumes:
-      - "./:/usr/src/app"
-    command: yamllint -c /usr/src/app/.yamllint /usr/src/app
+      - "8914:8080"
