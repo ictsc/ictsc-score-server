@@ -15,6 +15,7 @@ def create_config
     { key: :competition_stop,               value_type: :boolean, value: false },
     { key: :all_problem_force_open_at,      value_type: :date,    value: Time.zone.parse('2112-09-03 11:00:00') },
     { key: :grading_delay_sec,              value_type: :integer, value: 30 },
+    { key: :hide_all_score,                 value_type: :boolean, value: false },
     { key: :scoreboard_hide_at,             value_type: :date,    value: Time.zone.parse('2112-09-03 12:00:00') },
     { key: :scoreboard_top,                 value_type: :integer, value: 3 },
     { key: :scoreboard_display_top_team,    value_type: :boolean, value: true },
