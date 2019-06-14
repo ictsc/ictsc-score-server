@@ -12,4 +12,6 @@ ignore: |
   .bundle/
   tmp/
   log/
+  logs/
+  node_modules/
 ...

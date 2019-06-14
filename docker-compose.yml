@@ -24,17 +24,19 @@ services:
       bundle exec rails server puma -b 0.0.0.0
       '
 
-  # ui:
-  #   image: upluse10/ictsc-score-server:ui
-  #   env_file: .env
-  #   build:
-  #     context: ui/
-  #   depends_on:
-  #     - plasma
-  #   ports:
-  #     - "8901:80"
-  #   volumes:
-  #     - "./ui/h2o:/etc/h2o"
+  ui:
+    image: upluse10/ictsc-score-server:ui
+    env_file: .env
+    build:
+      context: ui3/
+    ports: ['8901:3000']
+    tty: true
+    volumes:
+      - './ui3:/usr/src/app'
+    restart: on-failure
+    command: sh -c '
+      yarn run dev
+      '
 
   db:
     image: postgres:11.3-alpine
@@ -45,8 +47,6 @@ services:
     image: redis:5.0.4-alpine
     env_file: .env
     ports: ['8903:6379']
-
-    # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
 
   yamllint:
     image: upluse10/ictsc-score-server:yamllint
