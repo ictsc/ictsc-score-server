@@ -28,7 +28,7 @@ module Types
     end
 
     def comments
-      AssociationLoader.for(Issue, :comments).load(self.object)
+      AssociationLoader.for(Issue, __method__).load(self.object)
     end
   end
 end

@@ -19,7 +19,7 @@ module Types
     end
 
     def score
-      RecordLoader.for(Score).load(self.object.score_id)
+      AssociationLoader.for(Answer, __method__).load(self.object)
     end
   end
 end
