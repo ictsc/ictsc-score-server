@@ -10,8 +10,8 @@ module Mutations
     argument :previous_problem_code, String, required: false
     argument :order, Integer, required: true
     argument :team_private, Boolean, required: true
-    argument :open_at_first, Types::DateTime, required: false
-    argument :open_at_last, Types::DateTime, required: false
+    argument :open_at_begin, Types::DateTime, required: false
+    argument :open_at_end, Types::DateTime, required: false
     argument :writer, String, required: false
     argument :secret_text, String, required: false
 
@@ -24,7 +24,7 @@ module Mutations
     argument :corrects, [[String]], required: false
 
     def resolve(code:, category_code: nil, previous_problem_code: nil,
-                order:, team_private:, open_at_first: nil, open_at_last: nil,
+                order:, team_private:, open_at_begin: nil, open_at_end: nil,
                 writer: nil, secret_text: '',
                 mode:, title:, text:, perfect_point:, candidates:, corrects:)
 
@@ -45,7 +45,7 @@ module Mutations
       #   シャッフルしてほしくない問題もあるかもしれない -> UIで送信時にシャッフルすれば良さそう
 
       # ここでproblem_bodyも保存される
-      if problem.update(body: problem_body, category: category, previous_problem: previous_problem, order: order, team_private: team_private, open_at: (open_at_first..open_at_last), writer: writer, secret_text: secret_text)
+      if problem.update(body: problem_body, category: category, previous_problem: previous_problem, order: order, team_private: team_private, open_at: (open_at_begin...open_at_end), writer: writer, secret_text: secret_text)
         { problem: problem.readable, errors: [] }
       else
         { errors: problem.errors.full_messages + problem_body.errors.full_messages }

@@ -8,9 +8,9 @@ module Types
     field :team_private,     Boolean,                         null: false
     field :previous_problem, Types::ProblemType,              null: true
     field :category,         Types::CategoryType,             null: true
-    # Rangeの[first, last]
-    field :open_at_first,    Types::DateTime,                 null: true
-    field :open_at_last,     Types::DateTime,                 null: true
+    # Rangeの[begin, end)
+    field :open_at_begin,    Types::DateTime,                 null: true
+    field :open_at_end,      Types::DateTime,                 null: true
     # staffのみ見せる
     field :code,             String,                          null: true
     field :writer,           String,                          null: true
@@ -25,12 +25,12 @@ module Types
     #                     APIv1では全てのanswers.scoresを取得してUIが算出していたがロードが重い
     # field :solved_count
 
-    def open_at_first
-      self.object.open_at&.first
+    def open_at_begin
+      self.object.open_at&.begin
     end
 
-    def open_at_last
-      self.object.open_at&.last
+    def open_at_end
+      self.object.open_at&.end
     end
 
     def body
