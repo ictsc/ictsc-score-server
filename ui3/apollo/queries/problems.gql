@@ -1,0 +1,20 @@
+{
+  problems {
+    id
+    code
+    body {
+      title
+      mode
+    }
+
+    previousProblem {
+      id
+      code
+    }
+
+    category {
+      title
+      code
+    }
+  }
+}
