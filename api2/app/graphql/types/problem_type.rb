@@ -18,7 +18,10 @@ module Types
     # 開放時のみ見れるフィールド
     field :body,             Types::ProblemBodyType,          null: true
     # staffは全チームの環境を見える, playerは自チームのみ
-    field :environments,     [Types::ProblemEnvironmentType], null: true
+    field :environments,     [Types::ProblemEnvironmentType], null: false
+    field :supplements,      [Types::ProblemSupplementType],  null: false
+    field :answers,          [Types::AnswerType],             null: true
+    field :issues,           [Types::IssueType],              null: false
     # created_atとupdated_atは意味がないので見せない(bodyを見るべき)
 
     # field :actual_point # そのチームの、現在の得点を計算して返す
@@ -38,6 +41,18 @@ module Types
     end
 
     def environments
+      AssociationLoader.for(Problem, __method__).load(self.object)
+    end
+
+    def supplements
+      AssociationLoader.for(Problem, __method__).load(self.object)
+    end
+
+    def answers
+      AssociationLoader.for(Problem, __method__).load(self.object)
+    end
+
+    def issues
       AssociationLoader.for(Problem, __method__).load(self.object)
     end
 

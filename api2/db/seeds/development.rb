@@ -114,7 +114,7 @@ def create_answer_bodies(problem_body)
   when 'textbox'
     [[Faker::Books::Dune.quote]]
   when 'radio_button'
-    problem_body.candidates.map(&:sample)
+    problem_body.candidates.map {|c| [c.sample] }
   when 'checkbox'
     problem_body.candidates.map {|c| c.sample(Random.rand(1..c.size)) }
   end

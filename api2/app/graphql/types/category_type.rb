@@ -10,7 +10,7 @@ module Types
     field :problems,    [Types::ProblemType],            null: false
 
     def problems
-      AssociationLoader.for(Category, :problems).load(self.object)
+      AssociationLoader.for(Category, __method__).load(self.object)
     end
   end
 end
