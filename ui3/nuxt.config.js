@@ -30,7 +30,10 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['plugins/api.js'],
+  plugins: [
+    '@/plugins/api.js',
+    '@/plugins/vue-underscore.js'
+  ],
   /*
    ** Nuxt.js modules
    */
