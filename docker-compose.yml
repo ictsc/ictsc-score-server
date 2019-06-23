@@ -5,7 +5,7 @@ services:
     image: upluse10/ictsc-score-server:api
     env_file: .env
     build:
-      context: api2/
+      context: api/
     depends_on:
       - db
       - redis
@@ -13,7 +13,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - './api2:/usr/src/app'
+      - './api:/usr/src/app'
     command: sh -c '
       if [ -f "tmp/pids/server.pid" ]; then
         rm tmp/pids/server.pid;
@@ -28,11 +28,11 @@ services:
     image: upluse10/ictsc-score-server:ui
     env_file: .env
     build:
-      context: ui3/
+      context: ui/
     ports: ['8901:3000']
     tty: true
     volumes:
-      - './ui3:/usr/src/app'
+      - './ui:/usr/src/app'
     restart: on-failure
     command: sh -c '
       yarn run dev
