@@ -7,7 +7,8 @@ require 'rails_helper'
 RSpec.describe 'problems', type: :request do
   context_as_staff do
     it 'get problems' do
-      post_query('problems')
+      # TODO: impl
+      post_query 'problems'
     end
   end
 
