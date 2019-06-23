@@ -1,117 +1,96 @@
-require: 'rubocop-rspec'
+AllCops:
+  TargetRubyVersion: 2.6
+  Exclude:
+    - 'bin/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+    - 'coverage/**/*'
+    - 'db/schema.rb'
 
-# TODO: あとで調整
-# Rails:
-  # Enabled: true
-Rails/InverseOf:
-  Enabled: false
-Rails/HasAndBelongsToMany:
-  Enabled: false
+require:
+  - 'rubocop-rails'
+  - 'rubocop-rspec'
+  - 'rubocop-performance'
 
-Style/AndOr:
+## メトリクス系
+Metrics/AbcSize:
+  # 下手に守ろうとするとコードが激しく断片化するので無効
   Enabled: false
-Style/Not:
-  Enabled: false
-Style/CommentedKeyword:
-  Enabled: false
-Style/AsciiComments:
-  Enabled: false
-Style/YodaCondition:
-  Enabled: false
-Style/TernaryParentheses:
-  Enabled: false
-Style/RedundantReturn:
-  Enabled: false
-Lint/EmptyWhen:
-  Enabled: false
-Style/EmptyElse:
-  Enabled: false
-Bundler/OrderedGems:
-  Enabled: false
-Layout/EmptyLineAfterGuardClause:
-  Enabled: false
-Style/RescueModifier:
-  Enabled: false
+# Metrics/CyclomaticComplexity:
+#   Max: 10 # default: 6
+# Metrics/PerceivedComplexity:
+#   Enabled: false
 
-Lint/UnusedMethodArgument:
-  Enabled: false
-Lint/UnusedBlockArgument:
-  Enabled: false
-
-Layout/SpaceBeforeBlockBraces:
-  Enabled: true
-Layout/SpaceInsideBlockBraces:
-  EnforcedStyle: 'space'
-  EnforcedStyleForEmptyBraces: 'no_space'
-  SpaceBeforeBlockParameters: false
-
-Style/TrailingCommaInArrayLiteral:
-  Enabled: false
-Style/TrailingCommaInHashLiteral:
-  Enabled: false
-Style/BracesAroundHashParameters:
-  Enabled: false
-
-MethodLength:
-  Max: 20
+## 長さ系
 Metrics/ClassLength:
   Max: 200
+MethodLength:
+  Max: 20
+Metrics/BlockLength:
+  Max: 20
+  Exclude:
+    - 'spec/**/*_spec.rb'
 Metrics/LineLength:
+  # 基本的に長い行の折返しはエディターで対処
   Enabled: false
-# etrics/BlockLength:
-
-Style/IfUnlessModifier:
-  Enabled: false
-  # MaxLineLength: 120
-
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-Style/Documentation:
-  Enabled: false
-PercentLiteralDelimiters:
+Metrics/ParameterLists:
   Enabled: false
 
-CaseIndentation:
-  IndentOneStep: false
-  EnforcedStyle: 'case'
-Layout/BlockAlignment:
-  EnforcedStyleAlignWith: 'start_of_block'
-Layout/IndentHash:
-  EnforcedStyle: 'consistent'
+Style/AsciiComments:
+  # 日本語コメントを許可
+  Enabled: false
+
+## インデント系
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: 'indented'
 
+## スペース系
+Layout/SpaceInsideBlockBraces:
+  SpaceBeforeBlockParameters: false
+# CaseIndentation:
+#   IndentOneStep: false
+#   EnforcedStyle: 'case'
+# Layout/BlockAlignment:
+#   EnforcedStyleAlignWith: 'start_of_block'
+
+## 名前付け系
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+## rspec系
+RSpec/HookArgument:
+  EnforcedStyle: 'each'
+
+RSpec/MultipleExpectations:
+  # 1つのit内に複数のexpectを許可する
+  Enabled: false
+RSpec/ExampleLength:
+  Max: 20
+
+## misc
+Bundler/OrderedGems:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/BlockDelimiters:
+  EnforcedStyle: 'braces_for_chaining'
 Style/FormatString:
   EnforcedStyle: 'percent'
-Style/FormatStringToken:
+Style/GuardClause:
+  # 過激
   Enabled: false
-
-# その内外すかも
-Style/FrozenStringLiteralComment:
+Style/IfUnlessModifier:
+  # 過激
   Enabled: false
-Metrics/AbcSize:
+Style/RedundantSelf:
+  # selfを明示したいときもある
+  # ただし、selfではプライベートメソッドを呼べないので少し紛らわしくなる
   Enabled: false
-Metrics/CyclomaticComplexity:
-  Enabled: false
-Metrics/PerceivedComplexity:
-  Enabled: false
-
-# Documentation:
+# Style/RedundantReturn:
 #   Enabled: false
-# Style/ClassAndModuleChildren:
-#   Enabled: false
-# Style/CommentedKeyword:
-#   Enabled: false
-# Style/RedundantBegin:
-#   Enabled: false
-
-AllCops:
-  TargetRubyVersion: 2.5
-  Exclude:
-    - 'coverage/**/*'
-    - 'db/schema.rb'
-    - 'db/migrate/*.rb'
-    - 'spec/**/*_spec.rb'
-    - 'spec/**/*_helper.rb'
-    - 'spec/support/**/*'
-    - 'tmp/**/*'
+Style/EmptyElse:
+  # elseが空のときのみ警告(nilを明示して欲しい)
+  EnforcedStyle: 'empty'
+Style/TernaryParentheses:
+  # 多少複雑な条件演算子は括弧で囲む
+  EnforcedStyle: 'require_parentheses_when_complex'

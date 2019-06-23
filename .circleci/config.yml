@@ -44,7 +44,7 @@ jobs:
 
       - run:
           name: install dependencies
-          working_directory: /root/project/api2
+          working_directory: /root/project/api
           # イメージで既にインストールされているGemを使い回すと早い
           # なぜか--pathを指定すると強制的に新規インストールが始まる
           command: |
@@ -65,17 +65,17 @@ jobs:
 
       - run:
           name: Setup DB
-          working_directory: /root/project/api2
+          working_directory: /root/project/api
           command: bundle exec rake db:setup
 
       - run:
           name: Run rubocop
-          working_directory: /root/project/api2
+          working_directory: /root/project/api
           command: bundle exec rubocop
 
       - run:
           name: Run spec
-          working_directory: /root/project/api2
+          working_directory: /root/project/api
           command: |
             mkdir -p /tmp/test-results/rspec
             bundle exec rspec --profile 10 \
@@ -85,17 +85,17 @@ jobs:
                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
       - run:
           name: Update audit gemes
-          working_directory: /root/project/api2
+          working_directory: /root/project/api
           command: bundle update bundler-audit brakeman
 
       - run:
           name: Run bundler-audit
-          working_directory: /root/project/api2
+          working_directory: /root/project/api
           command: bundle audit check --update
 
       - run:
           name: Run brakeman
-          working_directory: /root/project/api2
+          working_directory: /root/project/api
           command: bundle exec brakeman
 
       # Save test results for timing analysis
@@ -106,4 +106,4 @@ jobs:
       # Save coverage
       # - store_artifacts:
       #     # TODO: 並列非対応
-      #     path: /root/project/api2/coverage
+      #     path: /root/project/api/coverage

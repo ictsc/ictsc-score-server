@@ -1,9 +1,6 @@
-FROM ruby:2.5.3-alpine3.8
+FROM ruby:2.6.3-alpine3.9
 
 LABEL maintainer "ICTSC"
-
-# throw errors if Gemfile has been modified since Gemfile.lock
-# RUN bundle config --global frozen 1
 
 ENV LANG ja_JP.UTF-8
 ENV LC_ALL ja_JP.UTF-8
@@ -14,13 +11,18 @@ RUN wget -O - https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_
 
 WORKDIR /usr/src/app
 
-# required to build native extension of mysql2 gem and more
+# throw errors if Gemfile has been modified since Gemfile.lock
+# RUN bundle config --global frozen 1
+
 RUN apk update \
- && apk add --virtual .build-dep build-base mariadb-connector-c-dev \
- && apk add less mariadb-connector-c tzdata \
+ && apk add --no-cache --virtual .build-dep build-base postgresql-dev \
+ && apk add --no-cache less tzdata postgresql-client \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && echo "Asia/Tokyo" > /etc/timezone \
  && apk del tzdata
+
+
+RUN gem install bundler
 
 ADD Gemfile /usr/src/app
 ADD Gemfile.lock /usr/src/app
@@ -33,7 +35,3 @@ RUN apk del .build-dep
 RUN rm -rf /var/cache/apk/*
 
 COPY . /usr/src/app
-
-EXPOSE 8900
-
-CMD ["rackup", "-o", "0.0.0.0", "-p", "8900"]

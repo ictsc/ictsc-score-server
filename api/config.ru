@@ -1,31 +1,7 @@
-require 'bundler'
-require 'fileutils'
-require 'logger'
-require 'securerandom'
+# frozen_string_literal: true
 
-Bundler.require
-require_relative 'app'
+# This file is used by Rack-based servers to start the application.
 
-::Logger.class_eval { alias_method(:write, :<<) unless respond_to?(:write) }
+require_relative 'config/environment'
 
-logger = Logger.new(File.join(LOG_DIR, "#{ENV['RACK_ENV']}.log"), 'daily')
-
-use Rack::LtsvLogger, logger
-use Rack::PostBodyContentTypeParser
-
-use Rack::Lineprof if ENV['RACK_ENV'] == 'development'
-
-default_session_expire_sec = 1.week.to_i
-
-if ENV['API_SESSION_USE_REDIS']
-  use Rack::Session::Redis,
-      redis_server: ENV.fetch('API_SESSION_REDIS_SERVER', 'redis://127.0.0.1:6379/0/rack:session'),
-      expire_after: ENV.fetch('API_SESSION_EXPIRE_SEC', default_session_expire_sec).to_i
-else
-  use Rack::Session::Cookie,
-      key: ENV.fetch('API_SESSION_COOKIE_KEY', 'rack.session'),
-      secret: ENV.fetch('API_SESSION_COOKIE_SECRET') { SecureRandom.hex(64) },
-      expire_after: ENV.fetch('API_SESSION_EXPIRE_SEC', default_session_expire_sec).to_i
-end
-
-run App
+run Rails.application

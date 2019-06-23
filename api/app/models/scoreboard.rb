@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 class Scoreboard
   delegate :map, to: :teams_scores
+
+  # TODO: コピペ
+  # servie-objectにしたほうが良さそう
 
   def initialize(user:)
     # [{1st_team, score}, {2nd_team, score}, {3rd_team, score}, ...]
@@ -38,7 +43,7 @@ class Scoreboard
     team_scores
       .group_by(&:problem_id)
       .lazy
-      .map {|problem_id, scores| scores.max_by {|s| s.answer.created_at } }
+      .map {|_problem_id, scores| scores.max_by {|s| s.answer.created_at } }
       .sum(&:point)
   end
 
@@ -60,14 +65,14 @@ class Scoreboard
       scores = Scoreboard.new(user: current_user)
 
       # when team has nothing score, this value is nil
-      my_team_rank = scores.find_by_team(current_user.team)&.fetch(:rank) unless current_user.staff?
+      my_team_rank = scores.find_by_team(current_user.team)&.fetch(:rank) unless current_user.staff? # rubocop:disable Rails/DynamicFindBy
 
-      scores.map do |score|
+      scores.map {|score|
         display_mode = select_display_mode(current_user, scores, score, my_team_rank)
         next unless display_mode
 
         build_score_info(score, display_mode)
-      end
+      }
         .compact
     end
 
