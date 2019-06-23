@@ -4,6 +4,7 @@
 version: 2
 jobs:
   build:
+    parallelism: 3
     environment:
       - TZ=Asia/Tokyo
 
@@ -76,9 +77,10 @@ jobs:
           name: Run spec
           working_directory: /root/project/api2
           command: |
+            mkdir -p /tmp/test-results/rspec
             bundle exec rspec --profile 10 \
                               --format RspecJunitFormatter \
-                              --out test_results/rspec.xml \
+                              --out /tmp/test-results/rspec/results.xml \
                               --format progress \
                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
       - run:
@@ -99,5 +101,9 @@ jobs:
       # Save test results for timing analysis
       - store_test_results:
           # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: test_results
+          path: /tmp/test-results
           # See https://circleci.com/docs/2.0/deployment-integrations/ for example deploy configs
+      # Save coverage
+      # - store_artifacts:
+      #     # TODO: 並列非対応
+      #     path: /root/project/api2/coverage
