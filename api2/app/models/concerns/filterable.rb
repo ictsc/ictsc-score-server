@@ -84,6 +84,8 @@ module Filterable
         # レコードが取得不可でもtokenがあればデータ本体は取得可能
         where(team: team)
       when 'Score'
+        return none if !team.staff? && Config.hide_all_score
+
         # joins(:answer).merge(Answer.reply_delay).where(answers: { team: team })
         where(answer: Answer.readable_records.reply_delay)
       when 'FirstCorrectAnswer'

@@ -169,6 +169,7 @@ class Config < ApplicationRecord
   record_accessor :competition_stop
   record_accessor :all_problem_force_open_at
   record_accessor :grading_delay_sec
+  record_accessor :hide_all_score
 
   record_accessor :scoreboard_hide_at
   record_accessor :scoreboard_top

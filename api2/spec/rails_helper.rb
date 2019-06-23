@@ -57,7 +57,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
-  config.before(:suite) do
+  config.before(:suite) do # rubocop:disable Metrics/BlockLength
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
 
@@ -77,6 +77,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
     Config.create!(key: :competition_stop,               value_type: :boolean, value: false)
     Config.create!(key: :all_problem_force_open_at,      value_type: :date,    value: Time.zone.parse('2112-09-03 11:00:00 +0900'))
     Config.create!(key: :grading_delay_sec,              value_type: :integer, value: 30)
+    Config.create!(key: :hide_all_score,                 value_type: :boolean, value: false)
     Config.create!(key: :scoreboard_hide_at,             value_type: :date,    value: Time.zone.parse('2112-09-03 12:00:00 +0900'))
     Config.create!(key: :scoreboard_top,                 value_type: :integer, value: 3)
     Config.create!(key: :scoreboard_display_top_team,    value_type: :boolean, value: true)
