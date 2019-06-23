@@ -23,6 +23,6 @@
 
 <script>
 export default {
-  name: 'HomePage',
+  name: 'Index',
 }
 </script>

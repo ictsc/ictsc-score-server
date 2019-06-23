@@ -5,7 +5,7 @@
       class="navbar-brand"
       >
         <img
-          src="~/assets/ictsc-logo-white.svg"
+          src="~assets/ictsc-logo-white.svg"
           alt="ICTSC"
         >
     </nuxt-link>

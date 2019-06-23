@@ -18,7 +18,8 @@
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/markdownit": "^1.2.5",
     "nuxt": "^2.0.0",
-    "nuxt-buefy": "^0.3.2"
+    "nuxt-buefy": "^0.3.2",
+    "vue-underscore": "^0.1.4"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

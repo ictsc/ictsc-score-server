@@ -1,0 +1,34 @@
+{
+  categories {
+    id
+    code
+    title
+    description
+    order
+
+    problems {
+      id
+      order
+      teamPrivate
+      openAtBegin
+      openAtEnd
+
+      # staff only
+      code
+      writer
+
+      body {
+        title
+        mode
+        perfectPoint
+      }
+
+      previousProblem {
+        id
+        body {
+          title
+        }
+      }
+    }
+  }
+}
