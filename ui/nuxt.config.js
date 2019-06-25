@@ -73,8 +73,7 @@ export default {
   },
   proxy: {
     '/api': {
-      target: 'http://api:3000',
-      pathRewrite: { '^/api/': '' }
+      target: 'http://api:3000'
     }
   },
   /*
