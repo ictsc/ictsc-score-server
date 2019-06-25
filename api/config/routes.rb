@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  scope defaults: { format: 'json' } do
+  scope '/api', defaults: { format: 'json' } do
     post 'sessions', to: 'sessions#create'
     delete 'sessions', to: 'sessions#destroy'
 
