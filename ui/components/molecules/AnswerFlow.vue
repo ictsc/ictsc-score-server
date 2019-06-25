@@ -1,20 +1,33 @@
 <template>
   <div class="steps d-flex">
-    <div class="item">
-      <h4>各カテゴリから問題を選んで解答</h4>
-      <p>解放されている問題を選択し、解答を行ってください。</p>
-    </div>
-    <div class="item">
-      <!-- TODO: 20分 を切り出す -->
-      <h4>運営が採点 (20分間)</h4>
-      <p>運営が採点中はその問題を解けません。</p>
-    </div>
-    <div class="item">
-      <h4>採点結果を確認</h4>
-      <p>満点でない場合は、高得点を目指して追加の解答も可能です。</p>
-    </div>
+    <Item
+      topic="各カテゴリから問題を選んで解答"
+    >
+      解放されている問題を選択し、解答を行ってください。
+    </Item>
+    <Item
+      topic="運営が採点 (20分間)"
+    >
+      運営が採点中はその問題を解けません。
+    </Item>
+    <Item
+      topic="採点結果を確認"
+    >
+      満点でない場合は、高得点を目指して追加の解答も可能です。
+    </Item>
   </div>
 </template>
+
+<script>
+import Item from '~/components/atoms/Item.vue'
+export default {
+  name: 'AnsewerFlow',
+  components: {
+    Item
+  }
+}
+</script>
+
 
 <style scoped>
 .steps {
@@ -39,8 +52,3 @@
   margin: 0;
 }
 </style>
-
-<script>
-export default {
-}
-</script>
