@@ -2,7 +2,7 @@ ICTSC スコアサーバー
 ---
 
 [![CircleCI](https://circleci.com/gh/ictsc/ictsc-score-server.svg?style=svg)](https://circleci.com/gh/ictsc/ictsc-score-server)
-
+![Docker Automated build](https://img.shields.io/docker/automated/upluse10/ictsc-score-server.svg)
 
 The contest site for [ICTSC](http://icttoracon.net/) (ICT Trouble Shooting Contest).
 
