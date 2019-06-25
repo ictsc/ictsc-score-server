@@ -61,8 +61,8 @@ spec:
           securityContext:
             runAsUser: 0
           args:
-          - "--character-set-server=utf8mb4"
-          - "--collation-server=utf8mb4_unicode_ci"
+            - "--character-set-server=utf8mb4"
+            - "--collation-server=utf8mb4_unicode_ci"
           volumeMounts:
             - name: mariadb
               mountPath: /var/lib/mysql
@@ -72,9 +72,9 @@ spec:
             - configMapRef:
                 name: db-env
       volumes:
-      - name: mariadb
-        persistentVolumeClaim:
-          claimName: db-pvc
+        - name: mariadb
+          persistentVolumeClaim:
+            claimName: db-pvc
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -102,4 +102,3 @@ spec:
       targetPort: 3306
   selector:
     ictsc2018-score: db
-

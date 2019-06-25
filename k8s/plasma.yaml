@@ -15,12 +15,12 @@ spec:
         - image: openfresh/plasma:0.2.2
           name: plasma
           envFrom:
-          - configMapRef:
-              name: plasma-env
+            - configMapRef:
+                name: plasma-env
           ports:
-          - name: plasma
-            containerPort: 8080
-      #restartPolicy: Always
+            - name: plasma
+              containerPort: 8080
+      # restartPolicy: Always
 ---
 apiVersion: v1
 kind: ConfigMap
