@@ -14,3 +14,4 @@ coverage/
 !.eslintrc.js
 !.gitignore
 !.eslintignore
+!.yarnrc
