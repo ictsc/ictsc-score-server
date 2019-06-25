@@ -33,9 +33,12 @@ services:
     tty: true
     volumes:
       - './ui:/usr/src/app'
-    restart: on-failure
+    # ビルドに失敗してもリトライ(restart: on-failure は使いづらい)
     command: sh -c '
-      yarn run dev
+      while :; do
+        yarn run dev;
+        sleep 1;
+      done
       '
 
   db:
