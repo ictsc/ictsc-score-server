@@ -22,8 +22,11 @@ API and SPA
 
 - API
   - Written in Ruby
-  - API framework: Rails
-    - Provides Graphql API (but session is stateful...)
+  - Framework: Rails
+    - Provides Graphql API
+- UI
+  - Written in JavaScript
+  - Framework: Nuxt.js(SPA)
 
 #### Coding style
 
