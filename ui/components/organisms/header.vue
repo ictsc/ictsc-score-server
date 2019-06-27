@@ -22,15 +22,6 @@
       </div>
       <div class="nav-item">
         <router-link
-          :to="{name: 'members'}"
-          active-class="active"
-          class="nav-link"
-        >
-          メンバー
-        </router-link>
-      </div>
-      <div class="nav-item">
-        <router-link
           :to="{name: 'teams'}"
           active-class="active"
           class="nav-link"
@@ -81,7 +72,7 @@
       <div class="nav-item">
         <router-link
           :to="{ name: 'summary'}"
-          v-if="!(isNoLogin || isParticipant)"
+          v-if="isStaff || isAudience"
           active-class="active"
           class="nav-link"
         >
@@ -148,11 +139,16 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Header',
   data () {
     return {
     }
+  },
+  computed: {
+    ...mapGetters('session', ['isStaff', 'isAudience', 'isPlayer', 'isNoLogin'])
   },
 }
 </script>
