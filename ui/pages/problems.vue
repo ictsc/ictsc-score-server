@@ -222,6 +222,7 @@
 
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
+import orm from '~/orm'
 
 export default {
   name: 'Problems',
@@ -229,6 +230,14 @@ export default {
     AnswerAttention,
     AnswerFlow
   },
+  async fetch({ store }) {
+    const { data } = await orm.Category.fetch()
+    // const data = Comment.query().withAll().all()
+    console.log(data)
+    // store.commit('setStars', data)
+  },
+
+
   filters: {
     // dateRelative
   },

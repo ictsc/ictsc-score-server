@@ -33,6 +33,7 @@ export default {
   plugins: [
     '~/plugins/api',
     '~/plugins/vue-underscore',
+    '~/plugins/vuex-orm'
   ],
   /*
    ** Nuxt.js modules
@@ -52,7 +53,8 @@ export default {
     clientConfigs: {
       default: {
         // required
-        httpEndpoint: 'http://ui/api/graphql',
+        // TODO:
+        httpEndpoint: 'http://localhost:8901/api/graphql',
         // optional
         // See https://www.apollographql.com/docs/link/links/http.html#options
         // TODO:
