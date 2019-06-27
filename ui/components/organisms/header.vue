@@ -1,19 +1,13 @@
 <template>
   <nav class="navbar fixed-top navbar-light navbar-toggleable flex-row">
-    <nuxt-link
-      to="dashboard"
-      class="navbar-brand"
-      >
-        <img
-          src="~assets/ictsc-logo-white.svg"
-          alt="ICTSC"
-        >
+    <nuxt-link to="dashboard" class="navbar-brand">
+      <img src="~assets/ictsc-logo-white.svg" alt="ICTSC" />
     </nuxt-link>
 
     <div class="navbar-nav  mr-auto">
       <div class="nav-item">
         <router-link
-          :to="{name: 'guide'}"
+          :to="{ name: 'guide' }"
           active-class="active"
           class="nav-link"
         >
@@ -22,7 +16,7 @@
       </div>
       <div class="nav-item">
         <router-link
-          :to="{name: 'teams'}"
+          :to="{ name: 'teams' }"
           active-class="active"
           class="nav-link"
         >
@@ -32,16 +26,13 @@
     </div>
     <div class="navbar-nav">
       <div class="nav-item">
-        <router-link
-          :to="{name: 'dashboard'}"
-          class="nav-link"
-        >
+        <router-link :to="{ name: 'dashboard' }" class="nav-link">
           トップ
         </router-link>
       </div>
       <div class="nav-item">
         <router-link
-          :to="{ name: 'problems'}"
+          :to="{ name: 'problems' }"
           active-class="active"
           class="nav-link"
         >
@@ -50,19 +41,16 @@
       </div>
       <div class="nav-item">
         <router-link
-          :to="{ name: 'issues'}"
+          :to="{ name: 'issues' }"
           active-class="active"
           class="nav-link"
         >
           質問
         </router-link>
       </div>
-      <div
-        v-if="isStaff"
-        class="nav-item"
-      >
+      <div v-if="isStaff" class="nav-item">
         <router-link
-          :to="{ name: 'answers'}"
+          :to="{ name: 'answers' }"
           active-class="active"
           class="nav-link"
         >
@@ -71,8 +59,8 @@
       </div>
       <div class="nav-item">
         <router-link
-          :to="{ name: 'summary'}"
           v-if="isStaff || isAudience"
+          :to="{ name: 'summary' }"
           active-class="active"
           class="nav-link"
         >
@@ -80,17 +68,10 @@
         </router-link>
       </div>
       <div class="nav-item">
-        <a
-          v-on:click="logout()"
-          v-if="!isNoLogin"
-          href="#"
-          class="nav-link"
-        >ログアウト</a>
-        <router-link
-          :to="{ name: 'login' }"
-          v-else
-          class="nav-link"
+        <a v-if="!isNoLogin" href="#" class="nav-link" @click="logout()"
+          >ログアウト</a
         >
+        <router-link v-else :to="{ name: 'login' }" class="nav-link">
           ログイン
         </router-link>
       </div>
@@ -108,7 +89,7 @@
   align-items: center;
   min-width: 700px;
   width: 100%;
-  padding: .3rem 0.8rem;
+  padding: 0.3rem 0.8rem;
 }
 /* from @media (min-width: 576px) .navbar-toggleable .navbar-nav */
 .navbar .navbar-nav {
@@ -143,12 +124,11 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Header',
-  data () {
-    return {
-    }
+  data() {
+    return {}
   },
   computed: {
     ...mapGetters('session', ['isStaff', 'isAudience', 'isPlayer', 'isNoLogin'])
-  },
+  }
 }
 </script>

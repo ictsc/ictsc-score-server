@@ -5,7 +5,6 @@
       <answer-flow />
       <answer-attention />
     </div>
-
   </div>
 </template>
 
@@ -230,39 +229,9 @@ export default {
     AnswerAttention,
     AnswerFlow
   },
-  async fetch({ store }) {
-    const { data } = await orm.Category.fetch()
-    // const data = Comment.query().withAll().all()
-    console.log(data)
-    // store.commit('setStars', data)
-  },
-
 
   filters: {
     // dateRelative
-  },
-  asyncData: {
-    // problemGroupsDefault: [],
-    //
-    // problemGroups() {
-    //   return API.getProblemGroups()
-    // },
-    // problemsDefault: [],
-    // problems() {
-    //   if (this.session.member) {
-    //     if (this.isParticipant || this.isStaff) {
-    //       return API.getProblemsWithScore()
-    //     } else {
-    //       return API.getProblems()
-    //     }
-    //   } else {
-    //     return new Promise(resolve => resolve([]))
-    //   }
-    // },
-    // membersDefault: [],
-    // members() {
-    //   return API.getMembers()
-    // }
   },
 
   computed: {
@@ -310,6 +279,35 @@ export default {
     //   if (val.member) this.asyncReload('problems')
     // }
   },
+  asyncData: {
+    // problemGroupsDefault: [],
+    //
+    // problemGroups() {
+    //   return API.getProblemGroups()
+    // },
+    // problemsDefault: [],
+    // problems() {
+    //   if (this.session.member) {
+    //     if (this.isParticipant || this.isStaff) {
+    //       return API.getProblemsWithScore()
+    //     } else {
+    //       return API.getProblems()
+    //     }
+    //   } else {
+    //     return new Promise(resolve => resolve([]))
+    //   }
+    // },
+    // membersDefault: [],
+    // members() {
+    //   return API.getMembers()
+    // }
+  },
+  async fetch({ store }) {
+    const { data } = await orm.Category.fetch()
+    // const data = Comment.query().withAll().all()
+    console.log(data)
+    // store.commit('setStars', data)
+  }
 
   // mounted() {
   //   this.$store.dispatch(SET_TITLE, '問題一覧')

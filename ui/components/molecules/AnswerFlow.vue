@@ -1,18 +1,12 @@
 <template>
   <div class="steps d-flex">
-    <Item
-      topic="各カテゴリから問題を選んで解答"
-    >
+    <Item topic="各カテゴリから問題を選んで解答">
       解放されている問題を選択し、解答を行ってください。
     </Item>
-    <Item
-      topic="運営が採点 (20分間)"
-    >
+    <Item topic="運営が採点 (20分間)">
       運営が採点中はその問題を解けません。
     </Item>
-    <Item
-      topic="採点結果を確認"
-    >
+    <Item topic="採点結果を確認">
       満点でない場合は、高得点を目指して追加の解答も可能です。
     </Item>
   </div>
@@ -27,7 +21,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .steps {

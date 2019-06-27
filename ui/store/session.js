@@ -16,5 +16,5 @@ export const getters = {
   },
   isNoLogin: state => {
     return state.session === null || state.session.member === null
-  },
+  }
 }
