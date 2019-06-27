@@ -83,6 +83,9 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, { isDev, isClient }) {
+      // TODO: Vue dev toolが使えなくなる
+      // config.devtool = 'eval-source-map'
+    }
   }
 }
