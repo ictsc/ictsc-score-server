@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_05_151203) do
+ActiveRecord::Schema.define(version: 2019_06_27_173053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -139,7 +139,7 @@ ActiveRecord::Schema.define(version: 2019_05_05_151203) do
     t.string "writer"
     t.string "secret_text", limit: 8192, null: false
     t.integer "order", null: false
-    t.boolean "team_private", null: false
+    t.boolean "team_isolate", null: false
     t.tsrange "open_at"
     t.uuid "previous_problem_id"
     t.uuid "category_id"

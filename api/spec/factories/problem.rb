@@ -6,7 +6,7 @@ FactoryBot.define do
     sequence(:writer) {|n| "%<name>s #{n}" } # type: :string, null: true
     sequence(:secret_text) {|n| "%<name>s #{n}" } # type: :string, null: false, default: ""
     sequence(:order) {|n| n } # type: :integer, null: false
-    sequence(:team_private, &:odd?) # type: :boolean, null: false, default: "false"
+    sequence(:team_isolate, &:odd?) # type: :boolean, null: false, default: "false"
     open_at { nil } # type: :tsrange, null: true
 
     # association :body, factory: :problem_body # optional: nil

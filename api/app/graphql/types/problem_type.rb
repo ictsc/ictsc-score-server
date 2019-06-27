@@ -5,7 +5,7 @@ module Types
     # 常時playerが見れるフィールド
     field :id,               ID,                              null: false
     field :order,            Integer,                         null: false
-    field :team_private,     Boolean,                         null: false
+    field :team_isolate,     Boolean,                         null: false
     field :previous_problem, Types::ProblemType,              null: true
     field :category,         Types::CategoryType,             null: true
     # Rangeの[begin, end)

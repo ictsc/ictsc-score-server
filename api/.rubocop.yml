@@ -36,6 +36,10 @@ Metrics/LineLength:
 Metrics/ParameterLists:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'db/migrate/*.rb'
+
 Style/AsciiComments:
   # 日本語コメントを許可
   Enabled: false
