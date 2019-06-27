@@ -7,7 +7,7 @@ class Problem < ApplicationRecord
   validates :body,             presence: false
   validates :open_at,          daterange: true, allow_nil: true
   validates :order,            presence: true
-  validates :team_private,     boolean: true
+  validates :team_isolate,     boolean: true
   validates :previous_problem, presence: false
   validates :category,         presence: false
 
@@ -38,10 +38,10 @@ class Problem < ApplicationRecord
 
       # 依存問題がない
       # 自チームが依存問題を解決
-      # 他チームが依存問題を解決していてteam_private == false
+      # 他チームが依存問題を解決していてteam_isolate == false
       where(previous_problem: nil)
         .or(where(previous_problem: my_team_fcas))
-        .or(where(previous_problem: all_team_fcas, team_private: false))
+        .or(where(previous_problem: all_team_fcas, team_isolate: false))
     end
 
     # 公開期間的に見えるかどうか

@@ -63,7 +63,7 @@ def create_problems(categories, first_category)
       secret_text: Faker::Books::Dune.planet,
       order: Random.rand(1000),
       category: categories.sample,
-      team_private: false
+      team_isolate: false
     )
   end
 

@@ -9,7 +9,7 @@
     problems {
       id
       order
-      teamPrivate
+      teamIsolate
       openAtBegin
       openAtEnd
 
