@@ -71,6 +71,7 @@ export default {
   },
   proxy: {
     '/api': {
+      // TODO:
       target: 'http://api:3000'
     }
   },
