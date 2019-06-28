@@ -1,5 +1,5 @@
 <template>
-  <div class="steps d-flex">
+  <div class>
     <Item
       title="各カテゴリから問題を選んで解答"
       body="解放されている問題を選択し、解答を行ってください。"
@@ -34,26 +34,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.steps {
-  margin: 2rem 0;
-}
-.steps .item {
-  flex-grow: 1;
-  min-width: 5rem;
-  padding: 1rem;
-  padding-right: 4rem;
-  background: #efefef;
-  position: relative;
-  background-image: url('~assets/arrow.svg');
-  background-repeat: repeat-y;
-  background-position: right center;
-}
-.steps .item:last-child {
-  background-image: none;
-  padding-right: 1rem;
-}
-.steps .item p {
-  margin: 0;
-}
-</style>
+<style scoped></style>
