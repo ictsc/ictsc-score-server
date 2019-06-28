@@ -1,15 +1,19 @@
 <template>
   <div class="item">
-    <h4>{{ topic }}</h4>
-    <p><slot /></p>
+    <h4>{{ title }}</h4>
+    <p>{{ body }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Item',
+  name: 'AnswerFlowItem',
   props: {
-    topic: {
+    title: {
+      type: String,
+      default: ''
+    },
+    body: {
       type: String,
       default: ''
     }
@@ -37,4 +41,3 @@ export default {
   margin: 0;
 }
 </style>
-

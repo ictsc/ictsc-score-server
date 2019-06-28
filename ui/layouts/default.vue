@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Header from '@/components/organisms/header.vue'
+import Header from '~/components/organisms/Header'
 export default {
   components: {
     Header

@@ -30,10 +30,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [
-    '@/plugins/api.js',
-    '@/plugins/vue-underscore.js'
-  ],
+  plugins: ['~/plugins/api', '~/plugins/vue-underscore', '~/plugins/vuex-orm'],
   /*
    ** Nuxt.js modules
    */
@@ -52,7 +49,8 @@ export default {
     clientConfigs: {
       default: {
         // required
-        httpEndpoint: 'http://ui/api/graphql',
+        // TODO:
+        httpEndpoint: 'http://localhost:8901/api/graphql',
         // optional
         // See https://www.apollographql.com/docs/link/links/http.html#options
         // TODO:
@@ -73,6 +71,7 @@ export default {
   },
   proxy: {
     '/api': {
+      // TODO:
       target: 'http://api:3000'
     }
   },
@@ -83,6 +82,9 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, { isDev, isClient }) {
+      // TODO: Vue dev toolが使えなくなる
+      // config.devtool = 'eval-source-map'
+    }
   }
 }

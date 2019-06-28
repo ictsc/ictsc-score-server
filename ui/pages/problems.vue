@@ -5,111 +5,6 @@
       <answer-flow />
       <answer-attention />
     </div>
-
-    <div v-loading="asyncLoading" class="groups">
-      <div
-        v-for="group in sortedProblemGroups"
-        v-if="group.visible"
-        class="group"
-      >
-        <div class="detail">
-          <img v-if="group.icon_url" :src="group.icon_url" class="flag" />
-          <h2>{{ group.name }}</h2>
-          <div class="problem-numbers">
-            (全{{
-              problems.filter(x => x.problem_group_ids.includes(group.id))
-                .length
-            }}問)
-          </div>
-          <markdown :value="group.description" />
-        </div>
-        <div class="problems d-flex flex-row align-content-center flex-nowrap">
-          <template
-            v-for="problem in sortedProblems"
-            v-if="problem.problem_group_ids.includes(group.id)"
-          >
-            <div class="arrow-next-problem" />
-            <router-link
-              :to="{ name: 'problem-detail', params: { id: '' + problem.id } }"
-              :style="{
-                pointerEvents: problem.title === undefined ? 'none' : 'all'
-              }"
-              class="problem d-flex flex-column align-items-stretch"
-            >
-              <div class="background" />
-              <div class="background-triangle" />
-              <div
-                v-if="problemGroupIconSrc(problem)"
-                class="background-sealing-icon"
-              >
-                <img :src="problemGroupIconSrc(problem)" />
-              </div>
-              <div v-if="problem.title === undefined" class="overlay">
-                <div class="overlay-message">
-                  <div>
-                    {{
-                      problemUnlockConditionTitle(
-                        problem.problem_must_solve_before_id
-                      )
-                    }}で解放
-                  </div>
-                </div>
-              </div>
-              <div
-                v-if="!isStaff && problemSolved(problem.answers)"
-                class="solved"
-              />
-              <h3>
-                {{ problem.title
-                }}<a v-if="isStaff">({{ problem.creator.name }})</a>
-              </h3>
-              <div
-                class="bottom-wrapper d-flex align-content-end align-items-end mt-auto"
-              >
-                <div class="scores-wrapper mr-auto">
-                  <div v-if="isParticipant" class="scores">
-                    <div class="current">
-                      得点
-                      <span class="subtotal">{{
-                        getScoreInfo(problem.answers).subtotal
-                      }}</span
-                      ><span class="perfect_point">
-                        / {{ problem.perfect_point }}</span
-                      >
-                    </div>
-                    <div class="border" />
-                    <span class="brakedown">内訳</span>
-                    <div class="point">
-                      基本点 {{ getScoreInfo(problem.answers).pure }}
-                    </div>
-                  </div>
-                  <div v-if="isStaff" class="scores">
-                    <div class="border" />
-                    <div class="brakedown">
-                      内訳
-                    </div>
-                    <div class="point">満点 {{ problem.perfect_point }}</div>
-                    <div class="point">
-                      基準点 {{ problem.reference_point }}
-                    </div>
-                  </div>
-                </div>
-                <div class="tips ml-auto">
-                  <div v-if="isParticipant">
-                    <i class="fa fa-paper-plane-o" />
-                    {{ scoringStatusText(problem) }}
-                  </div>
-                  <div>
-                    <i class="fa fa-child" />
-                    {{ problem.solved_teams_count }}チーム正解
-                  </div>
-                </div>
-              </div>
-            </router-link>
-          </template>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -315,7 +210,6 @@
 .description {
   margin-bottom: 2rem;
 }
-
 </style>
 
 <script>
@@ -325,8 +219,9 @@
 // import { dateRelative, latestAnswer } from '../utils/Filters'
 // import { nestedValue } from '../utils/Utils'
 
-import AnswerAttention from '@/components/molecules/AnswerAttention.vue'
-import AnswerFlow from '@/components/molecules/AnswerFlow.vue'
+import AnswerAttention from '~/components/molecules/AnswerAttention'
+import AnswerFlow from '~/components/molecules/AnswerFlow'
+import orm from '~/orm'
 
 export default {
   name: 'Problems',
@@ -334,31 +229,9 @@ export default {
     AnswerAttention,
     AnswerFlow
   },
+
   filters: {
     // dateRelative
-  },
-  asyncData: {
-    // problemGroupsDefault: [],
-    //
-    // problemGroups() {
-    //   return API.getProblemGroups()
-    // },
-    // problemsDefault: [],
-    // problems() {
-    //   if (this.session.member) {
-    //     if (this.isParticipant || this.isStaff) {
-    //       return API.getProblemsWithScore()
-    //     } else {
-    //       return API.getProblems()
-    //     }
-    //   } else {
-    //     return new Promise(resolve => resolve([]))
-    //   }
-    // },
-    // membersDefault: [],
-    // members() {
-    //   return API.getMembers()
-    // }
   },
 
   computed: {
@@ -406,6 +279,35 @@ export default {
     //   if (val.member) this.asyncReload('problems')
     // }
   },
+  asyncData: {
+    // problemGroupsDefault: [],
+    //
+    // problemGroups() {
+    //   return API.getProblemGroups()
+    // },
+    // problemsDefault: [],
+    // problems() {
+    //   if (this.session.member) {
+    //     if (this.isParticipant || this.isStaff) {
+    //       return API.getProblemsWithScore()
+    //     } else {
+    //       return API.getProblems()
+    //     }
+    //   } else {
+    //     return new Promise(resolve => resolve([]))
+    //   }
+    // },
+    // membersDefault: [],
+    // members() {
+    //   return API.getMembers()
+    // }
+  },
+  async fetch({ store }) {
+    const { data } = await orm.Category.fetch()
+    // const data = Comment.query().withAll().all()
+    console.log(data)
+    // store.commit('setStars', data)
+  }
 
   // mounted() {
   //   this.$store.dispatch(SET_TITLE, '問題一覧')
