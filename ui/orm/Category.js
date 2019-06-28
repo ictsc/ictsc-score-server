@@ -3,6 +3,7 @@ import orm from '~/orm'
 
 export default class Category extends Model {
   static entity = 'categories'
+  static eagerLoad = ['problems']
 
   static fields() {
     return {

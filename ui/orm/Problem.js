@@ -21,7 +21,7 @@ export default class Problem extends Model {
       writer: this.string().nullable(),
       secretText: this.string().nullable(),
       // 開放時のみ見れるフィールド
-      // body: this.hasOne(orm.ProblemBody, 'problem_id').nullable(),
+      body: this.hasOne(orm.ProblemBody, 'problemId'),
       // staffは全チームの環境を見える: playerは自チームのみ
       // environments: [Types::ProblemEnvironmentType],
       // supplements: [Types::ProblemSupplementType],
