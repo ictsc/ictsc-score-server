@@ -89,6 +89,8 @@ module Filterable
         # joins(:answer).merge(Answer.reply_delay).where(answers: { team: team })
         where(answer: Answer.readable_records.reply_delay)
       when 'FirstCorrectAnswer'
+        # TODO: update方式だと、遅延の影響で一時的に Problem#solved_countが減る
+        #       insert方式にして最新のみ使いようにしたほうがいい
         delay_filter.where(team: team)
       when 'Issue'
         where(team: team, problem: Problem.opened(team: team))

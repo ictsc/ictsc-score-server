@@ -7,6 +7,7 @@ module Types
     field :title,         String,                        null: true
     field :text,          String,                        null: true
     field :perfect_point, Integer,                       null: true
+    field :problem_id,    ID,                            null: false
     field :candidates,    [[String]],                    null: true
     field :corrects,      [[String]],                    null: true
     field :created_at,    Types::DateTime,               null: false

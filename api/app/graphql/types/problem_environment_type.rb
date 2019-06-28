@@ -3,7 +3,9 @@
 module Types
   class ProblemEnvironmentType < Types::BaseObject
     field :id,         ID,                 null: false
+    field :team_id,    ID,                 null: false
     field :team,       Types::TeamType,    null: false
+    field :problem_id, ID,                 null: false
     field :problem,    Types::ProblemType, null: false
     field :status,     String,             null: false
     field :host,       String,             null: false
