@@ -1,4 +1,5 @@
 import { Model } from '@vuex-orm/core'
+import orm from '~/orm'
 
 export default class Category extends Model {
   static entity = 'categories'
@@ -8,8 +9,8 @@ export default class Category extends Model {
       id: this.string(),
       code: this.string().nullable(),
       description: this.string(),
-      order: this.number()
-      // problems: this.hasMany(Probelm, 'category_id')
+      order: this.number(),
+      problems: this.hasMany(orm.Problem, 'categoryId')
     }
   }
 }
