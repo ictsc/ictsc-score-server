@@ -8,7 +8,7 @@ export default class Problem extends Model {
     return {
       id: this.string(),
       order: this.number(),
-      team_isolate: this.boolean(),
+      teamIsolate: this.boolean(),
       previousProblemId: this.string().nullable(),
       previousProblem: this.belongsTo(orm.Problem, 'previousProblemId'),
       categoryId: this.string().nullable(),
@@ -23,9 +23,9 @@ export default class Problem extends Model {
       // 開放時のみ見れるフィールド
       body: this.hasOne(orm.ProblemBody, 'problemId'),
       // staffは全チームの環境を見える: playerは自チームのみ
-      // environments: [Types::ProblemEnvironmentType],
-      // supplements: [Types::ProblemSupplementType],
-      // answers: [Types::AnswerType],.nullable(),
+      environments: this.hasMany(orm.ProblemEnvironment, 'problemId'),
+      supplements: this.hasMany(orm.ProblemSupplement, 'problemId'),
+      answers: this.hasMany(orm.Answer, 'problemId'),
       // issues: [Types::IssueType],
       solvedCount: this.number()
     }
