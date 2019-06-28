@@ -5,7 +5,9 @@ module Types
     field :id,         ID,                        null: false
     field :title,      String,                    null: false
     field :status,     Types::Enums::IssueStatus, null: false
+    field :problem_id, ID,                        null: false
     field :problem,    Types::ProblemType,        null: false
+    field :team_id,    ID,                        null: false
     field :team,       Types::TeamType,           null: false
     field :comments,   [Types::IssueCommentType], null: false
     field :created_at, Types::DateTime,           null: false

@@ -6,7 +6,8 @@ module Types
     field :token,       String,          null: false
     field :filename,    String,          null: false
     field :description, String,          null: false
-    field :team,        Types::Teamtype, null: true
+    field :team,        Types::TeamType, null: true
+    field :team_id,     ID,              null: true
     field :created_at,  Types::DateTime, null: false
     # dataはGraphQLでは返さない
 
