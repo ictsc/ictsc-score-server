@@ -19,8 +19,10 @@
     "@nuxtjs/markdownit": "^1.2.5",
     "@vuex-orm/core": "^0.31.12",
     "@vuex-orm/plugin-graphql": "^1.0.0-rc.35",
+    "node-sass": "^4.12.0",
     "nuxt": "^2.0.0",
     "nuxt-buefy": "^0.3.2",
+    "sass-loader": "^7.1.0",
     "vue-underscore": "^0.1.4"
   },
   "devDependencies": {
