@@ -32,6 +32,7 @@ export default {
    */
   plugins: [
     '~/plugins/api',
+    '~/plugins/elvis',
     '~/plugins/session-utils',
     '~/plugins/vue-underscore',
     '~/plugins/vuex-orm'
