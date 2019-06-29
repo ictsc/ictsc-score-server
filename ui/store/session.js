@@ -15,6 +15,6 @@ export const getters = {
     return !getters.isNoLogin && state.session.team.role_id === 1
   },
   isNoLogin: state => {
-    return state.session === null || state.session.member === null
+    return state.session === null || Object.keys(state.session.team).length === 0
   }
 }

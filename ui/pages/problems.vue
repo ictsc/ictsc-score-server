@@ -35,13 +35,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters('session', [
-      'isStaff',
-      'isAudience',
-      'isPlayer',
-      'isNoLogin'
-    ]),
-
     categories() {
       return this.$_.sortBy(orm.Category.all(), 'order')
     }

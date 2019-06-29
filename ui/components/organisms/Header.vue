@@ -120,15 +120,7 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
-  name: 'Header',
-  data() {
-    return {}
-  },
-  computed: {
-    ...mapGetters('session', ['isStaff', 'isAudience', 'isPlayer', 'isNoLogin'])
-  }
+  name: 'Header'
 }
 </script>
