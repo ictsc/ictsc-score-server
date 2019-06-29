@@ -11,7 +11,7 @@ module Mutations
     def resolve(answer_id:, confirming:)
       Acl.permit!(mutation: self, args: {})
 
-      answer = Answer.find!(answer_id)
+      answer = Answer.find_by!(id: answer_id)
 
       if answer.update(confirming: confirming)
         { answer: answer.readable, errors: [] }

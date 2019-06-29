@@ -9,7 +9,7 @@ module Mutations
     # argument :issue_id, ID, required: true
     #
     # def resolve(issue_id:)
-    #   issue = Issue.find!(issue_id)
+    #   issue = Issue.find_by!(id: issue_id)
     #   Acl.permit!(mutation: self, args: { issue: issue })
     #
     #   if issue.destroy
