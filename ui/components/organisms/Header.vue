@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar fixed-top navbar-light navbar-toggleable flex-row">
     <nuxt-link to="/" class="navbar-brand">
-      <img src="~assets/ictsc-logo-white.svg" alt="ICTSC" />
+      <img src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
     </nuxt-link>
 
     <div class="navbar-nav  mr-auto">
