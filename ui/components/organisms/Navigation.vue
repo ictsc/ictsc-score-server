@@ -101,6 +101,6 @@
 
 <script>
 export default {
-  name: 'Header'
+  name: 'Navigation'
 }
 </script>
