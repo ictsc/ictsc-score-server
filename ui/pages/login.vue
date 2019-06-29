@@ -1,11 +1,5 @@
 <template>
-  <span> dummy </span>
+  <h2>ログイン</h2>
 </template>
 
-<script>
-export default {
-  data() {
-    return {}
-  }
-}
-</script>
+<style scoped></style>
