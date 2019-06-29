@@ -6,28 +6,37 @@
       <answer-attention />
     </div>
 
-    <ul>
-      <li v-for="category in categories" :key="category.id">
-        {{ category.title }}
-      </li>
-    </ul>
+    <div>
+      <div v-for="category in categories" :key="category.id">
+        <h2>{{ category.title }}</h2>
+        <div class="content">
+          <div class="columns is-multiline is-mobile is-2 is-variable">
+            <problem-card
+              v-for="problem in category.problems"
+              :key="problem.id"
+              :problem="problem"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped></style>
 
 <script>
-import { mapGetters } from 'vuex'
-
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
+import ProblemCard from '~/components/molecules/ProblemCard'
 import orm from '~/orm'
 
 export default {
   name: 'Problems',
   components: {
     AnswerAttention,
-    AnswerFlow
+    AnswerFlow,
+    ProblemCard
   },
 
   filters: {
@@ -36,13 +45,20 @@ export default {
 
   computed: {
     categories() {
-      return this.$_.sortBy(orm.Category.all(), 'order')
+      return this.$_.sortBy(
+        orm.Category.query()
+          .with('problems.body')
+          .all(),
+        'order'
+      )
     }
   },
 
   async fetch({ store }) {
     await orm.Category.fetch()
   }
+
+  // watchQuery: true,
 
   // mounted() {
   //   this.$store.dispatch(SET_TITLE, '問題一覧')
