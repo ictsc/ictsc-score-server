@@ -8,16 +8,7 @@
 
     <div>
       <div v-for="category in categories" :key="category.id">
-        <h2>{{ category.title }}</h2>
-        <div class="content">
-          <div class="columns is-multiline is-mobile is-2 is-variable">
-            <problem-card
-              v-for="problem in category.problems"
-              :key="problem.id"
-              :problem="problem"
-            />
-          </div>
-        </div>
+        <category-column :category="category" />
       </div>
     </div>
   </div>
@@ -28,7 +19,7 @@
 <script>
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
-import ProblemCard from '~/components/molecules/ProblemCard'
+import CategoryColumn from '~/components/molecules/CategoryColumn'
 import orm from '~/orm'
 
 export default {
@@ -36,7 +27,7 @@ export default {
   components: {
     AnswerAttention,
     AnswerFlow,
-    ProblemCard
+    CategoryColumn
   },
 
   filters: {
