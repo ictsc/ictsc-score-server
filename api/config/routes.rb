@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     post 'sessions', to: 'sessions#login'
     delete 'sessions', to: 'sessions#logout'
 
+    get 'health', to: 'health#health'
     post 'graphql', to: 'graphql#execute'
   end
 end
