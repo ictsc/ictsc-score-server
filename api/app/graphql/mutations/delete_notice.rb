@@ -7,7 +7,7 @@ module Mutations
     argument :notice_id, ID, required: true
 
     def resolve(notice_id:)
-      notice = Notice.find!(notice_id)
+      notice = Notice.find_by!(id: notice_id)
       Acl.permit!(mutation: self, args: { notice: notice })
 
       if notice.destroy

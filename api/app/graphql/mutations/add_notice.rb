@@ -15,7 +15,7 @@ module Mutations
 
       notice = Notice.new
 
-      if notice.update(title: title, text: text, pinned: pinned, target_team: Team.find!(target_team_id))
+      if notice.update(title: title, text: text, pinned: pinned, target_team: Team.find_by!(id: target_team_id))
         { notice: notice.readable, errors: [] }
       else
         { errors: notice.errors.full_messages }

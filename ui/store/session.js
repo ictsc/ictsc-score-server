@@ -5,16 +5,13 @@ export const state = () => ({
 })
 
 export const getters = {
-  isStaff: (state, getters) => {
-    return !getters.isNoLogin && state.session.team.role_id === 10
-  },
-  isAudience: (state, getters) => {
-    return !getters.isNoLogin && state.session.team.role_id === 5
-  },
-  isPlayer: (state, getters) => {
-    return !getters.isNoLogin && state.session.team.role_id === 1
-  },
-  isNoLogin: state => {
-    return state.session === null || state.session.member === null
-  }
+  isStaff: (state, getters) =>
+    !getters.isNoLogin && state.session.team.role_id === 10,
+  isAudience: (state, getters) =>
+    !getters.isNoLogin && state.session.team.role_id === 5,
+  isPlayer: (state, getters) =>
+    !getters.isNoLogin && state.session.team.role_id === 1,
+  isNoLogin: state =>
+    // eslint-disable-next-line no-undef
+    $nuxt.$elvis(state, 'session.team.role_id') === undefined
 }

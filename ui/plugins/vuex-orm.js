@@ -1,5 +1,8 @@
 import VuexORM, { Database } from '@vuex-orm/core'
-import VuexORMGraphQL, { DefaultAdapter, ConnectionMode } from '@vuex-orm/plugin-graphql'
+import VuexORMGraphQL, {
+  DefaultAdapter,
+  ConnectionMode
+} from '@vuex-orm/plugin-graphql'
 import orm from '~/orm'
 
 class CustomAdapter extends DefaultAdapter {

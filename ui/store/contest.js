@@ -8,16 +8,8 @@ export const getters = {
       ? getters.gradingDelaySecString
       : getters.gradingDelayMinString
   },
-  gradingDelaySec: state => {
-    return state.gradingDelaySec
-  },
-  gradingDelaySecString: (state, getters) => {
-    return `${getters.gradingDelaySec}秒`
-  },
-  gradingDelayMin: (state, getters) => {
-    return getters.gradingDelaySec / 60
-  },
-  gradingDelayMinString: (state, getters) => {
-    return `${getters.gradingDelayMin}分`
-  }
+  gradingDelaySec: state => state.gradingDelaySec,
+  gradingDelaySecString: (state, getters) => `${getters.gradingDelaySec}秒`,
+  gradingDelayMin: (state, getters) => getters.gradingDelaySec / 60,
+  gradingDelayMinString: (state, getters) => `${getters.gradingDelayMin}分`
 }

@@ -13,7 +13,7 @@ module Mutations
 
       problem_supplement = ProblemSupplement.new
 
-      if problem_supplement.update(text: text, problem: Problem.find!(problem_id))
+      if problem_supplement.update(text: text, problem: Problem.find_by!(id: problem_id))
         { problem_supplement: problem_supplement.readable, errors: [] }
       else
         { errors: problem_supplement.errors.full_messages }

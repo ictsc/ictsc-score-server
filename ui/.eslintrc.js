@@ -20,6 +20,9 @@ module.exports = {
   // add your custom rules here
   rules: {
     'no-console': 0,
-    'prettier/prettier': ['error', { printWidth: 999 }]
+    'prettier/prettier': [
+      'error', {
+      }
+    ]
   }
 }

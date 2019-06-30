@@ -9,7 +9,7 @@ module Mutations
     argument :title, String, required: true
 
     def resolve(problem_id:, title:)
-      args = { problem: Problem.find!(problem_id) }
+      args = { problem: Problem.find_by!(id: problem_id) }
       Acl.permit!(mutation: self, args: args)
 
       issue = Issue.new

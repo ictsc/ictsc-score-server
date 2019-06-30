@@ -9,6 +9,7 @@ export default class Category extends Model {
     return {
       id: this.string(),
       code: this.string().nullable(),
+      title: this.string(),
       description: this.string(),
       order: this.number(),
       problems: this.hasMany(orm.Problem, 'categoryId')

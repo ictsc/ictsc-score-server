@@ -10,7 +10,7 @@ module Mutations
     argument :solved,    Boolean, required: true
 
     def resolve(answer_id:, point:, solved:)
-      answer = Answer.find!(answer_id)
+      answer = Answer.find_by!(id: answer_id)
       Acl.permit!(mutation: self, args: {})
 
       # grade!でscoreレコードが作られる

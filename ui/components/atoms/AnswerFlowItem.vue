@@ -29,7 +29,7 @@ export default {
   padding-right: 4rem;
   background: #efefef;
   position: relative;
-  background-image: url('~assets/arrow.svg');
+  background-image: url('~assets/img/arrow.svg');
   background-repeat: repeat-y;
   background-position: right center;
 }

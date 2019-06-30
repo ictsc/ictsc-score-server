@@ -11,7 +11,7 @@ module Mutations
     def resolve(notice_id:, pinned:)
       Acl.permit!(mutation: self, args: {})
 
-      notice = Notice.find!(notice_id)
+      notice = Notice.find_by!(id: notice_id)
 
       if notice.update(pinned: pinned)
         { notice: notice.readable, errors: [] }
