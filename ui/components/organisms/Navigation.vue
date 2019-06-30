@@ -51,17 +51,13 @@
               状況
             </nuxt-link>
           </div>
-          <nuxt-link
-            v-if="!isNoLogin"
-            href="/login"
-            class="navbar-item"
-            @click="logout()"
-          >
+
+          <a v-if="!isNoLogin" class="navbar-item" @click="logout">
             ログアウト
-          </nuxt-link>
-          <nuxt-link v-else to="/login" class="navbar-item ">
+          </a>
+          <a v-else class="navbar-item" @click="openLoginModal">
             ログイン
-          </nuxt-link>
+          </a>
         </div>
       </div>
     </div>
@@ -78,7 +74,24 @@
 </style>
 
 <script>
+import LoginModal from '~/components/molecules/LoginModal'
+
 export default {
-  name: 'Navigation'
+  name: 'Navigation',
+  components: { LoginModal },
+  methods: {
+    openLoginModal() {
+      this.$modal.open({
+        parent: this,
+        component: LoginModal,
+        hasModalCard: true
+        // onCancel: false
+      })
+    },
+    logout() {
+      // TODO: ログアウトして
+      openLoginModal()
+    }
+  }
 }
 </script>
