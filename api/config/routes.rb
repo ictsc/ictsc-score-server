@@ -2,8 +2,9 @@
 
 Rails.application.routes.draw do
   scope '/api', defaults: { format: 'json' } do
-    post 'sessions', to: 'sessions#create'
-    delete 'sessions', to: 'sessions#destroy'
+    get 'sessions', to: 'sessions#valid?'
+    post 'sessions', to: 'sessions#login'
+    delete 'sessions', to: 'sessions#logout'
 
     post 'graphql', to: 'graphql#execute'
   end
