@@ -59,11 +59,11 @@ module Types
     end
 
     def previous_problem
-      RecordLoader.for(Problem).load(self.object.previous_problem_id)
+      RecordLoader.for(Problem).load(self.object[__method__.to_s.foreign_key])
     end
 
     def category
-      RecordLoader.for(Category).load(self.object.category_id)
+      RecordLoader.for(Category).load(self.object[__method__.to_s.foreign_key])
     end
 
     def solved_count
