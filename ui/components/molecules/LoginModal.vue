@@ -1,15 +1,16 @@
 <template>
-  <form @submit.prevent="login">
+  <form @submit.prevent="submit">
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title">Login</p>
       </header>
 
+      <!-- TODO: 自動でフォーカスさせる -->
       <section class="modal-card-body">
         <b-field label="Team name">
           <b-input
-            type="name"
             v-model="name"
+            type="name"
             placeholder="Your team name"
             required
           >
@@ -18,8 +19,8 @@
 
         <b-field label="Password">
           <b-input
-            type="password"
             v-model="password"
+            type="password"
             password-reveal
             placeholder="Your password"
             required
@@ -36,6 +37,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'LoginModal',
   data() {
@@ -45,9 +48,9 @@ export default {
     }
   },
   methods: {
-    login() {
-      console.log(`login with ${this.name}:${this.password}`);
-      return true
+    ...mapActions('session', ['login']),
+    submit() {
+      this.login({ name: this.name, password: this.password })
     }
   }
 }

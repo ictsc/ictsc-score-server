@@ -29,13 +29,6 @@ class GraphqlController < ApplicationController
   private
 
   def current_team
-    # TODO: delete
-    if Rails.env.development?
-      return @current_team = Team.staff.first!
-      # return @current_team = Team.audience.first!
-      # return @current_team = Team.player.first!
-    end
-
     @current_team = Team.find_by(id: session[:team_id])
   end
 

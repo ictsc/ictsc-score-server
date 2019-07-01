@@ -52,14 +52,15 @@
             </nuxt-link>
           </template>
 
-          <a v-if="!isNoLogin" class="navbar-item" @click="logout">
+          <a class="navbar-item" @click="logout">
             ログアウト
-          </a>
-          <a v-else class="navbar-item" @click="openLoginModal">
-            ログイン
           </a>
         </div>
       </div>
+
+      <b-modal :active.sync="isNoLogin" :can-cancel="false" has-modal-card>
+        <login-modal />
+      </b-modal>
     </div>
   </nav>
 </template>
@@ -74,24 +75,14 @@
 </style>
 
 <script>
+import { mapActions } from 'vuex'
 import LoginModal from '~/components/molecules/LoginModal'
 
 export default {
   name: 'Navigation',
   components: { LoginModal },
   methods: {
-    openLoginModal() {
-      this.$modal.open({
-        parent: this,
-        component: LoginModal,
-        hasModalCard: true
-        // onCancel: false
-      })
-    },
-    logout() {
-      // TODO: ログアウトして
-      openLoginModal()
-    }
+    ...mapActions('session', ['logout'])
   }
 }
 </script>
