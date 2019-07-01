@@ -4,7 +4,7 @@
 
     <div class="columns is-multiline is-mobile is-2 is-variable">
       <problem-card
-        v-for="problem in category.problems"
+        v-for="problem in problems"
         :key="problem.id"
         :problem="problem"
       />
