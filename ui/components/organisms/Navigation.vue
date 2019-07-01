@@ -43,14 +43,14 @@
             質問
           </nuxt-link>
 
-          <div v-if="isStaff || isAudience">
+          <template v-if="isStaff || isAudience">
             <nuxt-link to="/answers" active-class="active" class="navbar-item">
               解答
             </nuxt-link>
             <nuxt-link to="/summary" active-class="active" class="navbar-item">
               状況
             </nuxt-link>
-          </div>
+          </template>
 
           <a v-if="!isNoLogin" class="navbar-item" @click="logout">
             ログアウト
