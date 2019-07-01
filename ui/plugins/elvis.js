@@ -7,7 +7,7 @@ import Vue from 'vue'
 export function elvis(parent, childrens) {
   for (const child of childrens.split('.')) {
     if (parent === null || parent === undefined) {
-      return parent
+      break
     }
 
     parent = parent[child]

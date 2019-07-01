@@ -43,27 +43,24 @@
             質問
           </nuxt-link>
 
-          <div v-if="isStaff || isAudience">
+          <template v-if="isStaff || isAudience">
             <nuxt-link to="/answers" active-class="active" class="navbar-item">
               解答
             </nuxt-link>
             <nuxt-link to="/summary" active-class="active" class="navbar-item">
               状況
             </nuxt-link>
-          </div>
-          <nuxt-link
-            v-if="!isNoLogin"
-            href="/login"
-            class="navbar-item"
-            @click="logout()"
-          >
+          </template>
+
+          <a class="navbar-item" @click="logout">
             ログアウト
-          </nuxt-link>
-          <nuxt-link v-else to="/login" class="navbar-item ">
-            ログイン
-          </nuxt-link>
+          </a>
         </div>
       </div>
+
+      <b-modal :active.sync="isNoLogin" :can-cancel="false" has-modal-card>
+        <login-modal />
+      </b-modal>
     </div>
   </nav>
 </template>
@@ -78,7 +75,14 @@
 </style>
 
 <script>
+import { mapActions } from 'vuex'
+import LoginModal from '~/components/molecules/LoginModal'
+
 export default {
-  name: 'Navigation'
+  name: 'Navigation',
+  components: { LoginModal },
+  methods: {
+    ...mapActions('session', ['logout'])
+  }
 }
 </script>
