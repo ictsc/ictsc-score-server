@@ -5,6 +5,10 @@
         <img src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
       </nuxt-link>
 
+      <b-modal :active.sync="isNoLogin" :can-cancel="false" has-modal-card>
+        <login-modal />
+      </b-modal>
+
       <a
         role="button"
         class="navbar-burger burger"
@@ -57,10 +61,6 @@
           </a>
         </div>
       </div>
-
-      <b-modal :active.sync="isNoLogin" :can-cancel="false" has-modal-card>
-        <login-modal />
-      </b-modal>
     </div>
   </nav>
 </template>
@@ -71,7 +71,9 @@
     img
       height: 2rem
 .navbar-item
-  color: #fff;
+  color: #fff
+.navbar-menu
+  background: $primary
 </style>
 
 <script>
