@@ -17,6 +17,7 @@
     "@nuxtjs/apollo": "^4.0.0-rc7",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/markdownit": "^1.2.5",
+    "@nuxtjs/style-resources": "^0.1.2",
     "@vuex-orm/core": "^0.31.12",
     "@vuex-orm/plugin-graphql": "^1.0.0-rc.35",
     "node-sass": "^4.12.0",

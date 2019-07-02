@@ -1,0 +1,21 @@
+@charset "utf-8"
+@import "~bulma/sass/utilities/_all"
+
+$primary: #ed1848
+$primary-invert: findColorInvert($primary)
+
+// TODO: https://github.com/nuxt-community/style-resources-module/issues/60
+$colors: ( "white": ($white, $black), "black": ($black, $white), "light": ($light, $light-invert), "dark": ($dark, $dark-invert), "primary": ($primary, $primary-invert), "info": ($info, $info-invert), "success": ($success, $success-invert), "warning": ($warning, $warning-invert), "danger": ($danger, $danger-invert) )
+
+$link: $primary
+$link-invert: $primary-invert
+$link-focus-border: $primary
+
+
+// Sizes
+// $tablet: 300px
+// $desktop: 786px
+
+// Import Bulma and Buefy styles
+@import "~bulma"
+@import "~buefy/src/scss/buefy"

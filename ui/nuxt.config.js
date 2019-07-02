@@ -26,7 +26,10 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['~/assets/css/buefy.scss'],
+  css: ['~/assets/css/_buefy.sass'],
+  styleResources: {
+    sass: ['~/assets/css/_buefy.sass']
+  },
   /*
    ** Plugins to load before mounting the App
    */
@@ -42,9 +45,12 @@ export default {
    */
   modules: [
     // Doc: https://buefy.github.io/#/documentation
-    'nuxt-buefy',
-    // Doc: https://axios.nuxtjs.org/usage
+    ['nuxt-buefy', { css: false }],
+    // 各コンポーネントでSASSの変数を手軽に共有する
+    '@nuxtjs/style-resources',
+    // GrphQLクライアント
     '@nuxtjs/apollo',
+    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // TODO: lint通らないと動作確認すらできない
     // '@nuxtjs/eslint-module',
