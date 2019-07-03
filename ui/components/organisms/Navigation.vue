@@ -5,10 +5,7 @@
         <img src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
       </nuxt-link>
 
-      <b-modal :active.sync="isNoLogin" :can-cancel="false" has-modal-card>
-        <login-modal />
-      </b-modal>
-
+      <!-- TODO: 未実装 -->
       <a
         role="button"
         class="navbar-burger burger"
@@ -56,7 +53,15 @@
             </nuxt-link>
           </template>
 
-          <a class="navbar-item" @click="logout">
+          <nuxt-link
+            v-if="isNoLogin"
+            to="/login"
+            active-class="active"
+            class="navbar-item"
+          >
+            ログイン
+          </nuxt-link>
+          <a v-else class="navbar-item" @click="try_logout">
             ログアウト
           </a>
         </div>
@@ -78,13 +83,36 @@
 
 <script>
 import { mapActions } from 'vuex'
-import LoginModal from '~/components/molecules/LoginModal'
 
 export default {
   name: 'Navigation',
-  components: { LoginModal },
+  fetch: {},
+  mounted() {
+    this.$nextTick(async () => {
+      this.$nuxt.$loading.start()
+
+      setTimeout(() => this.$nuxt.$loading.finish(), 500)
+
+      if (await this.fetch_current_session()) {
+        this.$nuxt.$loading.start()
+      } else {
+        this.$router.push('/login')
+      }
+    })
+  },
+
   methods: {
-    ...mapActions('session', ['logout'])
+    ...mapActions('session', ['logout', 'fetch_current_session']),
+
+    async try_logout() {
+      if (await this.logout()) {
+        this.$router.push('/login')
+      } else {
+        // そもそもログインしてない場合にここに来る
+        // TODO: ログインしていません みたいなエラーを出したほうが良さそう
+        this.$router.push('/login')
+      }
+    }
   }
 }
 </script>

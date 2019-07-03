@@ -1,3 +1,5 @@
+const ENDPOINT = 'sessions'
+
 export const state = () => ({
   teamId: null,
   role: null
@@ -15,21 +17,47 @@ export const mutations = {
 }
 
 export const actions = {
-  async login({ commit, dispatch }, { name, password }) {
-    const params = new URLSearchParams()
-    params.append('name', name)
-    params.append('password', password)
+  async login({ commit }, { name, password }) {
+    const res = await this.$axios.post(ENDPOINT, { name, password })
 
-    // TODO: badrequestが帰ってきたときの処理
-    const res = await this.$axios.$post('/api/sessions', params)
-
-    commit('setSession', { teamId: res.id, role: res.role })
+    switch (res.status) {
+      case 200:
+        commit('setSession', { teamId: res.data.id, role: res.data.role })
+        return true
+      case 400:
+        return false
+      default:
+        throw new Error(res)
+    }
   },
-  async logout({ state, commit, dispatch }) {
-    const res = await this.$axios.$delete('/api/sessions')
+
+  async logout({ commit }) {
+    const res = await this.$axios.delete(ENDPOINT)
     console.log(res)
-    // TODO: unauthorizedが帰ってきたときの処理
-    commit('unsetSession')
+
+    switch (res.status) {
+      case 204:
+        commit('unsetSession')
+        return true
+      case 401:
+        return false
+      default:
+        throw new Error(res)
+    }
+  },
+
+  async fetch_current_session({ commit }) {
+    const res = await this.$axios.get(ENDPOINT)
+
+    switch (res.status) {
+      case 200:
+        commit('setSession', { teamId: res.data.id, role: res.data.role })
+        return true
+      case 401:
+        return false
+      default:
+        throw new Error(res)
+    }
   }
 }
 
