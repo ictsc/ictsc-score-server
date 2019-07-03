@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
   def logout
     if logged_in?
       reset_session
-      head :ok
+      head :no_content
     else
       head :unauthorized
     end

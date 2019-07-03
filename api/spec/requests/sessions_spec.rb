@@ -11,7 +11,7 @@ RSpec.describe 'Sessions', type: :request do
       expect(response).to have_http_status(:ok)
 
       delete sessions_url, as: :json
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:no_content)
     end
   end
 
