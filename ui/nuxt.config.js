@@ -34,6 +34,7 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
+    '~/plugins/axios',
     '~/plugins/elvis',
     '~/plugins/session-utils',
     '~/plugins/vue-underscore',
@@ -78,13 +79,12 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
+    prefix: '/api',
     proxy: true
   },
   proxy: {
-    '/api': {
-      // TODO:
-      target: 'http://api:3000'
-    }
+    // TODO:
+    '/api': 'http://api:3000'
   },
   /*
    ** Build configuration
