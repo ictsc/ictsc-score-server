@@ -57,7 +57,8 @@ export default {
     '@nuxtjs/proxy'
   ],
   apollo: {
-    errorHandler: '~/plugins/apollo-error-handler.js',
+    // NOTE: 使わないかもしれない
+    errorHandler: '~/apollo/error-handler.js',
     clientConfigs: {
       default: {
         // required

@@ -4,6 +4,7 @@ import VuexORMGraphQL, {
   ConnectionMode
 } from '@vuex-orm/plugin-graphql'
 import orm from '~/orm'
+import apolloClient from '~/apollo/client'
 
 class CustomAdapter extends DefaultAdapter {
   getConnectionMode() {
@@ -16,9 +17,9 @@ Object.values(orm).forEach(model => database.register(model))
 
 const options = {
   adapter: new CustomAdapter(),
+  apolloClient,
   database,
-  debug: process.env.NODE_ENV !== 'production',
-  url: '/api/graphql'
+  debug: process.env.NODE_ENV !== 'production'
 }
 
 VuexORM.use(VuexORMGraphQL, options)
