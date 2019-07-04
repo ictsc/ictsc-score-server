@@ -45,8 +45,8 @@ export default {
     }
   },
 
-  async fetch({ store }) {
-    await orm.Category.fetch({}, true)
+  fetch({ store }) {
+    orm.Category.fetch({}, true)
   }
 
   // mounted() {
