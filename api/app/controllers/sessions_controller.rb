@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
-  def valid?
-    # セッションが有効化調べる
-    head logged_in? ? :ok : :unauthorized
+  def current
+    if logged_in?
+      team = Team.find_by(id: session[:team_id])
+      render json: build_current_team_response(team), status: :ok
+    else
+      head :unauthorized
+    end
   end
 
   def login
@@ -12,8 +16,7 @@ class SessionsController < ApplicationController
     if team
       reset_session
       session[:team_id] = team.id
-      # 必要な値だけ返す
-      render json: { id: team.id, role: team.role }, status: :ok
+      render json: build_current_team_response(team), status: :ok
     else
       head :bad_request
     end
@@ -22,7 +25,7 @@ class SessionsController < ApplicationController
   def logout
     if logged_in?
       reset_session
-      head :ok
+      head :no_content
     else
       head :unauthorized
     end
@@ -36,5 +39,10 @@ class SessionsController < ApplicationController
 
   def logged_in?
     Team.exists?(id: session[:team_id])
+  end
+
+  # 必要な値だけ返す
+  def build_current_team_response(team)
+    { id: team.id, role: team.role }
   end
 end
