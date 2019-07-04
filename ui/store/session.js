@@ -62,6 +62,7 @@ export const actions = {
 }
 
 export const getters = {
+  currentTeamId: state => state.teamId,
   isStaff: (state, getters) => !getters.isNoLogin && state.role === 'staff',
   isAudience: (state, getters) =>
     !getters.isNoLogin && state.role === 'audience',
