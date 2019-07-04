@@ -19,7 +19,7 @@ export default {
     mode() {
       // URL末尾の #issues=:team_id からモードを判定する
       const match = MODE_REGEXP.exec(this.$route.hash)
-      return match === null ? 'issues' : match[1]
+      return match === null ? null : match[1]
     },
     problemId() {
       return this.$route.params.problem_id

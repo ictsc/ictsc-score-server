@@ -3,6 +3,12 @@ import { mapGetters } from 'vuex'
 
 Vue.mixin({
   computed: {
-    ...mapGetters('session', ['isStaff', 'isAudience', 'isPlayer', 'isNoLogin'])
+    ...mapGetters('session', [
+      'currentTeamId',
+      'isStaff',
+      'isAudience',
+      'isPlayer',
+      'isNoLogin'
+    ])
   }
 })
