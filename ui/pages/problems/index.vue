@@ -45,11 +45,9 @@ export default {
     }
   },
 
-  async fetch({ store }) {
-    await orm.Category.fetch()
+  fetch({ store }) {
+    orm.Category.fetch({}, true)
   }
-
-  // watchQuery: true,
 
   // mounted() {
   //   this.$store.dispatch(SET_TITLE, '問題一覧')
