@@ -19,9 +19,10 @@ const errorLink = onError(
 
       if (networkError.statusCode === 401) {
         console.log('Unauthorized!!')
-        // エラーがキャッチできないのでloginに遷移して強制リロード
+        // TODO: 未ログインで再度該当ページに行っても再度/loginに遷移しない
+        // エラーがキャッチできないのでloginに遷移
         // eslint-disable-next-line no-undef
-        $nuxt.$router.go({ path: '/login' })
+        $nuxt.$router.push('/login')
       } else {
         // TODO: エラー通知
       }
