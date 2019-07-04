@@ -1,9 +1,5 @@
 <template>
-  <nuxt-link
-    :to="problem.body === null ? '' : problem.id"
-    append
-    class="column is-one-fifth is-narrow"
-  >
+  <nuxt-link append :to="problemURL" class="column is-one-fifth is-narrow">
     <div class="card">
       <p class="card-header-title has-text-grey">
         <!-- TODO: bodyはundef|null|emptyの可能性がある -->
@@ -30,6 +26,17 @@ export default {
     problem: {
       type: Object,
       default: () => ({})
+    }
+  },
+  computed: {
+    problemURL() {
+      if (this.problem.body === null) {
+        return ''
+      } else if (this.isPlayer) {
+        return `${this.problem.id}#issues=${this.currentTeamId}`
+      } else {
+        return this.problem.id
+      }
     }
   }
 }
