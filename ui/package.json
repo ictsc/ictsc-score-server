@@ -14,7 +14,6 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/apollo": "^4.0.0-rc7",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/markdownit": "^1.2.5",
     "@nuxtjs/style-resources": "^0.1.2",
