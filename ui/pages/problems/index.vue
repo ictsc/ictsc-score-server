@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped lang="sass"></style>
 
 <script>
 import AnswerAttention from '~/components/molecules/AnswerAttention'
