@@ -48,33 +48,12 @@ export default {
     ['nuxt-buefy', { css: false }],
     // 各コンポーネントでSASSの変数を手軽に共有する
     '@nuxtjs/style-resources',
-    // GrphQLクライアント
-    '@nuxtjs/apollo',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // TODO: lint通らないと動作確認すらできない
     // '@nuxtjs/eslint-module',
     '@nuxtjs/proxy'
   ],
-  apollo: {
-    // NOTE: 使わないかもしれない
-    errorHandler: '~/apollo/error-handler.js',
-    clientConfigs: {
-      default: {
-        // required
-        // TODO:
-        httpEndpoint: 'http://localhost:8901/api/graphql',
-        // optional
-        // See https://www.apollographql.com/docs/link/links/http.html#options
-        // TODO:
-        httpLinkOptions: {
-          credentials: 'same-origin'
-        },
-        // Enable Automatic Query persisting with Apollo Engine
-        persisting: false
-      }
-    }
-  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
