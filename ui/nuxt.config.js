@@ -26,9 +26,9 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['~/assets/css/_buefy.sass'],
+  css: [],
   styleResources: {
-    sass: ['~/assets/css/_buefy.sass']
+    sass: ['~/assets/css/variables.sass']
   },
   /*
    ** Plugins to load before mounting the App
@@ -44,8 +44,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
-    // Doc: https://buefy.github.io/#/documentation
-    ['nuxt-buefy', { css: false }],
+    '@nuxtjs/vuetify',
     // 各コンポーネントでSASSの変数を手軽に共有する
     '@nuxtjs/style-resources',
     // Doc: https://axios.nuxtjs.org/usage
@@ -77,5 +76,9 @@ export default {
       // TODO: Vue dev toolが使えなくなる
       // config.devtool = 'eval-source-map'
     }
+  },
+  vuetify: {
+    // TODO: 未調整
+    customVariables: ['~/assets/css/variables.sass']
   }
 }
