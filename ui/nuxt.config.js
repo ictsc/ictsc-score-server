@@ -30,7 +30,7 @@ export default {
   plugins: [
     '~/plugins/axios',
     '~/plugins/elvis',
-    '~/plugins/session-utils',
+    '~/plugins/mixins',
     '~/plugins/vue-underscore',
     '~/plugins/vuex-orm'
   ],
