@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-primary" role="navigation" aria-label="">
     <div class="navbar-brand">
       <nuxt-link to="/" class="navbar-item">
         <img src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />

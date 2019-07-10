@@ -1153,6 +1153,18 @@
     glob-all "^3.1.0"
     sass-resources-loader "^2.0.0"
 
+"@nuxtjs/vuetify@^1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@nuxtjs/vuetify/-/vuetify-1.0.0-beta.5.tgz#702b956e20956ed61328f80849c693bea6ff2c3d"
+  integrity sha512-Z3NiWxJZTh1pUr2uIKezka0PEoIAKmh1wpPMHMEUqyvkHyxZbZ9jfj9u2FZCr1zd9yBSUWXcN7E8nABb9rwXQg==
+  dependencies:
+    deepmerge "^3.3.0"
+    fibers "^4.0.1"
+    sass "^1.22.2"
+    sass-loader "^7.1.0"
+    vuetify "^2.0.0-beta.5"
+    vuetify-loader "^1.2.2"
+
 "@nuxtjs/youch@^4.2.3":
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/@nuxtjs/youch/-/youch-4.2.3.tgz#36f8b22df5a0efaa81373109851e1d857aca6bed"
@@ -2386,13 +2398,6 @@ bson@^1.1.1, bson@~1.1.1:
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.1.1.tgz#4330f5e99104c4e751e7351859e2d408279f2f13"
   integrity sha512-jCGVYLoYMHDkOsbwJZBCqwMHyH4c+wzgI9hG7Z6SZJRXWr+x58pdIbm2i9a/jFGCkRJqRUr8eoI7lDWa0hTkxg==
 
-buefy@^0.7.8:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/buefy/-/buefy-0.7.8.tgz#9f7c73482c248fb9239540d0d415b093c52ffa95"
-  integrity sha512-ygOY/83spIkjRtqFd9I8ibPcvmVUotwljBqyHaQGhePXWkTFOnkIwDQZeMMAiB1FGWP5omFZ49e0yUXvbLK37A==
-  dependencies:
-    bulma "0.7.5"
-
 buffer-from@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
@@ -2421,11 +2426,6 @@ builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
-
-bulma@0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.7.5.tgz#35066c37f82c088b68f94450be758fc00a967208"
-  integrity sha512-cX98TIn0I6sKba/DhW0FBjtaDpxTelU166pf7ICXpCCuplHWyu6C9LYZmL5PEsnePIeJaiorsTEzzNk3Tsm1hw==
 
 bytes@3.0.0:
   version "3.0.0"
@@ -2605,6 +2605,21 @@ check-types@^8.0.3:
   version "8.0.3"
   resolved "https://registry.yarnpkg.com/check-types/-/check-types-8.0.3.tgz#3356cca19c889544f2d7a95ed49ce508a0ecf552"
   integrity sha512-YpeKZngUmG65rLudJ4taU7VLkOCTMhNl/u4ctNC56LQS/zJTyNH0Lrtwm1tfTsbLlwvlfsA2d1c8vCf/Kh2KwQ==
+
+"chokidar@>=2.0.0 <4.0.0":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.0.2.tgz#0d1cd6d04eb2df0327446188cd13736a3367d681"
+  integrity sha512-c4PR2egjNjI1um6bamCQ6bUNPDiyofNQruHvKgHQ4gDUP/ITSVSzNsiI5OWtHOsX323i5ha/kk4YmOZ1Ktg7KA==
+  dependencies:
+    anymatch "^3.0.1"
+    braces "^3.0.2"
+    glob-parent "^5.0.0"
+    is-binary-path "^2.1.0"
+    is-glob "^4.0.1"
+    normalize-path "^3.0.0"
+    readdirp "^3.1.1"
+  optionalDependencies:
+    fsevents "^2.0.6"
 
 chokidar@^2.0.2, chokidar@^2.1.5:
   version "2.1.6"
@@ -3423,7 +3438,7 @@ deep-is@~0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.3.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
   integrity sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
 
-deepmerge@^3.2.0:
+deepmerge@^3.2.0, deepmerge@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-3.3.0.tgz#d3c47fd6f3a93d517b14426b0628a17b0125f5f7"
   integrity sha512-GRQOafGHwMHpjPx9iCvTgpu9NojZ49q794EEL94JVEw6VaeA8XTUyBKvAkOOjBX9oJNiV6G3P+T+tihFjo2TqA==
@@ -3495,7 +3510,7 @@ detect-indent@^5.0.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-5.0.0.tgz#3871cc0a6a002e8c3e5b3cf7f336264675f06b9d"
   integrity sha1-OHHMCmoALow+Wzz38zYmRnXwa50=
 
-detect-libc@^1.0.2:
+detect-libc@^1.0.2, detect-libc@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
@@ -4242,6 +4257,13 @@ fb-watchman@^2.0.0:
   integrity sha1-VOmr99+i8mzZsWNsWIwa/AXeXVg=
   dependencies:
     bser "^2.0.0"
+
+fibers@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/fibers/-/fibers-4.0.1.tgz#34fe8a8d010db7f9096adb2558a45bbc1d03fe45"
+  integrity sha512-H79EJn7DMWXk48ygmC82bMP8KNcFBZF1CPfwBpYF6cO85hGWoIrlu7eyX9ayxfjP9Nsl0JXxdI6fpYU4DWVw2w==
+  dependencies:
+    detect-libc "^1.0.3"
 
 figgy-pudding@^3.5.1:
   version "3.5.1"
@@ -7066,13 +7088,6 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nuxt-buefy@^0.3.2:
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/nuxt-buefy/-/nuxt-buefy-0.3.8.tgz#454abd2c727b74ccdc3d9f71e4714d3e0eff7ec0"
-  integrity sha512-6sVbgdeqXYF4ZO0I9+Vd9t4G9rg0IZndpJJ/X6Ti1h+kkNdOgcqb9ov39OyNBZEqCnZtR43lxXPdUIjjl6RvzA==
-  dependencies:
-    buefy "^0.7.8"
-
 nuxt@^2.0.0:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/nuxt/-/nuxt-2.8.1.tgz#10a307e51973fa7b55abfeb41b84c76cbdd6f2f6"
@@ -8575,6 +8590,13 @@ readdirp@^3.0.2:
   dependencies:
     picomatch "^2.0.4"
 
+readdirp@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-3.1.1.tgz#b158123ac343c8b0f31d65680269cc0fc1025db1"
+  integrity sha512-XXdSXZrQuvqoETj50+JAitxz1UPdt5dupjT6T5nVB+WvjMv2XKYj+s7hPeAVCXvmJrL36O4YYyWlIC3an2ePiQ==
+  dependencies:
+    picomatch "^2.0.4"
+
 realpath-native@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/realpath-native/-/realpath-native-1.1.0.tgz#2003294fea23fb0672f2476ebe22fcf498a2d65c"
@@ -8967,6 +8989,13 @@ sass-resources-loader@^2.0.0:
     chalk "^1.1.3"
     glob "^7.1.1"
     loader-utils "^1.0.4"
+
+sass@^1.22.2:
+  version "1.22.3"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.22.3.tgz#b3591191ab0f3caece39ed9384c90caccacf471c"
+  integrity sha512-9ECcSAEgGStxZkpOCT+Z8F6jEJq+jjPonxgX52QVNeJbRL1CmrjN9qcoO78gob6M1bY4ocGVwPWjGDNMeOgvbg==
+  dependencies:
+    chokidar ">=2.0.0 <4.0.0"
 
 sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
@@ -10324,6 +10353,18 @@ vue@^2.6.10:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
+
+vuetify-loader@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/vuetify-loader/-/vuetify-loader-1.2.2.tgz#7c221dcfd8482344518818d598f9cef8ddd85b6b"
+  integrity sha512-j6KWPuwQ4xTxPDksbFwbSJle7+3oSjNvJ/CViTEgbPLFPqnNsR8JUtRldURIQ0cmAmr0/CoLSZkj0B8JKqOBMA==
+  dependencies:
+    loader-utils "^1.1.0"
+
+vuetify@^2.0.0-beta.5:
+  version "2.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-2.0.0-beta.7.tgz#157a38531ea083ae5fec0a7022ca089e865fc2d8"
+  integrity sha512-+65qvCSeVFagkYuY4vRtI32H+K5MvNBbzrrKrUrwUXYZWpmfDa3idCMh3FjdJokX61fUhrIa2it6FoQecZiQJg==
 
 vuex@^3.1.1:
   version "3.1.1"
