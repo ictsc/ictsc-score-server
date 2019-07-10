@@ -3,4 +3,4 @@
   <!-- issueのリンク先のURLは  problems/:user_id#issues=:team_id にする予定 -->
 </template>
 
-<style scoped></style>
+<style scoped lang="sass"></style>
