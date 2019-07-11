@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/MethodLength, Rails/Output
+include FactoryBot::Syntax::Methods # rubocop:disable Style/MixinUsage
 
 def create_config
+  print 'creating configs...'
+
   configs = [
     { key: :competition_section1_start_at,  value_type: :date,    value: Time.zone.parse('2012-09-03 10:00:00') },
     { key: :competition_section1_end_at,    value_type: :date,    value: Time.zone.parse('2112-09-03 12:00:00') },
@@ -25,50 +28,54 @@ def create_config
   ].map {|obj| Config.new(**obj) }
 
   Config.import!(configs)
+  puts 'done'
   configs
 end
 
 def create_teams
-  # staffはseeds.rbで作成
-  teams = ('A'..'ZZ').take(50).map.with_index(1) do |alphabet, i|
-    Team.new(
-      role: 'player',
-      name: "team #{alphabet.downcase}",
-      password: "team #{alphabet.downcase}",
-      organization: "#{alphabet}学校",
-      number: i,
-      color: Faker::Color.hex_color
-    )
-  end
-  teams.unshift(Team.new(role: 'audience', name: 'audience', password: 'audience', organization: '見学者', number: 80))
+  print 'creating teams...'
 
-  Team.import!(teams)
-  teams
+  # staffはseeds.rbで作成
+  # 'team a' ~ 'team zz' を作成
+  # パスワードはチーム名同じ
+  players = build_stubbed_list(:team, 70, :player)
+  audience = build_stubbed(:team, :audience, name: 'audience', number: 80)
+
+  Team.import!([audience] + players)
+  puts 'done'
+  [players, audience]
 end
 
 def create_categories
-  categories = ('AAA'..).take(10).map.with_index(1) do |code, i|
-    Category.new(code: code.reverse, title: "グループ#{i}", description: Faker::Books::Dune.saying, order: Random.rand(10..1000))
-  end
+  print 'creating categories...'
+
+  categories = build_stubbed_list(:category, 10)
   categories.first.order = 0
+
   Category.import!(categories)
+  puts 'done'
   categories
 end
 
-def create_problems(categories, first_category)
-  problems = ('AAA'...).take(50).map do |code|
-    Problem.new(
-      code: code.reverse,
-      writer: Faker::Book.author,
-      secret_text: Faker::Books::Dune.planet,
-      order: Random.rand(1000),
-      category: categories.sample,
-      team_isolate: false
-    )
-  end
+def create_problems(categories)
+  print 'creating problems...'
 
-  problems.take(5).each.with_index {|p, i| p.attributes = { category: first_category, order: i } }
+  example_problems = [
+    build_stubbed(:problem, body: build_stubbed(:problem_body, :textbox, title: '01. textbox')),
+    build_stubbed(:problem, body: build_stubbed(:problem_body, :radio_button,  title: '02. radio_button', candidates_count: 1)),
+    build_stubbed(:problem, body: build_stubbed(:problem_body, :radio_button,  title: '03. radio_buttons', candidates_count: 5)),
+    build_stubbed(:problem, body: build_stubbed(:problem_body, :checkbox,  title: '04. checkbox', candidates_count: 1)),
+    build_stubbed(:problem, body: build_stubbed(:problem_body, :checkbox,  title: '05. checkboxs', candidates_count: 5))
+  ]
+  example_problems.each.with_index {|p, i| p.attributes = { category: categories.first, order: i } }
+
+  problems = build_stubbed_list(:problem, 45)
+  problems.each {|problem| problem.category = categories.sample }
+
+  problems.prepend(*example_problems)
+
   Problem.import!(problems)
+  ProblemBody.import!(problems.map(&:body))
 
   categories.each do |category|
     category.problems.sort_by(&:order).each_cons(2) do |previous, current|
@@ -76,89 +83,103 @@ def create_problems(categories, first_category)
     end
   end
 
+  puts 'done'
   problems
 end
 
-def create_problem_bodies(problems, example_problems)
-  problem_body_textbox       = ProblemBody.new(mode: 'textbox',      title: '01. textbox',       text: Faker::Books::Dune.quote, perfect_point: 100, problem: example_problems[0])
-  problem_body_radio_button  = ProblemBody.new(mode: 'radio_button', title: '02. radio_button',  text: Faker::Books::Dune.quote, perfect_point: 100, problem: example_problems[1])
-  problem_body_radio_buttons = ProblemBody.new(mode: 'radio_button', title: '03. radio_buttons', text: Faker::Books::Dune.quote, perfect_point: 100, problem: example_problems[2])
-  problem_body_checkbox      = ProblemBody.new(mode: 'checkbox',     title: '04. checkbox',      text: Faker::Books::Dune.quote, perfect_point: 100, problem: example_problems[3])
-  problem_body_checkboxs     = ProblemBody.new(mode: 'checkbox',     title: '05. checkboxs',     text: Faker::Books::Dune.quote, perfect_point: 100, problem: example_problems[4])
-
-  problem_body_radio_button.candidates  = [%w[a b c d e f]]
-  problem_body_radio_button.corrects    = [%w[f]]
-  problem_body_radio_buttons.candidates = [%w[a b c d e f], %w[G H I J]]
-  problem_body_radio_buttons.corrects   = [%w[c], %w[J]]
-  problem_body_checkbox.candidates      = [%w[a b c d e f]]
-  problem_body_checkbox.corrects        = [%w[f a c]]
-  problem_body_checkboxs.candidates     = [%w[a b c d e f], %w[G H I J]]
-  problem_body_checkboxs.corrects       = [%w[f a c], %w[J H]]
-
-  problem_bodies = problems.map.with_index(6) do |problem, i|
-    ProblemBody.new(
-      mode: 'textbox',
-      title: '%2d. %s' % [i, Faker::Book.title],
-      text: Faker::Books::Dune.quote,
-      perfect_point: Random.rand(10..1000),
-      problem: problem
-    )
-  end
-
-  problem_bodies.unshift(problem_body_textbox, problem_body_radio_button, problem_body_radio_buttons, problem_body_checkbox, problem_body_checkboxs)
-  ProblemBody.import!(problem_bodies)
-  problem_bodies
-end
-
-def create_answer_bodies(problem_body)
-  case problem_body.mode
-  when 'textbox'
-    [[Faker::Books::Dune.quote]]
-  when 'radio_button'
-    problem_body.candidates.map {|c| [c.sample] }
-  when 'checkbox'
-    problem_body.candidates.map {|c| c.sample(Random.rand(1..c.size)) }
+def build_answers(problems, teams, count_range)
+  problems.each_with_object([]) do |problem, answers|
+    teams.each do |team|
+      Random.rand(count_range).times { answers << build_stubbed(:answer, problem: problem, team: team) }
+    end
   end
 end
 
-def create_answers(problems, example_problems, teams)
-  answers = example_problems.flat_map do |problem|
-    Array.new(Random.rand(1..3)) do
-      # unique制約から逃れるため適当にずらす
-      created_at = Time.current + Random.rand(60).minutes + Random.rand(60).seconds
-      Answer.new(problem: problem, team: teams.last, confirming: false, bodies: create_answer_bodies(problem.body), created_at: created_at)
-    end
+def build_score(answer)
+  if answer.problem.body.textbox?
+    {}
+  else
+    Answer.auto_grade(answer_bodies: answer.bodies, problem_body: answer.problem.body)
   end
+    .merge(answer: answer)
+end
 
-  answers += problems.flat_map do |problem|
-    Array.new(Random.rand(4)) do
-      # unique制約から逃れるため適当にずらす
-      created_at = Time.current + Random.rand(60).minutes + Random.rand(60).seconds
-      Answer.new(problem: problem, team: teams.last, confirming: false, bodies: create_answer_bodies(problem.body), created_at: created_at)
-    end
-  end
+def create_answers(problems, players)
+  print 'creating answers...'
 
+  top_players = players[0...10]
+  middle_players = players[10...-10]
+  bottom_players = players[-10..]
+
+  answers = [
+    *build_answers(problems, top_players, 0..5),
+    *build_answers(problems.sample(problems.size / 2), middle_players, 0..2),
+    *build_answers(problems.sample(1), bottom_players, 0..1)
+  ].shuffle
+
+  # 雑な大量生成なので、未開放問題への解答を作成している
   Answer.import!(answers)
+
+  scores = answers
+    .sample(answers.size * 2 / 3)
+    .map {|answer| build_stubbed(:score, **build_score(answer)) }
+    .shuffle
+
+  Score.import!(scores)
+
+  puts 'done'
   answers
 end
 
-def create_scores(answers)
-  scores = answers.map do |answer|
-    # TODO: textbox以外は自動採点だし...
-  end
+def create_problem_environments(problems, teams)
+  print 'creating problem_environments...'
+  envs = problems.take(10).each_with_object([]) {|problem, memo|
+    teams.each do |team|
+      memo << build_stubbed(:problem_environment, problem: problem, team: team)
+    end
+  }
+    .shuffle
 
-  Score.import!(scores)
-  scores
+  ProblemEnvironment.import!(envs)
+  puts 'done'
+  envs
 end
 
-create_config
-teams = create_teams
-categories = create_categories
-first_category = categories.shift
-problems = create_problems(categories, first_category)
-example_problems = problems.shift(5)
-create_problem_bodies(problems, example_problems)
-answers = create_answers(problems, example_problems, teams) # rubocop:disable Lint/UselessAssignment
-# scores, issue, issue_comment, notices
+def create_problem_supplements(problems, _teams)
+  print 'creating problem_supplements...'
 
-# rubocop:enable Metrics/MethodLength
+  sups = problems.take(10).flat_map {|problem|
+    Array.new(Random.rand(1..4)) { build_stubbed(:problem_supplement, problem: problem) }
+  }
+    .shuffle
+
+  ProblemSupplement.import!(sups)
+  puts 'done'
+  sups
+end
+
+def create_notices(teams)
+  print 'creating notices...'
+
+  notices = teams.sample(teams.size / 3).map {|team| build_stubbed(:notice, target_team: team) }
+  notices += Array.new(Random.rand(5..20)) {|_team| build_stubbed(:notice) }
+  notices << build_stubbed(:notice, target_team: teams.first)
+  notices.shuffle!
+
+  Notice.import!(notices)
+  puts 'done'
+  notices
+end
+# rubocop:enable Metrics/MethodLength, Rails/Output
+
+# rubocop:disable Lint/UselessAssignment
+create_config
+players, audience = create_teams
+categories = create_categories
+problems = create_problems(categories)
+answers = create_answers(problems, players)
+problem_environments = create_problem_environments(problems, players)
+problem_supplements = create_problem_supplements(problems, players)
+notices = create_notices(players)
+# TODO: attachments, issue, issue_comment
+# rubocop:enable Lint/UselessAssignment

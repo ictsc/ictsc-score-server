@@ -1,23 +1,28 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  alphabets = ('a'..'zz').to_a.freeze
+
   factory :team do
-    sequence(:name) {|n| "team #{n}" } # type: :string, null: false
-    sequence(:password) {|n| "team #{n}" } # type: :string, null: false
-    sequence(:organization) {|n| "team #{n}" } # type: :string, null: true
+    name { "team #{alphabets[number - 1]}" }
+    password { name }
+    organization { "Org. #{name}" }
     sequence(:number) {|n| n }
 
     trait :staff do
+      name { "staff #{alphabets[number - 1]}" }
       role { :staff }
     end
 
     trait :audience do
-      role { :player }
+      name { "audience #{alphabets[number - 1]}" }
+      role { :audience }
     end
 
     trait :player do
+      name { "team #{alphabets[number - 1]}" }
       role { :player }
-      color { '#996633' }
+      color { Faker::Color.hex_color }
     end
 
     # association :answers # optional: nil

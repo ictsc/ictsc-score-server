@@ -1,15 +1,22 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :problem do
-    sequence(:code) {|n| "%<name>s #{n}" } # type: :string, null: false
-    sequence(:writer) {|n| "%<name>s #{n}" } # type: :string, null: true
-    sequence(:secret_text) {|n| "%<name>s #{n}" } # type: :string, null: false, default: ""
-    sequence(:order) {|n| n } # type: :integer, null: false
-    sequence(:team_isolate, &:odd?) # type: :boolean, null: false, default: "false"
-    open_at { nil } # type: :tsrange, null: true
+  code_begin = +'AAA'
 
-    # association :body, factory: :problem_body # optional: nil
+  factory :problem do
+    code do
+      code = -code_begin
+      code_begin.next!
+      code
+    end
+    writer { Faker::Book.author }
+    secret_text { Faker::Books::Dune.planet }
+    order { Random.rand(1000) }
+    team_isolate { false }
+    open_at { nil }
+
+    category { nil }
+    association :body, factory: :problem_body
     # association :environments, :problem_environment # optional: nil
     # association :supplements, factory: :problem_supplement # optional: nil
     # association :category # optional: true
@@ -18,5 +25,21 @@ FactoryBot.define do
     # association :answers # optional: nil
     # association :issues # optional: nil
     # association :first_correct_answers # optional: nil
+
+    trait :mode_textbox do
+      association :body, :textbox, factory: :problem_body
+    end
+
+    trait :mode_radio_button do
+      association :body, :radio_button, factory: :problem_body
+    end
+
+    trait :mode_checkbox do
+      association :body, :checkbox, factory: :problem_body
+    end
+
+    trait :team_isolate do
+      team_isolate { true }
+    end
   end
 end

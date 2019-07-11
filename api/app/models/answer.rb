@@ -31,8 +31,10 @@ class Answer < ApplicationRecord
   # 手動採点なら引数で値を渡す。
   # 自動採点なら渡さない
   # 失敗したらfalseが返る
-  def grade!(point: nil, solved: nil)
-    self.score ||= Score.new
+  def grade(point: nil, solved: nil)
+    # self.scoreに代入すると即座にsaveされるので注意
+    score = self.score || Score.new
+    score.answer = self
 
     case problem.body.mode
     when 'textbox'
@@ -43,11 +45,7 @@ class Answer < ApplicationRecord
         return false
       end
 
-      correct_count = problem.body.corrects.zip(bodies).count {|correct, body| Set.new(correct) == Set.new(body) }
-
-      # パーセンテージ(整数)で保持するため端数は切り捨て
-      score.point = 100 * correct_count / problem.body.corrects.size
-      score.solved = score.point == 100
+      score.attributes = self.class.auto_grade(answer_bodies: bodies, problem_body: problem.body)
     else
       raise ProblemBodyUnhandledMode, problem.body.mode
     end
@@ -67,6 +65,15 @@ class Answer < ApplicationRecord
         .where(scores: { solved: true })
         .order(:created_at)
         .first
+    end
+
+    def auto_grade(answer_bodies:, problem_body:)
+      correct_count = problem_body.corrects.zip(answer_bodies).count {|correct, body| Set.new(correct) == Set.new(body) }
+
+      # パーセンテージ(整数)で保持するため端数は切り捨て
+      point = 100 * correct_count / problem_body.corrects.size
+      solved = point == 100
+      { point: point, solved: solved }
     end
   end
 end
