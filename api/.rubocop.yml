@@ -30,6 +30,7 @@ Metrics/BlockLength:
   Max: 20
   Exclude:
     - 'spec/**/*_spec.rb'
+    - 'spec/factories/*.rb'
 Metrics/LineLength:
   # 基本的に長い行の折返しはエディターで対処
   Enabled: false

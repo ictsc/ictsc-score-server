@@ -2,15 +2,15 @@
 
 class Score < ApplicationRecord
   # nil or 得点率
-  validates :point,  presence: false, length: { minimum: 0, maximum: 100 }
+  validates :point,  presence: false, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validates :solved, boolean: true
-  validates :answer, presence: true, uniqueness: { scope: %i[team_id created_at] }
+  validates :answer, presence: true, uniqueness: true
 
   belongs_to :answer
   has_one :team, through: :answer
   has_one :problem, through: :answer
 
-  after_save :refresh_first_correct_answer, if: :saved_change_to_correct?
+  after_save :refresh_first_correct_answer, if: :saved_change_to_solved?
 
   def refresh_first_correct_answer
     # TODO: 親トランザクションやらなんやらが影響しそう after_commitにするのはうかつ

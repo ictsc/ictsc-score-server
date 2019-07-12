@@ -6,5 +6,7 @@ FactoryBot.define do
     sequence(:host) {|n| "host#{n}.local" }
     sequence(:user) {|n| "user#{n}" }
     sequence(:password) {|n| "password#{n}" }
+    team { nil }
+    problem { nil }
   end
 end

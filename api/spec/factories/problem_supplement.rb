@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :problem_supplement do
-    sequence(:text) {|n| "%<name>s #{n}" } # type: :string, null: false
-    # association :problem # optional: nil
+    text { Array.new(Random.rand(1..2)) { Faker::Books::Dune.quote }.join("\n") }
+    problem { nil }
   end
 end

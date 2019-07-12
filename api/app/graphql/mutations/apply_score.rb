@@ -14,7 +14,7 @@ module Mutations
       Acl.permit!(mutation: self, args: {})
 
       # grade!でscoreレコードが作られる
-      if answer.grade!(point: point, solved: solved)
+      if answer.grade(point: point, solved: solved)
         { score: answer.score.readable, errors: [] }
       else
         { errors: answer.score.errors.full_messages }
