@@ -51,7 +51,6 @@ group :development, :test do
   # 参考程度に使う
   gem 'rails_best_practices', require: false
 
-  gem 'pry'
   gem 'pry-rails'
   gem 'pry-byebug'
   gem 'pry-doc'
