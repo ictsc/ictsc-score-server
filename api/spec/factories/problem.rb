@@ -14,9 +14,17 @@ FactoryBot.define do
     order { Random.rand(1000) }
     team_isolate { false }
     open_at { nil }
-
     category { nil }
-    association :body, factory: :problem_body
+
+    transient do
+      mode { :textbox }
+    end
+
+    callback(:after_build, :after_stub) do |problem, evaluator|
+      # callbackで作らないとcreateが失敗する
+      problem.body ||= build(:problem_body, evaluator.mode.to_sym)
+    end
+
     # association :environments, :problem_environment # optional: nil
     # association :supplements, factory: :problem_supplement # optional: nil
     # association :category # optional: true
@@ -25,21 +33,5 @@ FactoryBot.define do
     # association :answers # optional: nil
     # association :issues # optional: nil
     # association :first_correct_answers # optional: nil
-
-    trait :mode_textbox do
-      association :body, :textbox, factory: :problem_body
-    end
-
-    trait :mode_radio_button do
-      association :body, :radio_button, factory: :problem_body
-    end
-
-    trait :mode_checkbox do
-      association :body, :checkbox, factory: :problem_body
-    end
-
-    trait :team_isolate do
-      team_isolate { true }
-    end
   end
 end
