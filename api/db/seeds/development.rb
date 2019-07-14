@@ -145,25 +145,25 @@ def create_problem_environments(problems, teams)
   envs
 end
 
-def create_problem_supplements(problems, _teams)
+def create_problem_supplements(problems)
   print 'creating problem_supplements...'
 
-  sups = problems.take(10).flat_map {|problem|
-    Array.new(Random.rand(1..4)) { build_stubbed(:problem_supplement, problem: problem) }
-  }
+  supplements = problems
+    .take(10)
+    .flat_map {|problem| build_stubbed_list(:problem_supplement, Random.rand(1..4), problem: problem) }
     .shuffle
 
-  ProblemSupplement.import!(sups)
+  ProblemSupplement.import!(supplements)
   puts 'done'
-  sups
+  supplements
 end
 
 def create_notices(teams)
   print 'creating notices...'
 
-  notices = teams.sample(teams.size / 3).map {|team| build_stubbed(:notice, target_team: team) }
-  notices += Array.new(Random.rand(5..20)) {|_team| build_stubbed(:notice) }
-  notices << build_stubbed(:notice, target_team: teams.first)
+  notices = build_stubbed_list(:notice, Random.rand(7..20))
+  notices += build_stubbed_list(:notice, 3, target_team: teams.first)
+  notices += teams.sample(teams.size / 3).map {|team| build_stubbed(:notice, target_team: team) }
   notices.shuffle!
 
   Notice.import!(notices)
@@ -179,7 +179,7 @@ categories = create_categories
 problems = create_problems(categories)
 answers = create_answers(problems, players)
 problem_environments = create_problem_environments(problems, players)
-problem_supplements = create_problem_supplements(problems, players)
+problem_supplements = create_problem_supplements(problems)
 notices = create_notices(players)
 # TODO: attachments, issue, issue_comment
 # rubocop:enable Lint/UselessAssignment
