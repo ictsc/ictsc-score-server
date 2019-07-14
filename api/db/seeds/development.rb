@@ -170,6 +170,22 @@ def create_notices(teams)
   puts 'done'
   notices
 end
+
+def create_issues(problems, teams)
+  print 'creating issues...'
+
+  issues = problems.take(10).each_with_object([]) do |problem, memo|
+    teams.take(10).each do |team|
+      memo << build_stubbed(:issue, comment_count: Random.rand(1..6), problem: problem, team: team)
+    end
+  end
+  issues.shuffle!
+
+  Issue.import!(issues)
+  IssueComment.import!(issues.flat_map(&:comments))
+  puts 'done'
+  issues
+end
 # rubocop:enable Metrics/MethodLength, Rails/Output
 
 # rubocop:disable Lint/UselessAssignment
@@ -181,5 +197,6 @@ answers = create_answers(problems, players)
 problem_environments = create_problem_environments(problems, players)
 problem_supplements = create_problem_supplements(problems)
 notices = create_notices(players)
-# TODO: attachments, issue, issue_comment
+issues = create_issues(problems, players)
+# TODO: attachments
 # rubocop:enable Lint/UselessAssignment
