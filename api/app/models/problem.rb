@@ -21,7 +21,11 @@ class Problem < ApplicationRecord
   has_many :first_correct_answers, dependent: :destroy
 
   def opened?(team:)
-    self.opened(team: team).exists?(id: self.id)
+    self.class.opened(team: team).exists?(id: self.id)
+  end
+
+  def latest_answer_created_at(team:)
+    answer.where(team: team).order(:created_at).last&.created_at || Time.zone.at(0)
   end
 
   class << self

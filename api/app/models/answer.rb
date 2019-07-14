@@ -22,7 +22,7 @@ class Answer < ApplicationRecord
     when 'radio_button'
     when 'checkbox'
     else
-      raise ProblemBodyUnhandledMode, problem.body.mode
+      raise UnhandledProblemBodyMode, problem.body.mode
     end
     # rubocop:enable Lint/EmptyWhen
   end
@@ -47,7 +47,7 @@ class Answer < ApplicationRecord
 
       score.attributes = self.class.auto_grade(answer_bodies: bodies, problem_body: problem.body)
     else
-      raise ProblemBodyUnhandledMode, problem.body.mode
+      raise UnhandledProblemBodyMode, problem.body.mode
     end
 
     score.save

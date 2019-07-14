@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProblemBodyUnhandledMode < StandardError
+class UnhandledProblemBodyMode < StandardError
   attr_reader :mode
 
   def initialize(mode)
