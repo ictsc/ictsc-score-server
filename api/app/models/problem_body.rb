@@ -67,7 +67,7 @@ class ProblemBody < ApplicationRecord
         # rubocop:enable Style/IfInsideElse
       end
     else
-      raise ProblemBodyUnhandledMode, mode
+      raise UnhandledProblemBodyMode, mode
     end
   end
 
