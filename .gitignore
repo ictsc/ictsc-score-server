@@ -143,3 +143,4 @@ design/public
 config/contest.yml
 uploads/
 coverage/
+__pycache__/

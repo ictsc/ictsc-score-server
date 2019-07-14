@@ -1,0 +1,87 @@
+{
+  problems {
+    id
+    order
+    teamIsolate
+    openAtBegin
+    openAtEnd
+
+    code
+    writer
+    secretText
+
+    solvedCount
+    categoryId
+    previousProblemId
+    body {
+      id
+      mode
+      title
+      text
+      problemId
+      perfectPoint
+      candidates
+      corrects
+      createdAt
+      updatedAt
+    }
+    environments {
+      id
+      status
+      host
+      user
+      password
+      createdAt
+      updatedAt
+      team {
+        name
+        number
+      }
+    }
+    supplements {
+      id
+      text
+      createdAt
+    }
+
+    answers {
+      id
+      bodies
+      confirming
+      createdAt
+      team {
+        name
+        number
+      }
+      score {
+        id
+        point
+        solved
+      }
+    }
+    category {
+      id
+      code
+      title
+    }
+    issues {
+      id
+      title
+      status
+      createdAt
+      team {
+        name
+        number
+      }
+      comments {
+        text
+        fromStaff
+        createdAt
+      }
+    }
+    previousProblem {
+      id
+      code
+    }
+  }
+}
