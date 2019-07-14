@@ -6,7 +6,7 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
 
-    Rails.logger.debug "GraphQL query log".green
+    Rails.logger.debug 'GraphQL query log'.green
     Rails.logger.debug({ variables: variables, query: query, operation_name: operation_name }.pretty_inspect)
 
     if current_team.nil?

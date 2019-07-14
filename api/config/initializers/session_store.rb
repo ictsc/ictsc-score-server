@@ -4,7 +4,7 @@ redis_url = URI.parse(ENV.fetch('REDIS_URL'))
 server = {
   host: redis_url.host,
   port: redis_url.port,
-  db: redis_url.path.sub(/^\//, ''),
+  db: redis_url.path.sub(%r{^/}, ''),
   namespace: 'sessions'
 }
 
