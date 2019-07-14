@@ -2,6 +2,7 @@
 
 module Mutations
   class AddIssueComment < GraphQL::Schema::RelayClassicMutation
+    field :issue, Types::IssueType, null: true
     field :issue_comment, Types::IssueCommentType, null: true
     field :errors, [String], null: false
 
@@ -9,15 +10,17 @@ module Mutations
     argument :text, String, required: true
 
     def resolve(issue_id:, text:)
-      args = { issue: Issue.find_by!(id: issue_id) }
-      Acl.permit!(mutation: self, args: args)
+      issue = Issue.find_by!(id: issue_id)
+      Acl.permit!(mutation: self, args: { issue: issue })
 
-      issue_comment = IssueComment.new
+      issue.transition_by_comment(team: Context.current_team!)
+      issue_comment = IssueComment.new(text: text, from_staff: Context.current_team!.staff?)
 
-      if issue_comment.update(args.merge(text: text, from_staff: Context.current_team!.staff?))
-        { issue_comment: issue_comment.readable, errors: [] }
+      # issueも同時にsaveされる
+      if issue_comment.update(issue: issue)
+        { issue: issue.readable, issue_comment: issue_comment.readable, errors: [] }
       else
-        { errors: issue_comment.errors.full_messages }
+        { errors: issue.errors.full_messages + issue_comment.errors.full_messages }
       end
     end
   end

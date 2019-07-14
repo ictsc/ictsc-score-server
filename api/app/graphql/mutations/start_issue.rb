@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 module Mutations
-  class AddIssue < GraphQL::Schema::RelayClassicMutation
+  class StartIssue < GraphQL::Schema::RelayClassicMutation
     field :issue, Types::IssueType, null: true
     field :errors, [String], null: false
 
     argument :problem_id, ID, required: true
-    argument :title, String, required: true
 
-    def resolve(problem_id:, title:)
+    def resolve(problem_id:)
       args = { problem: Problem.find_by!(id: problem_id) }
       Acl.permit!(mutation: self, args: args)
 

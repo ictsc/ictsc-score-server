@@ -18,4 +18,30 @@ class Issue < ApplicationRecord
   belongs_to :problem
   belongs_to :team
   has_many :comments, dependent: :destroy, class_name: 'IssueComment'
+
+  def transition_by_click(team:)
+    case status
+    when 'unsolved'
+      self.status = team.staff? ? 'in_progress' : 'solved'
+    when 'in_progress'
+      self.status = 'solved'
+    when 'solved'
+      self.status = team.staff? ? 'in_progress' : 'unsolved'
+    else
+      raise UnhandledIssueStatus, status
+    end
+  end
+
+  def transition_by_comment(team:)
+    case status
+    when 'unsolved'
+      self.status = 'in_progress' if team.staff?
+    when 'in_progress' # rubocop:disable Lint/EmptyWhen
+      # do nothing
+    when 'solved'
+      self.status = 'unsolved' if team.player?
+    else
+      raise UnhandledIssueStatus, status
+    end
+  end
 end
