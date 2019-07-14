@@ -21,7 +21,7 @@ services:
 
       dockerize -wait tcp://redis:6379 -timeout 100s
       dockerize -wait tcp://db:5432 -timeout 100s
-      bundle exec rails server puma -b 0.0.0.0
+      bundle exec rails server -b 0.0.0.0
       '
 
   ui:
@@ -45,6 +45,7 @@ services:
     image: postgres:11.3-alpine
     env_file: .env
     ports: ['8902:5432']
+    command: ['postgres', '-c', 'max_connections=$POSTGRES_MAX_CONNECTIONS', '-c', 'shared_buffers=$POSTGRES_SHARED_BUFFERS', '-c', 'work_mem=$POSTGRES_WORK_MEM']
 
   redis:
     image: redis:5.0.4-alpine

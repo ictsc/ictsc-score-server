@@ -37,8 +37,10 @@ class Team < ApplicationRecord
 
   class << self
     def login(name:, password:)
+      # ハッシュ計算は重いため計算を始める前にコネクションをリリースする
       Team
         .find_by(name: name)
+        .tap { connection_pool.release_connection }
         &.authenticate(password)
     end
   end

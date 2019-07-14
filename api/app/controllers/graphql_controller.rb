@@ -6,8 +6,8 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
 
-    Rails.logger.debug "---------- called: #{self}.#{__method__} L#{__LINE__}".red
-    Rails.logger.debug [variables, query, operation_name].pretty_inspect.yellow
+    Rails.logger.debug 'GraphQL query log'.green
+    Rails.logger.debug({ variables: variables, query: query, operation_name: operation_name }.pretty_inspect)
 
     if current_team.nil?
       head :unauthorized
