@@ -21,7 +21,7 @@ class Problem < ApplicationRecord
   has_many :first_correct_answers, dependent: :destroy
 
   def opened?(team:)
-    self.opened(team: team).exists?(id: self.id)
+    self.class.opened(team: team).exists?(id: self.id)
   end
 
   class << self
