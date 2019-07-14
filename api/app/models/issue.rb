@@ -1,17 +1,14 @@
 # frozen_string_literal: true
 
 class Issue < ApplicationRecord
-  validates :title,   presence: true
   validates :status,  presence: true
-  validates :problem, presence: true
+  validates :problem, presence: true, uniqueness: { scope: :team_id }
   validates :team,    presence: true
 
   # 状態遷移条件
-  # unsolved: 初期値
-  # in_progress: playerが操作, solvedだったissueに新しくコメントが付く
-  # solved: playerかstaff操作
-  # in_progress時にstaffがボタンを押した場合はsolvedになるのかunsolvedになるのか
-  # やっぱ unsolved<->solved, in_progress<->not_in_progressで分けたほうが良さそう
+  # unsolved: 要対応
+  # in_progress: 対応中
+  # solved: 解決
   enum status: {
     unsolved: 1,
     in_progress: 2,
