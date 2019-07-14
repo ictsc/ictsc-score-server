@@ -24,6 +24,10 @@ class Problem < ApplicationRecord
     self.class.opened(team: team).exists?(id: self.id)
   end
 
+  def latest_answer_created_at(team:)
+    answer.where(team: team).order(:created_at).last&.created_at || Time.zone.at(0)
+  end
+
   class << self
     def opened(team:)
       return all if Config.all_problem_force_open_at <= Time.current

@@ -6,7 +6,7 @@ class Acl
       raise GraphQL::ExecutionError, "Unpermit mutation #{mutation.class} by #{Context.current_team!.name}" unless allow?(mutation: mutation, args: args)
     end
 
-    def allow?(mutation:, args:)
+    def allow?(mutation:, args:) # rubocop:disable Metrics/CyclomaticComplexity
       mutation = mutation.class.name.demodulize
       team = Context.current_team!
 
@@ -17,8 +17,11 @@ class Acl
         # staff only
         team.staff?
       when 'AddAnswer'
-        args.fetch(:problem).opened?(team: team) # && 最終提出から20min
         # player and opened and 最終提出から20s
+        problem = args.fetch(:problem)
+        return false if !team.player? || !problem.body.readable?(team: team)
+
+        problem.latest_answer_created_at(team: team) <= Time.current - Config.grading_delay_sec.seconds
       when 'AddIssue'
         # player and opened
       when 'AddIssueComment'
