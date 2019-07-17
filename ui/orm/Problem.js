@@ -26,7 +26,7 @@ export default class Problem extends Model {
       environments: this.hasMany(orm.ProblemEnvironment, 'problemId'),
       supplements: this.hasMany(orm.ProblemSupplement, 'problemId'),
       answers: this.hasMany(orm.Answer, 'problemId'),
-      // issues: [Types::IssueType],
+      issues: this.hasMany(orm.Issue, 'problemId'),
       solvedCount: this.number()
     }
   }
