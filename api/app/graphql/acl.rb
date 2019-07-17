@@ -6,7 +6,7 @@ class Acl
       raise GraphQL::ExecutionError, "Unpermit mutation #{mutation.class} by #{Context.current_team!.name}" unless allow?(mutation: mutation, args: args)
     end
 
-    def allow?(mutation:, args:) # rubocop:disable Metrics/CyclomaticComplexity
+    def allow?(mutation:, args:)
       mutation = mutation.class.name.demodulize
       team = Context.current_team!
 
