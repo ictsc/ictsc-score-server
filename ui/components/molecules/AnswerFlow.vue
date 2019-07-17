@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapGetters('contest', ['gradingDelayMinString']),
 
-    aboutGradingDelayTitle: function() {
+    aboutGradingDelayTitle() {
       return `運営が採点 (最速${this.gradingDelayMinString})`
     }
   }
