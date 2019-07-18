@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :score do
     point { Random.rand(0..100) }
-    sequence(:solved, &:odd?)
+    solved { answer.problem.body.solved_criterion <= point }
     answer { nil }
   end
 end

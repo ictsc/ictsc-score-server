@@ -31,26 +31,26 @@ class Answer < ApplicationRecord
   # 手動採点なら引数で値を渡す。
   # 自動採点なら渡さない
   # 失敗したらfalseが返る
-  def grade(point: nil, solved: nil)
+  def grade(point: nil)
     # self.scoreに代入すると即座にsaveされるので注意
     score = self.score || Score.new
     score.answer = self
 
     case problem.body.mode
     when 'textbox'
-      score.attributes = { point: point, solved: solved }
+      score.point = point
     when 'radio_button', 'checkbox'
-      if !point.nil? && !solved.nil?
+      unless point.nil?
         score.errors.add(:grading, "in #{problem.body.mode}, disallow grade manually")
         return false
       end
 
-      score.attributes = self.class.auto_grade(answer_bodies: bodies, problem_body: problem.body)
+      score.point = self.class.auto_grade(answer_bodies: bodies, problem_body: problem.body)
     else
       raise UnhandledProblemBodyMode, problem.body.mode
     end
 
-    score.save
+    score.update(solved: problem.body.solved_criterion <= score.point)
   end
 
   class << self
@@ -71,9 +71,7 @@ class Answer < ApplicationRecord
       correct_count = problem_body.corrects.zip(answer_bodies).count {|correct, body| Set.new(correct) == Set.new(body) }
 
       # パーセンテージ(整数)で保持するため端数は切り捨て
-      point = 100 * correct_count / problem_body.corrects.size
-      solved = point == 100
-      { point: point, solved: solved }
+      100 * correct_count / problem_body.corrects.size
     end
   end
 end
