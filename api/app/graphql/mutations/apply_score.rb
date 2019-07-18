@@ -7,14 +7,13 @@ module Mutations
 
     argument :answer_id, ID,      required: true
     argument :point,     Integer, required: true
-    argument :solved,    Boolean, required: true
 
-    def resolve(answer_id:, point:, solved:)
+    def resolve(answer_id:, point:)
       answer = Answer.find_by!(id: answer_id)
       Acl.permit!(mutation: self, args: {})
 
-      # grade!でscoreレコードが作られる
-      if answer.grade(point: point, solved: solved)
+      # gradeでscoreレコードが作られる
+      if answer.grade(point: point)
         { score: answer.score.readable, errors: [] }
       else
         { errors: answer.score.errors.full_messages }

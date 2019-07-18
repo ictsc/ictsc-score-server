@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_14_173914) do
+ActiveRecord::Schema.define(version: 2019_07_18_081336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(version: 2019_07_14_173914) do
     t.uuid "problem_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "solved_criterion", null: false
     t.index ["problem_id"], name: "index_problem_bodies_on_problem_id"
   end
 

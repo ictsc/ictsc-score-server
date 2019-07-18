@@ -20,13 +20,14 @@ module Mutations
     argument :title, String, required: true
     argument :text, String, required: true
     argument :perfect_point, Integer, required: true
+    argument :solved_criterion, Integer, required: true
     argument :candidates, [[String]], required: false
     argument :corrects, [[String]], required: false
 
     def resolve(code:, category_code: nil, previous_problem_code: nil,
                 order:, team_isolate:, open_at_begin: nil, open_at_end: nil,
                 writer: nil, secret_text: '',
-                mode:, title:, text:, perfect_point:, candidates:, corrects:)
+                mode:, title:, text:, perfect_point:, solved_criterion:, candidates:, corrects:)
 
       Acl.permit!(mutation: self, args: {})
 
@@ -37,7 +38,7 @@ module Mutations
       problem_body = problem.body || ProblemBody.new
 
       # attributes(params) → save と update(params) は等価ではない(トランザクション周り)
-      problem_body.attributes = { mode: mode, title: title, text: text, perfect_point: perfect_point, candidates: candidates, corrects: corrects }
+      problem_body.attributes = { mode: mode, title: title, text: text, perfect_point: perfect_point, solved_criterion: solved_criterion, candidates: candidates, corrects: corrects }
 
       # TODO: shuffle: true
       #   リロードする度にシャッフルされるのは鬱陶しい  -> あまり意味のある実装にはならなそうなのでやらない

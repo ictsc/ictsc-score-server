@@ -99,7 +99,7 @@ def build_score(answer)
   if answer.problem.body.textbox?
     {}
   else
-    Answer.auto_grade(answer_bodies: answer.bodies, problem_body: answer.problem.body)
+    { point: Answer.auto_grade(answer_bodies: answer.bodies, problem_body: answer.problem.body) }
   end
     .merge(answer: answer)
 end
