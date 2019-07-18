@@ -7,6 +7,7 @@ module Types
     field :title,         String,                        null: false
     field :text,          String,                        null: false
     field :perfect_point, Integer,                       null: false
+    field :solved_criterion, Integer, null: false
     field :problem_id,    ID,                            null: false
     field :candidates,    [[String]],                    null: true
     field :corrects,      [[String]],                    null: true

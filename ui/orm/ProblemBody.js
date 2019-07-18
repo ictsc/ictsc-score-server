@@ -11,6 +11,7 @@ export default class ProblemBody extends Model {
       title: this.string(),
       text: this.string(),
       perfectPoint: this.number(),
+      solvedCriterion: this.number(),
       problemId: this.string(),
       problem: this.belongsTo(orm.Problem, 'problemId'),
       // 本当は[[this.string()]].nullable()
