@@ -1,7 +1,7 @@
 ICTSC スコアサーバー
 ---
 
-[![CircleCI](https://circleci.com/gh/ictsc/ictsc-score-server.svg?style=svg)](https://circleci.com/gh/ictsc/ictsc-score-server)
+[![CircleCI](https://circleci.com/gh/ictsc/ictsc-score-server/tree/develop.svg?style=svg)](https://circleci.com/gh/ictsc/ictsc-score-server)
 ![Docker Automated build](https://img.shields.io/docker/automated/upluse10/ictsc-score-server.svg)
 
 The contest site for [ICTSC](http://icttoracon.net/) (ICT Trouble Shooting Contest).
@@ -23,7 +23,7 @@ API and SPA
 - API
   - Written in Ruby
   - Framework: Rails
-    - Provides Graphql API
+    - Provides GraphQL API
 - UI
   - Written in JavaScript
   - Framework: Nuxt.js(SPA)
