@@ -16,19 +16,29 @@ require:
 Metrics/AbcSize:
   # 下手に守ろうとするとコードが激しく断片化するので無効
   Enabled: false
-# Metrics/CyclomaticComplexity:
-#   Max: 10 # default: 6
-# Metrics/PerceivedComplexity:
-#   Enabled: false
+Metrics/CyclomaticComplexity:
+  # Max: 10 # default: 6
+  Exclude:
+    - 'app/graphql/acl.rb'
+    - 'app/models/concerns/filterable.rb'
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/graphql/acl.rb'
+    - 'app/models/concerns/filterable.rb'
 
 ## 長さ系
 Metrics/ClassLength:
   Max: 200
 MethodLength:
   Max: 20
+  Exclude:
+    - 'app/graphql/acl.rb'
+    - 'app/models/concerns/filterable.rb'
 Metrics/BlockLength:
   Max: 20
   Exclude:
+    - 'app/graphql/acl.rb'
+    - 'app/models/concerns/filterable.rb'
     - 'spec/**/*_spec.rb'
     - 'spec/factories/*.rb'
 Metrics/LineLength:

@@ -5,5 +5,6 @@ class IssueComment < ApplicationRecord
   validates :from_staff, boolean: true
   validates :issue,      presence: true
 
-  belongs_to :issue
+  # コメント追加時にIssue#statusが変化したら同時にsaveする
+  belongs_to :issue, autosave: true
 end

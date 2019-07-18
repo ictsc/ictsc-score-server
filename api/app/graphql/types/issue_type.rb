@@ -3,23 +3,14 @@
 module Types
   class IssueType < Types::BaseObject
     field :id,         ID,                        null: false
-    field :title,      String,                    null: false
     field :status,     Types::Enums::IssueStatus, null: false
     field :problem_id, ID,                        null: false
     field :problem,    Types::ProblemType,        null: false
     field :team_id,    ID,                        null: false
     field :team,       Types::TeamType,           null: false
     field :comments,   [Types::IssueCommentType], null: false
-    field :created_at, Types::DateTime,           null: false
-
-    def status
-      # staff以外ならin_progressをunsolvedとして返す
-      # TODO: commentが付いているなら, in_progressと表示したい
-      #       複雑なので、いそin_progressフィールを分けて、staffはin_progressがtrueか見て、playerはcommentがあるかを見たほうが良さそう?
-      return 'unsolved' if !Context.current_team!.staff && self.object.in_progress?
-
-      self.object.status
-    end
+    # status更新時間
+    field :updated_at, Types::DateTime,           null: false
 
     def problem
       RecordLoader.for(Problem).load(self.object.problem_id)

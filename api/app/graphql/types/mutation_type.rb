@@ -3,7 +3,6 @@
 module Types
   class MutationType < Types::BaseObject
     field :addAnswer, mutation: Mutations::AddAnswer
-    field :addIssue, mutation: Mutations::AddIssue
     field :addIssueComment, mutation: Mutations::AddIssueComment
     field :addNotice, mutation: Mutations::AddNotice
     field :addProblemSupplement, mutation: Mutations::AddProblemSupplement
@@ -13,9 +12,11 @@ module Types
     field :applyScore, mutation: Mutations::ApplyScore
     field :applyTeam, mutation: Mutations::ApplyTeam
     field :confirmingAnswer, mutation: Mutations::ConfirmingAnswer
+    field :deleteIssueComment, mutation: Mutations::DeleteIssueComment
     field :deleteNotice, mutation: Mutations::DeleteNotice
     field :deleteProblemSupplement, mutation: Mutations::DeleteProblemSupplement
     field :pinNotice, mutation: Mutations::PinNotice
+    field :startIssue, mutation: Mutations::StartIssue
     field :transitionIssueState, mutation: Mutations::TransitionIssueState
   end
 end

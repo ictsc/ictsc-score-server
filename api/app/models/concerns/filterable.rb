@@ -35,7 +35,7 @@ module Filterable
 
     # ブラックリスト方式でフィルタする
     # そのteamが閲覧できるレコードを返す
-    def reject_columns(team: Context.current_team!) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    def reject_columns(team: Context.current_team!)
       # 文字列として比較しないとautoload環境では正しく動作しない
       case self.to_s
       when 'Answer'
@@ -57,7 +57,7 @@ module Filterable
         .presence || []
     end
 
-    def readable_records(team: Context.current_team!) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
+    def readable_records(team: Context.current_team!)
       # 文字列として比較しないとautoload環境では正しく動作しない
       klass = self.to_s
 
