@@ -109,7 +109,7 @@ export default {
         this.$router.push('/login')
       } else {
         // そもそもログインしてない場合にここに来る
-        // TODO: ログインしていません みたいなエラーを出したほうが良さそう
+        this.notifyError({ message: 'ログインしていません' })
         this.$router.push('/login')
       }
     }

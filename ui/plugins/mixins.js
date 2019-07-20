@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 // 各コンポーネントで多用するメソッドをmixinする
 // やりすぎ注意
@@ -12,6 +12,15 @@ Vue.mixin({
       'isAudience',
       'isPlayer',
       'isNoLogin'
+    ])
+  },
+  methods: {
+    ...mapMutations('notification', [
+      'addNotification',
+      'notifySuccess',
+      'notifyInfo',
+      'notifyWarning',
+      'notifyError'
     ])
   }
 })
