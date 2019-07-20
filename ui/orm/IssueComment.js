@@ -2,7 +2,7 @@ import { Model } from '@vuex-orm/core'
 import orm from '~/orm'
 
 export default class IssueComment extends Model {
-  static entity = 'issue_comments'
+  static entity = 'issueComments'
 
   static fields() {
     return {
@@ -10,7 +10,7 @@ export default class IssueComment extends Model {
       from_staff: this.boolean(),
       text: this.string().nullable(),
       issueId: this.string(),
-      issue: this.belongsTo(orm.issue, 'issueId'),
+      issue: this.belongsTo(orm.Issue, 'issueId'),
       createdAt: this.string()
     }
   }
