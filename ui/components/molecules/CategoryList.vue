@@ -23,7 +23,7 @@ export default {
   props: {
     category: {
       type: Object,
-      default: () => ({})
+      required: true
     }
   },
   computed: {

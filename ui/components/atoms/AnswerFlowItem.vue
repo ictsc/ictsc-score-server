@@ -11,11 +11,11 @@ export default {
   props: {
     title: {
       type: String,
-      default: ''
+      required: true
     },
     body: {
       type: String,
-      default: ''
+      required: true
     }
   }
 }

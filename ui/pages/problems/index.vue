@@ -8,7 +8,7 @@
 
     <div>
       <div v-for="category in categories" :key="category.id">
-        <category-column :category="category" />
+        <category-list :category="category" />
       </div>
     </div>
   </div>
@@ -19,7 +19,7 @@
 <script>
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
-import CategoryColumn from '~/components/molecules/CategoryColumn'
+import CategoryList from '~/components/molecules/CategoryList'
 import orm from '~/orm'
 
 export default {
@@ -27,7 +27,7 @@ export default {
   components: {
     AnswerAttention,
     AnswerFlow,
-    CategoryColumn
+    CategoryList
   },
 
   filters: {
