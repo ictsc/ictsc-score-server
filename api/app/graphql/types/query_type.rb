@@ -6,8 +6,10 @@ module Types
     # They will be entry points for queries on your schema.
 
     field :me, Types::TeamType, null: true
-
     field :categories, [Types::CategoryType], null: false
+    field :problem, Types::ProblemType, null: true do
+      argument :id, ID, required: true
+    end
     field :problems, [Types::ProblemType], null: false
     field :teams, [Types::TeamType], null: false
     field :notices, [Types::NoticeType], null: false
@@ -18,6 +20,10 @@ module Types
 
     def categories
       Category.readables
+    end
+
+    def problem(id:)
+      Problem.readables.find_by(id: id)
     end
 
     def problems
