@@ -1,7 +1,7 @@
 <template>
   <v-container align-end justify-end column class="notification-area">
     <v-slide-x-reverse-transition group>
-      <notification
+      <notification-sheet
         v-for="notification in reverseNotifications"
         :key="notification.id"
         :uid="notification.id"
@@ -9,18 +9,18 @@
         :timeout="notification.timeout"
       >
         {{ notification.message }}
-      </notification>
+      </notification-sheet>
     </v-slide-x-reverse-transition>
   </v-container>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import Notification from '~/components/molecules/Notification'
+import NotificationSheet from '~/components/molecules/NotificationSheet'
 
 export default {
   name: 'NotificationArea',
   components: {
-    Notification
+    NotificationSheet
   },
   computed: {
     ...mapGetters('notification', ['notifications']),
