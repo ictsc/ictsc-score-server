@@ -1,15 +1,19 @@
 <template>
   <v-app>
-    <Navigation />
+    <navigation />
     <nuxt />
+    <notification-area />
   </v-app>
 </template>
 
 <script>
 import Navigation from '~/components/organisms/Navigation'
+import NotificationArea from '~/components/organisms/NotificationArea'
+
 export default {
   components: {
-    Navigation
+    Navigation,
+    NotificationArea
   }
 }
 </script>
