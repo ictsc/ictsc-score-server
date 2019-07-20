@@ -1,6 +1,6 @@
-import { Model } from '@vuex-orm/core'
+import BaseModel from '~/orm/BaseModel'
 
-export default class Team extends Model {
+export default class Team extends BaseModel {
   static entity = 'teams'
 
   static fields() {

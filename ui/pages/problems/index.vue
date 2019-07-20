@@ -46,7 +46,7 @@ export default {
   },
 
   fetch({ store }) {
-    orm.Category.fetch({}, true)
+    orm.Category.eagerFetch({}, ['problems'])
   }
 
   // mounted() {
