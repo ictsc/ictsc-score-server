@@ -18,6 +18,7 @@ import { mapGetters } from 'vuex'
 import Notification from '~/components/molecules/Notification'
 
 export default {
+  name: 'NotificationArea',
   components: {
     Notification
   },

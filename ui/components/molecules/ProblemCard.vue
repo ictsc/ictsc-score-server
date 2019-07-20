@@ -25,7 +25,7 @@ export default {
   props: {
     problem: {
       type: Object,
-      default: () => ({})
+      required: true
     }
   },
   computed: {
