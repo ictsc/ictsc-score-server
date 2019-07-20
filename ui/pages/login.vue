@@ -1,33 +1,30 @@
 <template>
-  <div>
-    <form @submit.prevent="try_login">
-      <p>Login</p>
+  <v-container fluid column align-center justify-center fill-height>
+    <v-form @submit.prevent="try_login">
+      <v-text-field v-model="name" label="チーム名" required autofocus>
+      </v-text-field>
 
-      <!-- TODO: 自動でフォーカスさせる -->
-      <b-field label="Team name">
-        <b-input
-          v-model="name"
-          type="name"
-          placeholder="Your team name"
-          required
-        >
-        </b-input>
-      </b-field>
+      <v-text-field
+        v-model="password"
+        label="パスワード"
+        required
+        :type="passwordVisible ? 'text' : 'password'"
+        :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="passwordVisible = !passwordVisible"
+      >
+      </v-text-field>
 
-      <b-field label="Password">
-        <b-input
-          v-model="password"
-          type="password"
-          password-reveal
-          placeholder="Your password"
-          required
-        >
-        </b-input>
-      </b-field>
-
-      <button class="button is-primary">Login</button>
-    </form>
-  </div>
+      <v-btn
+        :disabled="!name || !password"
+        :loading="loading"
+        type="submit"
+        color="success"
+        block
+      >
+        ログイン
+      </v-btn>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
@@ -38,17 +35,23 @@ export default {
   data() {
     return {
       name: '',
-      password: ''
+      password: '',
+      passwordVisible: false,
+      loading: false
     }
   },
   methods: {
     ...mapActions('session', ['login']),
     async try_login() {
+      this.loading = true
+
       if (await this.login({ name: this.name, password: this.password })) {
         this.$router.push('/')
       } else {
-        // TODO: いい感じにエラー 表示する
+        this.notifyError({ message: 'ログインに失敗しました' })
       }
+
+      this.loading = false
     }
   }
 }
