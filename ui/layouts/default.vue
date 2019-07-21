@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="root-v-app">
     <navigation />
     <nuxt />
     <notification-area />
@@ -17,3 +17,7 @@ export default {
   }
 }
 </script>
+<style scoped lang="sass">
+.root-v-app
+  background: white
+</style>
