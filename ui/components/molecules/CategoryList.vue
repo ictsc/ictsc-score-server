@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     problems() {
-      return this.$_.sortBy(this.category.problems, 'order')
+      return this.sortByOrder(this.category.problems)
     }
   }
 }
