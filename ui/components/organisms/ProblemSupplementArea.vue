@@ -1,5 +1,5 @@
 <template>
-  <v-layout column class="pb-1">
+  <v-layout column>
     <v-flex class="pb-0">
       <openable-button v-model="show" :togglable="supplements.length !== 0">
         補足事項
