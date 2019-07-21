@@ -19,7 +19,7 @@
       </a>
     </div>
 
-    <div id="navMenu" class="navbar-menu">
+    <div id="navMenu" class="navbar-menu primary">
       <div class="navbar-start">
         <div class="navbar-item has-dropdown is-hoverable">
           <nuxt-link to="/guide" active-class="active" class="navbar-item">
@@ -77,8 +77,6 @@
       height: 2rem
 .navbar-item
   color: #fff
-.navbar-menu
-  background: $primary
 </style>
 
 <script>

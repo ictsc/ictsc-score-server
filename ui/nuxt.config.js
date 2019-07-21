@@ -36,7 +36,7 @@ export default {
   ],
   modules: [
     '@nuxtjs/vuetify',
-    // 各コンポーネントでSASSの変数を手軽に共有する
+    // 各コンポーネントでSASSの変数を手軽に共有する TODO: 廃止予定
     '@nuxtjs/style-resources',
     '@nuxtjs/axios',
     '@nuxtjs/proxy'
@@ -54,10 +54,18 @@ export default {
     // TODO: 環境変数から取れるようにする?(本番構成決めてから)
     '/api': 'http://api:3000'
   },
+  // TODO: 廃止予定
   styleResources: {
     sass: ['~/assets/css/variables.sass']
   },
   vuetify: {
-    customVariables: ['~/assets/css/variables.sass']
+    customVariables: ['~/assets/css/variables.sass'],
+    theme: {
+      themes: {
+        light: {
+          primary: '#ed1848'
+        }
+      }
+    }
   }
 }
