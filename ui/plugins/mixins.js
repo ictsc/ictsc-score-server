@@ -21,6 +21,18 @@ Vue.mixin({
       'notifyInfo',
       'notifyWarning',
       'notifyError'
-    ])
+    ]),
+    sortByOrder(list) {
+      return this.$_.sortBy(list, 'order')
+    },
+    sortByNumber(list) {
+      return this.$_.sortBy(list, 'number')
+    },
+    sortByCreatedAt(list) {
+      return this.$_.sortBy(list, e => Date.parse(e.createdAt))
+    },
+    sortByUpdatedAt(list) {
+      return this.$_.sortBy(list, e => Date.parse(e.updatedAt))
+    }
   }
 })

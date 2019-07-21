@@ -14,6 +14,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@iktakahiro/markdown-it-katex": "^3.1.0",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/markdownit": "^1.2.5",
     "@nuxtjs/style-resources": "^0.1.2",
@@ -26,6 +27,10 @@
     "apollo-link-error": "^1.1.11",
     "apollo-link-http": "^1.5.15",
     "graphql": "^14.4.2",
+    "markdown-it-abbr": "^1.0.4",
+    "markdown-it-emoji": "^1.4.0",
+    "markdown-it-footnote": "^3.0.2",
+    "markdown-it-sanitizer": "^0.4.3",
     "node-sass": "^4.12.0",
     "nuxt": "^2.0.0",
     "sass-loader": "^7.1.0",

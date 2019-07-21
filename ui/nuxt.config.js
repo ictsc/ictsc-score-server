@@ -36,9 +36,10 @@ export default {
   ],
   modules: [
     '@nuxtjs/vuetify',
-    // 各コンポーネントでSASSの変数を手軽に共有する
+    // 各コンポーネントでSASSの変数を手軽に共有する TODO: 廃止予定
     '@nuxtjs/style-resources',
     '@nuxtjs/axios',
+    '@nuxtjs/markdownit',
     '@nuxtjs/proxy'
     // TODO: lint通らないと動作確認すらできない
     // '@nuxtjs/eslint-module',
@@ -50,14 +51,42 @@ export default {
     prefix: '/api',
     proxy: true
   },
+  markdownit: {
+    // Docs: https://github.com/markdown-it/markdown-it
+    preset: 'default',
+    linkify: true,
+    breaks: true,
+    // $mdを使えるようにする
+    injected: true,
+    use: [
+      // マウスオーバーで正式名称を表示
+      'markdown-it-abbr',
+      // 絵文字:thinking_face:
+      'markdown-it-emoji',
+      // 補足を最下部に生成
+      'markdown-it-footnote',
+      // サニタイズ
+      'markdown-it-sanitizer',
+      // TeX
+      '@iktakahiro/markdown-it-katex'
+    ]
+  },
   proxy: {
     // TODO: 環境変数から取れるようにする?(本番構成決めてから)
     '/api': 'http://api:3000'
   },
+  // TODO: 廃止予定
   styleResources: {
     sass: ['~/assets/css/variables.sass']
   },
   vuetify: {
-    customVariables: ['~/assets/css/variables.sass']
+    customVariables: ['~/assets/css/variables.sass'],
+    theme: {
+      themes: {
+        light: {
+          primary: '#ed1848'
+        }
+      }
+    }
   }
 }

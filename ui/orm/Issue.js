@@ -1,9 +1,8 @@
-import { Model } from '@vuex-orm/core'
 import orm from '~/orm'
+import BaseModel from '~/orm/BaseModel'
 
-export default class Issue extends Model {
+export default class Issue extends BaseModel {
   static entity = 'issues'
-  static eagerLoad = ['comments']
 
   static fields() {
     return {

@@ -36,17 +36,16 @@ export default {
 
   computed: {
     categories() {
-      return this.$_.sortBy(
+      return this.sortByOrder(
         orm.Category.query()
           .with('problems.body')
-          .all(),
-        'order'
+          .all()
       )
     }
   },
 
   fetch({ store }) {
-    orm.Category.fetch({}, true)
+    orm.Category.eagerFetch({}, ['problems'])
   }
 
   // mounted() {
