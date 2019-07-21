@@ -17,7 +17,7 @@
       </v-sheet>
     </v-flex>
     <v-flex>
-      <problem-supplement-area :supplements="supplements" />
+      <problem-supplement-area :supplements="supplements" class="pb-1" />
     </v-flex>
     <v-flex>
       <problem-environment-area v-if="environments.length !== 0" :environments="environments"/>

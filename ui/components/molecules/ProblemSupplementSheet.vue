@@ -2,12 +2,12 @@
   <!-- TODO: 色は未調整 -->
   <v-sheet class="error elevation-2 pa-2">
     <v-layout column>
-      <v-flex class="pa-1">
+      <v-flex>
         <markdown :content="supplement.text" />
       </v-flex>
       <v-flex v-if="isStaff">
         <v-layout align-center justify-end class="elevation-0">
-          <div class="caption mr-1">{{ supplement.createdAt }}</div>
+          <div class="caption mr-2 mt-2">{{ supplement.createdAt }}</div>
           <!-- TODO: イベントとカウントダウンは未実装 -->
           <delete-button color="error" expire />
         </v-layout>
