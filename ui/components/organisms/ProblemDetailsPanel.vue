@@ -9,21 +9,23 @@
     <v-flex>
       <problem-info-chips-area :problem="problem" class="ml-0" />
     </v-flex>
-    <v-flex>
-      <v-sheet v-if="!!problem.secretText" class="pa-2 white elevation-2">
+    <v-flex v-if="!!problem.secretText">
+      <v-sheet class="pa-2 white elevation-2">
         <div class="caption">運営用メモ</div>
-        <v-divider />
+        <v-divider class="pb-1" />
         <markdown :content="problem.secretText" />
       </v-sheet>
     </v-flex>
-    <v-flex>
-      <problem-supplement-area :supplements="supplements" class="pb-1" />
+    <v-flex v-if="environments.length !== 0 || isStaff">
+      <problem-supplement-area :supplements="supplements" />
     </v-flex>
-    <v-flex>
-      <problem-environment-area v-if="environments.length !== 0" :environments="environments"/>
+    <v-flex v-if="environments.length !== 0">
+      <problem-environment-area :environments="environments" />
     </v-flex>
     <v-flex>
       <v-sheet class="pa-1 elevation-2">
+        <div class="caption">問題文</div>
+        <v-divider class="pb-1" />
         <!-- TODO: 長文対応どうするか -->
         <markdown :content="problem.body.text"/>
       </v-sheet>
