@@ -4,7 +4,6 @@
       v-model="show"
       :togglable="!isPlayer"
       :maximum-open="isStaff"
-      class="mb-1"
     >
       問題環境
       <v-text-field
@@ -22,9 +21,10 @@
     </openable-button>
     <v-slide-y-transition>
       <problem-environment-table
-        v-if="show"
+        v-show="show"
         :environments="environments"
         :search="search"
+        class="mt-1"
       />
     </v-slide-y-transition>
   </div>
@@ -51,7 +51,7 @@ export default {
       show: true
     }
   },
-  mounted() {
+  created() {
     this.show = this.isPlayer
   }
 }
