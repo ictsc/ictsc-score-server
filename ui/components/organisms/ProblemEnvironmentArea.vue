@@ -1,6 +1,6 @@
 <template>
   <div>
-    <openable-button
+    <expandable-button
       v-model="show"
       :togglable="!isPlayer"
       :maximum-open="isStaff"
@@ -18,7 +18,7 @@
         @click.stop=""
         @keyup.space.prevent=""
       />
-    </openable-button>
+    </expandable-button>
     <v-slide-y-transition>
       <problem-environment-table
         v-show="show"
@@ -30,13 +30,13 @@
   </div>
 </template>
 <script>
-import OpenableButton from '~/components/atoms/OpenableButton'
+import ExpandableButton from '~/components/atoms/ExpandableButton'
 import ProblemEnvironmentTable from '~/components/molecules/ProblemEnvironmentTable'
 
 export default {
   name: 'ProblemEnvironmentArea',
   components: {
-    OpenableButton,
+    ExpandableButton,
     ProblemEnvironmentTable
   },
   props: {

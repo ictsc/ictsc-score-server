@@ -1,9 +1,9 @@
 <template>
   <v-layout column>
     <v-flex>
-      <openable-button v-model="show" :togglable="supplements.length !== 0">
+      <expandable-button v-model="show" :togglable="supplements.length !== 0">
         補足事項
-      </openable-button>
+      </expandable-button>
       <!-- TODO: 未実装 -->
       <v-btn v-if="isStaff" small fab color="white" elevation="2">
         <v-icon small>mdi-pen</v-icon>
@@ -20,13 +20,13 @@
   </v-layout>
 </template>
 <script>
-import OpenableButton from '~/components/atoms/OpenableButton'
+import ExpandableButton from '~/components/atoms/ExpandableButton'
 import ProblemSupplementSheet from '~/components/molecules/ProblemSupplementSheet'
 
 export default {
   name: 'ProblemSupplementArea',
   components: {
-    OpenableButton,
+    ExpandableButton,
     ProblemSupplementSheet
   },
   props: {
