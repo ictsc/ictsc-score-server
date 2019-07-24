@@ -98,21 +98,29 @@ class Config < ApplicationRecord
       end
     end
 
+    def valid?
+      insufficient_keys.empty?
+    end
+
+    def insufficient_keys
+      @required_keys.map(&:to_s) - all.pluck(:key)
+    end
+
     def competition_time
       [
-        { start_at: competition_section1_start_at, end_at: competition_section1_end_at },
-        { start_at: competition_section2_start_at, end_at: competition_section2_end_at },
-        { start_at: competition_section3_start_at, end_at: competition_section3_end_at },
-        { start_at: competition_section4_start_at, end_at: competition_section4_end_at }
+        [competition_section1_start_at, competition_section1_end_at],
+        [competition_section2_start_at, competition_section2_end_at],
+        [competition_section3_start_at, competition_section3_end_at],
+        [competition_section4_start_at, competition_section4_end_at]
       ]
     end
 
     def competition_start_at
-      competition_time.first[:start_at]
+      competition_time.first.first
     end
 
     def competition_end_at
-      competition_time.last[:end_at]
+      competition_time.last.last
     end
 
     def scoreboard
@@ -152,7 +160,7 @@ class Config < ApplicationRecord
     end
 
     def competition?
-      !competition_stop && competition_time.any? {|day| Time.current.between?(day[:start_at], day[:end_at]) }
+      !competition_stop && competition_time.any? {|section| Time.current.between?(section.first, section.last) }
     end
   end
 
@@ -170,10 +178,13 @@ class Config < ApplicationRecord
   record_accessor :all_problem_force_open_at
   record_accessor :grading_delay_sec
   record_accessor :hide_all_score
+  record_accessor :realtime_grading
+  record_accessor :text_size_limit
+  record_accessor :delete_time_limit_sec
+  record_accessor :guide_page
 
   record_accessor :scoreboard_hide_at
   record_accessor :scoreboard_top
-
   record_accessor :scoreboard_display_top_team
   record_accessor :scoreboard_display_top_score
   record_accessor :scoreboard_display_above_team

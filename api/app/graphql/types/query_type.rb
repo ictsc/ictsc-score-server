@@ -6,6 +6,7 @@ module Types
     # They will be entry points for queries on your schema.
 
     field :me, Types::TeamType, null: true
+    field :contest_info, Types::ContestInfo, null: false
     field :categories, [Types::CategoryType], null: false
     field :problem, Types::ProblemType, null: true do
       argument :id, ID, required: true
@@ -16,6 +17,10 @@ module Types
 
     def me
       Context.current_team!.readable
+    end
+
+    def contest_info
+      Config
     end
 
     def categories
