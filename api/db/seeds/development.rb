@@ -61,11 +61,46 @@ def create_categories
   categories
 end
 
+def markdown_sample_text
+  <<~'MD'
+    # Markdown
+
+    * item1
+    * item2
+
+    I love `Markdown` :heart:
+
+
+    ## Table
+
+    | Item | Price |
+    |:------|:-------|
+    | bronze sword | 10G |
+    | iron sword | 100G |
+    | platinum sword | 1000G |
+
+
+    ## Code
+
+    ```
+    def hello
+      puts 'world'
+    end
+    ```
+
+    ## Normal text
+  MD
+end
+
+def long_text(lines)
+  Array.new(Random.rand(lines..lines + 10)) { Faker::Books::Dune.quote }.join("\n")
+end
+
 def create_problems(categories)
   print 'creating problems...'
 
   example_problems = [
-    build_stubbed(:problem, body: build_stubbed(:problem_body, :textbox, title: '01. textbox')),
+    build_stubbed(:problem, body: build_stubbed(:problem_body, :textbox, title: '01. textbox', text: markdown_sample_text + long_text(40))),
     build_stubbed(:problem, body: build_stubbed(:problem_body, :radio_button,  title: '02. radio_button', candidates_count: 1)),
     build_stubbed(:problem, body: build_stubbed(:problem_body, :radio_button,  title: '03. radio_buttons', candidates_count: 5)),
     build_stubbed(:problem, body: build_stubbed(:problem_body, :checkbox,  title: '04. checkbox', candidates_count: 1)),

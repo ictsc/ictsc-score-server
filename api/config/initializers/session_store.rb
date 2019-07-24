@@ -12,4 +12,4 @@ Rails.application.config.session_store(:redis_store,
                                        servers: [server],
                                        expire_after: ENV.fetch('API_SESSION_EXPIRE_MINUTES').to_i.minutes,
                                        key: '_session',
-                                       threadsafe: true)
+                                       threadsafe: false)
