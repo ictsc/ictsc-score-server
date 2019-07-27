@@ -28,4 +28,32 @@ export default class Answer extends BaseModel {
     )
   }
 
+  // この書き方でもリアクティブになる
+  get delayFinishInSec() {
+    const now = this.$store().getters['time/currentTimeMsec']
+    const delay = this.$store().getters['contestInfo/gradingDelaySec'] * 1000
+    return Math.floor((Date.parse(this.createdAt) + delay - now) / 1000)
+  }
+
+  get delayFinishInString() {
+    if (this.delayFinishInSec >= 60) {
+      return `${Math.floor(this.delayFinishInSec / 60)}分`
+    } else {
+      return `${this.delayFinishInSec}秒`
+    }
+  }
+
+  // scoreが無い or score.pointがnullなら採点中
+  get hasPoint() {
+    return (
+      !!this.score &&
+      this.score.point !== null &&
+      this.score.point !== undefined
+    )
+  }
+
+  // withでanswer.problem.bodyを指定しないと失敗する
+  get point() {
+    return Math.floor((this.score.point * this.problem.body.perfectPoint) / 100)
+  }
 }

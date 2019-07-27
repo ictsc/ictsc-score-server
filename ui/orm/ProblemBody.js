@@ -21,4 +21,14 @@ export default class ProblemBody extends BaseModel {
       updatedAt: this.string()
     }
   }
+
+  get modeIsTextbox() {
+    return this.mode === 'textbox'
+  }
+  get modeIsRadioButton() {
+    return this.mode === 'radio_button'
+  }
+  get modeIsCheckbox() {
+    return this.mode === 'checkbox'
+  }
 }
