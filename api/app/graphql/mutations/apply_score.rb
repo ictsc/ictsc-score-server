@@ -1,22 +1,23 @@
 # frozen_string_literal: true
 
 module Mutations
-  class ApplyScore < GraphQL::Schema::RelayClassicMutation
+  class ApplyScore < BaseMutation
     field :score,  Types::ScoreType, null: true
-    field :errors, [String],         null: false
 
     argument :answer_id, ID,      required: true
-    argument :point,     Integer, required: true
+    argument :point,     Integer, required: false
 
-    def resolve(answer_id:, point:)
-      answer = Answer.find_by!(id: answer_id)
+    def resolve(answer_id:, point: nil)
+      answer = Answer.find_by(id: answer_id)
+      raise RecordNotExists.new(Answer, id: answer_id) if answer.nil?
+
       Acl.permit!(mutation: self, args: {})
 
       # gradeでscoreレコードが作られる
       if answer.grade(point: point)
-        { score: answer.score.readable, errors: [] }
+        { score: answer.score.readable }
       else
-        { errors: answer.score.errors.full_messages }
+        add_errors(answer.score)
       end
     end
   end

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Mutations
-  class ApplyProblemEnvironment < GraphQL::Schema::RelayClassicMutation
+  class ApplyProblemEnvironment < BaseMutation
     field :problem_environment, Types::ProblemEnvironmentType, null: true
-    field :errors, [String], null: false
 
     # find key
     argument :problem_code, String,  required: true
@@ -18,17 +17,19 @@ module Mutations
     def resolve(problem_code:, team_number:, status:, host:, user:, password:)
       Acl.permit!(mutation: self, args: {})
 
-      problem = Problem.find_by!(code: problem_code)
-      team = Team.find_by!(number: team_number)
+      problem = Problem.find_by(code: problem_code)
+      raise RecordNotExists.new(Problem, code: problem_code) if problem.nil?
+
+      team = Team.find_by(number: team_number)
+      raise RecordNotExists.new(Team, number: team_number) if team.nil?
+
       p_env = ProblemEnvironment.find_or_initialize_by(problem: problem, team: team)
 
       if p_env.update(status: status, host: host, user: user, password: password)
-        { problem_environment: p_env.readable, errors: [] }
+        { problem_environment: p_env.readable }
       else
-        { errors: p_env.errors.full_messages }
+        add_errors(p_env)
       end
-    rescue StandardError => e
-      raise GraphQL::ExecutionError, e.message
     end
   end
 end

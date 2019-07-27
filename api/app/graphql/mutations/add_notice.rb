@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Mutations
-  class AddNotice < GraphQL::Schema::RelayClassicMutation
+  class AddNotice < BaseMutation
     field :notice, Types::NoticeType, null: true
-    field :errors, [String], null: false
 
     argument :title, String, required: true
     argument :text, String, required: true
@@ -12,13 +11,15 @@ module Mutations
 
     def resolve(title:, text:, pinned:, target_team_id:)
       Acl.permit!(mutation: self, args: {})
+      team = Team.find_by(id: target_team_id)
+      raise RecordNotExists.new(Team, id: target_team_id) if team.nil?
 
       notice = Notice.new
 
-      if notice.update(title: title, text: text, pinned: pinned, target_team: Team.find_by!(id: target_team_id))
-        { notice: notice.readable, errors: [] }
+      if notice.update(title: title, text: text, pinned: pinned, target_team: team)
+        { notice: notice.readable }
       else
-        { errors: notice.errors.full_messages }
+        add_errors(notice)
       end
     end
   end

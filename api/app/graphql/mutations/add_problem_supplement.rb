@@ -1,22 +1,23 @@
 # frozen_string_literal: true
 
 module Mutations
-  class AddProblemSupplement < GraphQL::Schema::RelayClassicMutation
+  class AddProblemSupplement < BaseMutation
     field :problem_supplement, Types::ProblemSupplementType, null: true
-    field :errors, [String], null: false
 
     argument :text, String, required: true
     argument :problem_id, ID, required: true
 
     def resolve(text:, problem_id:)
       Acl.permit!(mutation: self, args: {})
+      problem = Problem.find_by(id: problem_id)
+      raise RecordNotExists.new(Problem, id: problem_id) if problem.nil?
 
       problem_supplement = ProblemSupplement.new
 
-      if problem_supplement.update(text: text, problem: Problem.find_by!(id: problem_id))
-        { problem_supplement: problem_supplement.readable, errors: [] }
+      if problem_supplement.update(text: text, problem: problem)
+        { problem_supplement: problem_supplement.readable }
       else
-        { errors: problem_supplement.errors.full_messages }
+        add_errors(problem_supplement)
       end
     end
   end

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Mutations
-  class ApplyProblem < GraphQL::Schema::RelayClassicMutation
+  class ApplyProblem < BaseMutation
     field :problem, Types::ProblemType, null: true
-    field :errors, [String], null: false
 
     argument :code, String, required: true
     argument :category_code, String, required: false
@@ -31,8 +30,15 @@ module Mutations
 
       Acl.permit!(mutation: self, args: {})
 
-      category = Category.find_by!(code: category_code) unless category_code.nil?
-      previous_problem = Problem.find_by!(code: previous_problem_code) unless previous_problem_code.nil?
+      unless category_code.nil?
+        category = Category.find_by(code: category_code)
+        raise RecordNotExists.new(Category, code: category_code) if category.nil?
+      end
+
+      unless previous_problem_code.nil?
+        previous_problem = Problem.find_by(code: previous_problem_code)
+        raise RecordNotExists.new(Problem, code: previous_problem_code) if previous_problem.nil?
+      end
 
       problem = Problem.find_or_initialize_by(code: code)
       problem_body = problem.body || ProblemBody.new
@@ -47,12 +53,10 @@ module Mutations
 
       # ここでproblem_bodyも保存される
       if problem.update(body: problem_body, category: category, previous_problem: previous_problem, order: order, team_isolate: team_isolate, open_at: (open_at_begin...open_at_end), writer: writer, secret_text: secret_text)
-        { problem: problem.readable, errors: [] }
+        { problem: problem.readable }
       else
-        { errors: problem.errors.full_messages + problem_body.errors.full_messages }
+        add_errors(problem, problem_body)
       end
-    rescue StandardError => e
-      raise GraphQL::ExecutionError, e.message
     end
   end
 end
