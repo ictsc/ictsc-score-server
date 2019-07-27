@@ -57,4 +57,10 @@ class GraphqlController < ApplicationController
 
     render json: { data: {}, error: { message: error.message, backtrace: error.backtrace } }, status: 500
   end
+
+  def render_error(message, code)
+    error = { message: message }
+    error[:extensions] = { code: code } if code.present?
+    render json: { data: {}, error: error }, status: :ok
+  end
 end
