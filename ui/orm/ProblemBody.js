@@ -15,8 +15,8 @@ export default class ProblemBody extends BaseModel {
       problemId: this.string(),
       problem: this.belongsTo(orm.Problem, 'problemId'),
       // 本当は[[this.string()]].nullable()
-      candidates: this.string().nullable(),
-      corrects: this.string().nullable(),
+      candidates: this.attr().nullable(),
+      corrects: this.attr().nullable(),
       createdAt: this.string(),
       updatedAt: this.string()
     }

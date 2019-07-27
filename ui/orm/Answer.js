@@ -8,7 +8,7 @@ export default class Answer extends BaseModel {
     return {
       id: this.string(),
       // 本当は [[this.string()]]
-      bodies: this.string(),
+      bodies: this.attr(),
       confirming: this.boolean().nullable(),
       problemId: this.string(),
       problem: this.belongsTo(orm.Problem, 'problemId'),
