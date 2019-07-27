@@ -25,7 +25,7 @@ class Problem < ApplicationRecord
   end
 
   def latest_answer_created_at(team:)
-    answer.where(team: team).order(:created_at).last&.created_at || Time.zone.at(0)
+    answers.where(team: team).order(:created_at).last&.created_at || Time.zone.at(0)
   end
 
   class << self

@@ -50,7 +50,8 @@ class Answer < ApplicationRecord
       raise UnhandledProblemBodyMode, problem.body.mode
     end
 
-    score.update(solved: problem.body.solved_criterion <= score.point)
+    # nil許容
+    score.update(solved: problem.body.solved_criterion <= score.point.to_i)
   end
 
   class << self

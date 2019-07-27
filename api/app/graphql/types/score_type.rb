@@ -3,7 +3,7 @@
 module Types
   class ScoreType < Types::BaseObject
     field :id,         ID,      null: false
-    field :point,      Integer, null: false # 得点の割合0~100%
+    field :point,      Integer, null: true # 得点の割合0~100% or null
     field :answer_id,  ID,      null: false
     field :solved,     Boolean, null: false
 
