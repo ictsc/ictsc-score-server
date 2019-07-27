@@ -11,11 +11,11 @@
     </v-flex>
     <!-- v-forとv-showで上手くアニメーションさせるためにv-flexをネストする -->
     <v-flex v-for="supplement in supplements" :key="supplement.id" class="pa-0">
-      <v-slide-y-transition>
+      <v-expand-transition>
         <v-flex v-show="show" class="pt-0">
           <problem-supplement-sheet :supplement="supplement" />
         </v-flex>
-      </v-slide-y-transition>
+      </v-expand-transition>
     </v-flex>
   </v-layout>
 </template>
