@@ -19,18 +19,18 @@
         @keyup.space.prevent=""
       />
     </expandable-button>
-    <v-slide-y-transition>
+    <v-expand-transition>
       <problem-environment-table
         v-show="show"
         :environments="environments"
         :search="search"
         class="mt-1"
       />
-    </v-slide-y-transition>
+    </v-expand-transition>
   </div>
 </template>
 <script>
-import ExpandableButton from '~/components/atoms/ExpandableButton'
+import ExpandableButton from '~/components/molecules/ExpandableButton'
 import ProblemEnvironmentTable from '~/components/molecules/ProblemEnvironmentTable'
 
 export default {

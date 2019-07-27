@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Mutations
-  class ApplyTeam < GraphQL::Schema::RelayClassicMutation
+  class ApplyTeam < BaseMutation
     field :team, Types::TeamType, null: true
-    field :errors, [String], null: false
 
     argument :role,         Types::Enums::TeamRole, required: true
     argument :number,       Integer, required: true
@@ -18,12 +17,10 @@ module Mutations
       team = Team.find_or_initialize_by(number: number)
 
       if team.update(role: role, name: name, password: password, organization: organization, color: color)
-        { team: team.readable, errors: [] }
+        { team: team.readable }
       else
-        { errors: team.errors.full_messages }
+        add_errors(team)
       end
-    rescue StandardError => e
-      raise GraphQL::ExecutionError, e.message
     end
   end
 end

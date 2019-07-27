@@ -148,8 +148,13 @@ class Config < ApplicationRecord
       }
     end
 
+    def delete_time_limit
+      delete_time_limit_sec.seconds
+    end
+
     # 構造化された設定
     def to_h
+      # TODO: 未修正
       {
         competition_time: competition_time,
         competition_stop: competition_stop,
@@ -161,6 +166,10 @@ class Config < ApplicationRecord
 
     def competition?
       !competition_stop && competition_time.any? {|section| Time.current.between?(section.first, section.last) }
+    end
+
+    def before_delete_time_limit?(datetime)
+      datetime <= Time.current + Config.delete_time_limit
     end
   end
 

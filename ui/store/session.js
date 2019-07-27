@@ -46,7 +46,7 @@ export const actions = {
     }
   },
 
-  async fetch_current_session({ commit }) {
+  async fetchCurrentSession({ commit }) {
     const res = await this.$axios.get(ENDPOINT)
 
     switch (res.status) {

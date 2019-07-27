@@ -8,8 +8,8 @@
     @click="click"
   >
     <template v-if="togglable">
-      <v-icon v-if="opened" left class="">mdi-chevron-up</v-icon>
-      <v-icon v-else left class="">mdi-chevron-down</v-icon>
+      <v-icon v-if="opened" left>mdi-chevron-down</v-icon>
+      <v-icon v-else left>mdi-chevron-up</v-icon>
     </template>
     <slot />
   </v-btn>
@@ -17,7 +17,7 @@
 <script>
 // クリックで開く・閉じるがトグルするボタン
 export default {
-  name: 'OpenableButton',
+  name: 'ExpandableButton',
   model: {
     prop: 'opened',
     event: 'click'

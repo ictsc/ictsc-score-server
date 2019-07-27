@@ -1,5 +1,5 @@
 <template>
-  <v-btn small fab :color="color" elevation="0">
+  <v-btn x-small fab :color="color" elevation="0">
     <v-progress-circular v-if="expire" :color="color" rotate="270" value="0" />
     <v-icon dense color="white" style="position: absolute">mdi-delete</v-icon>
   </v-btn>

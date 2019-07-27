@@ -1,11 +1,17 @@
 <template>
-  <!-- eslint-disable-next-line vue/no-v-html -->
-  <div class="markdown" v-html="$md.render(content)"></div>
+  <v-sheet :color="color" class="pa-2 ma-0">
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <span class="markdown" v-html="$md.render(content)" />
+  </v-sheet>
 </template>
 <script>
 export default {
   name: 'Markdown',
   props: {
+    color: {
+      type: String,
+      default: 'white'
+    },
     content: {
       type: String,
       required: true

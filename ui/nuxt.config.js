@@ -35,11 +35,13 @@ export default {
     '~/plugins/vuex-orm'
   ],
   modules: [
+    '@nuxtjs/universal-storage',
     '@nuxtjs/vuetify',
     // 各コンポーネントでSASSの変数を手軽に共有する TODO: 廃止予定
     '@nuxtjs/style-resources',
     '@nuxtjs/axios',
     '@nuxtjs/markdownit',
+    '@nuxtjs/moment',
     '@nuxtjs/proxy'
     // TODO: lint通らないと動作確認すらできない
     // '@nuxtjs/eslint-module',
@@ -71,9 +73,25 @@ export default {
       '@iktakahiro/markdown-it-katex'
     ]
   },
+  moment: {
+    locales: ['es-us', 'ja']
+  },
   proxy: {
     // TODO: 環境変数から取れるようにする?(本番構成決めてから)
     '/api': 'http://api:3000'
+  },
+  storage: {
+    vuex: {
+      namespace: 'storage'
+    },
+    cookie: {
+      prefix: '',
+      options: {
+        path: '/'
+      }
+    }
+    // localStorage: { prefix: '' },
+    // ignoreExceptions: false,
   },
   // TODO: 廃止予定
   styleResources: {

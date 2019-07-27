@@ -1,15 +1,15 @@
 <template>
   <!-- TODO: 色は未調整 -->
-  <v-sheet class="error elevation-2 pa-2">
+  <v-sheet class="error elevation-2 my-1">
     <v-layout column>
-      <v-flex>
-        <markdown :content="supplement.text" />
+      <v-flex py-0>
+        <markdown :content="supplement.text" color="error" />
       </v-flex>
-      <v-flex v-if="isStaff">
-        <v-layout align-center justify-end class="elevation-0">
-          <div class="caption mr-2 mt-2">{{ supplement.createdAt }}</div>
+      <v-flex v-if="isStaff" py-1 pr-2>
+        <v-layout row align-center justify-end class="elevation-0">
+          <span class="caption mr-2 mt-0">{{ supplement.createdAt }}</span>
           <!-- TODO: イベントとカウントダウンは未実装 -->
-          <delete-button color="error" expire />
+          <delete-button color="error" expire class="mb-1 mr-1" />
         </v-layout>
       </v-flex>
     </v-layout>

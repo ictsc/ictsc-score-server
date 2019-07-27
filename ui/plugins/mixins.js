@@ -5,6 +5,17 @@ import { mapGetters, mapMutations } from 'vuex'
 // やりすぎ注意
 
 Vue.mixin({
+  filters: {
+    tickDuration(sec, format) {
+      if (sec >= 0) {
+        // eslint-disable-next-line no-undef
+        return $nuxt.$moment.utc(sec * 1000).format(format)
+      } else {
+        // eslint-disable-next-line no-undef
+        return '-' + $nuxt.$moment.utc(-sec * 1000).format(format)
+      }
+    }
+  },
   computed: {
     ...mapGetters('session', [
       'currentTeamId',
@@ -28,6 +39,7 @@ Vue.mixin({
     sortByNumber(list) {
       return this.$_.sortBy(list, 'number')
     },
+    // 古い順
     sortByCreatedAt(list) {
       return this.$_.sortBy(list, e => Date.parse(e.createdAt))
     },

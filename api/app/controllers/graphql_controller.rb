@@ -10,6 +10,7 @@ class GraphqlController < ApplicationController
     Rails.logger.debug({ variables: variables, query: query, operation_name: operation_name }.pretty_inspect)
 
     if current_team.nil?
+      # TODO: GraphQL化?
       head :unauthorized
       return
     end
@@ -29,7 +30,7 @@ class GraphqlController < ApplicationController
   private
 
   def current_team
-    @current_team = Team.find_by(id: session[:team_id])
+    @current_team ||= Team.find_by(id: session[:team_id])
   end
 
   # Handle form data, JSON body, or a blank value
@@ -54,6 +55,12 @@ class GraphqlController < ApplicationController
     logger.error error.message
     logger.error error.backtrace.join("\n")
 
-    render json: { error: { message: error.message, backtrace: error.backtrace }, data: {} }, status: 500
+    render json: { data: {}, error: { message: error.message, backtrace: error.backtrace } }, status: 500
+  end
+
+  def render_error(message, code)
+    error = { message: message }
+    error[:extensions] = { code: code } if code.present?
+    render json: { data: {}, error: error }, status: :ok
   end
 end

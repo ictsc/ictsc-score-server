@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Mutations
-  class ApplyCategory < GraphQL::Schema::RelayClassicMutation
+  class ApplyCategory < BaseMutation
     field :category, Types::CategoryType, null: true
-    field :errors, [String], null: false
 
     argument :code, String, required: true
     argument :title, String, required: true
@@ -16,12 +15,10 @@ module Mutations
       category = Category.find_or_initialize_by(code: code)
 
       if category.update(title: title, description: description, order: order)
-        { category: category.readable, errors: [] }
+        { category: category.readable }
       else
-        { errors: category.errors.full_messages }
+        add_errors(category)
       end
-    rescue StandardError => e
-      raise GraphQL::ExecutionError, e.message
     end
   end
 end

@@ -25,10 +25,10 @@ export default {
     Item
   },
   computed: {
-    ...mapGetters('contest', ['gradingDelayMinString']),
+    ...mapGetters('contestInfo', ['gradingDelayString']),
 
     aboutGradingDelayTitle() {
-      return `運営が採点 (最速${this.gradingDelayMinString})`
+      return `運営が採点 (最速${this.gradingDelayString})`
     }
   }
 }

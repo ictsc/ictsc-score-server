@@ -1,5 +1,5 @@
 import VuexORM, { Database } from '@vuex-orm/core'
-import VuexORMGraphQL, {
+import VuexORMGraphQLPlugin, {
   DefaultAdapter,
   ConnectionMode
 } from '@vuex-orm/plugin-graphql'
@@ -22,7 +22,7 @@ const options = {
   debug: process.env.NODE_ENV !== 'production'
 }
 
-VuexORM.use(VuexORMGraphQL, options)
+VuexORM.use(VuexORMGraphQLPlugin, options)
 
 export default ({ store }) => {
   VuexORM.install(database)(store)

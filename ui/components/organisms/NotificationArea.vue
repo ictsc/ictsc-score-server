@@ -7,9 +7,8 @@
         :uid="notification.id"
         :type="notification.type"
         :timeout="notification.timeout"
-      >
-        {{ notification.message }}
-      </notification-sheet>
+        :message="notification.message"
+      />
     </v-slide-x-reverse-transition>
   </v-container>
 </template>
