@@ -3,7 +3,7 @@
     <h1>問題一覧</h1>
     <div class="description">
       <answer-flow />
-      <answer-attention />
+      <answer-attention v-if="gradingDelaySec !== 0" />
     </div>
 
     <div>
@@ -17,6 +17,7 @@
 <style scoped lang="sass"></style>
 
 <script>
+import { mapGetters } from 'vuex'
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
 import CategoryList from '~/components/molecules/CategoryList'
@@ -30,11 +31,8 @@ export default {
     CategoryList
   },
 
-  filters: {
-    // dateRelative
-  },
-
   computed: {
+    ...mapGetters('contestInfo', ['gradingDelaySec']),
     categories() {
       return this.sortByOrder(
         orm.Category.query()

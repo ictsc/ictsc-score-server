@@ -6,7 +6,7 @@
     <ul>
       <li>
         採点結果は、採点依頼を送信してから{{
-          gradingDelayMinString
+          gradingDelayString
         }}後に返ってきます。
       </li>
       <li>採点中はその問題へ新たに解答することはできません。</li>
@@ -20,10 +20,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'AnswerAttention',
   computed: {
-    ...mapGetters('contest', ['gradingDelayMinString']),
+    ...mapGetters('contestInfo', ['gradingDelayString']),
 
     aboutGradingDelayTitle() {
-      return `運営が採点 (最速${this.gradingDelayMinString})`
+      return `運営が採点 (最速${this.gradingDelayString})`
     }
   }
 }
