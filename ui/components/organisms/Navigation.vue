@@ -88,11 +88,13 @@ export default {
   mounted() {
     this.$nextTick(async () => {
       this.$nuxt.$loading.start()
+      // TODO: ??
+      // setTimeout(() => this.$nuxt.$loading.finish(), 500)
 
-      setTimeout(() => this.$nuxt.$loading.finish(), 500)
-
-      if (await this.fetch_current_session()) {
-        this.$nuxt.$loading.start()
+      if (await this.fetchCurrentSession()) {
+        // TODO: エラーハンドリング
+        await this.fetchContestInfo()
+        this.$nuxt.$loading.finish()
       } else {
         this.$router.push('/login')
       }
@@ -100,7 +102,8 @@ export default {
   },
 
   methods: {
-    ...mapActions('session', ['logout', 'fetch_current_session']),
+    ...mapActions('session', ['logout', 'fetchCurrentSession']),
+    ...mapActions('contestInfo', ['fetchContestInfo']),
 
     async try_logout() {
       if (await this.logout()) {
