@@ -30,7 +30,7 @@
   </div>
 </template>
 <script>
-import ExpandableButton from '~/components/atoms/ExpandableButton'
+import ExpandableButton from '~/components/molecules/ExpandableButton'
 import ProblemEnvironmentTable from '~/components/molecules/ProblemEnvironmentTable'
 
 export default {

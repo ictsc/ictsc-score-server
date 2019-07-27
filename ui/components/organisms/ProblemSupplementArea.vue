@@ -5,12 +5,16 @@
         補足事項
       </expandable-button>
       <!-- TODO: 未実装 -->
-      <v-btn v-if="isStaff" small fab color="white" elevation="2">
-        <v-icon small>mdi-pen</v-icon>
+      <v-btn v-if="isStaff" x-small fab color="white" elevation="2">
+        <v-icon>mdi-pen</v-icon>
       </v-btn>
     </v-flex>
     <!-- v-forとv-showで上手くアニメーションさせるためにv-flexをネストする -->
-    <v-flex v-for="supplement in supplements" :key="supplement.id" class="pa-0">
+    <v-flex
+      v-for="supplement in sortedSupplements"
+      :key="supplement.id"
+      class="pa-0"
+    >
       <v-expand-transition>
         <v-flex v-show="show" class="pt-0">
           <problem-supplement-sheet :supplement="supplement" />
@@ -20,7 +24,7 @@
   </v-layout>
 </template>
 <script>
-import ExpandableButton from '~/components/atoms/ExpandableButton'
+import ExpandableButton from '~/components/molecules/ExpandableButton'
 import ProblemSupplementSheet from '~/components/molecules/ProblemSupplementSheet'
 
 export default {
@@ -38,6 +42,11 @@ export default {
   data() {
     return {
       show: true
+    }
+  },
+  computed: {
+    sortedSupplements() {
+      return this.sortByCreatedAt(this.supplements)
     }
   }
 }

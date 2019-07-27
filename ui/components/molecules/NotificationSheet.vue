@@ -6,7 +6,7 @@
     class="mb-2"
     elevation="6"
   >
-    <slot />
+    <span class="notification-message">{{ message }}</span>
 
     <v-progress-linear
       active
@@ -21,7 +21,7 @@
   </v-alert>
 </template>
 <script>
-import { mapMutations } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 // 時間経過、閉じるボタン、ストアからの削除で要素が消える
 export default {
@@ -39,17 +39,22 @@ export default {
     type: {
       type: String,
       required: true
+    },
+    message: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       visible: true,
+      startAtMsec: Date.now(),
       progressElapsedTime: 0,
-      activeTimeout: -1,
-      progressInterval: -1
+      activeTimeout: -1
     }
   },
   computed: {
+    ...mapGetters('time', ['currentTimeMsec']),
     progressColor() {
       switch (this.type) {
         case 'success':
@@ -65,37 +70,34 @@ export default {
       }
     },
     progressValue() {
-      return (100 * this.progressElapsedTime) / this.timeout
+      return (100 * (this.currentTimeMsec - this.startAtMsec)) / this.timeout
     }
   },
   watch: {
     visible(value) {
       if (value === false) {
-        this.removeSelf()
+        this.removeNotification(this.uid)
       }
     }
   },
-  mounted() {
+  created() {
     if (this.timeout !== 0) {
-      this.activeTimeout = window.setTimeout(() => {
-        this.removeSelf()
+      this.activeTimeout = setTimeout(() => {
+        this.visible = false
       }, this.timeout)
-
-      const intervalTime = 500
-      this.progressInterval = window.setInterval(() => {
-        this.progressElapsedTime += intervalTime
-      }, intervalTime)
     }
   },
   beforeDestroy() {
-    window.clearTimeout(this.activeTimeout)
-    window.clearInterval(this.progressInterval)
+    clearTimeout(this.activeTimeout)
   },
   methods: {
-    ...mapMutations('notification', ['removeNotification']),
-    removeSelf() {
-      this.removeNotification(this.uid)
-    }
+    ...mapMutations('notification', ['removeNotification'])
   }
 }
 </script>
+
+<style scoped lang="sass">
+.notification-message
+  white-space: pre-wrap
+  word-wrap: break-word
+</style>

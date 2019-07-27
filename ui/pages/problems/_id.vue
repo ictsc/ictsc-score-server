@@ -1,7 +1,8 @@
 <template>
+  <!-- TODO: ここでreadable判定してもいいかも → Loadingしたい -->
   <v-container fluid fill-height grid-list-md>
     <v-layout row>
-      <v-flex xs6>
+      <v-flex :xs6="showRigthPanel">
         <problem-details-panel v-if="problemIsReadable" :problem="problem" />
         <!-- TODO: デバッグ情報削除 -->
         <p>
@@ -12,25 +13,34 @@
         </p>
       </v-flex>
 
-      <v-flex xs6>
-        <!-- TODO: team指定がないときは非表示にする -->
+      <v-flex v-if="showRigthPanel" xs6>
         <v-tabs v-model="tabMode" grow>
-          <v-tab append :to="'#' + issuesTabName">質問</v-tab>
-          <v-tab append :to="'#' + answersTabName">解答</v-tab>
-
+          <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
+          <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tabMode" class="pt-2">
           <v-tab-item :value="issuesTabName">
             <issue-panel />
           </v-tab-item>
-
           <v-tab-item :value="answersTabName">
-            <answer-panel />
+            <answer-panel :answers="answers" :problem-body="problem.body" />
           </v-tab-item>
-        </v-tabs>
+        </v-tabs-items>
       </v-flex>
     </v-layout>
+    <v-snackbar :value="isStaff && !!teamId" :timeout="0" color="primary">
+      <v-layout justify-center row>
+        <v-progress-circular v-if="!team" indeterminate />
+
+        <template v-else>
+          <span>No.{{ team.number }}</span>
+          <span class="mx-1" />
+          <span>{{ team.name }}</span>
+        </template>
+      </v-layout>
+    </v-snackbar>
   </v-container>
 </template>
-
 <script>
 import AnswerPanel from '~/components/organisms/AnswerPanel'
 import IssuePanel from '~/components/organisms/IssuePanel'
@@ -55,16 +65,18 @@ export default {
     mode() {
       // URL末尾の #issues=:team_id からモードを判定する
       const match = MODE_REGEXP.exec(this.$route.hash)
-      return match === null ? null : match[1]
+      console.log('match')
+      console.log(match)
+      return match ? match[1] : null
     },
     modeIsBlank() {
-      return this.mode === null
+      return !this.mode
     },
     answersTabName() {
-      return 'answers=' + this.teamId
+      return 'answers' + this.hashTailTeamId
     },
     issuesTabName() {
-      return 'issues=' + this.teamId
+      return 'issues' + this.hashTailTeamId
     },
     problemId() {
       return this.$route.params.id
@@ -75,21 +87,22 @@ export default {
       }
 
       const match = MODE_REGEXP.exec(this.$route.hash)
-
-      if (match !== null) {
-        return match[3]
-      } else {
-        return null
-      }
+      return match ? match[3] : null
+    },
+    hashTailTeamId() {
+      // プレイヤーならURL末尾にチームIDを付与しない
+      return !this.isPlayer && this.teamId ? `=${this.teamId}` : ''
     },
     problem() {
+      // TODO: bodyが無ければ loading
       // TODO: エラー通知&表示
       return orm.Problem.query()
         .with([
           'body',
           'environments.team',
           'supplements',
-          'answers',
+          'answers.score',
+          'answers.problem.body',
           'issues.comments'
         ])
         .find(this.problemId)
@@ -97,10 +110,21 @@ export default {
     problemIsReadable() {
       // bodyが取得できるなら、公開問題と判断する
       return !!this.elvis(this.problem, 'body')
+    },
+    showRigthPanel() {
+      return this.problemIsReadable && !!this.teamId
+    },
+    answers() {
+      return this.problem.answers.filter(o => o.teamId === this.teamId)
+    },
+    team() {
+      return orm.Team.query().find(this.teamId)
     }
   },
   fetch({ params }) {
+    // TODO: bodyが取得できないならエラーにする
     // TODO: modeによって動作を変えたい?(staffの操作が少し軽くなる)
+
     orm.Problem.eagerFetch(params.id, [
       'environments',
       'supplements',
@@ -110,6 +134,11 @@ export default {
   },
   mounted() {
     this.tabMode = this.mode
+
+    // TODO: contestInfoと同時にfetchしたほうがいいかもしれない
+    if (!this.isPlayer) {
+      orm.Team.eagerFetch()
+    }
   }
 }
 </script>
