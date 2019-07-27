@@ -28,6 +28,7 @@ Vue.mixin({
     sortByNumber(list) {
       return this.$_.sortBy(list, 'number')
     },
+    // 古い順
     sortByCreatedAt(list) {
       return this.$_.sortBy(list, e => Date.parse(e.createdAt))
     },

@@ -1,4 +1,4 @@
-<template lang="md">
+<template>
   <v-layout column>
     <v-flex>
       <div class="grey--text text--darken-3 display-1">
@@ -37,6 +37,8 @@ import Markdown from '~/components/atoms/Markdown'
 import ProblemEnvironmentArea from '~/components/organisms/ProblemEnvironmentArea'
 import ProblemInfoChipsArea from '~/components/molecules/ProblemInfoChipsArea'
 import ProblemSupplementArea from '~/components/organisms/ProblemSupplementArea'
+
+// TODO: 現在の得点が見たい
 
 export default {
   name: 'ProblemDetailsPanel',

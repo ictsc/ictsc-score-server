@@ -7,7 +7,7 @@ export default class IssueComment extends BaseModel {
   static fields() {
     return {
       id: this.string(),
-      from_staff: this.boolean(),
+      fromStaff: this.boolean(),
       text: this.string().nullable(),
       issueId: this.string(),
       issue: this.belongsTo(orm.Issue, 'issueId'),

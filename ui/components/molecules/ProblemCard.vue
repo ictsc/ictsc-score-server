@@ -31,9 +31,10 @@ export default {
   computed: {
     problemURL() {
       if (this.problem.body === null) {
+        // TODO: 遷移させない & エラーメッセージ
         return ''
       } else if (this.isPlayer) {
-        return `${this.problem.id}#issues=${this.currentTeamId}`
+        return `${this.problem.id}#issues`
       } else {
         return this.problem.id
       }
