@@ -23,6 +23,7 @@ module Mutations
     argument :candidates, [[String]], required: false
     argument :corrects, [[String]], required: false
 
+    # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     def resolve(code:, category_code: nil, previous_problem_code: nil,
                 order:, team_isolate:, open_at_begin: nil, open_at_end: nil,
                 writer: nil, secret_text: '',
@@ -58,5 +59,6 @@ module Mutations
         add_errors(problem, problem_body)
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
   end
 end
