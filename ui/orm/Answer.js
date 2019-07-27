@@ -18,4 +18,14 @@ export default class Answer extends BaseModel {
       createdAt: this.string()
     }
   }
+
+  static addAnswer({ problemId, bodies }) {
+    return this.sendMutation(
+      'addAnswer',
+      { problemId, bodies },
+      [Answer],
+      'upsert'
+    )
+  }
+
 }

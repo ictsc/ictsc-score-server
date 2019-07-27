@@ -11,4 +11,13 @@ export default class Score extends BaseModel {
       solved: this.boolean()
     }
   }
+
+  static applyScore({ answerId, point }) {
+    return this.sendMutation(
+      'applyScore',
+      { answerId, point },
+      [Score],
+      'upsert'
+    )
+  }
 }
