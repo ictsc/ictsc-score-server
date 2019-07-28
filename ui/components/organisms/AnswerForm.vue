@@ -67,7 +67,7 @@
 
         <template v-if="gradingDelaySec !== 0">
           <v-divider></v-divider>
-          <v-card-text class="warning pa-1" style="text-align: end">
+          <v-card-text class="warning pa-1 text-right">
             解答後{{ gradingDelayString }}間は再解答できなくなります
           </v-card-text>
         </template>

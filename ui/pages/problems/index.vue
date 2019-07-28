@@ -1,17 +1,24 @@
 <template>
-  <div>
-    <h1>問題一覧</h1>
-    <div class="description">
-      <answer-flow />
-      <answer-attention v-if="gradingDelaySec !== 0" />
-    </div>
+  <v-container>
+    <v-layout column align-start justify-start>
+      <v-flex>
+        <h1>問題一覧</h1>
+      </v-flex>
 
-    <div>
-      <div v-for="category in categories" :key="category.id">
-        <category-list :category="category" />
-      </div>
-    </div>
-  </div>
+      <v-flex>
+        <answer-flow />
+      </v-flex>
+
+      <v-flex v-if="gradingDelaySec !== 0" mt-2>
+        <answer-attention />
+      </v-flex>
+
+      <v-flex v-for="category in categories" :key="category.id" class="mt-2">
+        <v-divider class="mb-1" />
+        <problem-category :category="category" />
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <style scoped lang="sass"></style>
@@ -20,7 +27,7 @@
 import { mapGetters } from 'vuex'
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
-import CategoryList from '~/components/molecules/CategoryList'
+import ProblemCategory from '~/components/organisms/ProblemCategory'
 import orm from '~/orm'
 
 export default {
@@ -28,9 +35,8 @@ export default {
   components: {
     AnswerAttention,
     AnswerFlow,
-    CategoryList
+    ProblemCategory
   },
-
   computed: {
     ...mapGetters('contestInfo', ['gradingDelaySec']),
     categories() {
@@ -41,76 +47,8 @@ export default {
       )
     }
   },
-
   fetch({ store }) {
     orm.Category.eagerFetch({}, ['problems'])
   }
-
-  // mounted() {
-  //   this.$store.dispatch(SET_TITLE, '問題一覧')
-  // },
-
-  // methods: {
-  //   scoringStatusText(problem) {
-  //     if (problem.title === undefined) {
-  //       return '解答不可'
-  //     }
-  //
-  //     let answers = problem.answers
-  //     if (!answers || answers.length === 0) {
-  //       return '解答可能'
-  //     } else {
-  //       var createdAt = answers[answers.length - 1].created_at
-  //       var publishAt =
-  //         new Date(createdAt).valueOf() +
-  //         (this.contest ? this.contest.answer_reply_delay_sec * 1000 : 0)
-  //
-  //       if (publishAt < new Date()) {
-  //         return '解答可能'
-  //       } else {
-  //         return `${dateRelative(publishAt)}に解答送信可`
-  //       }
-  //     }
-  //   },
-  //   getScoreInfo(answers) {
-  //     let nothing = {
-  //       pure: 0,
-  //       bonus: 0,
-  //       subtotal: 0
-  //     }
-  //     if (!this.session.member || !answers) return nothing
-  //     if (answers.length === 0) {
-  //       return {
-  //         pure: '---'
-  //       }
-  //     }
-  //
-  //     if (
-  //       this.contest &&
-  //       new Date(this.contest.competition_end_at) < Date.now()
-  //     )
-  //       return nothing
-  //
-  //     const answer = latestAnswer(answers)
-  //     const pure = nestedValue(answer, 'score', 'point')
-  //
-  //     return {
-  //       pure: pure != undefined ? pure : '採点中'
-  //     }
-  //   },
-  //   problemUnlockConditionTitle(id) {
-  //     var found = this.problems.find(p => p.id === id)
-  //     if (found) {
-  //       let prev = found.title ? `「${found.title}」` : '前の問題'
-  //       let cond = found.team_private ? '' : 'チームが現れる'
-  //       return `${prev}で基準を満たす${cond}こと`
-  //     } else {
-  //       return '前の問題'
-  //     }
-  //   },
-  //   problemSolved(answers) {
-  //     return nestedValue(latestAnswer(answers), 'score', 'solved') || false
-  //   }
-  // }
 }
 </script>

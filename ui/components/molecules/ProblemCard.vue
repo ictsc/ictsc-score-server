@@ -1,22 +1,9 @@
 <template>
-  <nuxt-link append :to="problemURL" class="column is-one-fifth is-narrow">
-    <div class="card">
-      <p class="card-header-title has-text-grey">
-        <!-- TODO: bodyはundef|null|emptyの可能性がある -->
-        {{ elvis(problem, 'body.title') }}
-      </p>
-
-      <div class="card-content">
-        <div class="content has-text-centered"></div>
-      </div>
-
-      <div class="card-footer-item">
-        <span>
-          <slot />
-        </span>
-      </div>
+  <v-card append :to="problemURL" width="12em" height="6em" class="pa-1">
+    <div class="subtitle-1 text-truncate">
+      {{ elvis(problem, 'body.title') }}
     </div>
-  </nuxt-link>
+  </v-card>
 </template>
 
 <script>

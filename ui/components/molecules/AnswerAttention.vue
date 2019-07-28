@@ -1,8 +1,8 @@
 <template>
-  <div class="alert alert-warning" role="alert">
-    <h4 class="alert-heading">
+  <v-sheet class="warning pa-2">
+    <div>
       問題解答の注意点
-    </h4>
+    </div>
     <ul>
       <li>
         採点結果は、採点依頼を送信してから{{
@@ -11,7 +11,7 @@
       </li>
       <li>採点中はその問題へ新たに解答することはできません。</li>
     </ul>
-  </div>
+  </v-sheet>
 </template>
 
 <script>
