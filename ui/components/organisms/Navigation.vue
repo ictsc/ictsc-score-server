@@ -1,119 +1,77 @@
 <template>
-  <nav class="navbar is-primary" role="navigation" aria-label="">
-    <div class="navbar-brand">
-      <nuxt-link to="/" class="navbar-item">
-        <img src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
-      </nuxt-link>
+  <v-app-bar app dense color="primary" class="px-0 mx-0">
+    <navigation-link to="/">
+      <!-- TODO: v-imgにする, max-heightプロパティが使いたい -->
+      <img class="logo" src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
+    </navigation-link>
 
-      <!-- TODO: 未実装 -->
-      <a
-        role="button"
-        class="navbar-burger burger"
-        aria-label="menu"
-        aria-expanded="false"
-        data-target="navMenu"
-      >
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
+    <navigation-link to="/guide">
+      ガイド
+    </navigation-link>
 
-    <div id="navMenu" class="navbar-menu primary">
-      <div class="navbar-start">
-        <div class="navbar-item has-dropdown is-hoverable">
-          <nuxt-link to="/guide" active-class="active" class="navbar-item">
-            ガイド
-          </nuxt-link>
+    <navigation-link to="/teams">
+      チーム
+    </navigation-link>
 
-          <nuxt-link to="/teams" active-class="active" class="navbar-item">
-            チーム
-          </nuxt-link>
-        </div>
-      </div>
+    <v-spacer />
 
-      <div class="navbar-end">
-        <div class="navbar-item has-dropdown is-hoverable is-expanded">
-          <nuxt-link to="/" class="navbar-item">
-            トップ
-          </nuxt-link>
-          <nuxt-link to="/problems" active-class="active" class="navbar-item">
-            問題
-          </nuxt-link>
-          <nuxt-link to="/issues" active-class="active" class="navbar-item">
-            質問
-          </nuxt-link>
+    <navigation-link to="/">
+      トップ
+    </navigation-link>
 
-          <template v-if="isStaff || isAudience">
-            <nuxt-link to="/answers" active-class="active" class="navbar-item">
-              解答
-            </nuxt-link>
-            <nuxt-link to="/summary" active-class="active" class="navbar-item">
-              状況
-            </nuxt-link>
-          </template>
+    <navigation-link to="/problems">
+      問題
+    </navigation-link>
 
-          <nuxt-link
-            v-if="isNoLogin"
-            to="/login"
-            active-class="active"
-            class="navbar-item"
-          >
-            ログイン
-          </nuxt-link>
-          <a v-else class="navbar-item" @click="try_logout">
-            ログアウト
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
+    <navigation-link to="/issues">
+      質問
+    </navigation-link>
+
+    <template v-if="isStaff || isAudience">
+      <navigation-link to="/answers">
+        解答
+      </navigation-link>
+      <navigation-link to="/summary">
+        状況
+      </navigation-link>
+    </template>
+
+    <navigation-link v-if="isNoLogin" to="/login">
+      ログイン
+    </navigation-link>
+    <navigation-link v-else to="/login" @click="tryLogout">
+      <v-icon>mdi-exit-run</v-icon>
+    </navigation-link>
+  </v-app-bar>
 </template>
-
-<style scoped lang="sass">
-.navbar
-  .navbar-brand
-    img
-      height: 2rem
-.navbar-item
-  color: #fff
-</style>
-
 <script>
 import { mapActions } from 'vuex'
+import NavigationLink from '~/components/atoms/NavigationLink'
 
 export default {
   name: 'Navigation',
-  fetch: {},
-  mounted() {
-    this.$nextTick(async () => {
-      this.$nuxt.$loading.start()
-      // TODO: ??
-      // setTimeout(() => this.$nuxt.$loading.finish(), 500)
-
-      if (await this.fetchCurrentSession()) {
-        // TODO: エラーハンドリング
-        await this.fetchContestInfo()
-        this.$nuxt.$loading.finish()
-      } else {
-        this.$router.push('/login')
-      }
-    })
+  components: {
+    NavigationLink
   },
-
   methods: {
-    ...mapActions('session', ['logout', 'fetchCurrentSession']),
-    ...mapActions('contestInfo', ['fetchContestInfo']),
+    ...mapActions('session', ['logout']),
 
-    async try_logout() {
+    async tryLogout() {
+      console.log('logout')
       if (await this.logout()) {
-        this.$router.push('/login')
+        this.notifySuccess({ message: 'ログアウトしました' })
       } else {
-        // そもそもログインしてない場合にここに来る
-        this.notifyError({ message: 'ログインしていません' })
-        this.$router.push('/login')
+        this.notifyWarning({ message: 'ログインしていません' })
       }
     }
   }
 }
 </script>
+<style scoped lang="sass">
+.logo
+  height: 2rem
+
+::v-deep
+  .v-toolbar__content
+    padding: 0px
+</style>
