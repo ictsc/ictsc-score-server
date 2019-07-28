@@ -28,7 +28,7 @@
       <v-divider />
     </template>
 
-    <div style="text-align: end">提出時刻: {{ answer.createdAt }}</div>
+    <p class="text-right">提出時刻: {{ answer.createdAt }}</p>
     <markdown
       v-if="problemBody.modeIsTextbox"
       :content="answer.bodies[0][0]"
