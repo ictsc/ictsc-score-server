@@ -1,6 +1,8 @@
 <template>
   <v-app class="root-v-app">
     <navigation />
+    <!-- TODO: 要素がしたに隠れる問題の応急処置 -->
+    <div class="mt-10" />
     <nuxt />
     <notification-area />
   </v-app>
