@@ -17,16 +17,27 @@ export default {
     NotificationArea
   },
   created() {
-    this.timeStartInterval()
+    this.startInterval()
+    this.$nextTick(async () => {
+      this.$nuxt.$loading.start()
+      // setTimeout(() => this.$nuxt.$loading.finish(), 500)
+
+      if (await this.fetchCurrentSession()) {
+        // TODO: エラーハンドリング
+        await this.fetchContestInfo()
+        this.$nuxt.$loading.finish()
+      } else {
+        this.$router.push('/login')
+      }
+    })
   },
   beforeDestroy() {
-    this.timeStopInterval()
+    this.stopInterval()
   },
   methods: {
-    ...mapActions('time', {
-      timeStartInterval: 'startInterval',
-      timeStopInterval: 'stopInterval'
-    })
+    ...mapActions('time', ['startInterval', 'stopInterval']),
+    ...mapActions('session', ['fetchCurrentSession']),
+    ...mapActions('contestInfo', ['fetchContestInfo'])
   }
 }
 </script>

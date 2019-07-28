@@ -56,6 +56,7 @@ export default {
       this.loading = true
 
       if (await this.login({ name: this.name, password: this.password })) {
+        this.notifySuccess({ message: 'ログインしました' })
         this.$router.push('/')
       } else {
         this.notifyWarning({
