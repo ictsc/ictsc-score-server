@@ -18,19 +18,24 @@ export default class BaseModel extends Model {
     }
   }
 
+  static getContext() {
+    return VuexORMGraphQLPlugin.instance.getContext()
+  }
+
   static getSchema() {
-    return VuexORMGraphQLPlugin.instance.getContext().loadSchema()
+    return this.getContext().loadSchema()
   }
 
   // 自身を受けてるためのフィールドを組み立てる
   static buildMutationField() {
+    const name = inflection.singularize(this.entity)
     const fields = this.fields()
     const fieldsText = Object.keys(fields)
       .filter(field => field !== '$isPersisted' && !fields[field].foreignKey)
       .join(' ')
 
     return `
-      ${inflection.camelize(this.name, true)} {
+      ${name} {
         ${fieldsText}
       }
     `
