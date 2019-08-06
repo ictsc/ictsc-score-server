@@ -3,29 +3,30 @@
     <v-flex v-if="problemBody.modeIsTextbox">
       <v-slider
         v-model="slider"
+        @start="stepEnable = true"
         :step="stepEnable ? 5 : undefined"
+        :readonly="sending"
+        track-color="grey lighten-2"
         min="-5"
         max="100"
         hide-details
-        :readonly="sending"
-        @start="stepEnable = true"
       >
         <template v-slot:prepend>
-          <!-- TODO: テキストを右端から始める -->
           <v-text-field
             v-model="text"
+            @focus="stepEnable = false"
             :readonly="sending"
+            suffix="%"
             hide-details
             flat
             maxlength="4"
             single-line
             height="1em"
-            style="width: 2em"
-            @focus="stepEnable = false"
+            class="score-field"
           >
           </v-text-field>
 
-          <v-icon :color="solvedIconColor">
+          <v-icon :color="solvedIconColor" class="ml-2">
             mdi-check-bold
           </v-icon>
         </template>
@@ -53,7 +54,7 @@
     <v-flex
       v-else-if="problemBody.modeIsRadioButton || problemBody.modeIsCheckbox"
     >
-      <!-- TODO: 未実装 -->
+      <!-- TODO: API側が未実装なので非表示 -->
       <v-btn
         v-if="false"
         :disabled="!validPoint"
@@ -106,7 +107,7 @@ export default {
     solvedIconColor() {
       return this.problemBody.solvedCriterion <= this.slider
         ? 'primary'
-        : 'grey'
+        : 'grey lighten-2'
     }
   },
   watch: {
@@ -171,4 +172,11 @@ export default {
 ::v-deep
   .v-slider--horizontal
     margin-top: 7px
+    margin-left: 0px
+
+.score-field
+  width: 3em
+  ::v-deep
+    input
+      text-align: right
 </style>
