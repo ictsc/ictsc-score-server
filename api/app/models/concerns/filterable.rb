@@ -99,7 +99,8 @@ module Filterable
       when 'ProblemBody', 'ProblemSupplement'
         where(problem: Problem.opened(team: team))
       when 'ProblemEnvironment'
-        where(team: team, problem: Problem.opened(team: team))
+        # playerには展開が完了した問題環境しか見せない
+        where(team: team, problem: Problem.opened(team: team), status: 'APPLIED')
       when 'Team'
         # 自分以下の権限のチームを取得できる
         where(role: -Float::INFINITY..Team.roles[team.role])

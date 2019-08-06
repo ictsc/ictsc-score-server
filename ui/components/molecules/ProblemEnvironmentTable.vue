@@ -39,7 +39,6 @@ export default {
     },
     headers() {
       const headers = [
-        { text: '状態', value: 'status' },
         { text: 'ホスト', value: 'host' },
         { text: 'ユーザー', value: 'user' },
         { text: 'パスワード', value: 'password' },
@@ -51,7 +50,8 @@ export default {
       if (this.isStaff) {
         headers.unshift(
           { text: 'チーム番号', value: 'team.number' },
-          { text: 'チーム名', value: 'team.name' }
+          { text: 'チーム名', value: 'team.name' },
+          { text: '状態', value: 'status' }
         )
       }
 
