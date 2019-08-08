@@ -39,9 +39,15 @@
             </template>
 
             <v-card style="overflow-wrap: break-word">
+              <v-card-title>
+                <span>プレビュー</span>
+              </v-card-title>
+
+              <v-divider></v-divider>
               <v-card-text class="pa-1">
                 <markdown :content="internalValue" />
               </v-card-text>
+
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer />

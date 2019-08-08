@@ -3,18 +3,17 @@
     <v-flex v-if="problemBody.modeIsTextbox">
       <v-slider
         v-model="slider"
-        @start="stepEnable = true"
         :step="stepEnable ? 5 : undefined"
         :readonly="sending"
         track-color="grey lighten-2"
         min="-5"
         max="100"
         hide-details
+        @start="stepEnable = true"
       >
         <template v-slot:prepend>
           <v-text-field
             v-model="text"
-            @focus="stepEnable = false"
             :readonly="sending"
             suffix="%"
             hide-details
@@ -23,6 +22,7 @@
             single-line
             height="1em"
             class="score-field"
+            @focus="stepEnable = false"
           >
           </v-text-field>
 

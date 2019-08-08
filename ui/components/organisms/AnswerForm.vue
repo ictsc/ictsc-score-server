@@ -49,6 +49,7 @@
       </template>
     </v-btn>
 
+    <!-- 解答提出前の強制確認ダイアログ -->
     <v-dialog
       v-model="confirming"
       :persistent="sending"
@@ -67,9 +68,9 @@
 
         <template v-if="gradingDelaySec !== 0">
           <v-divider></v-divider>
-          <v-card-text class="warning pa-1 text-right">
+          <span class="warning pa-1 text-right">
             解答後{{ gradingDelayString }}間は再解答できなくなります
-          </v-card-text>
+          </span>
         </template>
 
         <v-divider></v-divider>
