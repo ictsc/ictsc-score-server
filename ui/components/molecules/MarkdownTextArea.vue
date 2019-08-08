@@ -24,7 +24,7 @@
 
         <v-flex shrink py-0>
           <!-- ESCキーや範囲外クリックでも閉じれる -->
-          <v-dialog v-model="preview" scrollable>
+          <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
             <template v-slot:activator="{ on }">
               <v-btn
                 :disabled="previewDisabled"
@@ -94,6 +94,10 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+    previewWidth: {
+      type: String,
+      default: null
     }
   },
   data() {
