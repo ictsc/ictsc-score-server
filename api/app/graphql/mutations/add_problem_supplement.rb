@@ -4,13 +4,13 @@ module Mutations
   class AddProblemSupplement < BaseMutation
     field :problem_supplement, Types::ProblemSupplementType, null: true
 
+    argument :problem_code, String, required: true
     argument :text, String, required: true
-    argument :problem_id, ID, required: true
 
-    def resolve(text:, problem_id:)
+    def resolve(problem_code:, text:)
       Acl.permit!(mutation: self, args: {})
-      problem = Problem.find_by(id: problem_id)
-      raise RecordNotExists.new(Problem, id: problem_id) if problem.nil?
+      problem = Problem.find_by(code: problem_code)
+      raise RecordNotExists.new(Problem, code: problem_code) if problem.nil?
 
       problem_supplement = ProblemSupplement.new
 

@@ -17,7 +17,10 @@
       </v-sheet>
     </v-flex>
     <v-flex v-if="problem.environments.length !== 0 || isStaff">
-      <problem-supplement-area :supplements="problem.supplements" />
+      <problem-supplement-area
+        :supplements="problem.supplements"
+        :problem-code="problem.code"
+      />
     </v-flex>
     <v-flex v-if="problem.environments.length !== 0">
       <problem-environment-area :environments="problem.environments" />

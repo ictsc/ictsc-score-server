@@ -69,6 +69,12 @@ export default {
     realtimeGrading: state => state.realtimeGrading,
     textSizeLimit: state => state.textSizeLimit,
     deleteTimeLimitSec: state => state.deleteTimeLimitSec,
+    deleteTimeLimitMsec: state => state.deleteTimeLimitSec * 1000,
+    deleteTimeLimitString: (state, getters) => {
+      return getters.deleteTimeLimitSec < 60
+        ? `${getters.deleteTimeLimitSec}秒`
+        : `${Math.floor(getters.deleteTimeLimitSec / 60)}分`
+    },
     guidePage: state => state.guidePage
   }
 }
