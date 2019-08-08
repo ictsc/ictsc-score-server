@@ -139,26 +139,13 @@ export default {
     async applyScore() {
       this.sending = true
 
-      try {
-        const point = this.text === 'null' ? null : parseInt(this.text)
-        const res = await orm.Score.applyScore({
-          answerId: this.answer.id,
-          point
-        })
+      const point = this.text === 'null' ? null : parseInt(this.text)
+      await orm.Score.applyScore({
+        action: '採点',
+        params: { answerId: this.answer.id, point }
+      })
 
-        if (res.errors) {
-          this.notifyWarning({ message: '採点の反映に失敗しました' })
-        } else {
-          this.notifySuccess({ message: '採点を反映しました' })
-        }
-      } catch (error) {
-        console.error(error)
-        this.notifyError({
-          message: '想定外のエラーにより採点の反映に失敗しました'
-        })
-      } finally {
-        this.sending = false
-      }
+      this.sending = false
     },
     regrade() {
       // TODO: 実装

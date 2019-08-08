@@ -12,12 +12,14 @@ export default class Score extends BaseModel {
     }
   }
 
-  static applyScore({ answerId, point }) {
-    return this.sendMutation(
-      'applyScore',
-      { answerId, point },
-      [Score],
-      'upsert'
-    )
+  static applyScore({ action, resolve, params: { answerId, point } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyScore',
+      params: { answerId, point },
+      fields: [Score],
+      type: 'upsert'
+    })
   }
 }
