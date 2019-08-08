@@ -26,4 +26,19 @@ export default class ProblemSupplement extends BaseModel {
       type: 'upsert'
     })
   }
+
+  static deleteProblemSupplement({
+    action,
+    resolve,
+    params: { problemSupplementId }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteProblemSupplement',
+      params: { problemSupplementId },
+      fields: [ProblemSupplement],
+      type: 'delete'
+    })
+  }
 }
