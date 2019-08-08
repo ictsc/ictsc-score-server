@@ -169,7 +169,7 @@ class Config < ApplicationRecord
     end
 
     def before_delete_time_limit?(datetime)
-      datetime <= Time.current + Config.delete_time_limit
+      Time.current - datetime <= Config.delete_time_limit_sec
     end
   end
 

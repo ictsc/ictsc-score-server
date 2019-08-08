@@ -3,18 +3,17 @@
     <v-flex v-if="problemBody.modeIsTextbox">
       <v-slider
         v-model="slider"
-        @start="stepEnable = true"
         :step="stepEnable ? 5 : undefined"
         :readonly="sending"
         track-color="grey lighten-2"
         min="-5"
         max="100"
         hide-details
+        @start="stepEnable = true"
       >
         <template v-slot:prepend>
           <v-text-field
             v-model="text"
-            @focus="stepEnable = false"
             :readonly="sending"
             suffix="%"
             hide-details
@@ -23,6 +22,7 @@
             single-line
             height="1em"
             class="score-field"
+            @focus="stepEnable = false"
           >
           </v-text-field>
 
@@ -139,26 +139,13 @@ export default {
     async applyScore() {
       this.sending = true
 
-      try {
-        const point = this.text === 'null' ? null : parseInt(this.text)
-        const res = await orm.Score.applyScore({
-          answerId: this.answer.id,
-          point
-        })
+      const point = this.text === 'null' ? null : parseInt(this.text)
+      await orm.Score.applyScore({
+        action: '採点',
+        params: { answerId: this.answer.id, point }
+      })
 
-        if (res.errors) {
-          this.notifyWarning({ message: '採点の反映に失敗しました' })
-        } else {
-          this.notifySuccess({ message: '採点を反映しました' })
-        }
-      } catch (error) {
-        console.error(error)
-        this.notifyError({
-          message: '想定外のエラーにより採点の反映に失敗しました'
-        })
-      } finally {
-        this.sending = false
-      }
+      this.sending = false
     },
     regrade() {
       // TODO: 実装

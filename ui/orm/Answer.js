@@ -19,13 +19,15 @@ export default class Answer extends BaseModel {
     }
   }
 
-  static addAnswer({ problemId, bodies }) {
-    return this.sendMutation(
-      'addAnswer',
-      { problemId, bodies },
-      [Answer],
-      'upsert'
-    )
+  static addAnswer({ action, resolve, params: { problemId, bodies } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'addAnswer',
+      params: { problemId, bodies },
+      fields: [Answer],
+      type: 'upsert'
+    })
   }
 
   // この書き方でもリアクティブになる

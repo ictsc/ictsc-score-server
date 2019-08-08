@@ -24,7 +24,7 @@
 
         <v-flex shrink py-0>
           <!-- ESCキーや範囲外クリックでも閉じれる -->
-          <v-dialog v-model="preview" scrollable>
+          <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
             <template v-slot:activator="{ on }">
               <v-btn
                 :disabled="previewDisabled"
@@ -39,9 +39,15 @@
             </template>
 
             <v-card style="overflow-wrap: break-word">
+              <v-card-title>
+                <span>プレビュー</span>
+              </v-card-title>
+
+              <v-divider></v-divider>
               <v-card-text class="pa-1">
                 <markdown :content="internalValue" />
               </v-card-text>
+
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer />
@@ -88,6 +94,10 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+    previewWidth: {
+      type: String,
+      default: null
     }
   },
   data() {

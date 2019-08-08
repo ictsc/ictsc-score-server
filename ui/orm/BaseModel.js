@@ -41,7 +41,7 @@ export default class BaseModel extends Model {
     `
   }
 
-  static buildMutation(mutationName, models) {
+  static buildMutation(mutation, fields) {
     // TODO: delete comments
     // const fields = Object.keys(this.fields()).filter(field => field !== '$isPersisted').join(" ")
     // const operationParams = Object.entries(params).map(o => o.join(': ')).join(', ')
@@ -50,11 +50,15 @@ export default class BaseModel extends Model {
     // const variables = { input: { problemId: '3230156e-75ab-442d-9fdf-3d9d19981c43', bodies: [['']]  } }
     // $nuxt.$store.dispatch('entities/simpleMutation', { query, variables })
 
-    const fields = models.map(m => m.buildMutationField()).join('\n')
+    const fieldsString =
+      typeof fields === 'string'
+        ? fields
+        : fields.map(m => m.buildMutationField()).join('\n')
+
     const query = `
-      mutation operator($input: ${inflection.camelize(mutationName)}Input!) {
-        ${mutationName}(input: $input) {
-          ${fields}
+      mutation operator($input: ${inflection.camelize(mutation)}Input!) {
+        ${mutation}(input: $input) {
+          ${fieldsString}
         }
       }
     `
@@ -64,36 +68,34 @@ export default class BaseModel extends Model {
 
   // try catchで囲めばキャッチできる
   // storeに対してcreate update delete処理をする
-  static async sendMutation(mutationName, params, models, type) {
-    const query = this.buildMutation(mutationName, models)
+  // レスポンスは各モデルを想定
+  static async sendMutationBase(mutation, params, fields, type) {
+    const query = this.buildMutation(mutation, fields)
     const res = await this.store().dispatch('entities/simpleMutation', {
       query,
       variables: { input: params }
     })
 
-    console.log(res)
-
+    // エラーでないならvuexへの登録・更新・削除を行う
     if (!res.errors) {
+      const resForEach = f => {
+        Object.keys(res[mutation])
+          .filter(key => key[0] !== '_')
+          .forEach(key => {
+            const getter = `entities/${inflection.pluralize(key)}`
+            const model = this.store().getters[getter]().model
+
+            // レスポンスから取得したモデルとレコードを関数に渡す
+            f(model, res[mutation][key])
+          })
+      }
+
       switch (type) {
         case 'upsert':
-          Object.keys(res[mutationName])
-            .filter(key => key[0] !== '_')
-            .forEach(key => {
-              const getter = `entities/${inflection.pluralize(key)}`
-              const model = this.store().getters[getter]().model
-              model.insertOrUpdate({ data: res[mutationName][key] })
-            })
+          resForEach((model, record) => model.insertOrUpdate({ data: record }))
           break
         case 'delete':
-          // paramsが1つなら、それをIDと断定して削除する
-          const keys = Object.key(params)
-          if (keys.length === 1) {
-            // TODO: 動作確認&エラー処理
-            this.delete(params[keys[0]])
-          } else {
-            // 実装が変わって意図しない挙動を起こす可能性がある
-            throw new Error(`delete mutation support only one parameter`)
-          }
+          resForEach((model, record) => model.delete(record.id))
           break
         default:
           throw new Error(`unsupported type ${type}`)
@@ -101,5 +103,39 @@ export default class BaseModel extends Model {
     }
 
     return res
+  }
+
+  // sendMutationBaseに加え、結果の通知を行う
+  // 例外は全て個々で握りつぶされる
+  static async sendMutation({
+    mutation,
+    params,
+    fields,
+    type,
+    subject,
+    resolve,
+    action
+  }) {
+    const notify = (type, message) =>
+      this.store().commit(`notification/${type}`, { message })
+
+    try {
+      const res = await this.sendMutationBase(mutation, params, fields, type)
+
+      if (res.errors) {
+        console.error(res.errors)
+        notify('notifyWarning', `${action}に失敗しました`)
+      } else {
+        notify('notifySuccess', `${action}に成功しました`)
+
+        // resolveがあれば実行する
+        !!resolve && resolve(res)
+      }
+
+      return res
+    } catch (error) {
+      console.error(error)
+      notify('notifyError', `想定外のエラーにより${action}に失敗しました`)
+    }
   }
 }

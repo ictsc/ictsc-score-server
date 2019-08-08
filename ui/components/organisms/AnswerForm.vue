@@ -49,6 +49,7 @@
       </template>
     </v-btn>
 
+    <!-- 解答提出前の強制確認ダイアログ -->
     <v-dialog
       v-model="confirming"
       :persistent="sending"
@@ -67,9 +68,9 @@
 
         <template v-if="gradingDelaySec !== 0">
           <v-divider></v-divider>
-          <v-card-text class="warning pa-1 text-right">
+          <span class="warning pa-1 text-right">
             解答後{{ gradingDelayString }}間は再解答できなくなります
-          </v-card-text>
+          </span>
         </template>
 
         <v-divider></v-divider>
@@ -173,27 +174,19 @@ export default {
     async submit() {
       this.sending = true
 
-      try {
-        const res = await orm.Answer.addAnswer({
-          problemId: this.problemBody.problemId,
-          bodies: this.answerBodies
-        })
-
-        if (res.errors) {
-          this.notifyWarning({ message: '解答の提出に失敗しました' })
-        } else {
-          this.notifySuccess({ message: '解答を提出しました' })
+      await orm.Answer.addAnswer({
+        action: '解答提出',
+        resolve: () => {
           this.confirming = false
           this.answerBodies = this.answerBodies.map(o => [])
+        },
+        params: {
+          problemId: this.problemBody.problemId,
+          bodies: this.answerBodies
         }
-      } catch (error) {
-        console.error(error)
-        this.notifyError({
-          message: '想定外のエラーにより解答の提出に失敗しました'
-        })
-      } finally {
-        this.sending = false
-      }
+      })
+
+      this.sending = false
     }
   }
 }

@@ -2,6 +2,7 @@
 
 module Mutations
   class DeleteProblemSupplement < BaseMutation
+    field :problem_supplement, Types::ProblemSupplementType, null: true
     argument :problem_supplement_id, ID, required: true
 
     def resolve(problem_supplement_id:)
@@ -11,7 +12,8 @@ module Mutations
       Acl.permit!(mutation: self, args: { problem_supplement: problem_supplement })
 
       if problem_supplement.destroy
-        {}
+        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
+        { problem_supplement: problem_supplement }
       else
         add_errors(problem_supplement)
       end
