@@ -26,13 +26,19 @@
           >
           </v-text-field>
 
-          <v-icon :color="solvedIconColor" class="ml-2">
-            mdi-check-bold
-          </v-icon>
+          <!-- 基準突破チェック + 説明ツールチップ -->
+          <v-tooltip open-delay="300" bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon :color="solvedIconColor" class="ml-2" v-on="on">
+                mdi-check-bold
+              </v-icon>
+            </template>
+            <span>基準を超えるとチェックが付きます</span>
+          </v-tooltip>
         </template>
 
         <template v-slot:append>
-          <v-tooltip top>
+          <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn
                 :disabled="!validPoint"
