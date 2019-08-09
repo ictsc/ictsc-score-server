@@ -39,16 +39,14 @@ export default {
           }
         }
       `
+
       // TODO: エラー処理
       const res = await dispatch(
         'entities/simpleQuery',
         { query, bypassCache: true },
         { root: true }
       )
-      console.log('called contestInfo')
-      console.log(JSON.stringify(res))
-      console.log(Object.keys(res))
-      console.log(res.contestInfo)
+
       commit('setContestInfo', res.contestInfo)
     }
   },

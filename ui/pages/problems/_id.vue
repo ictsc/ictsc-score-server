@@ -2,6 +2,7 @@
   <!-- TODO: ここでreadable判定してもいいかも → Loadingしたい -->
   <v-container fluid fill-height grid-list-md>
     <v-layout row>
+      <!-- 左の問題詳細パネル -->
       <v-flex :xs6="showRigthPanel">
         <problem-details-panel v-if="problemIsReadable" :problem="problem" />
         <!-- TODO: デバッグ情報削除 -->
@@ -13,14 +14,16 @@
         </p>
       </v-flex>
 
+      <!-- 右の質問・解答パネル -->
       <v-flex v-if="showRigthPanel" xs6>
         <v-tabs v-model="tabMode" grow>
           <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
           <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
         </v-tabs>
+
         <v-tabs-items v-model="tabMode" class="pt-2">
           <v-tab-item :value="issuesTabName">
-            <issue-panel />
+            <issue-panel :problem="problem" :team-id="teamId" />
           </v-tab-item>
           <v-tab-item :value="answersTabName">
             <answer-panel :answers="answers" :problem-body="problem.body" />
@@ -28,6 +31,8 @@
         </v-tabs-items>
       </v-flex>
     </v-layout>
+
+    <!-- チーム名 -->
     <v-snackbar :value="isStaff && !!teamId" :timeout="0" color="primary">
       <v-layout justify-center row>
         <v-progress-circular v-if="!team" indeterminate />
@@ -129,7 +134,7 @@ export default {
       'environments',
       'supplements',
       'answers',
-      'issues.comments'
+      'issues'
     ])
   },
   mounted() {
