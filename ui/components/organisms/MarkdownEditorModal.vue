@@ -26,27 +26,28 @@ Markdownを書いて送信するモーダルのベースコンポーネント
 
         <slot name="prepend" />
 
-        <v-divider></v-divider>
-        <v-card-text class="">
+        <v-divider />
+        <v-card-text>
           <markdown-text-area
             v-model="text"
             :error.sync="error"
             :readonly="confirming"
             placeholder="Markdownで記述できます"
             preview-width="70em"
+            @submit="confirm"
           />
         </v-card-text>
 
         <slot name="append" />
 
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-actions>
           <v-spacer />
           <v-btn
             left
             :disabled="error || confirming"
             color="success"
-            @click.stop="confirming = true"
+            @click.stop="confirm"
           >
             確認
           </v-btn>
@@ -69,19 +70,19 @@ Markdownを書いて送信するモーダルのベースコンポーネント
           <span>内容確認</span>
         </v-card-title>
 
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-text class="pa-1">
           <markdown :content="text" />
         </v-card-text>
 
         <template v-if="!!supplement">
-          <v-divider></v-divider>
+          <v-divider />
           <span class="warning pa-1 text-right">
             {{ supplement }}
           </span>
         </template>
 
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-actions>
           <v-spacer />
           <v-btn
@@ -173,6 +174,9 @@ export default {
     }
   },
   methods: {
+    confirm() {
+      this.confirming = true
+    },
     close() {
       this.$emit('update:open', false)
     }
