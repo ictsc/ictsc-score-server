@@ -153,7 +153,7 @@ export default {
     return {
       error: true,
       confirming: false,
-      text: this.$storage.getLocalStorage(this.storageKey)
+      text: this.$jsonStorage.get(this.storageKey)
     }
   },
   watch: {
@@ -170,7 +170,7 @@ export default {
       }
     },
     text(value) {
-      this.$storage.setLocalStorage(this.storageKey, value)
+      this.$jsonStorage.set(this.storageKey, value)
     }
   },
   methods: {
