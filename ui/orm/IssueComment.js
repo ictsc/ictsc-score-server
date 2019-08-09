@@ -14,4 +14,15 @@ export default class IssueComment extends BaseModel {
       createdAt: this.string()
     }
   }
+
+  static addIssueComment({ action, resolve, params: { issueId, text } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'addIssueComment',
+      params: { issueId, text },
+      fields: [orm.Issue, IssueComment],
+      type: 'upsert'
+    })
+  }
 }

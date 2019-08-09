@@ -5,6 +5,7 @@ import VuexORMGraphQLPlugin from '@vuex-orm/plugin-graphql'
 
 // eager lodingを制御するためのメソッド提供する
 // hasOne は自動で取得されるが、hasManyはeagerLoadで指定しないと取得できない
+// 多段では使えない
 export default class BaseModel extends Model {
   static async eagerFetch(args, eagerLoad) {
     const saveEagerLoad = this.eagerLoad
