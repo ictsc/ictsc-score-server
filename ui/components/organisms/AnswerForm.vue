@@ -42,7 +42,7 @@
       block
     >
       <template v-if="!waitAnswer">
-        解答
+        確認
       </template>
       <template v-else>
         再解答まで{{ latestAnswer.delayFinishInString }}
