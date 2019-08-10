@@ -98,7 +98,9 @@ export default {
       return this.sortByCreatedAt(this.issue.comments).reverse()
     },
     latestReplyAt() {
-      const comment = this.comments.filter(c => c.isOurComment(this.isPlayer))
+      const comment = this.comments.filter(c =>
+        c.isOurComment(this.isPlayer)
+      )[0]
       return comment ? comment.createdAtShort : 'なし'
     },
     displayCommentCount() {
@@ -125,7 +127,13 @@ export default {
       return diff < 0 ? 0 : diff
     },
     issueURL() {
-      return `/problems/${this.issue.problemId}#issues=${this.issue.teamId}`
+      const base = `/problems/${this.issue.problemId}#issues`
+
+      if (this.isPlayer) {
+        return base
+      } else {
+        return `${base}=${this.issue.teamId}`
+      }
     }
   },
   methods: {
