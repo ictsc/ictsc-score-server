@@ -31,6 +31,8 @@ import orm from '~/orm'
 import PageTitle from '~/components/atoms/PageTitle'
 import AnswerListCard from '~/components/molecules/AnswerListCard'
 
+// TODO: code, writer, title, statusで検索
+
 export default {
   name: 'Answers',
   components: {

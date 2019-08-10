@@ -5,13 +5,6 @@
       <!-- 左の問題詳細パネル -->
       <v-flex :xs6="showRigthPanel">
         <problem-details-panel v-if="problemIsReadable" :problem="problem" />
-        <!-- TODO: デバッグ情報削除 -->
-        <p>
-          デバッグ情報(そのうち消す)<br />
-          問題ID {{ problemId }}<br />
-          モード {{ mode }}<br />
-          チーム {{ teamId }}
-        </p>
       </v-flex>
 
       <!-- 右の質問・解答パネル -->
