@@ -98,7 +98,9 @@ export default {
       return this.sortByCreatedAt(this.issue.comments).reverse()
     },
     latestReplyAt() {
-      const comment = this.comments.filter(c => c.isOurComment(this.isPlayer))
+      const comment = this.comments.filter(c =>
+        c.isOurComment(this.isPlayer)
+      )[0]
       return comment ? comment.createdAtShort : 'なし'
     },
     displayCommentCount() {
