@@ -16,7 +16,7 @@
 
       <!-- 右の質問・解答パネル -->
       <v-flex v-if="showRigthPanel" xs6>
-        <v-tabs v-model="tabMode" grow>
+        <v-tabs v-model="tabMode" grow active-class="always-active-color">
           <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
           <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
         </v-tabs>
@@ -150,4 +150,8 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass"></style>
+<style scoped lang="sass">
+.always-active-color
+  &::before
+    opacity: 0.12 !important
+</style>
