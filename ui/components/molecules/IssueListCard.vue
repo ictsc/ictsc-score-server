@@ -125,7 +125,13 @@ export default {
       return diff < 0 ? 0 : diff
     },
     issueURL() {
-      return `/problems/${this.issue.problemId}#issues=${this.issue.teamId}`
+      const base = `/problems/${this.issue.problemId}#issues`
+
+      if (this.isPlayer) {
+        return base
+      } else {
+        return `${base}=${this.issue.teamId}`
+      }
     }
   },
   methods: {
