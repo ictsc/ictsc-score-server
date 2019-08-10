@@ -1,8 +1,10 @@
 <template>
   <v-container>
-    <v-layout column align-start justify-start>
+    <v-layout column justify-start>
       <v-flex>
-        <h1>問題一覧</h1>
+        <v-layout column align-center>
+          <page-title title="問題一覧" />
+        </v-layout>
       </v-flex>
 
       <v-flex>
@@ -25,6 +27,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import PageTitle from '~/components/atoms/PageTitle'
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
 import ProblemCategory from '~/components/organisms/ProblemCategory'
@@ -35,6 +38,7 @@ export default {
   components: {
     AnswerAttention,
     AnswerFlow,
+    PageTitle,
     ProblemCategory
   },
   computed: {

@@ -2,25 +2,21 @@
   <!-- TODO: ここでreadable判定してもいいかも → Loadingしたい -->
   <v-container fluid fill-height grid-list-md>
     <v-layout row>
+      <!-- 左の問題詳細パネル -->
       <v-flex :xs6="showRigthPanel">
         <problem-details-panel v-if="problemIsReadable" :problem="problem" />
-        <!-- TODO: デバッグ情報削除 -->
-        <p>
-          デバッグ情報(そのうち消す)<br />
-          問題ID {{ problemId }}<br />
-          モード {{ mode }}<br />
-          チーム {{ teamId }}
-        </p>
       </v-flex>
 
+      <!-- 右の質問・解答パネル -->
       <v-flex v-if="showRigthPanel" xs6>
-        <v-tabs v-model="tabMode" grow>
+        <v-tabs v-model="tabMode" grow active-class="always-active-color">
           <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
           <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
         </v-tabs>
+
         <v-tabs-items v-model="tabMode" class="pt-2">
           <v-tab-item :value="issuesTabName">
-            <issue-panel />
+            <issue-panel :problem="problem" :team-id="teamId" />
           </v-tab-item>
           <v-tab-item :value="answersTabName">
             <answer-panel :answers="answers" :problem-body="problem.body" />
@@ -28,14 +24,14 @@
         </v-tabs-items>
       </v-flex>
     </v-layout>
+
+    <!-- チーム名 -->
     <v-snackbar :value="isStaff && !!teamId" :timeout="0" color="primary">
       <v-layout justify-center row>
         <v-progress-circular v-if="!team" indeterminate />
 
         <template v-else>
-          <span>No.{{ team.number }}</span>
-          <span class="mx-1" />
-          <span>{{ team.name }}</span>
+          <span>{{ team.displayName }}</span>
         </template>
       </v-layout>
     </v-snackbar>
@@ -59,6 +55,11 @@ export default {
   data() {
     return {
       tabMode: null
+    }
+  },
+  head() {
+    return {
+      title: this.$elvis(this.problem, 'body.title')
     }
   },
   computed: {
@@ -129,7 +130,7 @@ export default {
       'environments',
       'supplements',
       'answers',
-      'issues.comments'
+      'issues'
     ])
   },
   mounted() {
@@ -142,4 +143,8 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass"></style>
+<style scoped lang="sass">
+.always-active-color
+  &::before
+    opacity: 0.12 !important
+</style>

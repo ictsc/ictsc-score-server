@@ -45,7 +45,7 @@ export default {
         ])
       }
 
-      list.push([{ name: '最終更新', value: this.problem.body.updatedAt }])
+      list.push([{ name: '最終更新', value: this.problem.body.updatedAtShort }])
 
       return list
     }

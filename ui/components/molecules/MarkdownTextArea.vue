@@ -1,3 +1,12 @@
+<!--
+マークダウンを書くためのtextarea
+
+機能
+* ctrl-enterでsubmitイベントを発火(@submit)
+* previewボタンでプレビュー可能
+* 文字数制限(error.sync)
+-->
+
 <template>
   <v-layout column>
     <v-flex pa-0>
@@ -11,6 +20,7 @@
         auto-grow
         hide-details
         class="shrink-side-slot"
+        @keyup.ctrl.enter.prevent="!error && $emit('submit')"
       >
       </v-textarea>
     </v-flex>

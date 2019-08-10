@@ -10,6 +10,7 @@
         v-if="isStaff && show"
         v-model="search"
         autofocus
+        clearable
         class="pb-1 pl-4"
         label="Search"
         append-icon="mdi-table-search"
@@ -20,10 +21,11 @@
       />
     </expandable-button>
     <v-expand-transition>
+      <!-- :searchは文字列な必要がある、searchはtextareaで文字列のみ入るため!!で判定できる -->
       <problem-environment-table
         v-show="show"
         :environments="environments"
-        :search="search"
+        :search="!!search ? search : ''"
         class="mt-1"
       />
     </v-expand-transition>

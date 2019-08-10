@@ -84,6 +84,7 @@ export default {
     async addSupplement(text) {
       this.newSupplementSending = true
 
+      // newSupplementSucceeded をtrueにするとtextがクリアされる
       await orm.ProblemSupplement.addProblemSupplement({
         action: '補足追加',
         resolve: () => (this.newSupplementSucceeded = true),

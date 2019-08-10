@@ -42,7 +42,7 @@
       block
     >
       <template v-if="!waitAnswer">
-        解答
+        確認
       </template>
       <template v-else>
         再解答まで{{ latestAnswer.delayFinishInString }}
@@ -158,7 +158,7 @@ export default {
       return `answerForm-answerBodies-${this.problemBody.problemId}`
     },
     getStorage() {
-      const value = this.$storage.getLocalStorage(this.storageKey())
+      const value = this.$jsonStorage.get(this.storageKey())
 
       // 有効な値があれば返す. [] '' 0 は有効な値
       if (value !== null && value !== undefined) {
@@ -166,10 +166,10 @@ export default {
       }
 
       this.setStorage((this.problemBody.candidates || [[]]).map(o => []))
-      return this.$storage.getLocalStorage(this.storageKey())
+      return this.$jsonStorage.get(this.storageKey())
     },
     setStorage(value) {
-      return this.$storage.setLocalStorage(this.storageKey(), value)
+      return this.$jsonStorage.set(this.storageKey(), value)
     },
     async submit() {
       this.sending = true

@@ -5,6 +5,7 @@ import VuexORMGraphQLPlugin from '@vuex-orm/plugin-graphql'
 
 // eager lodingを制御するためのメソッド提供する
 // hasOne は自動で取得されるが、hasManyはeagerLoadで指定しないと取得できない
+// 多段では使えない
 export default class BaseModel extends Model {
   static async eagerFetch(args, eagerLoad) {
     const saveEagerLoad = this.eagerLoad
@@ -137,5 +138,25 @@ export default class BaseModel extends Model {
       console.error(error)
       notify('notifyError', `想定外のエラーにより${action}に失敗しました`)
     }
+  }
+
+  get createdAtHM() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.createdAt).format('HH:mm')
+  }
+
+  get updatedAtHM() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.updatedAt).format('HH:mm')
+  }
+
+  get createdAtShort() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.createdAt).format('D日 HH:mm:ss')
+  }
+
+  get updatedAtShort() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.updatedAt).format('D日 HH:mm:ss')
   }
 }
