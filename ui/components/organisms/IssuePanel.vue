@@ -8,13 +8,13 @@
           <v-btn
             :disabled="isAudience"
             :loading="statusUpdating || commentSending"
-            :color="statusColor"
+            :color="issue.statusColor"
             min-width="5em"
             min-height="5em"
             fab
             @click="transition"
           >
-            {{ statusText }}
+            {{ issue.statusJp }}
           </v-btn>
         </v-flex>
         <v-flex v-if="!isAudience" class="pt-0 pl-2">
@@ -103,38 +103,6 @@ export default {
     showCommentForm() {
       // 質問を初められる(issueを作れる)のはplayerのみ
       return this.isPlayer || (this.isStaff && !!this.issue)
-    },
-    statusColor() {
-      if (!this.issue) {
-        return ''
-      }
-
-      switch (this.issue.status) {
-        case 'unsolved':
-          return 'error'
-        case 'in_progress':
-          return 'warning'
-        case 'solved':
-          return 'success'
-        default:
-          throw new Error(`unsupported status ${this.issue.status}`)
-      }
-    },
-    statusText() {
-      if (!this.issue) {
-        return ''
-      }
-
-      switch (this.issue.status) {
-        case 'unsolved':
-          return '要対応'
-        case 'in_progress':
-          return '対応中'
-        case 'solved':
-          return '解決済'
-        default:
-          throw new Error(`unsupported status ${this.issue.status}`)
-      }
     },
     statusDescription() {
       if (!this.issue) {

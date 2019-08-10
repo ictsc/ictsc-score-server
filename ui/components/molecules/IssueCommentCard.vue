@@ -32,10 +32,7 @@ export default {
   },
   computed: {
     isOurComment() {
-      return (
-        (!this.comment.fromStaff && this.isPlayer) ||
-        (this.comment.fromStaff && !this.isPlayer)
-      )
+      return this.comment.isOurComment(this.isPlayer)
     }
   }
 }

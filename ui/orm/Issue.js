@@ -44,4 +44,30 @@ export default class Issue extends BaseModel {
       type: 'upsert'
     })
   }
+
+  get statusJp() {
+    switch (this.status) {
+      case 'unsolved':
+        return '要対応'
+      case 'in_progress':
+        return '対応中'
+      case 'solved':
+        return '解決済'
+      default:
+        throw new Error(`unsupported status ${this.status}`)
+    }
+  }
+
+  get statusColor() {
+    switch (this.status) {
+      case 'unsolved':
+        return 'error'
+      case 'in_progress':
+        return 'warning'
+      case 'solved':
+        return 'success'
+      default:
+        throw new Error(`unsupported status ${this.status}`)
+    }
+  }
 }

@@ -13,4 +13,12 @@ export default class Team extends BaseModel {
       color: this.string().nullable()
     }
   }
+
+  get displayName() {
+    return `No.${this.number} ${this.name}`
+  }
+
+  get numberStr() {
+    return this.number.toString()
+  }
 }

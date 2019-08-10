@@ -25,4 +25,8 @@ export default class IssueComment extends BaseModel {
       type: 'upsert'
     })
   }
+
+  isOurComment(isPlayer) {
+    return (!this.fromStaff && isPlayer) || (this.fromStaff && !isPlayer)
+  }
 }

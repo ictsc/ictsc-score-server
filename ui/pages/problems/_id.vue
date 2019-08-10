@@ -38,9 +38,7 @@
         <v-progress-circular v-if="!team" indeterminate />
 
         <template v-else>
-          <span>No.{{ team.number }}</span>
-          <span class="mx-1" />
-          <span>{{ team.name }}</span>
+          <span>{{ team.displayName }}</span>
         </template>
       </v-layout>
     </v-snackbar>
