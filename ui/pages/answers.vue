@@ -1,11 +1,14 @@
 <template>
   <v-container>
-    <h2>解答一覧</h2>
     <!-- TODO: 仮実装 -->
-
     <v-layout column>
+      <v-flex>
+        <v-layout column align-center>
+          <page-title title="解答一覧" />
+        </v-layout>
+      </v-flex>
+
       <v-flex v-for="problem in problems" :key="problem.id">
-        <v-divider class="mb-1" />
         <v-layout column>
           <v-flex>
             <h2>{{ problem.body.title }}</h2>
@@ -25,12 +28,14 @@
 </template>
 <script>
 import orm from '~/orm'
+import PageTitle from '~/components/atoms/PageTitle'
 import AnswerListCard from '~/components/molecules/AnswerListCard'
 
 export default {
   name: 'Answers',
   components: {
-    AnswerListCard
+    AnswerListCard,
+    PageTitle
   },
   computed: {
     problems() {

@@ -5,7 +5,8 @@ export default {
     host: '0.0.0.0'
   },
   head: {
-    title: 'ICTSC スコアサーバー',
+    title: 'スコアサーバー',
+    titleTemplate: '%s | ICTSC',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

@@ -66,6 +66,11 @@ export default {
       tabMode: null
     }
   },
+  head() {
+    return {
+      title: this.$elvis(this.problem, 'body.title')
+    }
+  },
   computed: {
     mode() {
       // URL末尾の #issues=:team_id からモードを判定する
