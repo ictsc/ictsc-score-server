@@ -11,7 +11,7 @@
 
     <v-flex shrink pa-0 d-flex child-flex>
       <span class="caption">
-        {{ $moment(comment.createdAt).format('HH:mm') }}
+        {{ comment.createdAtHM }}
       </span>
     </v-flex>
     <v-spacer />

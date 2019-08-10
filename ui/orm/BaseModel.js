@@ -139,4 +139,24 @@ export default class BaseModel extends Model {
       notify('notifyError', `想定外のエラーにより${action}に失敗しました`)
     }
   }
+
+  get createdAtHM() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.createdAt).format('HH:mm')
+  }
+
+  get updatedAtHM() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.updatedAt).format('HH:mm')
+  }
+
+  get createdAtShort() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.createdAt).format('D日 HH:mm:ss')
+  }
+
+  get updatedAtShort() {
+    // eslint-disable-next-line no-undef
+    return $nuxt.$moment(this.updatedAt).format('D日 HH:mm:ss')
+  }
 }
