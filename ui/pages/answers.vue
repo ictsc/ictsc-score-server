@@ -43,9 +43,11 @@ export default {
     problems() {
       // TODO: bodyが無ければ loading
       // TODO: エラー通知&表示
-      return orm.Problem.query()
+      const problems = orm.Problem.query()
         .with(['body', 'answers.team', 'answers.score', 'answers.problem.body'])
         .all()
+
+      return this.$_.sortBy(problems, p => this.$elvis(p, 'body.title'))
     }
   },
   fetch() {
