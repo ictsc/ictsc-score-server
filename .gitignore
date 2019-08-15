@@ -105,7 +105,6 @@ bower.json
 
 # Used by dotenv library to load environment variables.
 # .env
-.envrc
 
 ## Specific to RubyMotion:
 .dat*
@@ -145,3 +144,7 @@ config/contest.yml
 uploads/
 coverage/
 __pycache__/
+
+# k8s provisoning_k8s
+.envrc
+var.yml
