@@ -3,17 +3,17 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    ictsc2018-score: redis
+    app: redis
   name: redis
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        ictsc2018-score: redis
+        app: redis
     spec:
       containers:
-        - image: redis:4.0.11-alpine
+        - image: redis:5.0.4-alpine
           name: redis
           ports:
             - containerPort: 6379
@@ -24,14 +24,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    ictsc2018-score: redis
+    app: redis
   name: redis
 spec:
   ports:
-    - name: reids
+    - name: redis
       port: 6379
       targetPort: 6379
   selector:
-    ictsc2018-score: redis
+    app: redis
 status:
   loadBalancer: {}

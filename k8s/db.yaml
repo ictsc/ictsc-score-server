@@ -18,12 +18,14 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: "storage-db"
-  nfs:
-    server: 172.16.30.101
-    path: "/export/default-mariadb"
+  hostPath:
+    path: "/mnt/data"
+  # nfs:
+  #   server: 172.16.30.101
+  #   path: "/export/default-postgresql"
 ---
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: db-pvc
   namespace: default
@@ -38,41 +40,45 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mariadb
+  name: db
   namespace: default
 spec:
-  serviceName: "mariadb"
+  serviceName: "db"
   replicas: 1
   podManagementPolicy: "Parallel"
   updateStrategy:
     type: "RollingUpdate"
   selector:
     matchLabels:
-      ictsc2018-score: db
+      app: db
   template:
     metadata:
       labels:
-        ictsc2018-score: db
+        app: db
     spec:
-      priorityClassName: system-cluster-critical
+      # priorityClassName: system-cluster-critical
       containers:
-        - name: mariadb
-          image: mariadb:10.3.13
+        - name: db
+          image: postgres:11.3-alpine
           securityContext:
             runAsUser: 0
           args:
-            - "--character-set-server=utf8mb4"
-            - "--collation-server=utf8mb4_unicode_ci"
+            - -c
+            - max_connections=200
+            - -c
+            - shared_buffers=256MB
+            - -c
+            - work_mem=4MB
           volumeMounts:
-            - name: mariadb
-              mountPath: /var/lib/mysql
+            - name: db
+              mountPath: /var/lib/postgresql/data
           ports:
-            - containerPort: 3306
+            - containerPort: 5432
           envFrom:
             - configMapRef:
                 name: db-env
       volumes:
-        - name: mariadb
+        - name: db
           persistentVolumeClaim:
             claimName: db-pvc
 ---
@@ -83,22 +89,21 @@ metadata:
   namespace: default
 data:
   TZ: "Asia/Tokyo"
-  MYSQL_ROOT_PASSWORD: "PASSWORD"
-  MYSQL_DATABASE: "ictsc_score_server"
-  MYSQL_PASSWORD: "PASSWORD"
-  MYSQL_START_TIMEOUT: "900"
+  POSTGRES_DB: "db"
+  POSTGRES_PASSWORD: "postgres"
+  POSTGRES_USER: "postgres"
+  POSTGRES_MAX_CONNECTIONS: "200"
+  POSTGRES_SHARED_BUFFERS: "256MB"
+  POSTGRES_WORK_MEM: "4MB"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    ictsc2018-score: db
-  name: db
   namespace: default
+  name: db
 spec:
-  ports:
-    - name: db
-      port: 3306
-      targetPort: 3306
   selector:
-    ictsc2018-score: db
+    app: db
+  type: ClusterIP
+  ports:
+    - port: 5432
