@@ -105,6 +105,7 @@ bower.json
 
 # Used by dotenv library to load environment variables.
 # .env
+.envrc
 
 ## Specific to RubyMotion:
 .dat*
