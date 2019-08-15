@@ -2,56 +2,61 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    ictsc2018-score: ui
+    app: ui
   name: ui
+  namespace: default
 spec:
   template:
     metadata:
       labels:
-        ictsc2018-score: ui
+        app: ui
+      namespace: default
     spec:
       containers:
-        - image: upluse10/ictsc-score-server:ui
+        - image: upluse10/ictsc-score-server:ui-develop
           imagePullPolicy: Always
           name: ui
           ports:
             - name: ui
-              containerPort: 80
+              containerPort: 3000
       restartPolicy: Always
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    ictsc2018-score: ui
+    app: ui
   name: ui
+  namespace: default
 spec:
+  type: NodePort
   ports:
     - name: ui
-      port: 80
-      targetPort: 80
+      port: 3000
+      targetPort: 3000
+      nodePort: 30300
   selector:
-    ictsc2018-score: ui
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: ui
-  annotations:
-    nginx.org/server-snippet: "proxy_ssl_verify off;"
-    kubernetes.io/ingress.allow-http: "false"
-    kubernetes.io/ingress.class: "nginx"
-    # ingress.kubernetes.io/whitelist-source-range: "172.16.0.0/12,10.0.0.0/8"
-spec:
-  tls:
-    - hosts:
-        - CONTEST_FQDN
-      secretName: contest
-  rules:
-    - host: CONTEST_FQDN
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: ui
-              servicePort: 80
+    app: ui
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: ui
+#   annotations:
+#     nginx.org/server-snippet: "proxy_ssl_verify off;"
+#     kubernetes.io/ingress.allow-http: "false"
+#     kubernetes.io/ingress.class: "nginx"
+#     # ingress.kubernetes.io/whitelist-source-range: "172.16.0.0/12,10.0.0.0/8"
+# spec:
+#   tls:
+#     - hosts:
+#         - CONTEST_FQDN
+#       secretName: contest
+#   rules:
+#     - host: CONTEST_FQDN
+#       http:
+#         paths:
+#           - path: /
+#             backend:
+#               serviceName: ui
+#               servicePort: 80
