@@ -12,6 +12,7 @@
       uid: "{{ item.uid}}"
       password: "{{ item.password | password_hash('sha512') }}"
       group: "{{ item.name }}"
+      shell: /bin/bash
       groups: sudo
       state: present
     with_items:
