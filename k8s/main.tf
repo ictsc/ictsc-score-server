@@ -71,6 +71,23 @@ resource sakuracloud_server "k8s-master-01-server" {
   additional_nics = ["${sakuracloud_switch.k8s-internal-switch.id}"]
   additional_display_ipaddresses = ["192.168.100.1"]
   ssh_key_ids     = ["${sakuracloud_ssh_key_gen.key.id}"]
+  password          = "PUT_YOUR_PASSWORD_HERE"
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    host        = "${self.ipaddress}"
+    private_key = "${sakuracloud_ssh_key_gen.key.private_key}"
+  }
+  provisioner "remote-exec" {
+    # write password mean for the sake of ansible used
+    # todo: must better use cloudinit or packer initialize.
+    inline = [
+      "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
+      "sudo systemctl restart sshd.service",
+      "sudo cat /etc/ssh/sshd_config",
+      "echo Success"
+      ]
+  }
 }
 
 
@@ -84,6 +101,20 @@ resource sakuracloud_server "k8s-node-01-server" {
   additional_nics = ["${sakuracloud_switch.k8s-internal-switch.id}"]
   additional_display_ipaddresses = ["192.168.100.2"]
   ssh_key_ids     = ["${sakuracloud_ssh_key_gen.key.id}"]
+  password          = "PUT_YOUR_PASSWORD_HERE"
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    host        = "${self.ipaddress}"
+    private_key = "${sakuracloud_ssh_key_gen.key.private_key}"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
+      "sudo systemctl restart sshd.service",
+      "echo Success"
+      ]
+  }
 }
 
 resource sakuracloud_server "k8s-node-02-server" {
@@ -96,6 +127,20 @@ resource sakuracloud_server "k8s-node-02-server" {
   additional_nics = ["${sakuracloud_switch.k8s-internal-switch.id}"]
   additional_display_ipaddresses = ["192.168.100.3"]
   ssh_key_ids     = ["${sakuracloud_ssh_key_gen.key.id}"]
+  password          = "PUT_YOUR_PASSWORD_HERE"
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    host        = "${self.ipaddress}"
+    private_key = "${sakuracloud_ssh_key_gen.key.private_key}"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
+      "sudo systemctl restart sshd.service",
+      "echo Success"
+      ]
+  }
 }
 
 resource sakuracloud_server "k8s-node-03-server" {
@@ -108,6 +153,20 @@ resource sakuracloud_server "k8s-node-03-server" {
   additional_nics = ["${sakuracloud_switch.k8s-internal-switch.id}"]
   additional_display_ipaddresses = ["192.168.100.4"]
   ssh_key_ids     = ["${sakuracloud_ssh_key_gen.key.id}"]
+  password          = "PUT_YOUR_PASSWORD_HERE"
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    host        = "${self.ipaddress}"
+    private_key = "${sakuracloud_ssh_key_gen.key.private_key}"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
+      "sudo systemctl restart sshd.service",
+      "echo Success"
+      ]
+  }
 }
 
 resource sakuracloud_server "k8s-node-04-server" {
@@ -120,8 +179,21 @@ resource sakuracloud_server "k8s-node-04-server" {
   additional_nics = ["${sakuracloud_switch.k8s-internal-switch.id}"]
   additional_display_ipaddresses = ["192.168.100.5"]
   ssh_key_ids     = ["${sakuracloud_ssh_key_gen.key.id}"]
+  password          = "PUT_YOUR_PASSWORD_HERE"
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    host        = "${self.ipaddress}"
+    private_key = "${sakuracloud_ssh_key_gen.key.private_key}"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
+      "sudo systemctl restart sshd.service",
+      "echo Success"
+      ]
+  }
 }
-
 output "k8s-master-01-server_ipaddress"{
   value = "${sakuracloud_server.k8s-master-01-server.ipaddress}"
 }
