@@ -16,5 +16,6 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
 
 
 ## TroubleShooting & Tips
-* `ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。
 * `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
+* `ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。
+* `ansible-playbookbがなぜか固まって失敗してたらもう一度叩いてみる（力技）みたいなことでもすると良さそう`
