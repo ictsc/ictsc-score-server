@@ -11,11 +11,11 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
 * 埋めたら `direnv allow` で適用される。このカレントディレクトリでその環境変数が適用される。
 * `terraform apply -auto-approve` をしてVMが上がるのを待とう
 * `sh inventry.sh` とかでhostsを作成
+* `var.yml`に 作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
 * `ansible-playbook -u ubuntu --private-key=./id_rsa -i hosts setup.yml --extra-vars "ansible_sudo_pass=PUT_YOUR_PASSWORD_HERE"` でAnsibleを実行して、ictsc user作成とdocker install, k8s installが行なわれる
-* TODO:: Terraformの設定の話をする
+* 
 
 
 ## TroubleShooting & Tips
-* `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
 * `ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。
-* `ansible-playbookbがなぜか固まって失敗してたらもう一度叩いてみる（力技）みたいなことでもすると良さそう`
+* `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
