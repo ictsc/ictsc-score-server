@@ -2,7 +2,7 @@
 - hosts: cloud_servers
   become: yes
   vars_files:
-   - var.yaml
+   - var.yml
   tasks:
   - name: add a ictsc group
     group: name=ictsc state=present
@@ -11,12 +11,11 @@
       name: "{{ item.name }}"
       uid: "{{ item.uid}}"
       password: "{{ item.password | password_hash('sha512') }}"
-      group: sudo
-      groups: wheel
+      group: "{{ item.name }}"
+      groups: sudo
       state: present
     with_items:
       - "{{ users }}"
-
   - name: mkdir .ssh
     file:
       path: /home/{{ item.name }}/.ssh/
@@ -26,74 +25,71 @@
       mode: 0700
     with_items:
       - "{{ users }}"
-
   - name: add authorized_key
     authorized_key:
       user: "{{ item.name }}"
       key: "{{ lookup('file', './{{ item.name }}.pub') }}"
     with_items:
       - "{{ users }}"
-
   - name: add to sudoers
     lineinfile:
       dest: /etc/sudoers
       line: "{{ item.name }} ALL=(ALL) NOPASSWD:ALL"
-      create: yes
     with_items:
       - "{{ users }}"
----
+
 # docker setup phase
 - hosts: cloud_servers
   become: yes
   tasks:
-      - name: Update and Upgrade
-        apt:
-            update_cache: "yes"
-            upgrade: "dist"
-      - name: remove "docker docker-engine docker.io" packages
-        apt:
-            name: "{{ item }}"
-            state: absent
-        with_items:
-            - docker
-            - docker-engine
-            - docker.io
-            - containerd
-            - runc
-      - name: update apt repository
-        apt:
-            update_cache: yes
-      - name: install "apt-transport-https ca-certificates curl software-properties-common" packages
-        apt:
-            name: "{{ item }}"
-            state: present
-        with_items:
-            - apt-transport-https
-            - ca-certificates
-            - curl
-            - gnupg-agent
-            - software-properties-common
-            - make
-      - name: add docker's official GPG key
-        apt_key:
-            url: https://download.docker.com/linux/ubuntu/gpg
-            state: present
-      - name: add docker repository
-        apt_repository:
-            repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
-            state: present
-      - name: update apt repository
-        apt:
-            update_cache: yes
-      - name: install docker-ce
-        apt:
-            name: "{{ item }}"
-            state: present
-        with_items:
-            - docker-ce
-            - docker-ce-cli
-            - containerd.io
----
+  - name: Update and Upgrade
+    apt:
+        update_cache: "yes"
+        upgrade: "dist"
+  - name: remove "docker docker-engine docker.io" packages
+    apt:
+        name: "{{ item }}"
+        state: absent
+    with_items:
+        - docker
+        - docker-engine
+        - docker.io
+        - containerd
+        - runc
+  - name: update apt repository
+    apt:
+        update_cache: yes
+  - name: install "apt-transport-https ca-certificates curl software-properties-common" packages
+    apt:
+        name: "{{ item }}"
+        state: present
+    with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+        - make
+  - name: add docker's official GPG key
+    apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+  - name: add docker repository
+    apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+  - name: update apt repository
+    apt:
+        update_cache: yes
+  - name: install docker-ce
+    apt:
+        name: "{{ item }}"
+        state: present
+    with_items:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+
 # kubernetes setup phase
 - hosts: cloud_servers
   become: yes
