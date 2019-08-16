@@ -8,7 +8,7 @@ jobs:
     environment:
       - TZ=Asia/Tokyo
 
-      - POSTGRES_DB=127.0.0.1
+      - POSTGRES_HOST=127.0.0.1
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
