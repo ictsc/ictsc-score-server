@@ -36,7 +36,7 @@ $ sudo systemctl restart kubelet
 みたいにすると良い。
 
 *  `kubectl exec -it pod/api-5f9cd6794-9z9sr rails db:setup`みたいな感じで初期データ流し込みをする
-* 
+* `http://xxx.xxx.xxx.xxx:30300/`にアクセスできてloginができたら無事一通り立ってる感じ。おめでとう！
 ## TroubleShooting & Tips
 * `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
 * playbookを書き換えたら`ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。
