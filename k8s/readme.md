@@ -17,10 +17,12 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
     * これで` ssh -i ictsc ictsc@xxx.xxx.xxx.xxx` みたいな感じでログインできるようになります。
 * masterになるサーバーにログインして`sudo kubeadm init --apiserver-advertise-address=192.168.100.1 --pod-network-cidr=10.244.0.0/16`をしよう。そこから出てきた情報をコピーして（`kubeadm join~~~`みたいなのがある）nodeになるサーバーに対してアクセスして貼り付けてsudoで実行しましょう。また、`mkdir -p $HOME/.kube`　みたいなのもコンソールに表示されていてコピペできるようになってるのでmasterサーバでやってください。これでkubectlが使えるようになります。
 * ここのカレントディレクトリで`wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml` をして `scp -i ictsc -r ../k8s ictsc@xxx.xxx.xxx.xxx:/home/ictsc`でmasterサーバーにファイルを転送する
-
+* `kubectl apply -f kube-flannel.yml,redis.yaml,ui.yaml,db.yaml,api.yaml`でupする
 ## TroubleShooting & Tips
 * `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
 * playbookを書き換えたら`ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。
 * kubeadmでコピー忘れたら雑に `kubeadm reset` でjoinやinitしてた情報ごと削除できる
+* `kubectl delete -f kube-flannel.yml,redis.yaml,ui.yaml,db.yaml,api.yaml`で削除。
+    * もしマニフェストファイルを変更する場合は削除してから書き換えて適用する方が良い。
 * [https://wiki.icttoracon.net/knowledge/score-server](https://wiki.icttoracon.net/knowledge/score-server)を参考にしている
 * 接続先わかんなくなったら `terraform output`で接続先が確認できます。
