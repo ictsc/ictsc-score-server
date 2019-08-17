@@ -89,7 +89,7 @@ metadata:
   namespace: default
 data:
   TZ: "Asia/Tokyo"
-  POSTGRES_DB: "db"
+  POSTGRES_HOST: "db"
   POSTGRES_PASSWORD: "postgres"
   POSTGRES_USER: "postgres"
   POSTGRES_MAX_CONNECTIONS: "200"
