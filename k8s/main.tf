@@ -84,8 +84,9 @@ resource sakuracloud_server "k8s-master-01-server" {
     inline = [
       "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
       "sudo systemctl restart sshd.service",
-      "sudo cat /etc/ssh/sshd_config",
-      "echo Success"
+      "echo Success",
+      "sudo ip link set eth1 up",
+      "sudo ip addr add ${self.additional_display_ipaddresses[0]}/24 dev eth1"
       ]
   }
 }
@@ -112,7 +113,9 @@ resource sakuracloud_server "k8s-node-01-server" {
     inline = [
       "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
       "sudo systemctl restart sshd.service",
-      "echo Success"
+      "echo Success",
+      "a",
+      "sudo ip addr add ${self.additional_display_ipaddresses[0]}/24 dev eth1"
       ]
   }
 }
@@ -138,7 +141,9 @@ resource sakuracloud_server "k8s-node-02-server" {
     inline = [
       "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
       "sudo systemctl restart sshd.service",
-      "echo Success"
+      "echo Success",
+      "sudo ip link set eth1 up",
+      "sudo ip addr add ${self.additional_display_ipaddresses[0]}/24 dev eth1"
       ]
   }
 }
@@ -164,7 +169,9 @@ resource sakuracloud_server "k8s-node-03-server" {
     inline = [
       "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
       "sudo systemctl restart sshd.service",
-      "echo Success"
+      "echo Success",
+      "sudo ip link set eth1 up",
+      "sudo ip addr add ${self.additional_display_ipaddresses[0]}/24 dev eth1"
       ]
   }
 }
@@ -190,7 +197,9 @@ resource sakuracloud_server "k8s-node-04-server" {
     inline = [
       "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
       "sudo systemctl restart sshd.service",
-      "echo Success"
+      "echo Success",
+      "sudo ip link set eth1 up",
+      "sudo ip addr add ${self.additional_display_ipaddresses[0]}/24 dev eth1"
       ]
   }
 }
