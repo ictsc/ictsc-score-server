@@ -140,3 +140,10 @@
           dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
           owner: root
           group: root
+      - name: kubelet.service restart
+        service:
+          name: kubelet.service
+          daemon_reload: yes
+          state: restarted
+          enabled: yes
+
