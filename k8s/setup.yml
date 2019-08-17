@@ -134,3 +134,9 @@
         service: name=docker enabled=yes
       - name: Set kubelet service to start on boot
         service: name=kubelet enabled=yes
+      - name: update seting file
+        copy:
+          src: ./10-kubeadm.template.conf
+          dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+          owner: root
+          group: root
