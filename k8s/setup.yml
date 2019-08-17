@@ -42,6 +42,8 @@
 # docker setup phase
 - hosts: cloud_servers
   become: yes
+  vars_files:
+   - var.yml
   tasks:
   - name: Update and Upgrade
     apt:
@@ -90,6 +92,13 @@
         - docker-ce
         - docker-ce-cli
         - containerd.io
+  - name: add group
+    user:
+      name: "{{ item.name }}"
+      groups: adm, sudo, docker
+      append: yes
+    with_items:
+      - "{{ users }}"
 
 # kubernetes setup phase
 - hosts: cloud_servers
