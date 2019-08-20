@@ -26,8 +26,8 @@ export default {
     }
   },
   // Customize the progress-bar color
-  // TODO: 必要? Vuetifyのプログレスバーとかに任せれば良い気がする
-  loading: { color: '#fff' },
+  // TODO: Vuetifyのプログレスバーとかに任せれば良い気がする
+  loading: false,
   plugins: [
     '~/plugins/axios',
     '~/plugins/elvis',

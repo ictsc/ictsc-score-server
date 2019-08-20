@@ -19,13 +19,13 @@ export default {
   created() {
     this.startInterval()
     this.$nextTick(async () => {
-      this.$nuxt.$loading.start()
+      // this.$nuxt.$loading.start()
       // setTimeout(() => this.$nuxt.$loading.finish(), 500)
 
       if (await this.fetchCurrentSession()) {
         // TODO: エラーハンドリング
         await this.fetchContestInfo()
-        this.$nuxt.$loading.finish()
+        // this.$nuxt.$loading.finish()
       } else {
         this.$router.push('/login')
       }
