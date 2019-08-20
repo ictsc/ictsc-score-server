@@ -44,4 +44,7 @@ export default {
         // なぜかコードの先頭に文字が入る
         &:before
           content: ""
+    img
+      max-width: 100%
+      height: auto
 </style>
