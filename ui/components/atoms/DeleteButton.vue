@@ -49,7 +49,7 @@ export default {
     ...mapGetters('contestInfo', ['deleteTimeLimitMsec']),
 
     show() {
-      return this.progressValue > 0
+      return !this.expirable || this.progressValue > 0
     },
     progressValue() {
       const diff = this.currentTimeMsec - this.startAtMsec
