@@ -1,7 +1,6 @@
 <template>
   <v-app-bar app dense color="primary">
     <navigation-link to="/">
-      <!-- TODO: v-imgにする, max-heightプロパティが使いたい -->
       <img class="logo" src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
     </navigation-link>
 
@@ -9,9 +8,11 @@
       ガイド
     </navigation-link>
 
+    <!-- TODO: 未実装なため隠す
     <navigation-link to="/teams">
       チーム
     </navigation-link>
+    -->
 
     <v-spacer />
 
