@@ -9,10 +9,10 @@
         <v-flex v-for="(candidate, index) in candidateGroup" :key="index" py-0>
           <v-checkbox
             v-model="internalValue[groupIndex]"
-            hide-details
             :label="candidate"
             :value="candidate"
             :readonly="readonly"
+            hide-details
             color="primary"
             class="my-0"
           />
@@ -30,11 +30,6 @@ export default {
       type: Array,
       required: true
     },
-    // v-bind:error.sync
-    error: {
-      type: Boolean,
-      default: false
-    },
     candidatesGroups: {
       type: Array,
       required: true
@@ -49,24 +44,13 @@ export default {
       internalValue: this.value
     }
   },
-  computed: {
-    checkError() {
-      // 未選択も解答の1つなため常にfalse
-      return false
-    }
-  },
   watch: {
     internalValue() {
       this.$emit('input', this.internalValue)
-      this.$emit('update:error', this.checkError)
     },
     value() {
       this.internalValue = this.value
     }
-  },
-  created() {
-    // バリデーションの初期状態を同期する
-    this.$emit('update:error', this.checkError)
   }
 }
 </script>

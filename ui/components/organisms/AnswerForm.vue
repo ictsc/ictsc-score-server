@@ -1,31 +1,31 @@
 <template>
-  <v-form ref="form" @submit.prevent="confirming = true">
+  <v-form ref="form" v-model="valid" @submit.prevent="confirming = true">
     <v-card color="white" elevation="2">
-      <v-card-text>
+      <v-card-text class="py-0">
         <!-- TODO: プレースフォルダー -->
         <markdown-text-area
           v-if="problemBody.modeIsTextbox"
           v-model="answerBodies[0][0]"
-          :error.sync="error"
           :readonly="confirming"
+          placeholder="Markdownで記述可能です"
+          hide-details
+          class="pt-2"
         />
 
         <answer-form-radio-button
           v-else-if="problemBody.modeIsRadioButton"
           v-model="answerBodies"
-          :error.sync="error"
           :candidates-groups="problemBody.candidates"
           :readonly="confirming"
-          class="pb-2"
+          class="pb-3"
         />
 
         <answer-form-checkbox
           v-else-if="problemBody.modeIsCheckbox"
           v-model="answerBodies"
-          :error.sync="error"
           :candidates-groups="problemBody.candidates"
           :readonly="confirming"
-          class="pb-2"
+          class="pb-3"
         />
 
         <template v-else>
@@ -35,7 +35,7 @@
     </v-card>
 
     <v-btn
-      :disabled="error || confirming || waitAnswer"
+      :disabled="!valid || confirming || waitAnswer"
       type="submit"
       color="success"
       class="mt-2"
@@ -66,6 +66,7 @@
           <markdown :content="confirmContent" />
         </v-card-text>
 
+        <!-- 警告 -->
         <template v-if="gradingDelaySec !== 0">
           <v-divider></v-divider>
           <span class="warning pa-1 text-right">
@@ -121,7 +122,7 @@ export default {
   data() {
     return {
       confirming: false,
-      error: false,
+      valid: false,
       sending: false,
       answerBodies: this.getStorage()
     }
@@ -188,6 +189,8 @@ export default {
         resolve: () => {
           this.confirming = false
           this.answerBodies = this.answerBodies.map(o => [])
+          // answerBodiesを空にしたらバリデーションをリセットしないと真っ赤になる
+          this.$refs.form.resetValidation()
         },
         params: {
           problemId: this.problemBody.problemId,
