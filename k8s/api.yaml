@@ -55,39 +55,12 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: api
-  name: api
   namespace: default
+  name: api
 spec:
-  type: NodePort
-  ports:
-    - name: api
-      port: 3000
-      targetPort: 3000
-      nodePort: 3000
   selector:
     app: api
-# ---
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: api
-#   namespace: default
-#   annotations:
-#     nginx.org/server-snippet: "proxy_ssl_verify off;"
-#     kubernetes.io/ingress.allow-http: "false"
-#     kubernetes.io/ingress.class: "nginx"
-# spec:
-#   tls:
-#     - hosts:
-#         - CONTEST_FQDN
-#       secretName: contest
-#   rules:
-#     - host: CONTEST_FQDN
-#       http:
-#         paths:
-#           - path: /
-#             backend:
-#               serviceName: api
-#               servicePort: 8900
+  type: ClusterIP
+  ports:
+    - port: 3000
+
