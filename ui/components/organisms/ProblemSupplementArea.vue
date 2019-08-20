@@ -21,9 +21,9 @@
     </v-flex>
 
     <markdown-editor-modal
-      :open.sync="newSupplementShow"
-      :succeeded.sync="newSupplementSucceeded"
-      :sending="newSupplementSending"
+      ref="modal"
+      v-model="showModal"
+      autofocus
       storage-key="newProblemSupplement"
       title="補足追加"
       submit-label="追加"
@@ -62,8 +62,6 @@ export default {
   },
   data() {
     return {
-      newSupplementSending: false,
-      newSupplementSucceeded: false,
       showModal: false,
       show: true
     }
@@ -76,19 +74,16 @@ export default {
   },
   methods: {
     async addSupplement(text) {
-      this.newSupplementSending = true
-
-      // newSupplementSucceeded をtrueにするとtextがクリアされる
       await orm.ProblemSupplement.addProblemSupplement({
         action: '補足追加',
-        resolve: () => (this.newSupplementSucceeded = true),
+        resolve: () => this.$refs.modal.succeeded(),
         params: {
           problemCode: this.problemCode,
           text
         }
       })
 
-      this.newSupplementSending = false
+      this.$refs.modal.finished()
     }
   }
 }

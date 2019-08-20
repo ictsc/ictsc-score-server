@@ -13,13 +13,13 @@ Markdownを書いて送信するモーダルのベースコンポーネント
   <div>
     <!-- 編集モーダル -->
     <v-dialog
-      :value="open"
+      :value="value"
       :persistent="sending"
       max-width="70em"
       scrollable
       @input="close"
     >
-      <v-card style="">
+      <v-card>
         <v-card-title>
           <span>{{ title }}</span>
         </v-card-title>
@@ -92,7 +92,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
             :disabled="!valid || !confirming"
             :loading="sending"
             color="success"
-            @click="$emit('submit', text)"
+            @click="submit"
           >
             {{ submitLabel }}
           </v-btn>
@@ -115,20 +115,9 @@ export default {
     MarkdownTextArea
   },
   props: {
+    // v-model
     // モーダルのopen/close
-    // :open.sync で同期が必要
-    open: {
-      type: Boolean,
-      required: true
-    },
-    // 値が falseからtrueになるとローカルストレージをクリアしてダイアログを閉じる
-    // :succeeded.sync で同期が必要
-    succeeded: {
-      type: Boolean,
-      required: true
-    },
-    // 親コンポーネントから送信ボタンのloadingを制御
-    sending: {
+    value: {
       type: Boolean,
       required: true
     },
@@ -155,22 +144,11 @@ export default {
     return {
       valid: false,
       confirming: false,
+      sending: false,
       text: this.$jsonStorage.get(this.storageKey)
     }
   },
   watch: {
-    // 親要素からtextをクリアしてモーダルを閉じる
-    succeeded(newValue, oldValue) {
-      if (oldValue === false && newValue === true) {
-        // reset data
-        this.text = ''
-        this.$emit('update:succeeded', false)
-
-        // close dialogs
-        this.confirming = false
-        this.close()
-      }
-    },
     text(value) {
       this.$jsonStorage.set(this.storageKey, value)
     }
@@ -180,7 +158,22 @@ export default {
       this.confirming = true
     },
     close() {
-      this.$emit('update:open', false)
+      this.$emit('input', false)
+    },
+    submit() {
+      this.sending = true
+      this.$emit('submit', this.text)
+    },
+    // 親コンポーネントから呼び出す
+    succeeded() {
+      this.text = ''
+      this.$refs.form.resetValidation()
+      this.close()
+    },
+    // 親コンポーネントから呼び出す
+    finished() {
+      this.confirming = false
+      this.sending = false
     }
   }
 }
