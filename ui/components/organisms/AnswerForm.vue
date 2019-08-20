@@ -69,7 +69,12 @@
         <template v-if="gradingDelaySec !== 0">
           <v-divider></v-divider>
           <span class="warning pa-1 text-right">
-            解答後{{ gradingDelayString }}間は再解答できなくなります
+            <template v-if="realtimeGrading">
+              解答後{{ gradingDelayString }}間は再解答できなくなります
+            </template>
+            <template v-else>
+              最後に提出された解答のみ採点します
+            </template>
           </span>
         </template>
 
@@ -126,7 +131,11 @@ export default {
       return (this.$elvis(this.latestAnswer, 'delayFinishInSec') || 0) > 0
     },
 
-    ...mapGetters('contestInfo', ['gradingDelaySec', 'gradingDelayString']),
+    ...mapGetters('contestInfo', [
+      'gradingDelaySec',
+      'gradingDelayString',
+      'realtimeGrading'
+    ]),
     ...mapGetters('time', ['currentTimeMsec']),
 
     confirmContent() {

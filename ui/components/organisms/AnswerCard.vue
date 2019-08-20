@@ -4,14 +4,23 @@
     <template v-slot:button>
       <v-layout row align-center>
         <v-flex>
-          <span v-if="answer.hasPoint">
-            得点 {{ answer.point }}
-            <v-icon v-if="$elvis(answer, 'score.solved')" small>
-              mdi-check-bold
-            </v-icon>
+          <span v-if="!realtimeGrading && isPlayer">
+            提出済
           </span>
-          <span v-else-if="isStaff">未採点</span>
-          <span v-else>採点中</span>
+          <span v-else>
+            <template v-if="answer.hasPoint">
+              得点 {{ answer.point }}
+              <v-icon v-if="$elvis(answer, 'score.solved')" small>
+                mdi-check-bold
+              </v-icon>
+            </template>
+            <template v-else-if="isStaff">
+              未採点
+            </template>
+            <template v-else>
+              採点中
+            </template>
+          </span>
         </v-flex>
 
         <!-- 採点猶予後から10分はタイマーを表示する -->
@@ -57,6 +66,8 @@
   </expandable-card>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+
 import AnswerFormRadioButton from '~/components/molecules/AnswerFormRadioButton'
 import AnswerFormCheckbox from '~/components/molecules/AnswerFormCheckbox'
 import ExpandableCard from '~/components/molecules/ExpandableCard'
@@ -88,6 +99,9 @@ export default {
     return {
       opened: false
     }
+  },
+  computed: {
+    ...mapGetters('contestInfo', ['realtimeGrading'])
   }
 }
 </script>
