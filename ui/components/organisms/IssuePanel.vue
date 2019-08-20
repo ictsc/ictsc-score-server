@@ -39,21 +39,23 @@
     <template v-if="showCommentForm">
       <v-flex mt-1>
         <v-card>
-          <v-card-text class="pt-1 pb-0 pr-2">
-            <markdown-text-area
-              v-model="text"
-              :error.sync="error"
-              :readonly="commentSending"
-              :placeholder="placeholder"
-              preview-width="70em"
-              @submit="sendComment"
-            />
+          <v-card-text class="pt-1 pb-0">
+            <v-form v-model="valid">
+              <markdown-text-area
+                v-model="text"
+                :readonly="commentSending"
+                :placeholder="placeholder"
+                preview-width="70em"
+                hide-details
+                @submit="sendComment"
+              />
+            </v-form>
           </v-card-text>
         </v-card>
       </v-flex>
       <v-flex>
         <v-btn
-          :disabled="isAudience || error"
+          :disabled="isAudience || !valid"
           :loading="commentSending"
           block
           color="success"
@@ -96,7 +98,7 @@ export default {
       storageKey,
       placeholder:
         'Markdownで記述できます\n\n送信前の自動プレビューはありません\n\nCtrl-Enterでも送信可能です',
-      error: true
+      valid: false
     }
   },
   computed: {

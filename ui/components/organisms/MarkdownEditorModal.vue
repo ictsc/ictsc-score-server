@@ -27,15 +27,17 @@ Markdownを書いて送信するモーダルのベースコンポーネント
         <slot name="prepend" />
 
         <v-divider />
-        <v-card-text>
-          <markdown-text-area
-            v-model="text"
-            :error.sync="error"
-            :readonly="confirming"
-            placeholder="Markdownで記述できます"
-            preview-width="70em"
-            @submit="confirm"
-          />
+        <v-card-text class="pt-0 pb-3">
+          <v-form ref="form" v-model="valid">
+            <markdown-text-area
+              v-model="text"
+              :readonly="confirming"
+              autofocus
+              placeholder="Markdownで記述できます"
+              preview-width="70em"
+              @submit="confirm"
+            />
+          </v-form>
         </v-card-text>
 
         <slot name="append" />
@@ -45,7 +47,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
           <v-spacer />
           <v-btn
             left
-            :disabled="error || confirming"
+            :disabled="!valid || confirming"
             color="success"
             @click.stop="confirm"
           >
@@ -87,7 +89,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
           <v-spacer />
           <v-btn
             left
-            :disabled="error || !confirming"
+            :disabled="!valid || !confirming"
             :loading="sending"
             color="success"
             @click="$emit('submit', text)"
@@ -151,7 +153,7 @@ export default {
   },
   data() {
     return {
-      error: true,
+      valid: false,
       confirming: false,
       text: this.$jsonStorage.get(this.storageKey)
     }
