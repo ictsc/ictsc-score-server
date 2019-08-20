@@ -24,39 +24,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: ui
-  name: ui
   namespace: default
+  name: ui
 spec:
-  type: NodePort
-  ports:
-    - name: ui
-      port: 3000
-      targetPort: 3000
-      nodePort: 30300
   selector:
     app: ui
-# ---
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: ui
-#   annotations:
-#     nginx.org/server-snippet: "proxy_ssl_verify off;"
-#     kubernetes.io/ingress.allow-http: "false"
-#     kubernetes.io/ingress.class: "nginx"
-#     # ingress.kubernetes.io/whitelist-source-range: "172.16.0.0/12,10.0.0.0/8"
-# spec:
-#   tls:
-#     - hosts:
-#         - CONTEST_FQDN
-#       secretName: contest
-#   rules:
-#     - host: CONTEST_FQDN
-#       http:
-#         paths:
-#           - path: /
-#             backend:
-#               serviceName: ui
-#               servicePort: 80
+  type: ClusterIP
+  ports:
+    - port: 3000

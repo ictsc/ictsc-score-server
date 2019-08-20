@@ -114,7 +114,7 @@ resource sakuracloud_server "k8s-node-01-server" {
       "echo ${self.password} |sudo -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config",
       "sudo systemctl restart sshd.service",
       "echo Success",
-      "a",
+      "sudo ip link set eth1 up",
       "sudo ip addr add ${self.additional_display_ipaddresses[0]}/24 dev eth1"
       ]
   }

@@ -13,30 +13,17 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
     * `var.yml`に ansibleで作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
 * `terraform apply -auto-approve` をしてVMが上がるのを待とう。生成された `id_rsa` は `user:ubuntu` 向けに作られているものです
 * `sh inventry.sh` でinventryfileを作成
+* `ssh-keygen  -f ~/.ssh/ictsc` でこの名前の鍵を作成
 * `ansible-playbook -u ubuntu --private-key=./id_rsa -i hosts setup.yml --extra-vars "ansible_sudo_pass=PUT_YOUR_PASSWORD_HERE"` でAnsibleを実行して、ictsc user作成とdocker install, k8s installが行なわれる
     * これで` ssh -i ictsc ictsc@xxx.xxx.xxx.xxx` みたいな感じでログインできるようになります。
 * masterになるサーバーにログインして`sudo kubeadm init --apiserver-advertise-address=192.168.100.1 --pod-network-cidr=10.244.0.0/16`をしよう。そこから出てきた情報をコピーして（`kubeadm join~~~`みたいなのがある）nodeになるサーバーに対してアクセスして貼り付けてsudoで実行しましょう。また、`mkdir -p $HOME/.kube`　みたいなのもコンソールに表示されていてコピペできるようになってるのでmasterサーバでやってください。これでkubectlが使えるようになります。
-* ここのカレントディレクトリで`wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml` をして `scp -i ictsc -r ../k8s ictsc@xxx.xxx.xxx.xxx:/home/ictsc`でmasterサーバーにファイルを転送する
-* `kubectl apply -f kube-flannel.yml,redis.yaml,ui.yaml,db.yaml,api.yaml`でupする
-* ポートのレンジの都合上それを変更する適用を現状書く必要がある。
-```
-$ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
-apiVersion: v1
-kind: Pod
-metadata:
- ~~~~~
-spec:
-  containers:
-  - command:
-    - kube-apiserver
-    ~~~~~~
-    - --service-node-port-range=80-32767
-$ sudo systemctl restart kubelet
-```
-みたいにすると良い。
+* service-nodeport.yamlのTHIS_YOU_EXTERNAL_IPと書かれているところにmasterのpublicアドレスを書く
+* ここのカレントディレクトリで `scp -i ictsc -r ../k8s ictsc@xxx.xxx.xxx.xxx:/home/ictsc`でmasterサーバーにファイルを転送する
+* `kubectl apply -f mandatory.yaml` をで行ったあと`kubectl apply -f kube-flannel.yml,redis.yaml,ui.yaml,db.yaml,api.yaml,service-nodeport.yaml,ingress.yaml`でupする
 
 *  `kubectl exec -it pod/api-5f9cd6794-9z9sr rails db:setup`みたいな感じで初期データ流し込みをする
-* `http://xxx.xxx.xxx.xxx:30300/`にアクセスできてloginができたら無事一通り立ってる感じ。おめでとう！
+* `http://xxx.xxx.xxx.xxx:/`にアクセスできてloginができたら無事一通り立ってる感じ。おめでとう！
+
 ## TroubleShooting & Tips
 * `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
 * playbookを書き換えたら`ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。

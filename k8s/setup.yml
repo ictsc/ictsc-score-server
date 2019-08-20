@@ -29,7 +29,7 @@
   - name: add authorized_key
     authorized_key:
       user: "{{ item.name }}"
-      key: "{{ lookup('file', './{{ item.name }}.pub') }}"
+      key: "{{ lookup('file', './ictsc.pub') }}"
     with_items:
       - "{{ users }}"
   - name: add to sudoers
