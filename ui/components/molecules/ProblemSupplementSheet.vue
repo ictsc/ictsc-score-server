@@ -4,10 +4,11 @@
       <v-flex py-0>
         <markdown :content="supplement.text" color="error" />
       </v-flex>
-      <v-flex v-if="isStaff" py-1 pr-2>
+      <v-flex py-1 pr-2>
         <v-layout row align-center justify-end class="elevation-0">
-          <span class="caption mr-2 mt-0">{{ supplement.createdAt }}</span>
+          <span class="caption mr-2 mt-0">{{ supplement.createdAtShort }}</span>
           <delete-button
+            v-if="isStaff"
             :start-at-msec="Date.parse(supplement.createdAt)"
             :disabled="deleteButtonDisabled"
             color="error"
