@@ -62,7 +62,8 @@ export default {
 
       if (await this.login({ name: this.name, password: this.password })) {
         this.notifySuccess({ message: 'ログインしました' })
-        this.$router.push('/')
+        // locationを直接使うことで強制リロード
+        window.location = '/'
       } else {
         this.notifyWarning({
           message: 'チーム名かパスワードが正しくありません'
