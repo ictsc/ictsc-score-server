@@ -1,5 +1,5 @@
 <template>
-  <v-app class="root-v-app">
+  <v-app>
     <navigation />
     <nuxt class="mt-10" style="min-width: 500px" />
     <notification-area />
@@ -42,12 +42,12 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.root-v-app
-  background: white
+// アプリケーションの背景色を白にする
+.v-application
+  background: white !important
 </style>
-
-<!-- 横スクロールを有効にする -->
 <style lang="sass">
+// 横スクロールを有効にする
 html
   overflow-x: auto
 </style>
