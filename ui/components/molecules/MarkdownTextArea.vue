@@ -181,6 +181,7 @@ export default {
 .label-margin
   ::v-deep
     textarea
+      margin-top: 2px
 
 .show-in-details
   position: relative
