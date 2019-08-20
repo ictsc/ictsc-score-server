@@ -61,7 +61,10 @@
                   </template>
 
                   <!-- ツールチップではMarkdownとして表示 -->
-                  <markdown :content="comment.text" />
+                  <markdown
+                    :content="comment.text"
+                    :color="commentColor(comment)"
+                  />
                 </v-tooltip>
               </v-flex>
 
