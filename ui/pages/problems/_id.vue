@@ -69,8 +69,6 @@ export default {
     mode() {
       // URL末尾の #issues=:team_id からモードを判定する
       const match = MODE_REGEXP.exec(this.$route.hash)
-      console.log('match')
-      console.log(match)
       return match ? match[1] : null
     },
     modeIsBlank() {
