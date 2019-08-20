@@ -51,8 +51,10 @@ export default {
       password: '',
       passwordVisible: false,
       loading: false,
-      nameRules: [v => !!v || 'チーム名を入力してください'],
-      passwordRules: [v => !!v || 'パスワードを入力してください']
+
+      // 鬱陶しいのでメッセージは出さない
+      nameRules: [v => !!v || ''],
+      passwordRules: [v => !!v || '']
     }
   },
   methods: {
@@ -62,7 +64,8 @@ export default {
 
       if (await this.login({ name: this.name, password: this.password })) {
         this.notifySuccess({ message: 'ログインしました' })
-        this.$router.push('/')
+        // locationを直接使うことで強制リロード
+        window.location = '/'
       } else {
         this.notifyWarning({
           message: 'チーム名かパスワードが正しくありません'
