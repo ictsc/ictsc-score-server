@@ -1,5 +1,45 @@
 <template>
   <v-container>
+    <!-- 問題・カテゴリ追加ボタン -->
+    <v-layout v-if="isStaff" column class="floating-area">
+      <v-btn
+        color="primary"
+        class="elevation-6 my-2"
+        @click="showProblemModal = true"
+      >
+        <v-layout row align-center justify-start>
+          <v-icon>mdi-plus</v-icon>
+          <span class="text-left">
+            問題追加
+          </span>
+        </v-layout>
+      </v-btn>
+
+      <v-btn
+        color="primary"
+        class="elevation-6"
+        @click="showCategoryModal = true"
+      >
+        <v-layout row align-center justify-start>
+          <v-icon>mdi-plus</v-icon>
+          <span class="text-left">
+            カテゴリ追加
+          </span>
+        </v-layout>
+      </v-btn>
+    </v-layout>
+
+    <!-- モーダル -->
+    <!-- エラー防止のためにモーダルをレンダリングしない -->
+    <template v-if="isStaff">
+      <!-- 開いた時にデータを再度fetchさせるため -->
+      <category-modal
+        v-if="showCategoryModal"
+        v-model="showCategoryModal"
+        is-new
+      />
+    </template>
+
     <v-layout column justify-start>
       <v-flex>
         <v-layout column align-center>
@@ -30,6 +70,7 @@ import { mapGetters } from 'vuex'
 import PageTitle from '~/components/atoms/PageTitle'
 import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
+import CategoryModal from '~/components/organisms/CategoryModal'
 import ProblemCategory from '~/components/organisms/ProblemCategory'
 import orm from '~/orm'
 
@@ -38,8 +79,13 @@ export default {
   components: {
     AnswerAttention,
     AnswerFlow,
+    CategoryModal,
     PageTitle,
     ProblemCategory
+  data() {
+    return {
+      showCategoryModal: false,
+    }
   },
   computed: {
     ...mapGetters('contestInfo', ['gradingDelaySec', 'realtimeGrading']),
@@ -56,3 +102,10 @@ export default {
   }
 }
 </script>
+<style scoped lang="sass">
+.floating-area
+  position: fixed
+  z-index: 100
+  top: 3rem
+  right: 0.5rem
+</style>
