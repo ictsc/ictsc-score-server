@@ -175,7 +175,17 @@ export default {
         return value
       }
 
-      this.setStorage((this.problemBody.candidates || [[]]).map(o => []))
+      if (this.problemBody.modeIsTextbox) {
+        this.setStorage([[]])
+      } else if (
+        this.problemBody.modeIsRadioButton ||
+        this.problemBody.modeIsCheckbox
+      ) {
+        this.setStorage((this.problemBody.candidates || [[]]).map(o => []))
+      } else {
+        throw new Error(`unsupported problem mode ${this.problemBody.mode}`)
+      }
+
       return this.$jsonStorage.get(this.storageKey())
     },
     setStorage(value) {
