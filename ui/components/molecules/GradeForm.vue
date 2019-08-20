@@ -12,19 +12,15 @@
         @start="stepEnable = true"
       >
         <template v-slot:prepend>
-          <v-text-field
+          <number-text-field
             v-model="text"
             :readonly="sending"
             suffix="%"
             hide-details
-            flat
-            maxlength="4"
+            type="string"
             single-line
-            height="1em"
-            class="score-field"
             @focus="stepEnable = false"
-          >
-          </v-text-field>
+          />
 
           <!-- 基準突破チェック + 説明ツールチップ -->
           <v-tooltip open-delay="300" bottom>
@@ -80,9 +76,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
+import NumberTextField from '~/components/atoms/NumberTextField'
 
 export default {
   name: 'GradeForm',
+  components: {
+    NumberTextField
+  },
   props: {
     answer: {
       type: Object,
@@ -160,16 +160,9 @@ export default {
   }
 }
 </script>
-
 <style scoped lang="sass">
 ::v-deep
   .v-slider--horizontal
     margin-top: 7px
     margin-left: 0px
-
-.score-field
-  width: 3em
-  ::v-deep
-    input
-      text-align: right
 </style>
