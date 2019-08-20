@@ -100,9 +100,14 @@ export default {
     problem() {
       // TODO: bodyが無ければ loading
       // TODO: エラー通知&表示
+
+      // 編集モーダルや各表示部で使うデータを結合する
+      // categoryとpreviousProblemは編集モーダルで必要
       return orm.Problem.query()
         .with([
+          'category',
           'body',
+          'previousProblem',
           'environments.team',
           'supplements',
           'answers.score',

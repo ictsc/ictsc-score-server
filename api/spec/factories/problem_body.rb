@@ -10,6 +10,8 @@ FactoryBot.define do
     perfect_point { Random.rand(10..1000) }
     solved_criterion { Random.rand(50..100) }
     problem { nil }
+    candidates { [] }
+    corrects { [] }
 
     transient do
       candidates_count { Random.rand(1..5) }

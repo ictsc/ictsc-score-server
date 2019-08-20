@@ -35,15 +35,22 @@ export class JsonStroage {
     // getLocalStorage内でJSON.parseされる
     // eslint-disable-next-line no-undef
     const value = $nuxt.$storage.getLocalStorage(key)
-    return value === null && defaultValue !== undefined ? defaultValue : value
+    return (value === null || value === undefined) && defaultValue !== undefined
+      ? defaultValue
+      : value
   }
 
   static set(key, value) {
-    const storeValue =
-      value === null || value === undefined ? null : JSON.stringify(value)
+    // JSONにundefinedは存在しないため、該当keyを削除する
+    // ストレージがない場合getの戻り地はundefinedになる
+    if (value === undefined) {
+      // eslint-disable-next-line no-undef
+      $nuxt.$storage.removeLocalStorage(key)
+      return
+    }
 
     // eslint-disable-next-line no-undef
-    $nuxt.$storage.setLocalStorage(key, storeValue)
+    $nuxt.$storage.setLocalStorage(key, JSON.stringify(value))
   }
 }
 

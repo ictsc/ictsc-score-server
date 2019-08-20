@@ -3,6 +3,7 @@
 module Mutations
   class ApplyProblem < BaseMutation
     field :problem, Types::ProblemType, null: true
+    field :problem_body, Types::ProblemBodyType, null: true
 
     argument :code, String, required: true
     argument :category_code, String, required: false
@@ -20,14 +21,14 @@ module Mutations
     argument :text, String, required: true
     argument :perfect_point, Integer, required: true
     argument :solved_criterion, Integer, required: true
-    argument :candidates, [[String]], required: false
-    argument :corrects, [[String]], required: false
+    argument :candidates, [[String]], required: true
+    argument :corrects, [[String]], required: true
 
     # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     def resolve(code:, category_code: nil, previous_problem_code: nil,
                 order:, team_isolate:, open_at_begin: nil, open_at_end: nil,
                 writer: nil, secret_text: '',
-                mode:, title:, text:, perfect_point:, solved_criterion:, candidates:, corrects:)
+                mode:, title:, text:, perfect_point:, solved_criterion:, candidates: nil, corrects: nil)
 
       Acl.permit!(mutation: self, args: {})
 
@@ -47,14 +48,16 @@ module Mutations
       # attributes(params) → save と update(params) は等価ではない(トランザクション周り)
       problem_body.attributes = { mode: mode, title: title, text: text, perfect_point: perfect_point, solved_criterion: solved_criterion, candidates: candidates, corrects: corrects }
 
+      open_at = open_at_begin...open_at_end if open_at_begin.present? && open_at_end.present?
+
       # TODO: shuffle: true
       #   リロードする度にシャッフルされるのは鬱陶しい  -> あまり意味のある実装にはならなそうなのでやらない
       #   登録するときにシャッフルすれば良いかも(force shuffle) -> これ
       #   シャッフルしてほしくない問題もあるかもしれない -> UIで送信時にシャッフルすれば良さそう
 
       # ここでproblem_bodyも保存される
-      if problem.update(body: problem_body, category: category, previous_problem: previous_problem, order: order, team_isolate: team_isolate, open_at: (open_at_begin...open_at_end), writer: writer, secret_text: secret_text)
-        { problem: problem.readable }
+      if problem.update(body: problem_body, category: category, previous_problem: previous_problem, order: order, team_isolate: team_isolate, open_at: open_at, writer: writer, secret_text: secret_text)
+        { problem: problem.readable, problem_body: problem_body }
       else
         add_errors(problem, problem_body)
       end

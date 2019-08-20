@@ -1,13 +1,28 @@
 <template>
   <v-layout column>
-    <v-flex>
-      <h2>{{ category.title }}</h2>
+    <!-- エラー防止のためにモーダルをレンダリングしない -->
+    <category-modal v-if="showModal" v-model="showModal" :category="category" />
 
-      <div class="body-2 ml-2">
-        {{ category.description }}
-      </div>
+    <!-- タイトル -->
+    <v-flex>
+      <v-container my-0 py-1>
+        <v-layout row align-center justify-start>
+          <v-flex shrink>
+            <span class="headline">{{ category.title }}</span>
+          </v-flex>
+          <v-flex v-if="isStaff" shrink ml-2>
+            <pen-button @click.stop="showModal = true" />
+          </v-flex>
+        </v-layout>
+      </v-container>
     </v-flex>
 
+    <!-- 説明文 -->
+    <v-flex ml-2>
+      <markdown :content="category.description" class="body-2" />
+    </v-flex>
+
+    <!-- 問題一覧 -->
     <v-container fluid grid-list-md>
       <v-layout wrap>
         <v-flex v-for="problem in problems" :key="problem.id" shrink>
@@ -19,17 +34,28 @@
 </template>
 
 <script>
+import PenButton from '~/components/atoms/PenButton'
+import Markdown from '~/components/atoms/Markdown'
 import ProblemCard from '~/components/molecules/ProblemCard'
+import CategoryModal from '~/components/organisms/CategoryModal'
 
 export default {
   name: 'CategoryArea',
   components: {
+    CategoryModal,
+    Markdown,
+    PenButton,
     ProblemCard
   },
   props: {
     category: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      showModal: false
     }
   },
   computed: {
