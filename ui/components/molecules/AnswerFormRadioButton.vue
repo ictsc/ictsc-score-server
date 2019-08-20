@@ -9,6 +9,7 @@
           v-model="internalValue[groupIndex][0]"
           :label="'選択肢' + (groupIndex + 1)"
           :readonly="readonly"
+          :rules="rules"
           column
           hide-details
         >
@@ -33,11 +34,6 @@ export default {
       type: Array,
       required: true
     },
-    // v-bind:error.sync
-    error: {
-      type: Boolean,
-      default: false
-    },
     candidatesGroups: {
       type: Array,
       required: true
@@ -49,30 +45,17 @@ export default {
   },
   data() {
     return {
-      internalValue: this.value
-    }
-  },
-  computed: {
-    checkError() {
-      console.log(this.internalValue)
-      return (
-        this.internalValue.filter(o => o.length !== 0).length !==
-        this.candidatesGroups.length
-      )
+      internalValue: this.value,
+      rules: [v => !!v || '必須']
     }
   },
   watch: {
     internalValue() {
       this.$emit('input', this.internalValue)
-      this.$emit('update:error', this.checkError)
     },
     value() {
       this.internalValue = this.value
     }
-  },
-  created() {
-    // バリデーションの初期状態を同期する
-    this.$emit('update:error', this.checkError)
   }
 }
 </script>

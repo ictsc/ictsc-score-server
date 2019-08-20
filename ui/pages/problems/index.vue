@@ -7,11 +7,11 @@
         </v-layout>
       </v-flex>
 
-      <v-flex>
+      <v-flex v-if="realtimeGrading">
         <answer-flow />
       </v-flex>
 
-      <v-flex v-if="gradingDelaySec !== 0" mt-2>
+      <v-flex mt-2>
         <answer-attention />
       </v-flex>
 
@@ -42,7 +42,7 @@ export default {
     ProblemCategory
   },
   computed: {
-    ...mapGetters('contestInfo', ['gradingDelaySec']),
+    ...mapGetters('contestInfo', ['gradingDelaySec', 'realtimeGrading']),
     categories() {
       return this.sortByOrder(
         orm.Category.query()

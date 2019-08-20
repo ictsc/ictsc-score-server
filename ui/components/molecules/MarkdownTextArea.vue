@@ -4,71 +4,70 @@
 機能
 * ctrl-enterでsubmitイベントを発火(@submit)
 * previewボタンでプレビュー可能
-* 文字数制限(error.sync)
 -->
-
 <template>
-  <v-layout column>
-    <v-flex pa-0>
-      <v-textarea
-        v-model="internalValue"
-        :autofocus="autofocus"
-        :placeholder="placeholder"
-        :readonly="readonly"
-        solo
-        flat
-        auto-grow
-        hide-details
-        class="shrink-side-slot"
-        @keyup.ctrl.enter.prevent="!error && $emit('submit')"
-      >
-      </v-textarea>
-    </v-flex>
-    <v-flex py-0>
-      <v-layout row align-center justify-end>
-        <v-flex shrink py-0>
-          <span class="caption" :class="textCounterColor">
-            {{ textCounter }}
-          </span>
-        </v-flex>
+  <div>
+    <v-textarea
+      v-model="internalValue"
+      v-bind="$attrs"
+      :rules="rules"
+      flat
+      auto-grow
+      class="shrink-side-slot pt-1"
+      :class="hideLabelArea ? 'shrink-top' : 'label-margin'"
+      v-on="$listeners"
+      @keyup.ctrl.enter.prevent="valid && $emit('submit')"
+    />
 
-        <v-flex shrink py-0>
-          <!-- ESCキーや範囲外クリックでも閉じれる -->
-          <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                :disabled="previewDisabled"
-                fab
-                icon
-                x-small
-                color="primary"
-                v-on="on"
-              >
-                <v-icon>mdi-eye</v-icon>
-              </v-btn>
-            </template>
+    <v-layout
+      row
+      align-center
+      justify-end
+      :class="{ 'show-in-details': showInDetails }"
+      :mr-1="showInDetails"
+    >
+      <v-flex shrink py-0>
+        <span class="caption" :class="textCounterColor">
+          {{ textCounter }}
+        </span>
+      </v-flex>
 
-            <v-card style="overflow-wrap: break-word">
-              <v-card-title>
-                <span>プレビュー</span>
-              </v-card-title>
+      <v-flex shrink py-0>
+        <!-- ESCキーや範囲外クリックでも閉じれる -->
+        <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              :disabled="previewDisabled"
+              fab
+              icon
+              x-small
+              color="primary"
+              v-on="on"
+            >
+              <v-icon>mdi-eye</v-icon>
+            </v-btn>
+          </template>
 
-              <v-divider></v-divider>
-              <v-card-text class="pa-1">
-                <markdown :content="internalValue" />
-              </v-card-text>
+          <v-card style="overflow-wrap: break-word">
+            <v-card-title>
+              <span>プレビュー</span>
+            </v-card-title>
 
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-spacer />
-                <v-btn left @click="preview = false">閉じる</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+            <v-divider></v-divider>
+            <v-card-text class="pa-1">
+              <markdown :content="internalValue" />
+            </v-card-text>
+
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn left @click="preview = false">閉じる</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-flex>
+    </v-layout>
+  </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -88,22 +87,9 @@ export default {
       type: String,
       default: ''
     },
-    // v-bind:error.sync
-    error: {
-      type: Boolean,
-      required: true
-    },
-    autofocus: {
+    allowEmpty: {
       type: Boolean,
       default: false
-    },
-    readonly: {
-      type: Boolean,
-      required: true
-    },
-    placeholder: {
-      type: String,
-      default: ''
     },
     previewWidth: {
       type: String,
@@ -113,6 +99,7 @@ export default {
   data() {
     return {
       preview: false,
+      rules: [v => this.errorRule(v)],
       // 文字列は初期状態をnullにしないと、''が来た時にwatchが発火しない
       internalValue: this.value
     }
@@ -134,25 +121,47 @@ export default {
         return 'grey--text text--ligthen-5'
       }
     },
-    checkError() {
-      return !(this.textCount > 0 && this.textCount <= this.textSizeLimit)
+    valid() {
+      if (this.value === undefined || this.value === null) {
+        return false
+      }
+
+      if (this.allowEmpty && this.value === '') {
+        return true
+      }
+
+      return this.textCount > 0 && this.textCount <= this.textSizeLimit
+    },
+    showInDetails() {
+      return !['', true].includes(this.$attrs['hide-details'])
     },
     previewDisabled() {
       return this.textCount <= 0
+    },
+    hideLabelArea() {
+      return !this.$attrs.label
     }
   },
   watch: {
     internalValue() {
       this.$emit('input', this.internalValue)
-      this.$emit('update:error', this.checkError)
     },
     value() {
       this.internalValue = this.value
     }
   },
-  created() {
-    // バリデーションの初期状態を同期する
-    this.$emit('update:error', this.checkError)
+  methods: {
+    errorRule(v) {
+      if (v === undefined || v === null) {
+        return '必須'
+      }
+
+      if (v === '') {
+        return this.allowEmpty ? true : '必須'
+      }
+
+      return this.valid || '文字数オーバー'
+    }
   }
 }
 </script>
@@ -163,6 +172,18 @@ export default {
     div
       .v-input__slot
         padding: 0 0 !important
+
+.shrink-top
+  ::v-deep
     textarea
-      padding: 0 0 0 0
+      padding-top: 0
+
+.label-margin
+  ::v-deep
+    textarea
+
+.show-in-details
+  position: relative
+  top: -1.7em
+  height: 0
 </style>

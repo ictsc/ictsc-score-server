@@ -4,16 +4,8 @@
       <expandable-button v-model="show" :togglable="supplements.length !== 0">
         補足事項
       </expandable-button>
-      <v-btn
-        v-if="isStaff"
-        x-small
-        fab
-        color="white"
-        elevation="2"
-        @click.stop="newSupplementShow = true"
-      >
-        <v-icon>mdi-pen</v-icon>
-      </v-btn>
+
+      <pen-button v-if="isStaff" @click.stop="showModal = true" />
     </v-flex>
     <!-- v-forとv-showで上手くアニメーションさせるためにv-flexをネストする -->
     <v-flex
@@ -29,9 +21,9 @@
     </v-flex>
 
     <markdown-editor-modal
-      :open.sync="newSupplementShow"
-      :succeeded.sync="newSupplementSucceeded"
-      :sending="newSupplementSending"
+      ref="modal"
+      v-model="showModal"
+      autofocus
       storage-key="newProblemSupplement"
       title="補足追加"
       submit-label="追加"
@@ -43,6 +35,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
+import PenButton from '~/components/atoms/PenButton'
 import ExpandableButton from '~/components/molecules/ExpandableButton'
 import ProblemSupplementSheet from '~/components/molecules/ProblemSupplementSheet'
 import MarkdownEditorModal from '~/components/organisms/MarkdownEditorModal'
@@ -50,6 +43,7 @@ import MarkdownEditorModal from '~/components/organisms/MarkdownEditorModal'
 export default {
   name: 'ProblemSupplementArea',
   components: {
+    PenButton,
     ExpandableButton,
     MarkdownEditorModal,
     ProblemSupplementSheet
@@ -68,9 +62,7 @@ export default {
   },
   data() {
     return {
-      newSupplementShow: false,
-      newSupplementSending: false,
-      newSupplementSucceeded: false,
+      showModal: false,
       show: true
     }
   },
@@ -82,19 +74,16 @@ export default {
   },
   methods: {
     async addSupplement(text) {
-      this.newSupplementSending = true
-
-      // newSupplementSucceeded をtrueにするとtextがクリアされる
       await orm.ProblemSupplement.addProblemSupplement({
         action: '補足追加',
-        resolve: () => (this.newSupplementSucceeded = true),
+        resolve: () => this.$refs.modal.succeeded(),
         params: {
           problemCode: this.problemCode,
           text
         }
       })
 
-      this.newSupplementSending = false
+      this.$refs.modal.finished()
     }
   }
 }

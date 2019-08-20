@@ -1,15 +1,20 @@
 <template>
   <v-sheet class="warning pa-2">
-    <div>
-      問題解答の注意点
-    </div>
+    <span class="subtitle-1">
+      解答時の注意点
+    </span>
     <ul>
-      <li>
-        採点結果は、採点依頼を送信してから{{
-          gradingDelayString
-        }}後に返ってきます。
-      </li>
-      <li>採点中はその問題へ新たに解答することはできません。</li>
+      <template v-if="realtimeGrading">
+        <li>
+          採点結果は解答を提出してから{{ gradingDelayString }}後に返ってきます。
+        </li>
+        <li>{{ gradingDelayString }}間はその問題へ再解答できません。</li>
+      </template>
+      <template v-else>
+        <li>採点は競技終了後に行われます。</li>
+        <li>採点されるのは最後に提出した解答のみです。</li>
+        <li>競技中は何度でも再解答可能です。</li>
+      </template>
     </ul>
   </v-sheet>
 </template>
@@ -20,7 +25,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'AnswerAttention',
   computed: {
-    ...mapGetters('contestInfo', ['gradingDelayString']),
+    ...mapGetters('contestInfo', ['gradingDelayString', 'realtimeGrading']),
 
     aboutGradingDelayTitle() {
       return `運営が採点 (最速${this.gradingDelayString})`

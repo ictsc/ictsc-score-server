@@ -1,14 +1,19 @@
 <template>
   <v-layout column>
+    <!-- 編集ボタン, タイトル -->
     <v-flex>
       <div class="grey--text text--darken-3 display-1">
         {{ problem.body.title }}
       </div>
       <v-divider class="primary" />
     </v-flex>
+
+    <!-- 問題情報 -->
     <v-flex>
       <problem-info-chips-area :problem="problem" class="ml-0" />
     </v-flex>
+
+    <!-- 運営メモ -->
     <v-flex v-if="!!problem.secretText">
       <v-sheet class="white elevation-2">
         <span class="pa-2 caption">運営用メモ</span>
@@ -16,15 +21,21 @@
         <markdown :content="problem.secretText" />
       </v-sheet>
     </v-flex>
-    <v-flex v-if="problem.environments.length !== 0 || isStaff">
+
+    <!-- 補足 -->
+    <v-flex v-if="problem.supplements.length !== 0 || isStaff">
       <problem-supplement-area
         :supplements="problem.supplements"
         :problem-code="problem.code"
       />
     </v-flex>
+
+    <!-- 環境 -->
     <v-flex v-if="problem.environments.length !== 0">
       <problem-environment-area :environments="problem.environments" />
     </v-flex>
+
+    <!-- 本文 -->
     <v-flex>
       <v-sheet class="pa-0 elevation-2">
         <span class="pa-2 caption">問題文</span>
