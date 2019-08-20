@@ -51,8 +51,10 @@ export default {
       password: '',
       passwordVisible: false,
       loading: false,
-      nameRules: [v => !!v || 'チーム名を入力してください'],
-      passwordRules: [v => !!v || 'パスワードを入力してください']
+
+      // 鬱陶しいのでメッセージは出さない
+      nameRules: [v => !!v || ''],
+      passwordRules: [v => !!v || '']
     }
   },
   methods: {
