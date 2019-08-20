@@ -33,6 +33,11 @@
     <!-- エラー防止のためにモーダルをレンダリングしない -->
     <template v-if="isStaff">
       <!-- 開いた時にデータを再度fetchさせるため -->
+      <problem-modal
+        v-if="showProblemModal"
+        v-model="showProblemModal"
+        is-new
+      />
       <category-modal
         v-if="showCategoryModal"
         v-model="showCategoryModal"
@@ -72,6 +77,7 @@ import AnswerAttention from '~/components/molecules/AnswerAttention'
 import AnswerFlow from '~/components/molecules/AnswerFlow'
 import CategoryModal from '~/components/organisms/CategoryModal'
 import ProblemCategory from '~/components/organisms/ProblemCategory'
+import ProblemModal from '~/components/organisms/ProblemModal'
 import orm from '~/orm'
 
 export default {
@@ -81,10 +87,13 @@ export default {
     AnswerFlow,
     CategoryModal,
     PageTitle,
-    ProblemCategory
+    ProblemCategory,
+    ProblemModal
+  },
   data() {
     return {
       showCategoryModal: false,
+      showProblemModal: false
     }
   },
   computed: {

@@ -7,8 +7,8 @@ class ProblemBody < ApplicationRecord
   validates :perfect_point,    presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0   }
   validates :solved_criterion, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 50, less_than_or_equal_to: 100 }
   validates :problem,          presence: true
-  validates :candidates,       presence: false
-  validates :corrects,         presence: false
+  validates :candidates,       allow_empty: true
+  validates :corrects,         allow_empty: true
 
   belongs_to :problem
 
@@ -30,8 +30,8 @@ class ProblemBody < ApplicationRecord
     # ProblemBodyを登録するのは信用できるユーザーのみなので、ここまでしなくても良いかもしれない
     case mode
     when 'textbox'
-      errors.add(:candidates, "in #{mode} mode, candidates must be nil") unless candidates.nil?
-      errors.add(:corrects, "in #{mode} mode, corrects must be nil") unless corrects.nil?
+      errors.add(:candidates, "in #{mode} mode, candidates must be empty") unless candidates.empty?
+      errors.add(:corrects, "in #{mode} mode, corrects must be empty") unless corrects.empty?
     when 'radio_button', 'checkbox'
       if candidates.blank?
         errors.add(:candidates, "in #{mode} mode, candidates must not be blank")
@@ -41,7 +41,7 @@ class ProblemBody < ApplicationRecord
 
       if corrects.blank?
         errors.add(:corrects, "in #{mode} mode, corrects must not be blank")
-      elsif !corrects.all?(Array) || !corrects.all?(&:present?) || !corrects.all? {|arr| arr.all?(String) }
+      elsif !corrects.all?(Array) || !corrects.all? {|arr| arr.all?(String) }
         errors.add(:corrects, "in #{mode} mode, corrects elements must be Array of String")
       end
 

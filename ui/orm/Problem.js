@@ -30,4 +30,89 @@ export default class Problem extends BaseModel {
       solvedCount: this.number()
     }
   }
+
+  static applyProblem({
+    action,
+    resolve,
+    params: {
+      code,
+      categoryCode,
+      previousProblemCode,
+      order,
+      teamIsolate,
+      openAtBegin,
+      openAtEnd,
+      writer,
+      secretText,
+      mode,
+      title,
+      text,
+      perfectPoint,
+      solvedCriterion,
+      candidates,
+      corrects
+    }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyProblem',
+      params: {
+        code,
+        categoryCode,
+        previousProblemCode,
+        order,
+        teamIsolate,
+        openAtBegin,
+        openAtEnd,
+        writer,
+        secretText,
+        mode,
+        title,
+        text,
+        perfectPoint,
+        solvedCriterion,
+        candidates,
+        corrects
+      },
+      fields: [Problem, orm.ProblemBody],
+      type: 'upsert'
+    })
+  }
+
+  // ProblemBodyのフィールドに透過的にアクセスするためのゲッター
+  // 特にProblemModalに必要
+  get mode() {
+    return this.body.mode
+  }
+  get title() {
+    return this.body.title
+  }
+  get text() {
+    return this.body.text
+  }
+  get perfectPoint() {
+    return this.body.perfectPoint
+  }
+  get solvedCriterion() {
+    return this.body.solvedCriterion
+  }
+  get candidates() {
+    return this.body.candidates
+  }
+  get corrects() {
+    return this.body.corrects
+  }
+  get createdAt() {
+    return this.body.createdAt
+  }
+  get updatedAt() {
+    return this.body.updatedAt
+  }
+  get previousProblemCode() {
+    return this.previousProblem && this.previousProblem.code
+  }
+  get categoryCode() {
+    return this.category && this.category.code
+  }
 }

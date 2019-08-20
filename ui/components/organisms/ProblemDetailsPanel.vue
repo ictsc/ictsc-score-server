@@ -1,10 +1,23 @@
 <template>
   <v-layout column>
+    <!-- エラー防止のためにモーダルをレンダリングしない -->
+    <problem-modal v-if="showModal" v-model="showModal" :problem="problem" />
+
     <!-- 編集ボタン, タイトル -->
     <v-flex>
-      <div class="grey--text text--darken-3 display-1">
-        {{ problem.body.title }}
-      </div>
+      <v-container fluid py-0>
+        <v-row align="center" justify="start">
+          <pen-button
+            v-if="isStaff"
+            class="mr-2"
+            @click.stop="showModal = true"
+          />
+
+          <div class="grey--text text--darken-3 display-1">
+            {{ problem.body.title }}
+          </div>
+        </v-row>
+      </v-container>
       <v-divider class="primary" />
     </v-flex>
 
@@ -48,7 +61,9 @@
 </template>
 <script>
 import Markdown from '~/components/atoms/Markdown'
+import PenButton from '~/components/atoms/PenButton'
 import ProblemEnvironmentArea from '~/components/organisms/ProblemEnvironmentArea'
+import ProblemModal from '~/components/organisms/ProblemModal'
 import ProblemInfoChipsArea from '~/components/molecules/ProblemInfoChipsArea'
 import ProblemSupplementArea from '~/components/organisms/ProblemSupplementArea'
 
@@ -58,7 +73,9 @@ export default {
   name: 'ProblemDetailsPanel',
   components: {
     Markdown,
+    PenButton,
     ProblemEnvironmentArea,
+    ProblemModal,
     ProblemInfoChipsArea,
     ProblemSupplementArea
   },
@@ -66,6 +83,11 @@ export default {
     problem: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      showModal: false
     }
   }
 }
