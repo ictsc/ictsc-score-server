@@ -54,8 +54,11 @@ export default {
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる
-    JsonStroage.accessor('displayStatuses', ['unsolved', 'in_progress']),
-    JsonStroage.accessor('issueSearch', '')
+    JsonStroage.accessor('issue-list', 'displayStatuses', [
+      'unsolved',
+      'in_progress'
+    ]),
+    JsonStroage.accessor('issue-list', 'issueSearch', '')
   ],
   computed: {
     // computedを分ければ軽くなるはず?

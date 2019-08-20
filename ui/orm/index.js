@@ -1,5 +1,6 @@
 import Answer from '~/orm/Answer'
 import Category from '~/orm/Category'
+import Notice from '~/orm/Notice'
 import Issue from '~/orm/Issue'
 import IssueComment from '~/orm/IssueComment'
 import Problem from '~/orm/Problem'
@@ -12,6 +13,7 @@ import Team from '~/orm/Team'
 export default {
   Answer,
   Category,
+  Notice,
   Issue,
   IssueComment,
   Problem,

@@ -14,7 +14,7 @@ class Acl
       return false if team.audience?
 
       case mutation
-      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'DeleteNotice', 'ConfirmingAnswer', 'PinNotice'
+      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice'
         # staff only
         team.staff?
       when 'AddAnswer'
@@ -29,6 +29,8 @@ class Acl
       when 'StartIssue'
         # player and opened
         team.player? && args.fetch(:problem).body.readable?(team: team)
+      when 'DeleteNotice'
+        team.staff? && Config.before_delete_time_limit?(args.fetch(:notice).created_at)
       when 'DeleteProblemSupplement'
         team.staff? && Config.before_delete_time_limit?(args.fetch(:problem_supplement).created_at)
       when 'DeleteIssueComment'

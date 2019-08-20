@@ -15,7 +15,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
     <v-dialog
       :value="value"
       :persistent="sending"
-      max-width="70em"
+      :max-width="maxWidth"
       scrollable
       @input="close"
     >
@@ -24,36 +24,45 @@ Markdownを書いて送信するモーダルのベースコンポーネント
           <span>{{ title }}</span>
         </v-card-title>
 
-        <slot name="prepend" />
-
         <v-divider />
+
         <v-card-text class="pt-0 pb-3">
           <v-form ref="form" v-model="valid">
+            <slot name="prepend" />
+
             <markdown-text-area
               v-model="text"
               :readonly="confirming"
-              autofocus
+              :label="label"
+              :autofocus="autofocus"
+              :preview-width="maxWidth"
               placeholder="Markdownで記述できます"
-              preview-width="70em"
               @submit="confirm"
             />
           </v-form>
-        </v-card-text>
 
-        <slot name="append" />
+          <slot name="append" />
+        </v-card-text>
 
         <v-divider />
         <v-card-actions>
+          <v-btn
+            :disabled="confirming || !resetable"
+            color="warning"
+            @click="reset"
+          >
+            リセット
+          </v-btn>
+
           <v-spacer />
           <v-btn
-            left
             :disabled="!valid || confirming"
             color="success"
             @click.stop="confirm"
           >
             確認
           </v-btn>
-          <v-btn left :disabled="confirming" @click="close">
+          <v-btn :disabled="confirming" @click="close">
             キャンセル
           </v-btn>
         </v-card-actions>
@@ -64,7 +73,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
     <v-dialog
       v-model="confirming"
       :persistent="sending"
-      max-width="70em"
+      :max-width="maxWidth"
       scrollable
     >
       <v-card style="overflow-wrap: break-word">
@@ -88,7 +97,6 @@ Markdownを書いて送信するモーダルのベースコンポーネント
         <v-card-actions>
           <v-spacer />
           <v-btn
-            left
             :disabled="!valid || !confirming"
             :loading="sending"
             color="success"
@@ -96,7 +104,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
           >
             {{ submitLabel }}
           </v-btn>
-          <v-btn left :disabled="sending" @click="confirming = false">
+          <v-btn :disabled="sending" @click="confirming = false">
             戻る
           </v-btn>
         </v-card-actions>
@@ -130,14 +138,32 @@ export default {
       type: String,
       required: true
     },
+    label: {
+      type: String,
+      default: undefined
+    },
     submitLabel: {
       type: String,
       required: true
+    },
+    autofocus: {
+      type: Boolean,
+      default: false
     },
     // 送信モーダルで補足メッセージを表示可能
     supplement: {
       type: String,
       default: ''
+    },
+    maxWidth: {
+      type: String,
+      default: '50em'
+    },
+    // prependやappendの要素が編集されたかどうか
+    // trueならリセットボタンが有効になる
+    edited: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -146,6 +172,11 @@ export default {
       confirming: false,
       sending: false,
       text: this.$jsonStorage.get(this.storageKey)
+    }
+  },
+  computed: {
+    resetable() {
+      return this.edited || this.text !== ''
     }
   },
   watch: {
@@ -158,7 +189,17 @@ export default {
       this.confirming = true
     },
     close() {
+      // 主にsumitが成功して閉じる時に必要
+      // closeする場合でこれらがfalseでないケースは無いはず
+      this.confirming = false
+      this.sending = false
+
       this.$emit('input', false)
+    },
+    reset() {
+      this.text = ''
+      this.$emit('reset')
+      this.$refs.form.resetValidation()
     },
     submit() {
       this.sending = true
@@ -166,14 +207,8 @@ export default {
     },
     // 親コンポーネントから呼び出す
     succeeded() {
-      this.text = ''
-      this.$refs.form.resetValidation()
+      this.reset()
       this.close()
-    },
-    // 親コンポーネントから呼び出す
-    finished() {
-      this.confirming = false
-      this.sending = false
     }
   }
 }

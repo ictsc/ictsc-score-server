@@ -58,7 +58,6 @@ export default {
     ...mapActions('session', ['logout']),
 
     async tryLogout() {
-      console.log('logout')
       if (await this.logout()) {
         this.notifySuccess({ message: 'ログアウトしました' })
       } else {

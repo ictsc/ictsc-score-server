@@ -82,8 +82,6 @@ export default {
           text
         }
       })
-
-      this.$refs.modal.finished()
     }
   }
 }

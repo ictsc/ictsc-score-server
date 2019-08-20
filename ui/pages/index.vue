@@ -1,16 +1,25 @@
 <template>
-  <section class="section">
-    <h1>トップページ</h1>
-  </section>
+  <v-container>
+    <v-row justify="center">
+      <!-- TODO: 仮の幅 -->
+      <v-col style="max-width: 40em">
+        <notice-panel />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
-
 <script>
+import NoticePanel from '~/components/organisms/NoticePanel'
+
 export default {
   name: 'Index',
   head() {
     return {
       title: 'ダッシュボード'
     }
+  },
+  components: {
+    NoticePanel
   }
 }
 </script>
