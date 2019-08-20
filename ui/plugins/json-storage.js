@@ -14,8 +14,8 @@ export class JsonStroage {
   }
 
   // Vueにmixinするとリアクティブにローカルストレージを扱える
-  static accessor(key, defaultValue) {
-    const storage = new JsonStroage(key, defaultValue)
+  static accessor(preifx, key, defaultValue) {
+    const storage = new JsonStroage(`${preifx}-${key}`, defaultValue)
 
     return {
       data() {
