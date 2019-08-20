@@ -1,16 +1,19 @@
 <template>
   <!-- TODO: ここでreadable判定してもいいかも → Loadingしたい -->
-  <v-container fluid fill-height grid-list-md>
-    <v-layout row>
+  <v-container fluid grid-list-md>
+    <v-row>
       <!-- 左の問題詳細パネル -->
-      <v-flex :xs6="showRigthPanel">
+      <v-col :cols="showRigthPanel ? 6 : undefined">
         <problem-details-panel v-if="problemIsReadable" :problem="problem" />
-      </v-flex>
+      </v-col>
 
       <!-- 右の質問・解答パネル -->
-      <v-flex v-if="showRigthPanel" xs6>
+      <v-col v-if="showRigthPanel" cols="6">
         <v-tabs v-model="tabMode" grow active-class="always-active-color">
-          <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
+          <v-tabs-slider></v-tabs-slider>
+          <v-tab replace append :to="'#' + issuesTabName" class="ml-0">
+            質問
+          </v-tab>
           <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
         </v-tabs>
 
@@ -22,18 +25,18 @@
             <answer-panel :answers="answers" :problem-body="problem.body" />
           </v-tab-item>
         </v-tabs-items>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <!-- チーム名 -->
     <v-snackbar :value="isStaff && !!teamId" :timeout="0" color="primary">
-      <v-layout justify-center row>
+      <v-row justify="center">
         <v-progress-circular v-if="!team" indeterminate />
 
         <template v-else>
           <span>{{ team.displayName }}</span>
         </template>
-      </v-layout>
+      </v-row>
     </v-snackbar>
   </v-container>
 </template>
