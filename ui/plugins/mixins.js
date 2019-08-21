@@ -33,6 +33,9 @@ Vue.mixin({
       'notifyWarning',
       'notifyError'
     ]),
+    sortByCode(list) {
+      return this.$_.sortBy(list, 'code')
+    },
     sortByOrder(list) {
       return this.$_.sortBy(list, 'order')
     },
