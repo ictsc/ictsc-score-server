@@ -8,7 +8,7 @@
     :hide-default-footer="environments.length <= itemsPerPage"
     dense
     multi-sort
-    class="elevation-2"
+    class="elevation-2 text-no-wrap"
   >
   </v-data-table>
 </template>
@@ -49,7 +49,7 @@ export default {
 
       if (this.isStaff) {
         headers.unshift(
-          { text: 'チーム番号', value: 'team.number' },
+          { text: 'No.', value: 'team.number' },
           { text: 'チーム名', value: 'team.name' },
           { text: '状態', value: 'status' }
         )
