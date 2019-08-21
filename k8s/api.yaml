@@ -48,8 +48,8 @@ data:
   POSTGRES_MAX_CONNECTIONS: "200"
   POSTGRES_SHARED_BUFFERS: "256MB"
   POSTGRES_WORK_MEM: "4MB"
-  RAILS_ENV: "development"
-  NODE_ENV: "development"
+  RAILS_ENV: "production"
+  NODE_ENV: "production"
   REDIS_URL: "redis://redis:6379/0"
 ---
 apiVersion: v1
