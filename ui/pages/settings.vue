@@ -30,6 +30,19 @@
         class="mt-4"
       />
     </v-layout>
+
+    <v-layout column align-center class="mt-8">
+      <label>コンテスト設定</label>
+
+      <v-data-table
+        :headers="contestInfoHeaders"
+        :items="contestInfoItems"
+        :items-per-page="1000"
+        hide-default-footer
+        dense
+        class="elevation-1"
+      />
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -37,6 +50,15 @@ import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import PageTitle from '~/components/atoms/PageTitle'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
+
+const contestInfoKeys = [
+  'gradingDelayString',
+  'hideAllScore',
+  'realtimeGrading',
+  'textSizeLimit',
+  'deleteTimeLimitString',
+  'competitionTime'
+]
 
 export default {
   name: 'Settings',
@@ -75,7 +97,19 @@ export default {
       ]
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters('contestInfo', contestInfoKeys),
+
+    contestInfoHeaders() {
+      return [{ text: '名前', value: 'name' }, { text: '値', value: 'value' }]
+    },
+    contestInfoItems() {
+      return contestInfoKeys.map(k => ({
+        name: k,
+        value: JSON.stringify(this[k])
+      }))
+    }
+  },
   methods: {
     async fetchTeams() {
       // パスワードは全てnullになる
