@@ -17,7 +17,7 @@
           <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
         </v-tabs>
 
-        <v-tabs-items v-model="tabMode" class="pt-2">
+        <v-tabs-items v-model="tabMode" class="pt-2 transparent">
           <v-tab-item :value="issuesTabName">
             <issue-panel :problem="problem" :team-id="teamId" />
           </v-tab-item>
@@ -153,4 +153,6 @@ export default {
 .always-active-color
   &::before
     opacity: 0.12 !important
+.transparent
+  background-color: none
 </style>

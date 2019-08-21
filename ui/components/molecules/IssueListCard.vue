@@ -44,7 +44,7 @@
                   min-width="50%"
                   max-width="50%"
                   bottom
-                  content-class="pa-0 elevation-6"
+                  content-class="pa-0 elevation-8 opacity-none"
                 >
                   <template v-slot:activator="{ on }">
                     <v-card
@@ -61,7 +61,10 @@
                   </template>
 
                   <!-- ツールチップではMarkdownとして表示 -->
-                  <markdown :content="comment.text" />
+                  <markdown
+                    :content="comment.text"
+                    :color="commentColor(comment)"
+                  />
                 </v-tooltip>
               </v-flex>
 
@@ -147,10 +150,12 @@ export default {
 .full-height
   height: 100%
 
+.opacity-none
+  opacity: 1 !important
+
 .truncate
   overflow: hidden
   display: -webkit-box
   -webkit-box-orient: vertical
   -webkit-line-clamp: 3
-  // overflow-wrap: break-word
 </style>
