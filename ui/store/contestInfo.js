@@ -62,10 +62,6 @@ export default {
       Math.floor(getters.gradingDelaySec / 60),
     gradingDelayMinString: (state, getters) => `${getters.gradingDelayMin}分`,
 
-    competitionTime: state => state.competitionTime,
-    hideAllScore: state => state.hideAllScore,
-    realtimeGrading: state => state.realtimeGrading,
-    textSizeLimit: state => state.textSizeLimit,
     deleteTimeLimitSec: state => state.deleteTimeLimitSec,
     deleteTimeLimitMsec: state => state.deleteTimeLimitSec * 1000,
     deleteTimeLimitString: (state, getters) => {
@@ -73,6 +69,15 @@ export default {
         ? `${getters.deleteTimeLimitSec}秒`
         : `${Math.floor(getters.deleteTimeLimitSec / 60)}分`
     },
+
+    competitionTime: state => state.competitionTime,
+    competitionTimeString: (state, getters) => {
+      return JSON.stringify(getters.competitionTime)
+    },
+
+    hideAllScore: state => state.hideAllScore,
+    realtimeGrading: state => state.realtimeGrading,
+    textSizeLimit: state => state.textSizeLimit,
     guidePage: state => state.guidePage
   }
 }

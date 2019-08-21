@@ -108,6 +108,7 @@ export default class BaseModel extends Model {
 
   // sendMutationBaseに加え、結果の通知を行う
   // 例外は全て個々で握りつぶされる
+  // actionを指定すると、成功・失敗・例外 の通知を出す
   static async sendMutation({
     mutation,
     params,
@@ -125,9 +126,13 @@ export default class BaseModel extends Model {
 
       if (res.errors) {
         console.error(res.errors)
-        notify('notifyWarning', `${action}に失敗しました`)
+        if (action) {
+          notify('notifyWarning', `${action}に失敗しました`)
+        }
       } else {
-        notify('notifySuccess', `${action}に成功しました`)
+        if (action) {
+          notify('notifySuccess', `${action}に成功しました`)
+        }
 
         // resolveがあれば実行する
         !!resolve && resolve(res)
@@ -136,7 +141,9 @@ export default class BaseModel extends Model {
       return res
     } catch (error) {
       console.error(error)
-      notify('notifyError', `想定外のエラーにより${action}に失敗しました`)
+      if (action) {
+        notify('notifyError', `想定外のエラーにより${action}に失敗しました`)
+      }
     }
   }
 

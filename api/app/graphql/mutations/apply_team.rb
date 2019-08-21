@@ -11,6 +11,7 @@ module Mutations
     argument :organization, String, required: false
     argument :color,        String, required: false
 
+    # passwordを省略した場合は更新されない
     def resolve(role:, number:, name:, password:, organization: nil, color: nil)
       Acl.permit!(mutation: self, args: {})
 

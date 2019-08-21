@@ -37,6 +37,10 @@
       </navigation-link>
     </template>
 
+    <navigation-link v-if="isStaff" to="/settings">
+      <v-icon>mdi-settings-outline</v-icon>
+    </navigation-link>
+
     <navigation-link v-if="isNoLogin" to="/login">
       ログイン
     </navigation-link>
