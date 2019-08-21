@@ -1,82 +1,62 @@
 <template>
   <v-card :to="issueURL" height="5em">
-    <v-container fill-height py-0>
-      <v-layout row align-center justify-start fill-height>
-        <!-- 状態 -->
-        <v-flex class="full-height" style="max-width: 4.4em">
-          <v-layout
-            column
-            justify-center
-            align-center
-            class="full-height"
-            :class="statusColor"
+    <v-row align="center" justify="start" class="ml-0 pr-2 full-height">
+      <!-- 状態 -->
+      <v-col class="pa-0 full-height status">
+        <v-sheet :class="statusColor" class="full-height right-no-radius">
+          <v-layout justify-center align-center fill-height>
+            {{ issue.statusJp }}
+          </v-layout>
+        </v-sheet>
+      </v-col>
+
+      <!-- 問題名 チーム名 最終返答 -->
+      <v-col class="pa-0 ml-2 mr-3 card-info">
+        <div class="body-2 text-truncate">
+          {{ issue.problem.body.title }}<br />
+          {{ issue.team.displayName }}<br />
+          最終返答 {{ latestReplyAt }}
+        </div>
+      </v-col>
+
+      <!-- 最近のコメント -->
+      <v-row class="ml-0 mr-3">
+        <v-col
+          v-for="comment in recentlyComments"
+          :key="comment.id"
+          class="pa-0 ml-2"
+        >
+          <!-- 通常はただの文字列して表示し、ホバーでMarkdownツールチップ -->
+          <v-tooltip
+            open-delay="300"
+            min-width="50%"
+            max-width="50%"
+            bottom
+            content-class="pa-0 elevation-8 opacity-none"
           >
-            <v-flex shrink>
-              {{ issue.statusJp }}
-            </v-flex>
-          </v-layout>
-        </v-flex>
-
-        <!-- 問題名 チーム名 最終返答 -->
-        <v-flex ml-2>
-          <v-layout column class="body-2 text-truncate">
-            <span>{{ issue.problem.body.title }}</span>
-            <span>{{ issue.team.displayName }}</span>
-            <span> 最終返答: {{ latestReplyAt }} </span>
-          </v-layout>
-        </v-flex>
-
-        <v-spacer />
-
-        <!-- 最近のコメント -->
-        <v-flex ml-1 shrink>
-          <v-container py-0>
-            <v-layout row align-center justify-end pr-2>
-              <v-flex
-                v-for="comment in recentlyComments"
-                :key="comment.id"
-                shrink
-                ml-2
+            <template v-slot:activator="{ on }">
+              <v-card
+                height="4em"
+                width="10em"
+                :color="commentColor(comment)"
+                v-on="on"
               >
-                <!-- 通常はただの文字列して表示し、ホバーでMarkdownツールチップ -->
-                <v-tooltip
-                  open-delay="300"
-                  min-width="50%"
-                  max-width="50%"
-                  bottom
-                  content-class="pa-0 elevation-8 opacity-none"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-card
-                      height="4em"
-                      width="10em"
-                      :color="commentColor(comment)"
-                      v-on="on"
-                    >
-                      <!-- ただのテキストとして表示 -->
-                      <v-card-text class="caption py-0 truncate">
-                        {{ comment.text }}
-                      </v-card-text>
-                    </v-card>
-                  </template>
+                <!-- 一覧ではただのテキストとして表示 -->
+                <v-card-text class="caption py-0 truncate">
+                  {{ comment.text }}
+                </v-card-text>
+              </v-card>
+            </template>
 
-                  <!-- ツールチップではMarkdownとして表示 -->
-                  <markdown
-                    :content="comment.text"
-                    :color="commentColor(comment)"
-                  />
-                </v-tooltip>
-              </v-flex>
+            <!-- ツールチップではMarkdownとして表示 -->
+            <markdown :content="comment.text" :color="commentColor(comment)" />
+          </v-tooltip>
+        </v-col>
 
-              <!-- 足りない分を透明なカード埋めて左寄せ風にする -->
-              <v-flex v-for="n in paddingCount" :key="n" shirnk ml-2>
-                <v-card width="10em" color="transparent" elevation="0" />
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-flex>
-      </v-layout>
-    </v-container>
+        <!-- カードの枚数が足りない分の余白 -->
+        <v-spacer />
+      </v-row>
+    </v-row>
   </v-card>
 </template>
 <script>
@@ -125,10 +105,6 @@ export default {
     recentlyComments() {
       return this.$_.first(this.comments, this.displayCommentCount)
     },
-    paddingCount() {
-      const diff = this.displayCommentCount - this.comments.length
-      return diff < 0 ? 0 : diff
-    },
     issueURL() {
       const base = `/problems/${this.issue.problemId}#issues`
 
@@ -158,4 +134,19 @@ export default {
   display: -webkit-box
   -webkit-box-orient: vertical
   -webkit-line-clamp: 3
+
+.status
+  max-width: 4.2em
+  min-width: 4.2em
+
+.right-no-radius
+  border-top-right-radius: 0
+  border-bottom-right-radius: 0
+
+.overflow-hide
+  overflow: hide
+
+.card-info
+  max-width: 10em
+  min-width: 10em
 </style>
