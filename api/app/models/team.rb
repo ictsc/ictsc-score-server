@@ -27,6 +27,8 @@ class Team < ApplicationRecord
   attr_reader :password
 
   def password=(value)
+    return if value.blank?
+
     @password = value
     self.password_digest = BCrypt::Password.create(@password, cost: BCrypt::Engine.cost)
   end
