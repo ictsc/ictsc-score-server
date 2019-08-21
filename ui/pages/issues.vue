@@ -1,30 +1,28 @@
 <template>
   <v-container>
     <v-layout column align-center>
-      <v-flex>
-        <v-layout column>
-          <page-title title="質問一覧" />
+      <page-title title="質問一覧" />
 
-          <!-- 状態選択ボタン -->
-          <issue-status-select-buttons
-            v-model="displayStatuses"
-            red="unsolved"
-            yellow="in_progress"
-            green="solved"
-          />
+      <v-flex class="mb-4">
+        <!-- 状態選択ボタン -->
+        <issue-status-select-buttons
+          v-model="displayStatuses"
+          red="unsolved"
+          yellow="in_progress"
+          green="solved"
+        />
 
-          <!-- 検索ボックス -->
-          <v-text-field
-            v-model="issueSearch"
-            :placeholder="searchFieldPlaceholder"
-            autofocus
-            clearable
-            append-icon="mdi-magnify"
-            single-line
-            hide-details
-          />
-          <v-spacer class="mb-8" />
-        </v-layout>
+        <!-- 検索ボックス -->
+        <v-text-field
+          v-model="issueSearch"
+          :placeholder="searchFieldPlaceholder"
+          autofocus
+          clearable
+          append-icon="mdi-magnify"
+          single-line
+          hide-details
+          class="mb-2"
+        />
       </v-flex>
 
       <!-- 質問一覧 -->
