@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-layout column>
+    <v-layout column align-center>
       <v-flex>
-        <v-layout column align-center>
+        <v-layout column>
           <page-title title="質問一覧" />
 
           <!-- 状態選択ボタン -->
@@ -29,11 +29,12 @@
 
       <!-- 質問一覧 -->
       <v-flex>
-        <v-layout column>
-          <v-flex v-for="issue in issues" :key="issue.id" mb-2 shrink>
-            <issue-list-card :issue="issue" />
-          </v-flex>
-        </v-layout>
+        <issue-list-card
+          v-for="issue in issues"
+          :key="issue.id"
+          :issue="issue"
+          class="mb-2"
+        />
       </v-flex>
     </v-layout>
   </v-container>
@@ -113,4 +114,3 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass"></style>
