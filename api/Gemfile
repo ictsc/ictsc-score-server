@@ -42,6 +42,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'tzinfo-data'
 
+gem 'slack-notifier'
+
 group :development, :test do
   gem 'bullet' # N+1 problem
   gem 'rubocop', require: false

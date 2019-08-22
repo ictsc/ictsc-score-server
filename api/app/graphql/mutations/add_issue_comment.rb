@@ -19,6 +19,7 @@ module Mutations
 
       # issueも同時にsaveされる
       if issue_comment.update(issue: issue)
+        SlackNotifierJob.perform_later(mutation: self.class.name.demodulize, obj: issue_comment)
         { issue: issue.readable, issue_comment: issue_comment.readable }
       else
         add_errors(issue, issue_comment)
