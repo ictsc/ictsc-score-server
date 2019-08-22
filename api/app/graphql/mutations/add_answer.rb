@@ -19,6 +19,7 @@ module Mutations
       if answer.update(args.merge(bodies: bodies, confirming: false, team: Context.current_team!))
         # TODO: answer.gradeをジョブで実行する -> after create hook
         answer.grade
+        SlackNotifierJob.perform_later(mutation: self.class.name.demodulize, obj: answer)
         { answer: answer.readable }
       else
         add_errors(answer)
