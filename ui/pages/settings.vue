@@ -43,6 +43,8 @@
         class="elevation-1"
       />
     </v-layout>
+
+    <export-scores-button class="mt-8" />
   </v-container>
 </template>
 <script>
@@ -50,6 +52,7 @@ import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import PageTitle from '~/components/atoms/PageTitle'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
+import ExportScoresButton from '~/components/settings/ExportScoresButton'
 
 const contestInfoKeys = [
   'gradingDelayString',
@@ -64,6 +67,7 @@ export default {
   name: 'Settings',
   components: {
     ExportImportButtons,
+    ExportScoresButton,
     PageTitle
   },
   data() {
