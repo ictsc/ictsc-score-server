@@ -11,18 +11,20 @@
       <v-col v-if="showRigthPanel" cols="6">
         <v-tabs v-model="tabMode" grow active-class="always-active-color">
           <v-tabs-slider></v-tabs-slider>
-          <v-tab replace append :to="'#' + issuesTabName" class="ml-0">
+          <v-tab replace append :to="'#' + answersTabName" class="mx-0">
+            解答
+          </v-tab>
+          <v-tab replace append :to="'#' + issuesTabName" class="mx-0">
             質問
           </v-tab>
-          <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tabMode" class="pt-2 transparent">
-          <v-tab-item :value="issuesTabName">
-            <issue-panel :problem="problem" :team-id="teamId" />
-          </v-tab-item>
           <v-tab-item :value="answersTabName">
             <answer-panel :answers="answers" :problem-body="problem.body" />
+          </v-tab-item>
+          <v-tab-item :value="issuesTabName">
+            <issue-panel :problem="problem" :team-id="teamId" />
           </v-tab-item>
         </v-tabs-items>
       </v-col>

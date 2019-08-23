@@ -22,14 +22,14 @@
     </v-flex>
 
     <!-- 問題情報 -->
-    <v-flex>
+    <v-flex class="my-1">
       <problem-info-chips-area :problem="problem" class="ml-0" />
     </v-flex>
 
     <!-- 運営メモ -->
     <v-flex v-if="!!problem.secretText">
-      <v-sheet class="white elevation-2">
-        <span class="pa-2 caption">運営用メモ</span>
+      <v-sheet class="pa-2 elevation-2">
+        <span class="pa-2 body-2">運営用メモ</span>
         <v-divider class="pb-1" />
         <markdown :content="problem.secretText" />
       </v-sheet>
@@ -50,8 +50,8 @@
 
     <!-- 本文 -->
     <v-flex>
-      <v-sheet class="pa-0 elevation-2">
-        <span class="pa-2 caption">問題文</span>
+      <v-sheet class="pa-2 elevation-2">
+        <span class="pa-2 body-2">問題文</span>
         <v-divider class="pb-1" />
         <!-- TODO: 長文対応どうするか -->
         <markdown :content="problem.body.text" />

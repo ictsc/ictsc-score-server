@@ -55,7 +55,8 @@ export default {
     // 透過的にローカルストレージにアクセスできる
     JsonStroage.accessor('issue-list', 'displayStatuses', [
       'unsolved',
-      'in_progress'
+      'in_progress',
+      'solved'
     ]),
     JsonStroage.accessor('issue-list', 'issueSearch', '')
   ],

@@ -7,6 +7,7 @@
 
       <pen-button v-if="isStaff" @click.stop="showModal = true" />
     </v-flex>
+
     <!-- v-forとv-showで上手くアニメーションさせるためにv-flexをネストする -->
     <v-flex
       v-for="supplement in sortedSupplements"

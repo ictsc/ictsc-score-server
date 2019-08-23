@@ -1,8 +1,9 @@
 <template>
-  <v-sheet elevation="2">
+  <!-- TODO: 一時的にelevationを消して背景と同一化させる -->
+  <v-sheet elevation="0">
     <v-container fluid>
       <v-row justify="center">
-        <div class="title">お知らせ</div>
+        <div class="headline">お知らせ</div>
 
         <pen-button
           v-if="isStaff"

@@ -1,5 +1,5 @@
 <template>
-  <expandable-card v-model="opened" color="primary">
+  <expandable-card v-model="opened" color="white">
     <!-- TODO: ボタンの内容の表示位置を固定したい(縦に揃えたい) -->
     <template v-slot:button>
       <v-layout row align-center>

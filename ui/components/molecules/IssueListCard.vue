@@ -56,6 +56,9 @@
         <!-- カードの枚数が足りない分の余白 -->
         <v-spacer />
       </v-row>
+
+      <!-- ここでも必要 -->
+      <v-spacer />
     </v-row>
   </v-card>
 </template>

@@ -4,10 +4,6 @@
       <img class="logo" src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
     </navigation-link>
 
-    <navigation-link to="/guide">
-      ガイド
-    </navigation-link>
-
     <!-- TODO: 未実装なため隠す
     <navigation-link to="/teams">
       チーム
@@ -17,7 +13,11 @@
     <v-spacer />
 
     <navigation-link to="/">
-      トップ
+      お知らせ
+    </navigation-link>
+
+    <navigation-link to="/guide">
+      ガイド
     </navigation-link>
 
     <navigation-link to="/problems">

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="warning pa-2">
+  <v-sheet class="warning lighten-2 pa-2">
     <span class="subtitle-1">
       解答時の注意点
     </span>

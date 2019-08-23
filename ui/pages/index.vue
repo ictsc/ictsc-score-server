@@ -15,7 +15,9 @@ export default {
   name: 'Index',
   head() {
     return {
-      title: 'ダッシュボード'
+      // TODO: 一時しのぎ
+      // title: 'ダッシュボード'
+      title: 'お知らせ'
     }
   },
   components: {

@@ -1,12 +1,13 @@
 <template>
-  <v-sheet class="error elevation-2 my-1">
+  <v-sheet class="elevation-2 my-1 px-2 ">
     <v-layout column>
       <v-flex py-0>
-        <markdown :content="supplement.text" color="error" />
+        <markdown :content="supplement.text" style="word-wrap: break-word" />
       </v-flex>
       <v-flex py-1 pr-2>
-        <v-layout row align-center justify-end class="elevation-0">
+        <v-layout row align-center justify-end>
           <span class="caption mr-2 mt-0">{{ supplement.createdAtShort }}</span>
+
           <delete-button
             v-if="isStaff"
             :start-at-msec="Date.parse(supplement.createdAt)"
