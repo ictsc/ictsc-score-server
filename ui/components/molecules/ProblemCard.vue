@@ -23,7 +23,7 @@ export default {
         // TODO: 遷移させない & エラーメッセージ
         return ''
       } else if (this.isPlayer) {
-        return `${this.problem.id}#issues`
+        return `${this.problem.id}#answers`
       } else {
         return this.problem.id
       }
