@@ -364,6 +364,8 @@ export default {
         this.writer = null
       }
 
+      this.perfectPoint = parseInt(this.perfectPoint)
+
       await orm.Problem.applyProblem({
         action: this.modalTitle,
         resolve: () => {
