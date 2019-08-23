@@ -88,7 +88,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
 
         <template v-if="!!supplement">
           <v-divider />
-          <span class="warning pa-1 text-right">
+          <span class="warning lighten-2 pa-1 text-right">
             {{ supplement }}
           </span>
         </template>

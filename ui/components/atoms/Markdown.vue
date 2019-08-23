@@ -39,12 +39,27 @@ export default {
     &:not(pre)
       code
         box-shadow: none
+    code
+      color: #e05e88
     pre
       code
+        color: #000
+        margin-top: 0.4em
+        margin-bottom: 0.4em
+        padding: 0.4em
         // なぜかコードの先頭に文字が入る
-        &:before
+        &:before, &:after
           content: ""
     img
       max-width: 100%
       height: auto
+
+    h1, h2
+      margin-top: 0.8em
+      margin-bottom: 0.6em
+      line-height: 1.25
+      border-bottom: 1px solid #eaecef
+    h3, h4, h5, h6
+      margin-top: 0.8em
+      margin-bottom: 0.4em
 </style>

@@ -2,12 +2,11 @@
   <v-form ref="form" v-model="valid" @submit.prevent="confirming = true">
     <v-card color="white" elevation="2">
       <v-card-text class="py-0">
-        <!-- TODO: プレースフォルダー -->
         <markdown-text-area
           v-if="problemBody.modeIsTextbox"
           v-model="answerBodies[0][0]"
           :readonly="confirming"
-          placeholder="Markdownで記述可能です"
+          :placeholder="answerPlaceholder"
           hide-details
           class="pt-2"
         />
@@ -67,15 +66,16 @@
         </v-card-text>
 
         <!-- 警告 -->
-        <template v-if="gradingDelaySec !== 0">
-          <v-divider></v-divider>
-          <span class="warning pa-1 text-right">
-            <template v-if="realtimeGrading">
-              解答後{{ gradingDelayString }}間は再解答できなくなります
-            </template>
-            <template v-else>
-              最後に提出された解答のみ採点します
-            </template>
+        <template v-if="!realtimeGrading">
+          <v-divider />
+          <span class="warning lighten-2 pa-1 text-right">
+            最後に提出された解答のみ採点します
+          </span>
+        </template>
+        <template v-else-if="gradingDelaySec !== 0">
+          <v-divider />
+          <span class="warning lighten-2 pa-1 text-right">
+            解答後{{ gradingDelayString }}間は再解答できなくなります
           </span>
         </template>
 
@@ -95,11 +95,24 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import orm from '~/orm'
 import AnswerFormRadioButton from '~/components/molecules/AnswerFormRadioButton'
 import AnswerFormCheckbox from '~/components/molecules/AnswerFormCheckbox'
 import Markdown from '~/components/atoms/Markdown'
 import MarkdownTextArea from '~/components/molecules/MarkdownTextArea'
-import orm from '~/orm'
+
+const answerPlaceholder = `お疲れ様です。〇〇です。
+問題 XXX の解答を送らせていただきます。
+
+この問題ではxxxxxが原因でトラブルが発生したと考えられました。
+そのため、以下のように設定を変更し、○○が正しく動くことを確認いたしました。
+確認のほどよろしくお願いします。
+
+1. /etc/hoge/hoo.bar の編集
+'config.hoge'の項目をtrueへ変更
+
+2. …
+`
 
 export default {
   name: 'AnswerForm',
@@ -124,7 +137,8 @@ export default {
       confirming: false,
       valid: false,
       sending: false,
-      answerBodies: this.getStorage()
+      answerBodies: this.getStorage(),
+      answerPlaceholder
     }
   },
   computed: {

@@ -73,6 +73,10 @@ export default {
         obj[problem.body.title] = this.teams.map(team =>
           this.buildField(team, problem)
         )
+
+        obj[problem.body.title].unshift([
+          { team: '満点', point: problem.body.perfectPoint }
+        ])
         return obj
       }, {})
 
