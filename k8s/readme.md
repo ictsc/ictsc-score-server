@@ -75,10 +75,10 @@ kubectl -f redis.yaml,ui.yaml,db.yaml,api.yaml,service-nodeport.yaml
 * `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
 * playbookを書き換えたら`ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。
 * kubeadmでコピー忘れたら雑に `kubeadm reset` でjoinやinitしてた情報ごと削除できる
-* `kubectl delete -f kube-flannel.yml,redis.yaml,ui.yaml,db.yaml,api.yaml`で削除。
+* `kubectl delete -f redis.yaml,ui.yaml,db.yaml,api.yaml`で削除。
     * もしマニフェストファイルを変更する場合は削除してから書き換えて適用する方が良い。
-* log
 * `kubectl get all` で上がってるかどうかとか見れる。READYが1/1ならあがっているということ。0/1ならログを見てみたりしよう。
+  * `kubectl logs <pod name>`で可能
 * 時々DBが上がるのが失敗したりするのでそのときはログ(ex. kubectl logsやkubectl describe pod)見てから kubectl deleteしてapplyをして見てみる
 * [https://wiki.icttoracon.net/knowledge/score-server](https://wiki.icttoracon.net/knowledge/score-server)を参考にしている
 * 接続先わかんなくなったら `terraform output`で接続先が確認できます。
