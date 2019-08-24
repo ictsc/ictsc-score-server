@@ -56,6 +56,12 @@ export default class Answer extends BaseModel {
 
   // withでanswer.problem.bodyを指定しないと失敗する
   get point() {
+    // undefinedだとJSONやYAMLにするときとつらい
+    if (!this.hasPoint) {
+      return null
+    }
+
+    // 順序大事
     return Math.floor((this.score.point * this.problem.body.perfectPoint) / 100)
   }
 }

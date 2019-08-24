@@ -33,6 +33,16 @@ Vue.mixin({
       'notifyWarning',
       'notifyError'
     ]),
+
+    download(type, filename, data) {
+      const blob = new Blob([data], { type })
+      const link = document.createElement('a')
+      link.href = window.URL.createObjectURL(blob)
+      link.download = filename
+      link.click()
+    },
+
+    // sort
     sortByCode(list) {
       return this.$_.sortBy(list, 'code')
     },
@@ -48,6 +58,20 @@ Vue.mixin({
     },
     sortByUpdatedAt(list) {
       return this.$_.sortBy(list, e => Date.parse(e.updatedAt))
+    },
+
+    // filter
+    findLatestAnswer(answers) {
+      if (answers.length === 0) {
+        return null
+      }
+
+      // maxはanswersが[]の場合-Inifnityになる
+      return this.$_.max(answers, answer => new Date(answer.createdAt))
+    },
+    findEffectAnswer(answers) {
+      // 予選はとりあえずこれ
+      return this.findLatestAnswer(answers)
     }
   }
 })

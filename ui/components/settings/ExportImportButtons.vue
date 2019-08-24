@@ -65,7 +65,7 @@ export default {
       const items = await this.fetch()
       const filtered = items.map(o => this.filterField(o))
       const yaml = YAML.safeDump(filtered)
-      this.download(`${this.label}.yml`, yaml)
+      this.download('text/yaml', `${this.label}.yml`, yaml)
     },
     filterField(item) {
       return this.fields.reduce((obj, key) => {
@@ -73,13 +73,6 @@ export default {
         obj[key] = item[key] === undefined ? null : item[key]
         return obj
       }, {})
-    },
-    download(filename, data) {
-      const blob = new Blob([data], { type: 'text/yaml' })
-      const link = document.createElement('a')
-      link.href = window.URL.createObjectURL(blob)
-      link.download = filename
-      link.click()
     }
   }
 }
