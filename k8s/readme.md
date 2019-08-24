@@ -68,6 +68,9 @@ kubectl -f redis.yaml,ui.yaml,db.yaml,api.yaml,service-nodeport.yaml
 *  `kubectl exec -it pod/api-5f9cd6794-9z9sr rails db:setup`みたいな感じで初期データ流し込みをする
 * `http://xxx.xxx.xxx.xxx:/`にアクセスできてloginができたら無事一通り立ってる感じ。おめでとう！
 
+## その他
+* `kubectl apply -f monitering_manifests.yaml` で同一クラスタ内にnodeexpoterなどの諸々監視を実行することができます
+
 ## TroubleShooting & Tips
 * `terraform apply`が失敗したら`terraform destroy -force` とかで削除してから立て直す。
 * playbookを書き換えたら`ansible-playbook --private-key=./id_rsa -i hosts setup.yml --syntax-check` でいい感じに事前に構文チェックをしておくと良い。
