@@ -29,7 +29,9 @@ export default {
           .with(['body', 'answers.score', 'answers.team'])
           .all()
       )
-      this.teams = this.sortByOrder(orm.Team.query().all())
+      this.teams = this.sortByOrder(orm.Team.query().all()).filter(
+        t => t.role === 'player' && t.name !== 'team99'
+      )
     },
     async exportData() {
       this.loading = true
