@@ -42,6 +42,8 @@ export default {
         box-shadow: none
     code
       color: #e05e88
+      font-weight: 600
+
     pre
       code
         color: #000
@@ -54,6 +56,12 @@ export default {
     img
       max-width: 100%
       height: auto
+
+    blockquote
+      margin: 0.8em 0
+      padding-left: 0.8em
+      border-left: 0.4em solid #eee
+      color: #777
 
     h1, h2
       margin-top: 0.8em
