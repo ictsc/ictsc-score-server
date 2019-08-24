@@ -4,7 +4,7 @@ metadata:
     name: api
     labels:
       app: api
-      namespace: default
+      namespace: __VAR__NAMESPACE
 spec:
   replicas: 1
   template:
@@ -37,7 +37,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: api-env
-  namespace: default
+  namespace: __VAR__NAMESPACE
 data:
   TZ: "Asia/Tokyo"
   API_STAFF_PASSWORD: __VAR__API_STAFF_PASSWORD
@@ -55,7 +55,7 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: default
+  namespace: __VAR__NAMESPACE
   name: api
 spec:
   selector:
