@@ -11,7 +11,9 @@
           yellow="in_progress"
           green="solved"
         />
+      </v-flex>
 
+      <v-flex class="mb-4">
         <!-- 検索ボックス -->
         <v-text-field
           v-model="issueSearch"

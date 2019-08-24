@@ -48,7 +48,7 @@ export default class Issue extends BaseModel {
   get statusJp() {
     switch (this.status) {
       case 'unsolved':
-        return '要対応'
+        return '未解決'
       case 'in_progress':
         return '対応中'
       case 'solved':
