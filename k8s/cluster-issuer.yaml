@@ -1,0 +1,37 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging # テスト用
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: _VAR_KEY_SECRET_EMAIL
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    dns01:
+      providers:
+      - name: cloudflare
+        cloudflare:
+          email: _VAR_CLOUD_FLARE_EMAIL
+          apiKeySecretRef:
+            name: cloudflare-api-key
+            key: api-key
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod # 本番用
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: _VAR_KEY_SECRET_EMAIL
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    dns01:
+      providers:
+      - name: cloudflare
+        cloudflare:
+          email: _VAR_CLOUD_FLARE_EMAIL
+          apiKeySecretRef:
+            name: cloudflare-api-key
+            key: api-key
