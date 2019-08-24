@@ -10,17 +10,17 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-      - _VAR_DEV_CONTEST_FQDN # ドメイン
-      - _VAR_PROD_CONTEST_FQDN # ドメイン
-      - _VAR_TRAINING_CONTEST_FQDN
+      - __VAR__DEV_CONTEST_FQDN # ドメイン
+      - __VAR__PROD_CONTEST_FQDN # ドメイン
+      - __VAR__TRAINING_CONTEST_FQDN
   acme:
     config:
     - dns01:
         provider: cloudflare
       domains:
-      - _VAR_DEV_CONTEST_FQDN # ドメイン
-      - _VAR_PROD_CONTEST_FQDN # ドメイン
-      - _VAR_TRAINING_CONTEST_FQDN
+      - __VAR__DEV_CONTEST_FQDN # ドメイン
+      - __VAR__PROD_CONTEST_FQDN # ドメイン
+      - __VAR__TRAINING_CONTEST_FQDN
 
     # - http01:
     #       ingressClass: ingress # 使用しているIngressの名前
