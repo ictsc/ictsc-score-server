@@ -5,14 +5,14 @@ metadata:
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: _VAR_KEY_SECRET_EMAIL
+    email: __VAR__KEY_SECRET_EMAIL
     privateKeySecretRef:
       name: letsencrypt-staging
     dns01:
       providers:
       - name: cloudflare
         cloudflare:
-          email: _VAR_CLOUD_FLARE_EMAIL
+          email: __VAR__CLOUD_FLARE_EMAIL
           apiKeySecretRef:
             name: cloudflare-api-key
             key: api-key
@@ -24,14 +24,14 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: _VAR_KEY_SECRET_EMAIL
+    email: __VAR__KEY_SECRET_EMAIL
     privateKeySecretRef:
       name: letsencrypt-prod
     dns01:
       providers:
       - name: cloudflare
         cloudflare:
-          email: _VAR_CLOUD_FLARE_EMAIL
+          email: __VAR__CLOUD_FLARE_EMAIL
           apiKeySecretRef:
             name: cloudflare-api-key
             key: api-key

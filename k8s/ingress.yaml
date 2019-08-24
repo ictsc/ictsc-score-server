@@ -11,11 +11,11 @@ spec:
   tls: # 取得した証明書を使って通信させる
   - secretName: cert-manager-tls
     hosts:
-    - _VAR_DEV_CONTEST_FQDN # ドメイン
-    - _VAR_PROD_CONTEST_FQDN # ドメイン
-    - _VAR_TRAINING_CONTEST_FQDN
+    - __VAR__DEV_CONTEST_FQDN # ドメイン
+    - __VAR__PROD_CONTEST_FQDN # ドメイン
+    - __VAR__TRAINING_CONTEST_FQDN
   rules:
-  - host: _VAR_PROD_CONTEST_FQDN
+  - host: __VAR__PROD_CONTEST_FQDN
     http:
       paths:
         - path: /
@@ -26,7 +26,7 @@ spec:
           backend:
             serviceName: api
             servicePort: 3000
-  - host: _VAR_TRAINING_CONTEST_FQDN
+  - host: __VAR__TRAINING_CONTEST_FQDN
     http:
       paths:
         - path: /
@@ -37,7 +37,7 @@ spec:
           backend:
             serviceName: api
             servicePort: 3000
-  - host: _VAR_DEV_CONTEST_FQDN
+  - host: __VAR__DEV_CONTEST_FQDN
     http:
       paths:
         - path: /
