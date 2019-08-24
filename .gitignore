@@ -148,3 +148,4 @@ __pycache__/
 # k8s provisoning_k8s
 .envrc
 var.yml
+deploy_ready_output
