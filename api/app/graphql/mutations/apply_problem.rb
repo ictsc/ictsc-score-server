@@ -57,7 +57,7 @@ module Mutations
 
       # ここでproblem_bodyも保存される
       if problem.update(body: problem_body, category: category, previous_problem: previous_problem, order: order, team_isolate: team_isolate, open_at: open_at, writer: writer, secret_text: secret_text)
-        { problem: problem.readable, problem_body: problem_body }
+        { problem: problem.readable, problem_body: problem_body.readable }
       else
         add_errors(problem, problem_body)
       end
