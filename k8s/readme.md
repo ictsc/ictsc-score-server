@@ -28,7 +28,7 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
 * TODO:: Helmインストールをする
 ### Try kubectl apply!
 kubectl applyした時に前後関係があるので気持ち1~2秒ずつ打っていくといいです
-```
+```sh
 # flannelをinstall
 
 kubectl apply -f kube-flannel.yml
