@@ -4,13 +4,13 @@ metadata:
   labels:
     app: ui
   name: ui
-  namespace: default
+  namespace: __VAR__NAMESPACE
 spec:
   template:
     metadata:
       labels:
         app: ui
-      namespace: default
+      namespace: __VAR__NAMESPACE
     spec:
       containers:
         - image: upluse10/ictsc-score-server:ui-develop
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: default
+  namespace: __VAR__NAMESPACE
   name: ui
 spec:
   selector:
