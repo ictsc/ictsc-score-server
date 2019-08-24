@@ -16,7 +16,7 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
 * `sh inventry.sh` でinventryfileを作成
 * `ssh-keygen  -f ~/.ssh/ictsc` でこの名前の鍵を作成
 * `ansible-playbook -u ubuntu --private-key=./id_rsa -i hosts setup.yml --extra-vars "ansible_sudo_pass=PUT_YOUR_PASSWORD_HERE"` でAnsibleを実行して、ictsc user作成とdocker install, k8s installが行なわれる
-    * これで` ssh -i ictsc ictsc@xxx.xxx.xxx.xxx` みたいな感じでログインできるようになります。
+    * これで`ssh -i ictsc ictsc@xxx.xxx.xxx.xxx` みたいな感じでログインできるようになります。
 * masterになるサーバーにログインして`sudo kubeadm init --apiserver-advertise-address=192.168.100.1 --pod-network-cidr=10.244.0.0/16`をしよう。そこから出てきた情報をコピーして（`kubeadm join~~~`みたいなのがある）nodeになるサーバーに対してアクセスして貼り付けてsudoで実行しましょう。また、`mkdir -p $HOME/.kube`　みたいなのもコンソールに表示されていてコピペできるようになってるのでmasterサーバでやってください。これでkubectlが使えるようになります。
 
 ## application setup

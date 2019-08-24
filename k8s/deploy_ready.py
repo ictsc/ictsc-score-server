@@ -19,7 +19,12 @@ targets_file = [
     "mandatory.yaml",
     "cretificate.yaml",
     "cluster-issuer.yaml",
-    "prometeheus-configmap.yaml", # monitering
+    "00-crds.yaml",
+    "secret_cloudflare.yaml",
+    "mandatory.yaml",# nginx ingress ctl
+    "service-nodeport.yaml",
+    "kube-flannel.yml", # flannel
+    "monitering_manifests.yaml", # monitering
 ]
 
 env_yaml_path =  "/env.yaml"
