@@ -1,6 +1,12 @@
 <template>
   <!-- TODO: 仮実装 -->
-  <v-card :to="answerURL" width="12em" height="4em" class="pa-1" :color="color">
+  <v-card
+    :to="answerURL"
+    width="12em"
+    height="5em"
+    class="pa-1 pl-2"
+    :color="color"
+  >
     <div class="subtitle-1 text-truncate">
       No.{{ answer.team.number }} {{ answer.team.name }}
     </div>
