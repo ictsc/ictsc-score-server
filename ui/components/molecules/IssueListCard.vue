@@ -146,9 +146,6 @@ export default {
   border-top-right-radius: 0
   border-bottom-right-radius: 0
 
-.overflow-hide
-  overflow: hide
-
 .card-info
   max-width: 10em
   min-width: 10em

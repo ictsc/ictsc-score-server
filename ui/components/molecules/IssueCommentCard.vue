@@ -1,7 +1,7 @@
 <template>
   <v-layout row align-end :reverse="isOurComment">
     <v-flex xs10 d-flex child-flex>
-      <v-card style="overflow-wrap: break-word">
+      <v-card>
         <markdown
           :content="comment.text"
           :color="isOurComment ? 'white' : 'grey lighten-2'"

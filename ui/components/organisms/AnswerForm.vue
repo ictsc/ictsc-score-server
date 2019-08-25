@@ -55,7 +55,7 @@
       scrollable
       max-width="70em"
     >
-      <v-card style="overflow-wrap: break-word">
+      <v-card>
         <v-card-title>
           <span>内容確認</span>
         </v-card-title>
