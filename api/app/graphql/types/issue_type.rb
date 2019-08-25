@@ -12,6 +12,13 @@ module Types
     # status更新時間
     field :updated_at, Types::DateTime,           null: false
 
+    def status
+      # staff以外には対応中を見せない
+      return 'unsolved' if !Context.current_team!.staff? && self.object.in_progress?
+
+      self.object.status
+    end
+
     def problem
       RecordLoader.for(Problem).load(self.object.problem_id)
     end

@@ -7,16 +7,20 @@
     >
       全表示
     </v-btn>
+
     <v-btn :value="red" active-class="error elevation-4" :class="unsolvedClass">
-      要対応
+      未解決
     </v-btn>
+
     <v-btn
+      v-if="isStaff"
       :value="yellow"
       active-class="warning elevation-4"
       :class="inProgressClass"
     >
       対応中
     </v-btn>
+
     <v-btn
       :value="green"
       active-class="success elevation-4"

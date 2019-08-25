@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid :class="background">
     <v-layout column align-center>
       <page-title title="設定" />
     </v-layout>
@@ -45,6 +45,26 @@
     </v-layout>
 
     <export-scores-button class="mt-8" />
+
+    <v-layout column align-start class="mt-12 pt-12 white">
+      <v-switch
+        v-model="showDelete1"
+        :label="showDelete1 ? '戻して' : '押すな危険'"
+        color="warning"
+        hide-details
+      />
+
+      <v-switch
+        v-show="showDelete1"
+        v-model="showDelete2"
+        :label="showDelete2 ? '正気か?' : '危ないよ!'"
+        color="error"
+        class="my-12"
+        hide-details
+      />
+
+      <delete-area v-show="showDelete1 && showDelete2" class="ml-4" />
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -52,6 +72,7 @@ import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import PageTitle from '~/components/atoms/PageTitle'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
+import DeleteArea from '~/components/settings/DeleteArea'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'
 
 const contestInfoKeys = [
@@ -67,11 +88,15 @@ export default {
   name: 'Settings',
   components: {
     ExportImportButtons,
+    DeleteArea,
     ExportScoresButton,
     PageTitle
   },
   data() {
     return {
+      showDelete1: false,
+      showDelete2: false,
+
       teamFields: [
         'role',
         'number',
@@ -112,6 +137,27 @@ export default {
         name: k,
         value: JSON.stringify(this[k])
       }))
+    },
+    background() {
+      if (this.showDelete2 === true) {
+        return 'error'
+      } else if (this.showDelete1 === true) {
+        return 'warning'
+      } else {
+        return ''
+      }
+    }
+  },
+  watch: {
+    showDelete1(value) {
+      if (value === false) {
+        this.showDelete2 = false
+      }
+    },
+    showDelete2(value) {
+      if (value === false) {
+        this.showDelete1 = false
+      }
     }
   },
   methods: {

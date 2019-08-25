@@ -26,10 +26,17 @@ export default {
 
       this.problems = this.sortByOrder(
         orm.Problem.query()
-          .with(['body', 'answers.score', 'answers.team'])
+          .with([
+            'body',
+            'answers.score',
+            'answers.team',
+            'answers.problem.body'
+          ])
           .all()
       )
-      this.teams = this.sortByOrder(orm.Team.query().all()).filter(
+
+      // team99は毎回使われるテストユーザー
+      this.teams = this.sortByNumber(orm.Team.query().all()).filter(
         t => t.role === 'player' && t.name !== 'team99'
       )
     },
@@ -37,48 +44,42 @@ export default {
       this.loading = true
       await this.fetch()
 
-      /// problems[0].answers[teamId] == 最終提出解答
-      this.problems.forEach(p => {
+      // 各問題の解答を1チーム1つにする(得点)
+      // problems[0].answers[teamId] == 最終提出解答得点
+      // { '問題名' : [{ team: 'Team名', point: 999 }, ...], ... }
+      this.problems.forEach(problem => {
         // この問題の解答をチーム毎に分ける
-        const grouped = this.$_.groupBy(p.answers, a => a.teamId)
+        // { teamId: [ans1, ans2, ...], ... }
+        const grouped = this.$_.groupBy(problem.answers, a => a.teamId)
 
-        Object.keys(grouped).forEach(teamId => {
-          // この問題の最終解答のみ取り出す
-          const latest = this.$_.max(
-            grouped[teamId],
-            a => new Date(a.createdAt)
-          )
+        problem.answers = Object.keys(grouped).reduce((answers, teamId) => {
+          const latestAnswer = this.findEffectAnswer(grouped[teamId])
 
-          // 得点に換算
-          // TODO: 本当なnullなら警告を出す必要がある
-          grouped[teamId] = Math.floor(
-            (p.body.perfectPoint * (this.$elvis(latest, 'score.point') || 0)) /
-              100
-          )
-        })
+          // 未採点ならマズイので警告
+          if (!latestAnswer.hasScore) {
+            const team = orm.Team.find(teamId)
+            console.warn(
+              `未採点 問題: ${problem.title}, チーム: ${team.displayName}`
+            )
+          }
 
-        p.answers = grouped
+          answers[teamId] = latestAnswer.point
+          return answers
+        }, {})
       })
 
-      /*
-        {
-          '問題名' : [
-            { team: 'Team名', point: 999 },
-            ...
-          ],
-          ...
-        }
-      */
-
-      // 未提出なら0ではなくnullになる
+      // 未提出,未採点なら0ではなくnullになる
       const data = this.problems.reduce((obj, problem) => {
-        obj[problem.body.title] = this.teams.map(team =>
+        // 解答をチームでイテレーションする
+        obj[problem.title] = this.teams.map(team =>
           this.buildField(team, problem)
         )
 
-        obj[problem.body.title].unshift([
-          { team: '満点', point: problem.body.perfectPoint }
-        ])
+        obj[problem.title].unshift({
+          team: '満点',
+          point: problem.body.perfectPoint
+        })
+
         return obj
       }, {})
 
@@ -90,16 +91,9 @@ export default {
 
       return {
         team: team.name,
+        // 解答がないならundefinedになる
         point: point === undefined ? null : point
       }
-    },
-    // TODO: ExportImportButtonsから切り出してmixinsに移す
-    download(type, filename, data) {
-      const blob = new Blob([data], { type })
-      const link = document.createElement('a')
-      link.href = window.URL.createObjectURL(blob)
-      link.download = filename
-      link.click()
     }
   }
 }

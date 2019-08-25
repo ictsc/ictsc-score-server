@@ -30,4 +30,15 @@ export default class Category extends BaseModel {
       type: 'upsert'
     })
   }
+
+  static deleteCategory({ action, resolve, params: { code } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteCategory',
+      params: { code },
+      fields: [Category],
+      type: 'delete'
+    })
+  }
 }

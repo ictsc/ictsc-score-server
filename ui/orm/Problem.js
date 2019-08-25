@@ -80,6 +80,17 @@ export default class Problem extends BaseModel {
     })
   }
 
+  static deleteProblem({ action, resolve, params: { code } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteProblem',
+      params: { code },
+      fields: [Problem, orm.ProblemBody],
+      type: 'delete'
+    })
+  }
+
   // ProblemBodyのフィールドに透過的にアクセスするためのゲッター
   // 特にProblemModalに必要
   get mode() {
