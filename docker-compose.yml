@@ -2,66 +2,60 @@ version: '3'
 
 services:
   api:
-    image: upluse10/ictsc-score-server:api
+    image: upluse10/ictsc-score-server:api-develop
     env_file: .env
     build:
       context: api/
     depends_on:
       - db
       - redis
-    ports:
-      # environment: では指定できないので.envで指定する必要がある
-      - "8900:8900"
+    ports: ['127.0.0.1:8900:3000']
     stdin_open: true
     tty: true
     volumes:
-      - "./api:/usr/src/app"
-    command: |
+      - './api:/usr/src/app'
+    command: sh -c '
+      if [ -f "tmp/pids/server.pid" ]; then
+        rm tmp/pids/server.pid;
+      fi
+
       dockerize -wait tcp://redis:6379 -timeout 100s
-      dockerize -wait tcp://db:3306 -timeout 100s
-      rackup -o 0.0.0.0 -p 8900
+      dockerize -wait tcp://db:5432 -timeout 100s
+      bundle exec rails server -b 0.0.0.0
+      '
 
   ui:
-    image: upluse10/ictsc-score-server:ui
+    image: upluse10/ictsc-score-server:ui-develop
     env_file: .env
     build:
       context: ui/
-    depends_on:
-      - plasma
-    ports:
-      - "8901:80"
+    ports: ['127.0.0.1:8901:3000']
+    tty: true
     volumes:
-      - "./ui/h2o:/etc/h2o"
-
-  redis:
-    image: redis:4.0.11-alpine
-    env_file: .env
-    ports:
-      - "8902:6379"
+      - './ui:/usr/src/app'
+    # ビルドに失敗してもリトライ(restart: on-failure は使いづらい)
+    command: sh -c '
+      while :; do
+        yarn run dev;
+        sleep 1;
+      done
+      '
 
   db:
-    image: mariadb:10.3
+    image: postgres:11.3-alpine
     env_file: .env
-    ports:
-      - "8903:3306"
-    # デバック用に永続化したい場合はコメントアウト
-    # volumes:
-    #   - "./tmp/db:/var/lib/mysql"
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    ports: ['127.0.0.1:8902:5432']
+    command: ['postgres', '-c', 'max_connections=$POSTGRES_MAX_CONNECTIONS', '-c', 'shared_buffers=$POSTGRES_SHARED_BUFFERS', '-c', 'work_mem=$POSTGRES_WORK_MEM']
 
-  plasma:
-    image: openfresh/plasma:latest
+  redis:
+    image: redis:5.0.4-alpine
     env_file: .env
-    depends_on:
-      - redis
-    ports:
-      - "8904:8080"
-      # - 50051:50051
+    ports: ['127.0.0.1:8903:6379']
 
   yamllint:
     image: upluse10/ictsc-score-server:yamllint
     build:
       context: yamllint/
     volumes:
-      - "./:/usr/src/app"
+      - './:/usr/src/app'
     command: yamllint -c /usr/src/app/.yamllint /usr/src/app

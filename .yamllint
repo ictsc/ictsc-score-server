@@ -8,8 +8,12 @@ rules:
   colons: disable
   empty-lines:
     max: 1
+  comments-indentation: disable
 ignore: |
   .bundle/
+  .git-wt-*/
   tmp/
   log/
+  logs/
+  node_modules/
 ...

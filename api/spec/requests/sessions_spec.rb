@@ -1,71 +1,60 @@
-require_relative '../spec_helper.rb'
+# frozen_string_literal: true
 
-describe 'Sessions' do
-  include ApiHelpers
+require 'rails_helper'
 
-  let(:member) { create(:member) }
+RSpec.describe 'Sessions', type: :request do
+  let(:current_team) { create(:team, :staff) }
 
-  RSpec.shared_examples 'not logged in' do
-    it 'returns unauthorized' do
-      expect(response.status).to eq 401
+  shared_examples 'succeed in login and logout' do
+    it 'succeed in login and logout' do
+      post sessions_url, params: { name: current_team.name, password: current_team.password }, as: :json
+      expect(response).to have_http_status(:ok)
+
+      delete sessions_url, as: :json
+      expect(response).to have_http_status(:no_content)
     end
   end
 
-  context 'Login with missing credential' do
-    let(:params) do
-      {
-        login: member.login,
-        password: member.password + 'hogehoge'
-      }
-    end
+  context 'when team is staff' do
+    let(:current_team) { create(:team, :staff) }
 
-    let(:response) { post '/api/session', params }
-
-    it_should_behave_like 'not logged in'
-    it { expect(json_response).to eq ({ 'status' => 'failed' }) }
+    include_examples 'succeed in login and logout'
   end
 
-  describe 'when not logged in' do
-    let(:response) { get '/api/session' }
+  context 'when current team is audience' do
+    let(:current_team) { create(:team, :audience) }
 
-    let (:expected_response) {
-      {
-        'status' => 'not_logged_in',
-        'logged_in' => false,
-        'notification_channels' => {
-          'all' => 'everyone'
-        }
-      }
-    }
-
-    it { expect(response.status).to eq 200 }
-    it { expect(json_response).to eq expected_response }
+    include_examples 'succeed in login and logout'
   end
 
-  context 'Login with correct credential' do
-    let (:params) do
-      {
-        login: member.login,
-        password: member.password
-      }
+  context 'when current team is player' do
+    let(:current_team) { create(:team, :player) }
+
+    include_examples 'succeed in login and logout'
+  end
+
+  context 'when current team is non-existent team' do
+    let(:current_team) { build_stubbed(:team, :player) }
+
+    it 'fail in login' do
+      post sessions_url, params: { name: current_team.name, password: current_team.password }, as: :json
+      expect(response).to have_http_status(:bad_request)
     end
+  end
 
-    let (:expected_response) {
-      {
-        'status' => 'success',
-        'notification_channels' => {
-          'member' => member&.notification_subscriber&.channel_id,
-          'team' => member&.team&.notification_subscriber&.channel_id,
-          'role' => member&.role&.notification_subscriber&.channel_id,
-          'all' => 'everyone'
-        }.compact,
-        'member' => member.as_json(except: [:hashed_password])
-      }.as_json
-    }
+  context 'when extra parameters' do
+    let(:current_team) { build_stubbed(:team, :player) }
 
-    let(:response) { post '/api/session', params }
+    it 'fail in login' do
+      post sessions_url, params: { name: current_team.name, password: current_team.password, foobar: 'foobar' }, as: :json
+      expect(response).to have_http_status(:bad_request)
+    end
+  end
 
-    it { expect(response.status).to eq 201 }
-    it { expect(json_response).to eq expected_response }
+  context 'when not logged-in' do
+    it 'fail in logout' do
+      delete sessions_url, as: :json
+      expect(response).to have_http_status(:unauthorized)
+    end
   end
 end
