@@ -66,18 +66,17 @@
         </v-card-text>
 
         <!-- 警告 -->
-        <template v-if="!realtimeGrading">
-          <v-divider />
-          <span class="warning lighten-2 pa-1 text-right">
-            最後に提出された解答のみ採点します
-          </span>
-        </template>
-        <template v-else-if="gradingDelaySec !== 0">
-          <v-divider />
-          <span class="warning lighten-2 pa-1 text-right">
-            解答後{{ gradingDelayString }}間は再解答できなくなります
-          </span>
-        </template>
+        <v-divider />
+        <ul class="warning lighten-2 py-1 pr-1">
+          <template v-if="!realtimeGrading">
+            <li>最後に提出された解答のみ採点します</li>
+          </template>
+          <template v-else-if="gradingDelaySec !== 0">
+            <li>解答後{{ gradingDelayString }}間は再解答できなくなります</li>
+          </template>
+
+          <li>複数の解答をまたがず1つの解答内に全ての内容を収めてください</li>
+        </ul>
 
         <v-divider></v-divider>
         <v-card-actions>
