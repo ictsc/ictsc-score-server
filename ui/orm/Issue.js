@@ -45,6 +45,19 @@ export default class Issue extends BaseModel {
     })
   }
 
+  get statusNum() {
+    switch (this.status) {
+      case 'unsolved':
+        return 0
+      case 'in_progress':
+        return 1
+      case 'solved':
+        return 2
+      default:
+        throw new Error(`unsupported status ${this.status}`)
+    }
+  }
+
   get statusJp() {
     switch (this.status) {
       case 'unsolved':

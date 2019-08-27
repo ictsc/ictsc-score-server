@@ -3,7 +3,7 @@
     <v-layout column align-center>
       <page-title title="質問一覧" />
 
-      <v-flex class="mb-4">
+      <v-flex class="mb-6">
         <!-- 状態選択ボタン -->
         <issue-status-select-buttons
           v-model="displayStatuses"
@@ -11,10 +11,8 @@
           yellow="in_progress"
           green="solved"
         />
-      </v-flex>
 
-      <!-- 検索ボックス -->
-      <v-flex class="mb-2">
+        <!-- 検索ボックス -->
         <v-text-field
           v-model="issueSearch"
           :placeholder="searchFieldPlaceholder"
@@ -25,6 +23,13 @@
           hide-details
           class="mb-2"
         />
+
+        <v-switch
+          v-model="sortMode"
+          hide-details
+          label="最新返答順"
+          class="mt-0"
+        />
       </v-flex>
 
       <!-- 補足 -->
@@ -34,12 +39,15 @@
 
       <!-- 質問一覧 -->
       <v-flex>
-        <issue-list-card
-          v-for="issue in issues"
-          :key="issue.id"
-          :issue="issue"
-          class="mb-2"
-        />
+        <template v-for="issue in issues">
+          <!-- v-forで絞らず、v-showで表示切り替えするとインタラクションが良い -->
+          <issue-list-card
+            v-show="issueFilter(issue)"
+            :key="issue.id"
+            :issue="issue"
+            class="mb-2"
+          />
+        </template>
       </v-flex>
     </v-layout>
   </v-container>
@@ -65,7 +73,8 @@ export default {
       'in_progress',
       'solved'
     ]),
-    JsonStroage.accessor('issue-list', 'issueSearch', '')
+    JsonStroage.accessor('issue-list', 'issueSearch', ''),
+    JsonStroage.accessor('issue-list', 'sortMode', true)
   ],
   computed: {
     // computedを分ければ軽くなるはず?
@@ -79,8 +88,8 @@ export default {
     },
     // 検索は一瞬で終わるが、描画が遅い
     issues() {
-      const issues = this.statusFilteredIssues.filter(i => this.issueFilter(i))
-      return this.$_.sortBy(issues, i => this.$elvis(i, 'problem.body.title'))
+      const issues = this.statusFilteredIssues
+      return this.$_.sortBy(issues, i => this.issueSortValue(i))
     },
     searchFieldPlaceholder() {
       return this.isStaff ? '問題名 コード 作問者 チーム名' : '問題名'
@@ -101,6 +110,16 @@ export default {
       return this.searchParams.every(param =>
         this.issueSummary(issue).includes(param)
       )
+    },
+    issueSortValue(issue) {
+      if (this.sortMode) {
+        return -Date.parse(issue.latestReplyAt)
+      } else {
+        return `${issue.statusNum} - ${this.$elvis(
+          issue,
+          'problem.body.title'
+        )}`
+      }
     },
     issueSummary(issue) {
       return [
