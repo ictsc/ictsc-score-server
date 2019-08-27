@@ -15,7 +15,7 @@
         <div class="body-2 text-truncate">
           {{ issue.problem.body.title }}<br />
           {{ issue.team.displayName }}<br />
-          最終返答 {{ latestReplyAt }}
+          最新返答 {{ issue.latestReplyAtDisplay }}
         </div>
       </v-col>
 
@@ -83,12 +83,6 @@ export default {
     comments() {
       return this.sortByCreatedAt(this.issue.comments).reverse()
     },
-    latestReplyAt() {
-      const comment = this.comments.filter(c =>
-        c.isOurComment(this.isPlayer)
-      )[0]
-      return comment ? comment.createdAtShort : 'なし'
-    },
     displayCommentCount() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs':
@@ -120,7 +114,7 @@ export default {
   },
   methods: {
     commentColor(comment) {
-      return comment.isOurComment(this.isPlayer) ? 'white' : 'grey lighten-2'
+      return comment.isOurComment ? 'white' : 'grey lighten-2'
     }
   }
 }

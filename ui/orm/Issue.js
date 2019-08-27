@@ -70,4 +70,24 @@ export default class Issue extends BaseModel {
         throw new Error(`unsupported status ${this.status}`)
     }
   }
+
+  get ourComments() {
+    return this.comments.filter(c => c.isOurComment)
+  }
+
+  get theirsComments() {
+    return this.comments.filter(c => !c.isOurComment)
+  }
+
+  get latestReplyAt() {
+    // eslint-disable-next-line no-undef
+    const comment = $nuxt.findNewer(this.theirsComments)
+    return comment ? comment.createdAt : null
+  }
+
+  get latestReplyAtDisplay() {
+    // eslint-disable-next-line no-undef
+    const comment = $nuxt.findNewer(this.theirsComments)
+    return comment ? comment.createdAtShort : 'なし'
+  }
 }

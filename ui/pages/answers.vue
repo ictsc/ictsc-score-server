@@ -82,9 +82,10 @@ export default {
     shrinkAnswers(answers) {
       const teamsAnswers = this.$_.groupBy(answers, answer => answer.teamId)
 
+      // TODO: 本戦では未採点の最も古い解答を出すべき
       // そのチームの複数解答を最も新しい解答1つに上書き
       return Object.keys(teamsAnswers).map(teamId =>
-        this.findLatestAnswer(teamsAnswers[teamId])
+        this.findNewer(teamsAnswers[teamId])
       )
     },
     filterAnswers(answers) {

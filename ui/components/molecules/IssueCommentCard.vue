@@ -1,10 +1,10 @@
 <template>
-  <v-layout row align-end :reverse="isOurComment">
+  <v-layout row align-end :reverse="comment.isOurComment">
     <v-flex xs10 d-flex child-flex>
       <v-card>
         <markdown
           :content="comment.text"
-          :color="isOurComment ? 'white' : 'grey lighten-2'"
+          :color="comment.isOurComment ? 'white' : 'grey lighten-2'"
         />
       </v-card>
     </v-flex>
@@ -28,11 +28,6 @@ export default {
     comment: {
       type: Object,
       required: true
-    }
-  },
-  computed: {
-    isOurComment() {
-      return this.comment.isOurComment(this.isPlayer)
     }
   }
 }
