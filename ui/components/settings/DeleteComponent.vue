@@ -6,7 +6,6 @@
         :loading="fetching"
         :readonly="sending"
         :items="items"
-        :rules="requiredRules"
         clearable
         hide-defaults
         item-text="title"
