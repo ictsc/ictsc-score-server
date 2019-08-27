@@ -80,6 +80,7 @@ import YAML from 'js-yaml'
 export default {
   name: 'ImportModal',
   props: {
+    // v-model
     value: {
       type: Boolean,
       required: true

@@ -59,6 +59,7 @@ export default {
     // Docs: https://github.com/markdown-it/markdown-it
     preset: 'default',
     linkify: true,
+    // スペース2つだけでなく、通常の改行でも開業するようになる
     breaks: true,
     // $mdを使えるようにする
     injected: true,
