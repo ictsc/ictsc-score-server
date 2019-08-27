@@ -13,8 +13,8 @@
         />
       </v-flex>
 
-      <v-flex class="mb-4">
-        <!-- 検索ボックス -->
+      <!-- 検索ボックス -->
+      <v-flex class="mb-2">
         <v-text-field
           v-model="issueSearch"
           :placeholder="searchFieldPlaceholder"
@@ -26,6 +26,11 @@
           class="mb-2"
         />
       </v-flex>
+
+      <!-- 補足 -->
+      <span class="mb-4">
+        質問は各問題ページから行ってください
+      </span>
 
       <!-- 質問一覧 -->
       <v-flex>
