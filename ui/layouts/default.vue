@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <navigation />
-    <nuxt class="mt-10" style="min-width: 500px" />
+    <nuxt style="min-width: 500px" />
     <notification-area />
   </v-app>
 </template>
