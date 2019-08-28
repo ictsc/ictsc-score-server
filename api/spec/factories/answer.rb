@@ -3,9 +3,10 @@
 FactoryBot.define do
   factory :answer do
     # unique制約から逃れるため適当にずらす
-    created_at { Time.current + Random.rand(60).minutes + Random.rand(60).seconds }
+    created_at { Time.current - Random.rand(60).minutes - Random.rand(60).seconds }
     updated_at { created_at }
     confirming { Random.rand(2).odd? }
+
     bodies do
       case problem.body.mode
       when 'textbox'
