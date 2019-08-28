@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
+  before_action :require_login
+
   def execute
     variables = ensure_hash(params[:variables])
     query = params[:query]
@@ -8,12 +10,6 @@ class GraphqlController < ApplicationController
 
     Rails.logger.debug 'GraphQL query log'.green
     Rails.logger.debug({ variables: variables, query: query, operation_name: operation_name }.pretty_inspect)
-
-    if current_team.nil?
-      # TODO: GraphQL化?
-      head :unauthorized
-      return
-    end
 
     context = { current_team: current_team }
 
@@ -29,10 +25,6 @@ class GraphqlController < ApplicationController
   end
 
   private
-
-  def current_team
-    @current_team ||= Team.find_by(id: session[:team_id])
-  end
 
   # Handle form data, JSON body, or a blank value
   def ensure_hash(ambiguous_param)
