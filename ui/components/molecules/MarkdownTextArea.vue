@@ -7,66 +7,72 @@
 -->
 <template>
   <div>
-    <v-textarea
-      v-model="internalValue"
-      v-bind="$attrs"
-      :rules="rules"
-      flat
-      auto-grow
-      class="shrink-side-slot pt-1"
-      :class="hideLabelArea ? 'shrink-top' : 'label-margin'"
-      v-on="$listeners"
-      @keyup.ctrl.enter.prevent="valid && $emit('submit')"
-    />
-
-    <v-layout
-      row
-      align-center
-      justify-end
-      :class="{ 'show-in-details': showInDetails }"
-      :mr-1="showInDetails"
+    <div
+      :class="classes"
+      @drop.prevent="insertFileLink($event.dataTransfer.files)"
+      @dragover.prevent="dragging = true"
+      @dragleave.prevent="dragging = false"
     >
-      <v-flex shrink py-0>
+      <div v-show="dragging" class="display-2 white--text overlay-text">
+        {{ uploading ? 'アップロード中' : 'ドロップ' }}
+      </div>
+
+      <v-textarea
+        ref="textarea"
+        v-model="internalValue"
+        v-bind="$attrs"
+        :rules="rules"
+        flat
+        auto-grow
+        class="shrink-side-slot pt-1"
+        :class="hideLabelArea ? 'shrink-top' : 'label-margin'"
+        v-on="$listeners"
+        @keyup.ctrl.enter.prevent="valid && $emit('submit')"
+      />
+
+      <v-row
+        align="center"
+        justify="end"
+        :class="{
+          'show-in-details': showInDetails,
+          'mr-1': showInDetails
+        }"
+      >
         <span class="caption" :class="textCounterColor">
           {{ textCounter }}
         </span>
-      </v-flex>
 
-      <v-flex shrink py-0>
-        <!-- ESCキーや範囲外クリックでも閉じれる -->
-        <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              :disabled="previewDisabled"
-              fab
-              icon
-              x-small
-              color="primary"
-              v-on="on"
-            >
-              <v-icon>mdi-eye</v-icon>
-            </v-btn>
-          </template>
+        <v-btn
+          :disabled="previewDisabled"
+          fab
+          icon
+          x-small
+          color="primary"
+          @click="preview = true"
+        >
+          <v-icon>mdi-eye</v-icon>
+        </v-btn>
+      </v-row>
+    </div>
 
-          <v-card style="overflow-wrap: break-word">
-            <v-card-title>
-              <span>プレビュー</span>
-            </v-card-title>
+    <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
+      <v-card style="overflow-wrap: break-word">
+        <v-card-title>
+          <span>プレビュー</span>
+        </v-card-title>
 
-            <v-divider></v-divider>
-            <v-card-text class="pa-1">
-              <markdown :content="internalValue" />
-            </v-card-text>
+        <v-divider></v-divider>
+        <v-card-text class="pa-1">
+          <markdown :content="internalValue" />
+        </v-card-text>
 
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn left @click="preview = false">閉じる</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-flex>
-    </v-layout>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn left @click="preview = false">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -101,7 +107,9 @@ export default {
       preview: false,
       rules: [v => this.errorRule(v)],
       // 文字列は初期状態をnullにしないと、''が来た時にwatchが発火しない
-      internalValue: this.value
+      internalValue: this.value,
+      dragging: false,
+      uploading: false
     }
   },
   computed: {
@@ -140,6 +148,9 @@ export default {
     },
     hideLabelArea() {
       return !this.$attrs.label
+    },
+    classes() {
+      return this.dragging ? 'grey lighten-1' : ''
     }
   },
   watch: {
@@ -161,6 +172,59 @@ export default {
       }
 
       return this.valid || '文字数オーバー'
+    },
+    async insertFileLink(files) {
+      this.uploading = true
+
+      const link = await this.upload(files[0])
+
+      if (link) {
+        const cursorPos = this.$refs.textarea.$refs.input.selectionEnd
+
+        this.internalValue = this.insertString(
+          this.internalValue,
+          cursorPos,
+          `![file](${link})`
+        )
+      }
+
+      this.dragging = false
+      this.uploading = false
+    },
+    insertString(str, index, insert) {
+      return str.slice(0, index) + insert + str.slice(index, str.length)
+    },
+    async upload(file) {
+      const params = new FormData()
+      params.append('file', file)
+
+      try {
+        const res = await this.$axios.post('attachments', params, {
+          headers: { 'content-type': 'multipart/form-data' }
+        })
+
+        switch (res.status) {
+          case 200:
+            this.notifySuccess({ message: `アップロードしました` })
+            return res.data
+          case 400:
+          case 401:
+            this.notifyWarning({ message: `アップロードに失敗しました` })
+            break
+          default:
+            console.error(res)
+            this.notifyError({
+              message: `想定外のエラーによりアップロードに失敗しました`
+            })
+        }
+      } catch (e) {
+        console.error(e)
+        this.notifyError({
+          message: `想定外のエラーによりアップロードに失敗しました`
+        })
+      }
+
+      return null
     }
   }
 }
@@ -187,4 +251,9 @@ export default {
   position: relative
   top: -1.7em
   height: 0
+
+.overlay-text
+  position: absolute
+  left: 50%
+  transform: translateX(-50%)
 </style>
