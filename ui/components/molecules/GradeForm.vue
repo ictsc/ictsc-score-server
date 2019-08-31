@@ -95,13 +95,11 @@ export default {
   },
 
   data() {
-    const point = this.$elvis(this.answer, 'score.point')
-
     return {
       sending: false,
       stepEnable: true,
-      slider: point || -5,
-      text: point ? String(point) : 'null'
+      slider: this.answer.hasPoint ? this.answer.point : -5,
+      text: this.answer.hasPoint ? String(this.answer.point) : 'null'
     }
   },
 
