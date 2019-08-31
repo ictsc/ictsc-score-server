@@ -26,7 +26,7 @@
       active-class="success elevation-4"
       :class="solvedClass"
     >
-      対応済
+      解決済
     </v-btn>
   </v-btn-toggle>
 </template>
