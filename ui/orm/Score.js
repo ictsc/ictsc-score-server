@@ -6,7 +6,7 @@ export default class Score extends BaseModel {
   static fields() {
     return {
       id: this.string(),
-      point: this.number(),
+      point: this.number().nullable(),
       answerId: this.string(),
       solved: this.boolean()
     }
