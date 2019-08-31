@@ -65,4 +65,13 @@ export default class Answer extends BaseModel {
     // 順序大事
     return Math.floor((this.score.point * this.problem.body.perfectPoint) / 100)
   }
+
+  get rawPoint() {
+    // undefinedだとJSONやYAMLにするときとつらい
+    if (!this.hasPoint) {
+      return null
+    }
+
+    return this.score.point
+  }
 }

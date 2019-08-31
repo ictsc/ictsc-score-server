@@ -98,8 +98,8 @@ export default {
     return {
       sending: false,
       stepEnable: true,
-      slider: this.answer.hasPoint ? this.answer.point : -5,
-      text: this.answer.hasPoint ? String(this.answer.point) : 'null'
+      slider: this.answer.hasPoint ? this.answer.rawPoint : -5,
+      text: this.answer.hasPoint ? String(this.answer.rawPoint) : 'null'
     }
   },
 
