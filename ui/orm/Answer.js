@@ -48,7 +48,8 @@ export default class Answer extends BaseModel {
   // scoreが無い or score.pointがnullなら採点中
   get hasPoint() {
     return (
-      !!this.score &&
+      this.score !== null &&
+      this.score !== undefined &&
       this.score.point !== null &&
       this.score.point !== undefined
     )
