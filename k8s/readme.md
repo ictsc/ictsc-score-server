@@ -9,7 +9,7 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
 ## claster setup
 * 全て実行はこのカレントディレクトリで行ってください
 * 事前準備
-     `.envrc` にさくらのクラウドのアクセストークンとシークレットとゾーンを書く。 `.envrc.sample` に例があるのでそこの `hoge` とかの変数をいい感じに埋めよう
+    * `.envrc` にさくらのクラウドのアクセストークンとシークレットとゾーンを書く。 `.envrc.sample` に例があるのでそこの `hoge` とかの変数をいい感じに埋めよう
     * 埋めたら `direnv allow` で適用される。このカレントディレクトリでその環境変数が適用される。
     * `var.yml`に ansibleで作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
 * `terraform apply -auto-approve` をしてVMが上がるのを待とう。生成された `id_rsa` は `user:ubuntu` 向けに作られているものです
@@ -25,26 +25,26 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
 * `pipenv install` をしたあと `pipenv shell` でサブシェルに入って `python deploy_ready.py` を叩く。これで各パラメーターを入れたk8sのmanifestが出来上がる。
 * ここのカレントディレクトリで `scp -i ictsc -r ./deploy_ready_output ictsc@xxx.xxx.xxx.xxx:/home/ictsc`でmasterサーバーにファイルを転送する
   * ここでいうmasterServerというのは　`k8s-master-01-server` のことです。
-* TODO:: Helmインストールをする
+* `https://helm.sh/docs/using_helm/#installing-helm` をしていい感じにinstallしてほしい
+
 ### Try kubectl apply!
 kubectl applyした時に前後関係があるので気持ち1~2秒ずつ打っていくといいです
 ```sh
 # flannelをinstall
-
+# 全体の構成に必須なので一度のみ  
 kubectl apply -f kube-flannel.yml
 
 # nginx ingressをinstall
+# 全体の構成に必須なので一度のみ  
 kubectl apply -f mandatory.yaml
 
 # cert-managerをinstall
+# 全体の構成に必須なので一度のみ  
 kubectl apply -f 00-crds.yaml
 kubectl create namespace cert-manager
 kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-
 helm repo add jetstack https://charts.jetstack.io
-
 helm repo update
-
 helm install \
   --name cert-manager \
   --namespace cert-manager \
