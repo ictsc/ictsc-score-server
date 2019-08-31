@@ -84,9 +84,9 @@ def main():
             with open(path + "/" + e ) as f:
                 origin_yaml = list(yaml.load_all(f,Loader=yaml.UnsafeLoader))
                 write_yaml = search_val(origin_yaml, env_yaml[0])
-                print(write_yaml)
+
             with open(path + output_dir + "/" + e, mode="w") as f:
-                yaml.dump(write_yaml,f)
+                f.write("\n---\n".join(list(map(lambda x: yaml.dump(x), write_yaml))))
 
 
 if __name__ == "__main__":
