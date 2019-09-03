@@ -34,6 +34,7 @@
                 v-show="isDisplayAnswer(answer)"
                 :key="answer.id"
                 :answer="answer"
+                :problem="problem"
                 class="ma-1"
               />
             </template>
