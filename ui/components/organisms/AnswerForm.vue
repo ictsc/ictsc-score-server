@@ -106,9 +106,6 @@ import MarkdownTextArea from '~/components/molecules/MarkdownTextArea'
 
 const answerPlaceholder = `解答はマークダウンで記述できます。
 
-お疲れ様です。〇〇です。
-問題 XXX の解答を送らせていただきます。
-
 この問題ではxxxxxが原因でトラブルが発生したと考えられました。
 そのため、以下のように設定を変更し、○○が正しく動くことを確認いたしました。
 確認のほどよろしくお願いします。
