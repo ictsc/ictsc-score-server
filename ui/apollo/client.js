@@ -2,6 +2,7 @@ import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { InMemoryCache } from 'apollo-cache-inmemory'
+import { elvis } from '~/plugins/elvis'
 
 const errorLink = onError(
   ({ operation, response, graphQLErrors, networkError, forward }) => {
@@ -23,7 +24,7 @@ const errorLink = onError(
     }
 
     // errorsが空ならキーを削除することで、フロントでのエラー処理を簡易化
-    if (!response.data.errors && response.data.errors.length === 0) {
+    if (elvis(response, 'data.errors.length') === 0) {
       delete response.data.errors
     }
 
@@ -31,13 +32,12 @@ const errorLink = onError(
       console.log(`[Network error]`, networkError)
 
       if (networkError.statusCode === 401) {
-        console.log('Unauthorized!!')
-        // TODO: 未ログインで再度該当ページに行っても再度/loginに遷移しない
         // エラーがキャッチできないのでloginに遷移
-        // eslint-disable-next-line no-undef
-        $nuxt.$router.push('/login')
+        // locationを直接使うことで強制リロード
+        // ストアもリセットされる
+        window.location = '/login'
       } else {
-        // TODO: エラー通知
+        // TODO: 想定外
       }
     }
   }

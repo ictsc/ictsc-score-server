@@ -41,7 +41,7 @@
       <v-icon>mdi-settings-outline</v-icon>
     </navigation-link>
 
-    <navigation-link v-if="isNoLogin" to="/login">
+    <navigation-link v-if="isNoLogin" to="/login" always>
       ログイン
     </navigation-link>
     <navigation-link v-else to="/login" @click="tryLogout">
