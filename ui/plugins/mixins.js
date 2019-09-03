@@ -34,6 +34,10 @@ Vue.mixin({
       'notifyError'
     ]),
 
+    currentDateTimeString() {
+      return this.$moment(new Date()).format('MM-DD HH:mm:ss')
+    },
+
     download(type, filename, data) {
       const blob = new Blob([data], { type })
       const link = document.createElement('a')
