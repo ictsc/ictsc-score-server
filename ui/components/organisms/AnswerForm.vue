@@ -68,6 +68,10 @@
         <!-- 警告 -->
         <v-divider />
         <ul class="warning lighten-2 py-1 pr-1">
+          <template v-if="problemBody.modeIsTextbox">
+            <li>マークダウンの体裁を確認してください</li>
+          </template>
+
           <template v-if="!realtimeGrading">
             <li>最後に提出された解答のみ採点します</li>
           </template>
