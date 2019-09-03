@@ -13,7 +13,7 @@
       <!-- 問題名 チーム名 最終返答 -->
       <v-col class="pa-0 ml-2 mr-3 card-info">
         <div class="body-2 text-truncate">
-          {{ issue.problem.body.title }}<br />
+          {{ issue.problem.displayTitle }}<br />
           {{ issue.team.displayName }}<br />
           最新返答 {{ issue.latestReplyAtDisplay }}
         </div>
