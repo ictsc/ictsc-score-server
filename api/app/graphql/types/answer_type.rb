@@ -20,8 +20,6 @@ module Types
       RecordLoader.for(Team).load(self.object.team_id)
     end
 
-    def score
-      AssociationLoader.for(Answer, __method__).load(self.object)
-    end
+    has_one :score
   end
 end

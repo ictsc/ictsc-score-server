@@ -38,25 +38,11 @@ module Types
       self.object.open_at&.end
     end
 
-    def body
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def environments
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def supplements
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def answers
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def issues
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
+    has_one  :body
+    has_many :environments
+    has_many :supplements
+    has_many :answers
+    has_many :issues
 
     def previous_problem
       RecordLoader.for(Problem).load(self.object[__method__.to_s.foreign_key])
@@ -66,8 +52,6 @@ module Types
       RecordLoader.for(Category).load(self.object[__method__.to_s.foreign_key])
     end
 
-    def solved_count
-      AssociationLoader.for(Problem, :first_correct_answers).load(self.object).then(&:size)
-    end
+    has_one :solved_count, :first_correct_answers, &:size
   end
 end

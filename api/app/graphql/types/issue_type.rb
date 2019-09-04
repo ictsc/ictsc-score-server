@@ -27,8 +27,6 @@ module Types
       RecordLoader.for(Team).load(self.object.team_id)
     end
 
-    def comments
-      AssociationLoader.for(Issue, __method__).load(self.object)
-    end
+    has_many :comments
   end
 end

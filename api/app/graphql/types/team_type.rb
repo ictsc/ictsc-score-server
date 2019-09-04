@@ -8,8 +8,5 @@ module Types
     field :organization, String,  null: true
     field :number,       Integer, null: true
     field :color,        String,  null: true
-
-    # TODO: APIv1では各チームページでチーム毎の得点一覧みたいなものが見れた(teams.answers-score)
-    #
   end
 end
