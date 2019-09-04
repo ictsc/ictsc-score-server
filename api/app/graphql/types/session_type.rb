@@ -8,7 +8,7 @@ module Types
     field :team,    Types::TeamType, null: true
 
     def team
-      RecordLoader.for(Team).load(self.object.team_id)
+      RecordLoader.for(self.context, Team).load(self.object.team_id)
     end
   end
 end

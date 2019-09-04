@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class RecordLoader < GraphQL::Batch::Loader
-  def initialize(model, column: model.primary_key, where: nil)
+  def initialize(context, model, column: model.primary_key, where: nil)
+    @context = context
     @model = model
     @column = column.to_s
     @column_type = model.type_for_attribute(@column)
@@ -22,6 +23,6 @@ class RecordLoader < GraphQL::Batch::Loader
   def query(keys)
     scope = @model
     scope = scope.where(@where) unless @where.nil?
-    scope.readables.where(@column => keys)
+    scope.readables(team: @context.current_team!).where(@column => keys)
   end
 end

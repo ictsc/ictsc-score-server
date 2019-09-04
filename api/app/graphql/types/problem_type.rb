@@ -43,15 +43,8 @@ module Types
     has_many :supplements
     has_many :answers
     has_many :issues
-
-    def previous_problem
-      RecordLoader.for(Problem).load(self.object[__method__.to_s.foreign_key])
-    end
-
-    def category
-      RecordLoader.for(Category).load(self.object[__method__.to_s.foreign_key])
-    end
-
+    belongs_to :previous_problem
+    belongs_to :category
     has_one :solved_count, :first_correct_answers, &:size
   end
 end

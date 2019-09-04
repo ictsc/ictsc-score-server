@@ -31,6 +31,24 @@ module Types
       end
 
       alias has_one has_many
+
+      def belongs_to(field, &block)
+        foreign_column = model_by_query_name.reflections[field.to_s]
+        foreign_key = foreign_column.foreign_key
+        foreign_model = foreign_column.klass
+
+        class_eval do
+          if block
+            define_method(field) do
+              RecordLoader.for(self.context, foreign_model).load(self.object[foreign_key]).then(&block)
+            end
+          else
+            define_method(field) do
+              RecordLoader.for(self.context, foreign_model).load(self.object[foreign_key])
+            end
+          end
+        end
+      end
     end
   end
 end

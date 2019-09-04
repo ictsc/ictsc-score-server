@@ -11,8 +11,6 @@ module Types
     field :created_at,   Types::DateTime, null: false
     # dataはGraphQLでは返さない
 
-    def team
-      RecordLoader.for(Team).load(self.object.team_id)
-    end
+    belongs_to :team
   end
 end

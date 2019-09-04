@@ -19,14 +19,8 @@ module Types
       self.object.status
     end
 
-    def problem
-      RecordLoader.for(Problem).load(self.object.problem_id)
-    end
-
-    def team
-      RecordLoader.for(Team).load(self.object.team_id)
-    end
-
+    belongs_to :problem
+    belongs_to :team
     has_many :comments
   end
 end
