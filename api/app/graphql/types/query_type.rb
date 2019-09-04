@@ -14,6 +14,7 @@ module Types
     field :problems, [Types::ProblemType], null: false
     field :teams, [Types::TeamType], null: false
     field :notices, [Types::NoticeType], null: false
+    field :sessions, [Types::SessionType], null: false
 
     def me
       self.context.current_team!.readable(team: self.context.current_team!)
@@ -42,6 +43,10 @@ module Types
 
     def notices
       Notice.readables(team: self.context.current_team!)
+    end
+
+    def sessions
+      Session.readable_records(team: self.context.current_team!)
     end
 
     # field :problem, Types::ProblemType, null: false do
