@@ -14,7 +14,7 @@ module Readable
     self.class.readable_records(team: team).exists?(id: id)
   end
 
-  def filter_columns(team: Context.current_team!)
+  def filter_columns(team:)
     self.class.reject_columns(team: team).each {|key| self[key] = nil }
     self
   end
@@ -24,18 +24,18 @@ module Readable
       readable_records(team: team).filter_columns(team: team)
     end
 
-    def filter_columns(team: Context.current_team!)
+    def filter_columns(team:)
       cols = readable_columns(team: team)
       cols.empty? ? none : select(*cols)
     end
 
-    def readable_columns(team: Context.current_team!)
+    def readable_columns(team:)
       column_names - reject_columns(team: team)
     end
 
     # ブラックリスト方式でフィルタする
     # そのteamが閲覧できるレコードを返す
-    def reject_columns(team: Context.current_team!)
+    def reject_columns(team:)
       # 文字列として比較しないとautoload環境では正しく動作しない
       case self.to_s
       when 'Answer'
@@ -57,7 +57,7 @@ module Readable
         .presence || []
     end
 
-    def readable_records(team: Context.current_team!)
+    def readable_records(team:)
       # 文字列として比較しないとautoload環境では正しく動作しない
       klass = self.to_s
 
@@ -87,7 +87,7 @@ module Readable
         return none if !team.staff? && Config.hide_all_score
 
         # joins(:answer).merge(Answer.delay_filter).where(answers: { team: team })
-        where(answer: Answer.readable_records.delay_filter)
+        where(answer: Answer.readable_records(team: team).delay_filter)
       when 'FirstCorrectAnswer'
         # TODO: update方式だと、遅延の影響で一時的に Problem#solved_countが減る
         #       insert方式にして最新のみ使いようにしたほうがいい
@@ -95,7 +95,7 @@ module Readable
       when 'Issue'
         where(team: team, problem: Problem.opened(team: team))
       when 'IssueComment'
-        where(issue: Issue.readable_records)
+        where(issue: Issue.readable_records(team: team))
       when 'ProblemBody', 'ProblemSupplement'
         where(problem: Problem.opened(team: team))
       when 'ProblemEnvironment'

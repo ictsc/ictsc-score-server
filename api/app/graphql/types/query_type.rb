@@ -16,31 +16,32 @@ module Types
     field :notices, [Types::NoticeType], null: false
 
     def me
-      Context.current_team!.readable
+      self.context.current_team!.readable(team: self.context.current_team!)
     end
 
     def contest_info
+      # 全ユーザーが見える情報のみ返す
       Config
     end
 
     def categories
-      Category.readables
+      Category.readables(team: self.context.current_team!)
     end
 
     def problem(id:)
-      Problem.readables.find_by(id: id)
+      Problem.readables(team: self.context.current_team!).find_by(id: id)
     end
 
     def problems
-      Problem.readables
+      Problem.readables(team: self.context.current_team!)
     end
 
     def teams
-      Team.readables
+      Team.readables(team: self.context.current_team!)
     end
 
     def notices
-      Notice.readables
+      Notice.readables(team: self.context.current_team!)
     end
 
     # field :problem, Types::ProblemType, null: false do

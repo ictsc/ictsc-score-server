@@ -13,6 +13,7 @@ class GraphqlController < ApplicationController
 
     context = { current_team: current_team }
 
+    # TODO: deprecated
     # 下記のcontextはただのHashだが、Query内から見えるcontextはGraphQL::Query::Context
     Context.context = context
 

@@ -2,6 +2,7 @@
 
 require 'singleton'
 
+# TODO: deprecated
 # 様々な場所からGraphQLのcontextと同等のものにアクセスするためのクラス
 class Context
   include Singleton
