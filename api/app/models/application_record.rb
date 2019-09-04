@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationRecord < ActiveRecord::Base
-  include Filterable
+  include Readable
   self.abstract_class = true
   # daterange系もActiveSupport::TimeWithZoneにキャストする
   self.time_zone_aware_types += %i[daterange tsrange tstzrange]

@@ -3,7 +3,7 @@
 # レコード単位、カラム単位のフィルタを行う
 # メソッドチェーンでクエリを構築できるようにモデルにincludeして使う
 # ここで、定義されているメソッドは軒並みteamを引数に取り、多くの場合teamはcurrent_teamなためデフォルト引数にする
-module Filterable
+module Readable
   extend ActiveSupport::Concern
 
   def readable(team: Context.current_team!)
