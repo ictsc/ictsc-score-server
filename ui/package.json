@@ -14,7 +14,6 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@iktakahiro/markdown-it-katex": "^3.1.0",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/markdownit": "^1.2.5",
     "@nuxtjs/moment": "^1.2.0",
