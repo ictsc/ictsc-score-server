@@ -65,7 +65,11 @@ export default {
       const items = await this.fetch()
       const filtered = items.map(o => this.filterField(o))
       const yaml = YAML.safeDump(filtered)
-      this.download('text/yaml', `${this.label}.yml`, yaml)
+      this.download(
+        'text/x-yaml',
+        `${this.label} ${this.currentDateTimeString()}.yml`,
+        yaml
+      )
     },
     filterField(item) {
       return this.fields.reduce((obj, key) => {

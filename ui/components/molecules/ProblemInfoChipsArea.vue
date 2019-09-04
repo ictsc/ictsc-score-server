@@ -50,6 +50,7 @@ export default {
             { name: 'コード', value: this.problem.code },
             { name: '作問者', value: this.problem.writer }
           ],
+          [{ name: '種類', value: this.problem.body.modeJp }],
           [{ name: '最終更新', value: this.problem.body.updatedAtShort }]
         )
       }

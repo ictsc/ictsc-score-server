@@ -65,6 +65,7 @@ export default {
       if (await this.login({ name: this.name, password: this.password })) {
         this.notifySuccess({ message: 'ログインしました' })
         // locationを直接使うことで強制リロード
+        // ストアもリセットされる
         window.location = '/problems'
       } else {
         this.notifyWarning({

@@ -26,7 +26,10 @@ export default class IssueComment extends BaseModel {
     })
   }
 
-  isOurComment(isPlayer) {
-    return (!this.fromStaff && isPlayer) || (this.fromStaff && !isPlayer)
+  get isOurComment() {
+    return (
+      // eslint-disable-next-line no-undef
+      (!this.fromStaff && $nuxt.isPlayer) || (this.fromStaff && !$nuxt.isPlayer)
+    )
   }
 }

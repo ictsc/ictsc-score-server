@@ -83,7 +83,11 @@ export default {
         return obj
       }, {})
 
-      this.download('text/json', `成績一覧.json`, JSON.stringify(data))
+      this.download(
+        'text/json',
+        `成績一覧 ${this.currentDateTimeString()}.json`,
+        JSON.stringify(data)
+      )
       this.loading = false
     },
     buildField(team, problem) {

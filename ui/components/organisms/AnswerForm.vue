@@ -55,7 +55,7 @@
       scrollable
       max-width="70em"
     >
-      <v-card style="overflow-wrap: break-word">
+      <v-card>
         <v-card-title>
           <span>内容確認</span>
         </v-card-title>
@@ -66,18 +66,21 @@
         </v-card-text>
 
         <!-- 警告 -->
-        <template v-if="!realtimeGrading">
-          <v-divider />
-          <span class="warning lighten-2 pa-1 text-right">
-            最後に提出された解答のみ採点します
-          </span>
-        </template>
-        <template v-else-if="gradingDelaySec !== 0">
-          <v-divider />
-          <span class="warning lighten-2 pa-1 text-right">
-            解答後{{ gradingDelayString }}間は再解答できなくなります
-          </span>
-        </template>
+        <v-divider />
+        <ul class="warning lighten-2 py-1 pr-1">
+          <template v-if="problemBody.modeIsTextbox">
+            <li>マークダウンの体裁を確認してください</li>
+          </template>
+
+          <template v-if="!realtimeGrading">
+            <li>最後に提出された解答のみ採点します</li>
+          </template>
+          <template v-else-if="gradingDelaySec !== 0">
+            <li>解答後{{ gradingDelayString }}間は再解答できなくなります</li>
+          </template>
+
+          <li>複数の解答をまたがず1つの解答内に全ての内容を収めてください</li>
+        </ul>
 
         <v-divider></v-divider>
         <v-card-actions>
@@ -101,17 +104,22 @@ import AnswerFormCheckbox from '~/components/molecules/AnswerFormCheckbox'
 import Markdown from '~/components/atoms/Markdown'
 import MarkdownTextArea from '~/components/molecules/MarkdownTextArea'
 
-const answerPlaceholder = `お疲れ様です。〇〇です。
-問題 XXX の解答を送らせていただきます。
+const answerPlaceholder = `解答はマークダウンで記述できます。
 
 この問題ではxxxxxが原因でトラブルが発生したと考えられました。
 そのため、以下のように設定を変更し、○○が正しく動くことを確認いたしました。
 確認のほどよろしくお願いします。
 
-1. /etc/hoge/hoo.bar の編集
-'config.hoge'の項目をtrueへ変更
 
-2. …
+## 手順
+
+### 1. /etc/hoge/hoo.bar の編集
+
+\`config.yaml\` の項目をtrueへ変更
+
+
+### 2. …
+
 `
 
 export default {

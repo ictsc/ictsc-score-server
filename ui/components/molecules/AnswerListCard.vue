@@ -28,11 +28,16 @@ export default {
     answer: {
       type: Object,
       required: true
+    },
+    problem: {
+      type: Object,
+      required: true
     }
   },
   data() {
     return {
-      showTimer: this.answer.delayFinishInSec >= -600
+      showTimer:
+        this.problem.body.modeIsTextbox && this.answer.delayFinishInSec >= -600
     }
   },
   computed: {

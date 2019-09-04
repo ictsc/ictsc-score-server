@@ -1,8 +1,7 @@
 <template>
-  <v-sheet :color="color" class="pa-2 ma-0">
-    <!-- TODO: divのほうが良さそう -->
+  <v-sheet :color="color" class="pa-2 ma-0" style="overflow-wrap: break-word">
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <span class="markdown" v-html="$md.render(content)" />
+    <div class="markdown" v-html="$md.render(content)" />
   </v-sheet>
 </template>
 <script>

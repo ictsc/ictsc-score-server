@@ -45,6 +45,19 @@ export default class Issue extends BaseModel {
     })
   }
 
+  get statusNum() {
+    switch (this.status) {
+      case 'unsolved':
+        return 0
+      case 'in_progress':
+        return 1
+      case 'solved':
+        return 2
+      default:
+        throw new Error(`unsupported status ${this.status}`)
+    }
+  }
+
   get statusJp() {
     switch (this.status) {
       case 'unsolved':
@@ -69,5 +82,25 @@ export default class Issue extends BaseModel {
       default:
         throw new Error(`unsupported status ${this.status}`)
     }
+  }
+
+  get ourComments() {
+    return this.comments.filter(c => c.isOurComment)
+  }
+
+  get theirsComments() {
+    return this.comments.filter(c => !c.isOurComment)
+  }
+
+  get latestReplyAt() {
+    // eslint-disable-next-line no-undef
+    const comment = $nuxt.findNewer(this.theirsComments)
+    return comment ? comment.createdAt : null
+  }
+
+  get latestReplyAtDisplay() {
+    // eslint-disable-next-line no-undef
+    const comment = $nuxt.findNewer(this.theirsComments)
+    return comment ? comment.createdAtShort : 'なし'
   }
 }

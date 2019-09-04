@@ -76,7 +76,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
       :max-width="maxWidth"
       scrollable
     >
-      <v-card style="overflow-wrap: break-word">
+      <v-card>
         <v-card-title>
           <span>内容確認</span>
         </v-card-title>
