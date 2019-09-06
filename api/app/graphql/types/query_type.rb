@@ -2,9 +2,6 @@
 
 module Types
   class QueryType < Types::BaseObject
-    # Add root-level fields here.
-    # They will be entry points for queries on your schema.
-
     field :me, Types::TeamType, null: true
     field :contest_info, Types::ContestInfo, null: false
     field :categories, [Types::CategoryType], null: false
@@ -34,7 +31,7 @@ module Types
     end
 
     def problem(id:)
-      Problem.readables(team: self.context.current_team!).find_by(id: id)
+      Problem.find_by(id: id).readable(team: self.context.current_team!)
     end
 
     def problems
@@ -46,7 +43,7 @@ module Types
     end
 
     def team(id:)
-      Team.readables(team: self.context.current_team!).find_by(id: id)
+      Team.find_by(id: id).readable(team: self.context.current_team!)
     end
 
     def teams
@@ -60,13 +57,5 @@ module Types
     def sessions
       Session.readable_records(team: self.context.current_team!)
     end
-
-    # field :problem, Types::ProblemType, null: false do
-    #   argument :id, ID, required: true
-    # end
-
-    # def problem(id:)
-    #   RecordLoader.for(Problem).load(id)
-    # end
   end
 end

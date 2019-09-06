@@ -14,7 +14,7 @@ module Mutations
       raise RecordNotExists.new(Answer, id: answer_id) if answer.nil?
 
       if answer.update(confirming: confirming)
-        { answer: answer.readable }
+        { answer: answer.readable(team: self.context.current_team!) }
       else
         add_errors(answer)
       end

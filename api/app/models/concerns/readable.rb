@@ -2,15 +2,14 @@
 
 # レコード単位、カラム単位のフィルタを行う
 # メソッドチェーンでクエリを構築できるようにモデルにincludeして使う
-# ここで、定義されているメソッドは軒並みteamを引数に取り、多くの場合teamはcurrent_teamなためデフォルト引数にする
 module Readable
   extend ActiveSupport::Concern
 
-  def readable(team: Context.current_team!)
+  def readable(team:)
     readable?(team: team) ? filter_columns(team: team) : nil
   end
 
-  def readable?(team: Context.current_team!)
+  def readable?(team:)
     self.class.readable_records(team: team).exists?(id: id)
   end
 
@@ -20,7 +19,7 @@ module Readable
   end
 
   module ClassMethods
-    def readables(team: Context.current_team!)
+    def readables(team:)
       readable_records(team: team).filter_columns(team: team)
     end
 

@@ -15,12 +15,12 @@ module Mutations
 
       Acl.permit!(mutation: self, args: { problem: problem })
 
-      issue = Issue.new(status: 'unsolved', problem: problem, team: Context.current_team!)
-      issue_comment = IssueComment.new(text: text, from_staff: Context.current_team!.staff?)
+      issue = Issue.new(status: 'unsolved', problem: problem, team: self.context.current_team!)
+      issue_comment = IssueComment.new(text: text, from_staff: self.context.current_team!.staff?)
 
       # issueも同時にsaveされる
       if issue_comment.update(issue: issue)
-        { issue: issue.readable, issue_comment: issue_comment.readable }
+        { issue: issue.readable(team: self.context.current_team!), issue_comment: issue_comment.readable(team: self.context.current_team!) }
       else
         add_errors(issue)
         add_errors(issue, issue_comment)

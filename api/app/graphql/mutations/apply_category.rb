@@ -15,7 +15,7 @@ module Mutations
       category = Category.find_or_initialize_by(code: code)
 
       if category.update(title: title, description: description, order: order)
-        { category: category.readable }
+        { category: category.readable(team: self.context.current_team!) }
       else
         add_errors(category)
       end

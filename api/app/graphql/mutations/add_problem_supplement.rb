@@ -15,7 +15,7 @@ module Mutations
       problem_supplement = ProblemSupplement.new
 
       if problem_supplement.update(text: text, problem: problem)
-        { problem_supplement: problem_supplement.readable }
+        { problem_supplement: problem_supplement.readable(team: self.context.current_team!) }
       else
         add_errors(problem_supplement)
       end
