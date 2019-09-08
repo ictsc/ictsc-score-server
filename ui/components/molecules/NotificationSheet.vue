@@ -95,7 +95,6 @@ export default {
   }
 }
 </script>
-
 <style scoped lang="sass">
 .notification-message
   white-space: pre-wrap
