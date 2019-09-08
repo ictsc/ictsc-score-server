@@ -11,10 +11,10 @@
       <v-col v-if="showRigthPanel" cols="6">
         <v-tabs v-model="tabMode" grow active-class="always-active-color">
           <v-tabs-slider></v-tabs-slider>
-          <v-tab replace append :to="'#' + answersTabName" class="mx-0">
+          <v-tab replace append :to="'#' + answersTabName">
             解答
           </v-tab>
-          <v-tab replace append :to="'#' + issuesTabName" class="mx-0">
+          <v-tab replace append :to="'#' + issuesTabName">
             質問
           </v-tab>
         </v-tabs>
