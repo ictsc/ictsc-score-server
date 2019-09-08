@@ -97,8 +97,12 @@ export default {
   },
   data() {
     return {
-      opened: false
+      opened: null
     }
+  },
+  created() {
+    // dateではcomputed(isStaff)が使えない
+    this.opened = this.isStaff && !this.answer.hasPoint
   },
   computed: {
     ...mapGetters('contestInfo', ['realtimeGrading'])
