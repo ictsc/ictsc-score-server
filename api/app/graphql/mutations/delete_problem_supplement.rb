@@ -12,8 +12,8 @@ module Mutations
       Acl.permit!(mutation: self, args: { problem_supplement: problem_supplement })
 
       if problem_supplement.destroy
-        # 削除されたレコードはreadable(team: self.current_team!)が使えないのでカラムのみフィルタする
-        { problem_supplement: problem_supplement }
+        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
+        { problem_supplement: problem_supplement.filter_columns(team: self.current_team!) }
       else
         add_errors(problem_supplement)
       end
