@@ -18,10 +18,10 @@ module Mutations
 
       Acl.permit!(mutation: self, args: { issue: issue })
 
-      issue.transition_by_click(team: self.context.current_team!)
+      issue.transition_by_click(team: self.current_team!)
 
       if issue.save
-        { issue: issue.readable(team: self.context.current_team!) }
+        { issue: issue.readable(team: self.current_team!) }
       else
         add_errors(issue)
       end

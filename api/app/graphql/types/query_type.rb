@@ -18,7 +18,7 @@ module Types
     field :sessions, [Types::SessionType], null: false
 
     def me
-      self.context.current_team!.readable(team: self.context.current_team!)
+      self.current_team!.readable(team: self.current_team!)
     end
 
     def contest_info
@@ -27,35 +27,35 @@ module Types
     end
 
     def categories
-      Category.readables(team: self.context.current_team!)
+      Category.readables(team: self.current_team!)
     end
 
     def problem(id:)
-      Problem.find_by(id: id).readable(team: self.context.current_team!)
+      Problem.find_by(id: id).readable(team: self.current_team!)
     end
 
     def problems
-      Problem.readables(team: self.context.current_team!)
+      Problem.readables(team: self.current_team!)
     end
 
     def problem_environments
-      ProblemEnvironment.readables(team: self.context.current_team!)
+      ProblemEnvironment.readables(team: self.current_team!)
     end
 
     def team(id:)
-      Team.find_by(id: id).readable(team: self.context.current_team!)
+      Team.find_by(id: id).readable(team: self.current_team!)
     end
 
     def teams
-      Team.readables(team: self.context.current_team!)
+      Team.readables(team: self.current_team!)
     end
 
     def notices
-      Notice.readables(team: self.context.current_team!)
+      Notice.readables(team: self.current_team!)
     end
 
     def sessions
-      Session.readable_records(team: self.context.current_team!)
+      Session.readable_records(team: self.current_team!)
     end
   end
 end

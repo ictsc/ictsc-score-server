@@ -14,7 +14,7 @@ module Mutations
       raise RecordNotExists.new(Notice, id: notice_id) if notice.nil?
 
       if notice.update(pinned: pinned)
-        { notice: notice.readable(team: self.context.current_team!) }
+        { notice: notice.readable(team: self.current_team!) }
       else
         add_errors(notice)
       end

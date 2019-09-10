@@ -14,7 +14,7 @@ module Types
 
     def status
       # staff以外には対応中を見せない
-      return 'unsolved' if !self.context.current_team!.staff? && self.object.in_progress?
+      return 'unsolved' if !self.current_team!.staff? && self.object.in_progress?
 
       self.object.status
     end

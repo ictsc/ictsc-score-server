@@ -18,7 +18,7 @@ module Mutations
       team = Team.find_or_initialize_by(number: number)
 
       if team.update(role: role, name: name, password: password, organization: organization, color: color)
-        { team: team.readable(team: self.context.current_team!) }
+        { team: team.readable(team: self.current_team!) }
       else
         add_errors(team)
       end
