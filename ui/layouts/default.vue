@@ -51,5 +51,5 @@ html
   // 横スクロールを有効にする
   overflow-x: auto
   // 縦スクロールを必要に応じて表示する
-  overflow-y: auto
+  // overflow-y: auto
 </style>
