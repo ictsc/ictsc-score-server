@@ -4,7 +4,7 @@
     max-width="80%"
     :persistent="sending"
     scrollable
-    @input="close"
+    @input="!$event && close()"
   >
     <v-card>
       <v-card-title> {{ label }} インポート </v-card-title>

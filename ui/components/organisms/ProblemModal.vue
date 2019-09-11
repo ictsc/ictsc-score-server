@@ -4,7 +4,7 @@
     :persistent="sending"
     max-width="70em"
     scrollable
-    @input="close"
+    @input="!$event && close()"
   >
     <v-card>
       <v-card-title>

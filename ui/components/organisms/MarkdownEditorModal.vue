@@ -17,7 +17,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
       :persistent="sending"
       :max-width="maxWidth"
       scrollable
-      @input="close"
+      @input="!$event && close()"
     >
       <v-card>
         <v-card-title>

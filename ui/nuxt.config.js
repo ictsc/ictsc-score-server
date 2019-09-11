@@ -71,9 +71,7 @@ export default {
       // 補足を最下部に生成
       'markdown-it-footnote',
       // サニタイズ
-      'markdown-it-sanitizer',
-      // TeX
-      '@iktakahiro/markdown-it-katex'
+      'markdown-it-sanitizer'
     ]
   },
   moment: {
