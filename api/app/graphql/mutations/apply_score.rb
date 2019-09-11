@@ -15,7 +15,7 @@ module Mutations
 
       # gradeでscoreレコードが作られる
       if answer.grade(point: point)
-        { score: answer.score.readable }
+        { score: answer.score.readable(team: self.current_team!) }
       else
         add_errors(answer.score)
       end

@@ -96,10 +96,10 @@ export default {
   },
   // TODO: 廃止予定
   styleResources: {
-    sass: ['~/assets/css/variables.sass']
+    // sass: ['~/assets/css/variables.sass']
   },
   vuetify: {
-    customVariables: ['~/assets/css/variables.sass'],
+    // customVariables: ['~/assets/css/variables.sass'],
     theme: {
       themes: {
         light: {

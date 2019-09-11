@@ -32,12 +32,12 @@ class Issue < ApplicationRecord
     end
   end
 
-  def transition_by_comment(team:)
+  def transition_by_comment(team:) # rubocop:disable Metrics/CyclomaticComplexity
     case status
     when 'unsolved'
       self.status = 'in_progress' if team.staff?
-    when 'in_progress' # rubocop:disable Lint/EmptyWhen
-      # do nothing
+    when 'in_progress'
+      self.status = 'unsolved' if team.player?
     when 'solved'
       self.status = 'unsolved' if team.player?
     else

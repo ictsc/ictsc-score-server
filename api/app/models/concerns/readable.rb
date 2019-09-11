@@ -2,40 +2,39 @@
 
 # レコード単位、カラム単位のフィルタを行う
 # メソッドチェーンでクエリを構築できるようにモデルにincludeして使う
-# ここで、定義されているメソッドは軒並みteamを引数に取り、多くの場合teamはcurrent_teamなためデフォルト引数にする
-module Filterable
+module Readable
   extend ActiveSupport::Concern
 
-  def readable(team: Context.current_team!)
+  def readable(team:)
     readable?(team: team) ? filter_columns(team: team) : nil
   end
 
-  def readable?(team: Context.current_team!)
+  def readable?(team:)
     self.class.readable_records(team: team).exists?(id: id)
   end
 
-  def filter_columns(team: Context.current_team!)
+  def filter_columns(team:)
     self.class.reject_columns(team: team).each {|key| self[key] = nil }
     self
   end
 
   module ClassMethods
-    def readables(team: Context.current_team!)
+    def readables(team:)
       readable_records(team: team).filter_columns(team: team)
     end
 
-    def filter_columns(team: Context.current_team!)
+    def filter_columns(team:)
       cols = readable_columns(team: team)
       cols.empty? ? none : select(*cols)
     end
 
-    def readable_columns(team: Context.current_team!)
+    def readable_columns(team:)
       column_names - reject_columns(team: team)
     end
 
     # ブラックリスト方式でフィルタする
     # そのteamが閲覧できるレコードを返す
-    def reject_columns(team: Context.current_team!)
+    def reject_columns(team:)
       # 文字列として比較しないとautoload環境では正しく動作しない
       case self.to_s
       when 'Answer'
@@ -57,7 +56,7 @@ module Filterable
         .presence || []
     end
 
-    def readable_records(team: Context.current_team!)
+    def readable_records(team:)
       # 文字列として比較しないとautoload環境では正しく動作しない
       klass = self.to_s
 
@@ -65,7 +64,7 @@ module Filterable
       return all if team.staff?
 
       # 参加者や見学者は常に取得不可
-      return none if %w[Config].include?(klass)
+      return none if %w[Config Session].include?(klass)
 
       # 参加者や見学者は競技時間外やコンテスト中断時にはお知らせ以外は取得不可能
       return none if !Config.competition? && !%w[Notice].include?(klass)
@@ -87,7 +86,7 @@ module Filterable
         return none if !team.staff? && Config.hide_all_score
 
         # joins(:answer).merge(Answer.delay_filter).where(answers: { team: team })
-        where(answer: Answer.readable_records.delay_filter)
+        where(answer: Answer.readable_records(team: team).delay_filter)
       when 'FirstCorrectAnswer'
         # TODO: update方式だと、遅延の影響で一時的に Problem#solved_countが減る
         #       insert方式にして最新のみ使いようにしたほうがいい
@@ -95,7 +94,7 @@ module Filterable
       when 'Issue'
         where(team: team, problem: Problem.opened(team: team))
       when 'IssueComment'
-        where(issue: Issue.readable_records)
+        where(issue: Issue.readable_records(team: team))
       when 'ProblemBody', 'ProblemSupplement'
         where(problem: Problem.opened(team: team))
       when 'ProblemEnvironment'

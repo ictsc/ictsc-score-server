@@ -3,17 +3,17 @@
 class Acl
   class << self
     def permit!(mutation:, args:)
-      raise GraphQL::ExecutionError, "Unpermit mutation #{mutation.class} by #{Context.current_team!.name}" unless allow?(mutation: mutation, args: args)
+      raise GraphQL::ExecutionError, "Unpermit mutation #{mutation.class} by #{mutation.context.current_team!.name}" unless allow?(mutation: mutation, args: args)
     end
 
     def allow?(mutation:, args:)
-      mutation = mutation.class.name.demodulize
-      team = Context.current_team!
+      mutation_str = mutation.class.name.demodulize
+      team = mutation.context.current_team!
 
       # audienceはデータの作成・更新・削除は一切できない
       return false if team.audience?
 
-      case mutation
+      case mutation_str
       when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice'
         # staff only
         team.staff?
@@ -42,7 +42,7 @@ class Acl
           issue_comment.readable?(team: team) &&
           Config.before_delete_time_limit?(issue_comment.created_at)
       else
-        raise UnhandledClass, mutation
+        raise UnhandledClass, mutation_str
       end
     end
   end

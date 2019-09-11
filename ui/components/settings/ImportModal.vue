@@ -120,6 +120,8 @@ export default {
     file(value) {
       if (value) {
         this.loadFile()
+      } else {
+        this.items = []
       }
     }
   },

@@ -14,12 +14,7 @@ module Types
     field :created_at, Types::DateTime,    null: false
     field :updated_at, Types::DateTime,    null: false
 
-    def team
-      RecordLoader.for(Team).load(self.object.team_id)
-    end
-
-    def problem
-      RecordLoader.for(Problem).load(self.object.problem_id)
-    end
+    belongs_to :team
+    belongs_to :problem
   end
 end

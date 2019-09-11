@@ -13,9 +13,6 @@ class GraphqlController < ApplicationController
 
     context = { current_team: current_team }
 
-    # 下記のcontextはただのHashだが、Query内から見えるcontextはGraphQL::Query::Context
-    Context.context = context
-
     # GraphQL::ExecutionErrorを継承した例外は補足される. それ以外は500
     render json: ApiSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
   rescue StandardError => e

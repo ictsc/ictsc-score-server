@@ -11,8 +11,6 @@ module Types
     field :created_at,  Types::DateTime,      null: false
     field :updated_at,  Types::DateTime,      null: false
 
-    def problems
-      AssociationLoader.for(Category, __method__).load(self.object)
-    end
+    has_many :problems
   end
 end

@@ -12,16 +12,8 @@ module Types
     field :score,      Types::ScoreType,   null: true
     field :created_at, Types::DateTime,    null: false
 
-    def problem
-      RecordLoader.for(Problem).load(self.object.problem_id)
-    end
-
-    def team
-      RecordLoader.for(Team).load(self.object.team_id)
-    end
-
-    def score
-      AssociationLoader.for(Answer, __method__).load(self.object)
-    end
+    belongs_to :problem
+    belongs_to :team
+    has_one :score
   end
 end

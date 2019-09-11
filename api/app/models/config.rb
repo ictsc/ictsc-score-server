@@ -7,7 +7,7 @@ class Config < ApplicationRecord
   class CastFailed < StandardError; end
 
   validates :key,        presence: true, uniqueness: true
-  validates :value,      presence: true, length: { maximum: 8192 }
+  validates :value,      allow_empty: true, length: { maximum: 8192 }
   validates :value_type, presence: true
   validate :validate_castable
   validate :reject_update_value_type, on: :update
