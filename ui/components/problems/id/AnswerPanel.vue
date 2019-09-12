@@ -4,6 +4,7 @@
       v-if="isPlayer"
       :problem-body="problemBody"
       :latest-answer="sortedAnswers[0]"
+      class="mb-1"
     />
 
     <!-- TODO: 解答が0のときは何か表示する(特にstaff) -->
