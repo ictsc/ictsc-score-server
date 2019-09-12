@@ -163,15 +163,6 @@ def build_answers(problems, teams, count_range)
   end
 end
 
-def build_score(answer)
-  if answer.problem.body.textbox?
-    {}
-  else
-    { point: Answer.auto_grade(answer_bodies: answer.bodies, problem_body: answer.problem.body) }
-  end
-    .merge(answer: answer)
-end
-
 def create_answers(problems, players)
   print 'creating answers...'
 
@@ -188,12 +179,14 @@ def create_answers(problems, players)
   # 雑な大量生成なので、未開放問題への解答を作成している
   Answer.import!(answers)
 
-  scores = answers
-    .sample(answers.size * 2 / 3)
-    .map {|answer| build_stubbed(:score, **build_score(answer)) }
-    .shuffle
-
-  Score.import!(scores)
+  # 面倒なのでScoreはbulk insertしない
+  answers.each do |answer|
+    if answer.problem.body.textbox?
+      answer.grade(percent: [nil, Random.rand(0..100)].sample)
+    else
+      answer.grade(percent: nil)
+    end
+  end
 
   puts 'done'
   answers

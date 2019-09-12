@@ -31,27 +31,36 @@ class Answer < ApplicationRecord
   # 手動採点なら引数で値を渡す。
   # 自動採点なら渡さない
   # 失敗したらfalseが返る
-  def grade(point: nil)
+  def grade(percent:)
     # self.scoreに代入すると即座にsaveされるので注意
     score = self.score || Score.new
     score.answer = self
 
+    # 精度とフィルタ設計の上、採点時に実際の得点を計算する必要がある
     case problem.body.mode
     when 'textbox'
-      score.point = point
+      # 計算精度注意
+      score.percent = percent
+      score.point = percent && percent * problem.body.perfect_point / 100
     when 'radio_button', 'checkbox'
-      unless point.nil?
+      unless percent.nil?
         score.errors.add(:grading, "in #{problem.body.mode}, disallow grade manually")
         return false
       end
 
-      score.point = self.class.auto_grade(answer_bodies: bodies, problem_body: problem.body)
+      # 計算精度注意
+      score.percent = 100 * correct_count / problem.body.corrects.size
+      score.point = problem.body.perfect_point * correct_count / problem.body.corrects.size
     else
       raise UnhandledProblemBodyMode, problem.body.mode
     end
 
     # nil許容
-    score.update(solved: problem.body.solved_criterion <= score.point.to_i)
+    score.update(solved: problem.body.solved_criterion <= score.percent.to_i)
+  end
+
+  def correct_count
+    problem.body.corrects.zip(bodies).count {|correct, body| Set.new(correct) == Set.new(body) }
   end
 
   class << self
@@ -66,13 +75,6 @@ class Answer < ApplicationRecord
         .where(scores: { solved: true })
         .order(:created_at)
         .first
-    end
-
-    def auto_grade(answer_bodies:, problem_body:)
-      correct_count = problem_body.corrects.zip(answer_bodies).count {|correct, body| Set.new(correct) == Set.new(body) }
-
-      # パーセンテージ(整数)で保持するため端数は切り捨て
-      100 * correct_count / problem_body.corrects.size
     end
   end
 end
