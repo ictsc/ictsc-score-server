@@ -56,6 +56,12 @@ jobs:
       #     paths:
       #       - /usr/local/bundle
 
+      # db:setupは必要ないので先に実行できる
+      - run:
+          name: Run rubocop
+          working_directory: /root/project/api
+          command: bundle exec rubocop
+
       - run:
           name: Wait for Redis
           command: dockerize -wait tcp://127.0.0.1:6379 -timeout 10s
@@ -68,11 +74,6 @@ jobs:
           name: Setup DB
           working_directory: /root/project/api
           command: bundle exec rake db:setup
-
-      - run:
-          name: Run rubocop
-          working_directory: /root/project/api
-          command: bundle exec rubocop
 
       - run:
           name: Run spec
