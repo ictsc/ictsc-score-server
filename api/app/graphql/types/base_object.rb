@@ -26,11 +26,11 @@ module Types
         class_eval do
           if block
             define_method(field) do
-              AssociationLoader.for(self.context, model, column).load(self.object, &block).then(&block)
+              AssociationLoader.for(self.context, model, column).load(self.object).then(&block)
             end
           else
             define_method(field) do
-              AssociationLoader.for(self.context, model, column).load(self.object, &block)
+              AssociationLoader.for(self.context, model, column).load(self.object)
             end
           end
         end
