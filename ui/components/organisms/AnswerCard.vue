@@ -10,7 +10,7 @@
           <span v-else>
             <template v-if="answer.hasPoint">
               得点 {{ answer.point }}
-              <v-icon v-if="$elvis(answer, 'score.solved')" small>
+              <v-icon v-if="answer.solved" small>
                 mdi-check-bold
               </v-icon>
             </template>
@@ -74,8 +74,6 @@ import ExpandableCard from '~/components/molecules/ExpandableCard'
 import GradeForm from '~/components/molecules/GradeForm'
 import Markdown from '~/components/atoms/Markdown'
 
-// TODO: 有効得点を目立たせる
-
 export default {
   name: 'AnswerCard',
   components: {
@@ -100,12 +98,12 @@ export default {
       opened: null
     }
   },
+  computed: {
+    ...mapGetters('contestInfo', ['realtimeGrading'])
+  },
   created() {
     // dateではcomputed(isStaff)が使えない
     this.opened = this.isStaff && !this.answer.hasPoint
-  },
-  computed: {
-    ...mapGetters('contestInfo', ['realtimeGrading'])
   }
 }
 </script>

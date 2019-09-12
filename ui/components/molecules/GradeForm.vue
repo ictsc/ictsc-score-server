@@ -97,9 +97,9 @@ export default {
   data() {
     return {
       sending: false,
-      stepEnable: true,
-      slider: this.answer.hasPoint ? this.answer.rawPoint : -5,
-      text: this.answer.hasPoint ? String(this.answer.rawPoint) : 'null'
+      stepEnable: false,
+      slider: this.answer.hasPoint ? this.answer.percent : -5,
+      text: this.answer.hasPoint ? String(this.answer.percent) : 'null'
     }
   },
 
@@ -143,10 +143,10 @@ export default {
     async applyScore() {
       this.sending = true
 
-      const point = this.text === 'null' ? null : parseInt(this.text)
-      await orm.Score.applyScore({
+      const percent = this.text === 'null' ? null : parseInt(this.text)
+      await orm.Answer.applyScore({
         action: '採点',
-        params: { answerId: this.answer.id, point }
+        params: { answerId: this.answer.id, percent }
       })
 
       this.sending = false

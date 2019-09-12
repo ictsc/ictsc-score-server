@@ -68,7 +68,7 @@ export default {
   computed: {
     problems() {
       const problems = orm.Problem.query()
-        .with(['body', 'answers.team', 'answers.score', 'answers.problem.body'])
+        .with(['body', 'answers', 'answers.team'])
         .all()
 
       return this.$_.sortBy(problems, p => this.$elvis(p, 'body.title'))

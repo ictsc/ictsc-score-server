@@ -110,8 +110,7 @@ export default {
           'previousProblem',
           'environments.team',
           'supplements',
-          'answers.score',
-          'answers.problem.body',
+          'answers',
           'issues.comments'
         ])
         .find(this.problemId)

@@ -26,12 +26,7 @@ export default {
 
       this.problems = this.sortByOrder(
         orm.Problem.query()
-          .with([
-            'body',
-            'answers.score',
-            'answers.team',
-            'answers.problem.body'
-          ])
+          .with(['body', 'answers.team'])
           .all()
       )
 

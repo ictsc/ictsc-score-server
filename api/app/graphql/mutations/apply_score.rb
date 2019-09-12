@@ -2,7 +2,7 @@
 
 module Mutations
   class ApplyScore < BaseMutation
-    field :score,  Types::ScoreType, null: true
+    field :answer, Types::AnswerType, null: true
 
     argument :answer_id, ID,      required: true
     argument :percent,   Integer, required: false
@@ -14,8 +14,8 @@ module Mutations
       Acl.permit!(mutation: self, args: {})
 
       # gradeでscoreレコードが作られる
-        { score: answer.score.readable(team: self.current_team!) }
       if answer.grade(percent: percent)
+        { answer: answer.readable(team: self.current_team!) }
       else
         add_errors(answer.score)
       end
