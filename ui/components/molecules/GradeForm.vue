@@ -37,7 +37,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn
-                :disabled="!validPoint"
+                :disabled="!validPoint || !changed"
                 :loading="sending"
                 color="primary"
                 @click="applyScore"
@@ -96,6 +96,7 @@ export default {
 
   data() {
     return {
+      previous: this.answer.hasPoint ? this.answer.percent : -5,
       sending: false,
       stepEnable: false,
       slider: this.answer.hasPoint ? this.answer.percent : -5,
@@ -107,6 +108,9 @@ export default {
     ...mapGetters('contestInfo', ['hideAllScore']),
     validPoint() {
       return this.text === 'null' || this.validPointNumberText(this.text)
+    },
+    changed() {
+      return this.previous !== this.slider
     },
     solvedIconColor() {
       return this.problemBody.solvedCriterion <= this.slider
@@ -146,6 +150,9 @@ export default {
       const percent = this.text === 'null' ? null : parseInt(this.text)
       await orm.Answer.applyScore({
         action: '採点',
+        resolve: () => {
+          this.previous = this.slider
+        },
         params: { answerId: this.answer.id, percent }
       })
 
