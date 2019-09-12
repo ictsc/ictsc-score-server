@@ -27,7 +27,7 @@ import DeleteButton from '~/components/commons/DeleteButton'
 import Markdown from '~/components/commons/Markdown'
 
 export default {
-  name: 'ProblemSupplementSheet',
+  name: 'SupplementCard',
   components: {
     DeleteButton,
     Markdown

@@ -23,7 +23,7 @@
 
     <!-- 問題情報 -->
     <v-flex class="my-1">
-      <problem-info-chips-area :problem="problem" class="ml-0" />
+      <info-chips-area :problem="problem" class="ml-0" />
     </v-flex>
 
     <!-- 運営メモ -->
@@ -37,7 +37,7 @@
 
     <!-- 補足 -->
     <v-flex v-if="problem.supplements.length !== 0 || isStaff">
-      <problem-supplement-area
+      <supplement-area
         :supplements="problem.supplements"
         :problem-code="problem.code"
       />
@@ -45,7 +45,7 @@
 
     <!-- 環境 -->
     <v-flex v-if="problem.environments.length !== 0">
-      <problem-environment-area :environments="problem.environments" />
+      <environment-area :environments="problem.environments" />
     </v-flex>
 
     <!-- 本文 -->
@@ -62,22 +62,22 @@
 <script>
 import Markdown from '~/components/commons/Markdown'
 import PenButton from '~/components/commons/PenButton'
-import ProblemEnvironmentArea from '~/components/problems/id/ProblemEnvironmentArea'
+import EnvironmentArea from '~/components/problems/id/EnvironmentArea'
 import ProblemModal from '~/components/misc/ProblemModal'
-import ProblemInfoChipsArea from '~/components/problems/id/ProblemInfoChipsArea'
-import ProblemSupplementArea from '~/components/problems/id/ProblemSupplementArea'
+import InfoChipsArea from '~/components/problems/id/InfoChipsArea'
+import SupplementArea from '~/components/problems/id/SupplementArea'
 
 // TODO: 現在の得点が見たい
 
 export default {
-  name: 'ProblemDetailsPanel',
+  name: 'DetailsPanel',
   components: {
     Markdown,
     PenButton,
-    ProblemEnvironmentArea,
+    EnvironmentArea,
     ProblemModal,
-    ProblemInfoChipsArea,
-    ProblemSupplementArea
+    InfoChipsArea,
+    SupplementArea
   },
   props: {
     problem: {

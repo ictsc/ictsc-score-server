@@ -35,7 +35,7 @@
 
     <!-- 採点フォーム -->
     <template v-if="isStaff">
-      <grade-form :answer="answer" :problem-body="problemBody" />
+      <grading-form :answer="answer" :problem-body="problemBody" />
       <v-divider />
     </template>
 
@@ -76,7 +76,7 @@ import { mapGetters } from 'vuex'
 import AnswerFormRadioButton from '~/components/problems/id/AnswerFormRadioButton'
 import AnswerFormCheckbox from '~/components/problems/id/AnswerFormCheckbox'
 import ExpandableCard from '~/components/commons/ExpandableCard'
-import GradeForm from '~/components/problems/id/GradeForm'
+import GradingForm from '~/components/problems/id/GradingForm'
 import Markdown from '~/components/commons/Markdown'
 
 export default {
@@ -85,7 +85,7 @@ export default {
     AnswerFormCheckbox,
     AnswerFormRadioButton,
     ExpandableCard,
-    GradeForm,
+    GradingForm,
     Markdown
   },
   props: {

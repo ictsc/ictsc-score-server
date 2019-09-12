@@ -16,7 +16,7 @@
     >
       <v-expand-transition>
         <v-flex v-show="show" class="pt-0">
-          <problem-supplement-sheet :supplement="supplement" />
+          <supplement-card :supplement="supplement" />
         </v-flex>
       </v-expand-transition>
     </v-flex>
@@ -38,16 +38,16 @@ import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import PenButton from '~/components/commons/PenButton'
 import ExpandableButton from '~/components/commons/ExpandableButton'
-import ProblemSupplementSheet from '~/components/problems/id/ProblemSupplementSheet'
+import SupplementCard from '~/components/problems/id/SupplementCard'
 import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 
 export default {
-  name: 'ProblemSupplementArea',
+  name: 'SupplementArea',
   components: {
     PenButton,
     ExpandableButton,
     MarkdownEditorModal,
-    ProblemSupplementSheet
+    SupplementCard
   },
   props: {
     // 補足追加に必要

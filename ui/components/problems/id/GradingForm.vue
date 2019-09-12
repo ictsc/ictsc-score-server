@@ -82,7 +82,7 @@ import orm from '~/orm'
 import NumberTextField from '~/components/commons/NumberTextField'
 
 export default {
-  name: 'GradeForm',
+  name: 'GradingForm',
   components: {
     NumberTextField
   },

@@ -17,7 +17,7 @@
 // TODO: チーム詳細ページには問題環境一覧
 // TODO: 削除編集新規ボタンを作る
 export default {
-  name: 'ProblemEnvironmentTable',
+  name: 'EnvironmentTable',
   props: {
     environments: {
       type: Array,

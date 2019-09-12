@@ -23,7 +23,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'ProblemInfoChipsArea',
+  name: 'InfoChipsArea',
   props: {
     problem: {
       type: Object,

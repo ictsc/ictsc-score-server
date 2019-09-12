@@ -22,7 +22,7 @@
     </expandable-button>
     <v-expand-transition>
       <!-- :searchは文字列な必要がある、searchはtextareaで文字列のみ入るため!!で判定できる -->
-      <problem-environment-table
+      <environment-table
         v-show="show"
         :environments="environments"
         :search="!!search ? search : ''"
@@ -33,13 +33,13 @@
 </template>
 <script>
 import ExpandableButton from '~/components/commons/ExpandableButton'
-import ProblemEnvironmentTable from '~/components/problems/id/ProblemEnvironmentTable'
+import EnvironmentTable from '~/components/problems/id/EnvironmentTable'
 
 export default {
-  name: 'ProblemEnvironmentArea',
+  name: 'EnvironmentArea',
   components: {
     ExpandableButton,
-    ProblemEnvironmentTable
+    EnvironmentTable
   },
   props: {
     environments: {
