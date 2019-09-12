@@ -1,7 +1,8 @@
 <template>
   <expandable-card v-model="opened" color="white">
-    <!-- TODO: ボタンの内容の表示位置を固定したい(縦に揃えたい) -->
+    <!-- カードの帯 -->
     <template v-slot:button>
+      <!-- TODO: ボタンの内容の表示位置を固定したい(縦に揃えたい) -->
       <v-layout row align-center>
         <v-flex>
           <span v-if="!realtimeGrading && isPlayer">
@@ -10,7 +11,7 @@
           <span v-else>
             <template v-if="answer.hasPoint">
               得点 {{ answer.point }}
-              <v-icon v-if="$elvis(answer, 'score.solved')" small>
+              <v-icon v-if="answer.solved" small>
                 mdi-check-bold
               </v-icon>
             </template>
@@ -32,12 +33,16 @@
       </v-layout>
     </template>
 
+    <!-- 採点フォーム -->
     <template v-if="isStaff">
       <grade-form :answer="answer" :problem-body="problemBody" />
       <v-divider />
     </template>
 
+    <!-- 提出時刻 -->
     <p class="text-right caption">提出時刻: {{ answer.createdAtShort }}</p>
+
+    <!-- 解答本体 -->
     <markdown
       v-if="problemBody.modeIsTextbox"
       :content="answer.bodies[0][0]"
@@ -74,8 +79,6 @@ import ExpandableCard from '~/components/molecules/ExpandableCard'
 import GradeForm from '~/components/molecules/GradeForm'
 import Markdown from '~/components/atoms/Markdown'
 
-// TODO: 有効得点を目立たせる
-
 export default {
   name: 'AnswerCard',
   components: {
@@ -100,12 +103,12 @@ export default {
       opened: null
     }
   },
+  computed: {
+    ...mapGetters('contestInfo', ['realtimeGrading'])
+  },
   created() {
     // dateではcomputed(isStaff)が使えない
     this.opened = this.isStaff && !this.answer.hasPoint
-  },
-  computed: {
-    ...mapGetters('contestInfo', ['realtimeGrading'])
   }
 }
 </script>

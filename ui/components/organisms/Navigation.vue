@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dense max-height="3em" color="primary">
+  <v-app-bar app dense max-height="3em" color="primary">
     <navigation-link to="/">
       <img class="logo" src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
     </navigation-link>
@@ -47,7 +47,7 @@
     <navigation-link v-else to="/login" @click="tryLogout">
       <v-icon>mdi-exit-run</v-icon>
     </navigation-link>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 <script>
 import { mapActions } from 'vuex'

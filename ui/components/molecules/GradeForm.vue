@@ -37,7 +37,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn
-                :disabled="!validPoint"
+                :disabled="!validPoint || !changed"
                 :loading="sending"
                 color="primary"
                 @click="applyScore"
@@ -46,8 +46,11 @@
                 採点
               </v-btn>
             </template>
+
             <span v-if="hideAllScore">採点結果は参加者には非公開です</span>
-            <span v-else>時間内の再採点は参加者に認知されません</span>
+            <span v-else-if="realtimeGrading">
+              時間内の再採点は参加者に認知されません
+            </span>
           </v-tooltip>
         </template>
       </v-slider>
@@ -96,17 +99,21 @@ export default {
 
   data() {
     return {
+      previous: this.answer.hasPoint ? this.answer.percent : -5,
       sending: false,
-      stepEnable: true,
-      slider: this.answer.hasPoint ? this.answer.rawPoint : -5,
-      text: this.answer.hasPoint ? String(this.answer.rawPoint) : 'null'
+      stepEnable: false,
+      slider: this.answer.hasPoint ? this.answer.percent : -5,
+      text: this.answer.hasPoint ? String(this.answer.percent) : 'null'
     }
   },
 
   computed: {
-    ...mapGetters('contestInfo', ['hideAllScore']),
+    ...mapGetters('contestInfo', ['realtimeGrading', 'hideAllScore']),
     validPoint() {
       return this.text === 'null' || this.validPointNumberText(this.text)
+    },
+    changed() {
+      return this.previous !== this.slider
     },
     solvedIconColor() {
       return this.problemBody.solvedCriterion <= this.slider
@@ -143,10 +150,13 @@ export default {
     async applyScore() {
       this.sending = true
 
-      const point = this.text === 'null' ? null : parseInt(this.text)
-      await orm.Score.applyScore({
+      const percent = this.text === 'null' ? null : parseInt(this.text)
+      await orm.Answer.applyScore({
         action: '採点',
-        params: { answerId: this.answer.id, point }
+        resolve: () => {
+          this.previous = this.slider
+        },
+        params: { answerId: this.answer.id, percent }
       })
 
       this.sending = false

@@ -64,7 +64,7 @@ module Readable
       return all if team.staff?
 
       # 参加者や見学者は常に取得不可
-      return none if %w[Config Session].include?(klass)
+      return none if %w[Config].include?(klass)
 
       # 参加者や見学者は競技時間外やコンテスト中断時にはお知らせ以外は取得不可能
       return none if !Config.competition? && !%w[Notice].include?(klass)
