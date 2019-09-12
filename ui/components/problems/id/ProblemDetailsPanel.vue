@@ -62,10 +62,10 @@
 <script>
 import Markdown from '~/components/commons/Markdown'
 import PenButton from '~/components/commons/PenButton'
-import ProblemEnvironmentArea from '~/components/problems/ProblemEnvironmentArea'
+import ProblemEnvironmentArea from '~/components/problems/id/ProblemEnvironmentArea'
 import ProblemModal from '~/components/misc/ProblemModal'
-import ProblemInfoChipsArea from '~/components/problems/ProblemInfoChipsArea'
-import ProblemSupplementArea from '~/components/problems/ProblemSupplementArea'
+import ProblemInfoChipsArea from '~/components/problems/id/ProblemInfoChipsArea'
+import ProblemSupplementArea from '~/components/problems/id/ProblemSupplementArea'
 
 // TODO: 現在の得点が見たい
 

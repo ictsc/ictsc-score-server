@@ -99,8 +99,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
-import AnswerFormRadioButton from '~/components/problems/AnswerFormRadioButton'
-import AnswerFormCheckbox from '~/components/problems/AnswerFormCheckbox'
+import AnswerFormRadioButton from '~/components/problems/id/AnswerFormRadioButton'
+import AnswerFormCheckbox from '~/components/problems/id/AnswerFormCheckbox'
 import Markdown from '~/components/commons/Markdown'
 import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 

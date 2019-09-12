@@ -38,7 +38,7 @@ import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import PenButton from '~/components/commons/PenButton'
 import ExpandableButton from '~/components/commons/ExpandableButton'
-import ProblemSupplementSheet from '~/components/problems/ProblemSupplementSheet'
+import ProblemSupplementSheet from '~/components/problems/id/ProblemSupplementSheet'
 import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 
 export default {

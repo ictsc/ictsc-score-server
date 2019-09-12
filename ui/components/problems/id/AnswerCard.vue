@@ -73,10 +73,10 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import AnswerFormRadioButton from '~/components/problems/AnswerFormRadioButton'
-import AnswerFormCheckbox from '~/components/problems/AnswerFormCheckbox'
+import AnswerFormRadioButton from '~/components/problems/id/AnswerFormRadioButton'
+import AnswerFormCheckbox from '~/components/problems/id/AnswerFormCheckbox'
 import ExpandableCard from '~/components/commons/ExpandableCard'
-import GradeForm from '~/components/problems/GradeForm'
+import GradeForm from '~/components/problems/id/GradeForm'
 import Markdown from '~/components/commons/Markdown'
 
 export default {

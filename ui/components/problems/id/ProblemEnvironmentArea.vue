@@ -33,7 +33,7 @@
 </template>
 <script>
 import ExpandableButton from '~/components/commons/ExpandableButton'
-import ProblemEnvironmentTable from '~/components/problems/ProblemEnvironmentTable'
+import ProblemEnvironmentTable from '~/components/problems/id/ProblemEnvironmentTable'
 
 export default {
   name: 'ProblemEnvironmentArea',

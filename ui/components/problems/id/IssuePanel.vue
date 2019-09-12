@@ -64,7 +64,7 @@
 <script>
 import orm from '~/orm'
 import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
-import IssueCommentCard from '~/components/problems/IssueCommentCard'
+import IssueCommentCard from '~/components/problems/id/IssueCommentCard'
 
 export default {
   name: 'IssuePanel',
