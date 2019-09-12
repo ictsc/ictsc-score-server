@@ -23,7 +23,7 @@
 </template>
 <script>
 export default {
-  name: 'AnswerListCard',
+  name: 'AnswerCard',
   props: {
     answer: {
       type: Object,

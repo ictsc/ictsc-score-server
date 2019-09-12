@@ -32,7 +32,7 @@
 </template>
 <script>
 export default {
-  name: 'IssueStatusSelectButtons',
+  name: 'StatusToggleButtons',
   model: {
     prop: 'value',
     event: 'change'

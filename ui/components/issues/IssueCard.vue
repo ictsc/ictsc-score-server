@@ -66,7 +66,7 @@
 import Markdown from '~/components/commons/Markdown'
 
 export default {
-  name: 'IssueListCard',
+  name: 'IssueCard',
   components: {
     Markdown
   },

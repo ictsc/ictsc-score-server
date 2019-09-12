@@ -1,7 +1,7 @@
 <template>
   <v-container align-end justify-end column class="notification-area">
     <v-slide-x-reverse-transition group>
-      <notification-sheet
+      <notification-card
         v-for="notification in reverseNotifications"
         :key="notification.id"
         :uid="notification.id"
@@ -14,12 +14,12 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import NotificationSheet from '~/components/misc/NotificationSheet'
+import NotificationCard from '~/components/misc/NotificationCard'
 
 export default {
   name: 'NotificationArea',
   components: {
-    NotificationSheet
+    NotificationCard
   },
   computed: {
     ...mapGetters('notification', ['notifications']),

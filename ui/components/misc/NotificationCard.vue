@@ -25,7 +25,7 @@ import { mapGetters, mapMutations } from 'vuex'
 
 // 時間経過、閉じるボタン、ストアからの削除で要素が消える
 export default {
-  name: 'Notification',
+  name: 'NotificationCard',
   props: {
     // idだと被る
     uid: {
