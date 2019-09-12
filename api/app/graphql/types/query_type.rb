@@ -55,7 +55,9 @@ module Types
     end
 
     def sessions
-      Session.readable_records(team: self.current_team!)
+      return [] unless self.current_team!.staff?
+
+      Session.all
     end
   end
 end
