@@ -1,71 +1,65 @@
 <template>
   <!-- TODO: コメントがない場合のempty state -->
-  <v-layout column>
+  <div>
     <!-- ステータスボタン -->
-    <v-flex v-if="!!issue" class="pb-1">
-      <v-layout column align-center>
-        <v-flex>
-          <v-btn
-            :disabled="isAudience"
-            :loading="statusUpdating || commentSending"
-            :color="issue.statusColor"
-            min-width="5em"
-            min-height="5em"
-            fab
-            @click="transition"
-          >
-            {{ issue.statusJp }}
-          </v-btn>
-        </v-flex>
-        <v-flex v-if="!isAudience" class="pt-0 pl-2">
-          <span class="caption grey--text text--darken-1">
-            {{ statusDescription }}
-          </span>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+    <v-layout v-if="!!issue" column align-center class="pb-1">
+      <v-btn
+        :disabled="isAudience"
+        :loading="statusUpdating || commentSending"
+        :color="issue.statusColor"
+        min-width="5em"
+        min-height="5em"
+        fab
+        @click="transition"
+      >
+        {{ issue.statusJp }}
+      </v-btn>
+
+      <span v-if="!isAudience" class="caption grey--text text--darken-1 pt-1">
+        {{ statusDescription }}
+      </span>
+    </v-layout>
 
     <!-- コメント一覧 -->
-    <v-flex>
+    <div v-if="comments.length !== 0" class="mb-2">
       <!-- TODO: 出現アニメーションが欲しい -->
-      <v-layout column>
-        <v-flex v-for="comment in comments" :key="comment.id" mt-1>
-          <issue-comment-card :comment="comment" />
-        </v-flex>
-      </v-layout>
-    </v-flex>
+      <issue-comment-card
+        v-for="comment in comments"
+        :key="comment.id"
+        :comment="comment"
+        class=" mt-1"
+      />
+    </div>
 
     <!-- コメントフォーム -->
     <template v-if="showCommentForm">
-      <v-flex mt-1>
-        <v-card>
-          <v-card-text class="pt-1 pb-0">
-            <v-form v-model="valid">
-              <markdown-text-area
-                v-model="text"
-                :readonly="commentSending"
-                :placeholder="placeholder"
-                preview-width="70em"
-                hide-details
-                @submit="sendComment"
-              />
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-      <v-flex>
-        <v-btn
-          :disabled="isAudience || !valid"
-          :loading="commentSending"
-          block
-          color="success"
-          @click="sendComment"
-        >
-          送信
-        </v-btn>
-      </v-flex>
+      <v-card>
+        <v-card-text class="py-1">
+          <v-form v-model="valid">
+            <markdown-text-area
+              v-model="text"
+              :readonly="commentSending"
+              :placeholder="placeholder"
+              preview-width="70em"
+              hide-details
+              @submit="sendComment"
+            />
+          </v-form>
+        </v-card-text>
+      </v-card>
+
+      <v-btn
+        :disabled="isAudience || !valid"
+        :loading="commentSending"
+        block
+        color="success"
+        class="mt-1"
+        @click="sendComment"
+      >
+        送信
+      </v-btn>
     </template>
-  </v-layout>
+  </div>
 </template>
 <script>
 import orm from '~/orm'
