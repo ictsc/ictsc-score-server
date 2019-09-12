@@ -8,16 +8,20 @@
     @click="click"
   >
     <template v-if="togglable">
-      <v-icon v-if="opened" left>mdi-chevron-down</v-icon>
-      <v-icon v-else left>mdi-chevron-up</v-icon>
+      <up-down-arrow :opened="opened" />
     </template>
     <slot />
   </v-btn>
 </template>
 <script>
+import UpDownArrow from '~/components/commons/UpDownArrow'
+
 // クリックで開く・閉じるがトグルするボタン
 export default {
   name: 'ExpandableButton',
+  components: {
+    UpDownArrow
+  },
   model: {
     prop: 'opened',
     event: 'click'

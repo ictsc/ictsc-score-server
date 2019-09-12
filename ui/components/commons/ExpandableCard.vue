@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title class="pa-0">
       <v-btn block depressed :color="color" @click="$emit('click', !opened)">
-        <up-down-chevron :opened="opened" />
+        <up-down-arrow :opened="opened" />
         <slot name="button" />
       </v-btn>
     </v-card-title>
@@ -16,12 +16,12 @@
   </v-card>
 </template>
 <script>
-import UpDownChevron from '~/components/commons/UpDownChevron'
+import UpDownArrow from '~/components/commons/UpDownArrow'
 
 export default {
   name: 'ExpandableCard',
   components: {
-    UpDownChevron
+    UpDownArrow
   },
   model: {
     prop: 'opened',
