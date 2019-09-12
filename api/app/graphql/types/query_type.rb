@@ -31,7 +31,7 @@ module Types
     end
 
     def problem(id:)
-      Problem.find_by(id: id).readable(team: self.current_team!)
+      Problem.readables(team: self.current_team!).find_by(id: id)
     end
 
     def problems
@@ -43,7 +43,7 @@ module Types
     end
 
     def team(id:)
-      Team.find_by(id: id).readable(team: self.current_team!)
+      Team.readables(team: self.current_team!).find_by(id: id)
     end
 
     def teams
