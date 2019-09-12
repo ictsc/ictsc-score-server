@@ -1,25 +1,22 @@
 <template>
-  <v-sheet class="elevation-2 my-1 px-2 ">
-    <v-layout column>
-      <v-flex py-0>
-        <markdown :content="supplement.text" style="word-wrap: break-word" />
-      </v-flex>
-      <v-flex py-1 pr-2>
-        <v-layout row align-center justify-end>
-          <span class="caption mr-2 mt-0">{{ supplement.createdAtShort }}</span>
+  <v-card class="elevation-2">
+    <v-card-text class="pa-1">
+      <markdown :content="supplement.text" />
 
-          <delete-button
-            v-if="isStaff"
-            :start-at-msec="Date.parse(supplement.createdAt)"
-            :disabled="deleteButtonDisabled"
-            color="error"
-            class="mb-1 mr-1"
-            @click="destroy"
-          />
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-sheet>
+      <v-row align="center" justify="end" class="py-1 pr-2">
+        <span class="caption mr-2 mt-0">{{ supplement.createdAtShort }}</span>
+
+        <delete-button
+          v-if="isStaff"
+          :start-at-msec="Date.parse(supplement.createdAt)"
+          :disabled="deleteButtonDisabled"
+          color="error"
+          class="mb-0 mr-1"
+          @click="destroy"
+        />
+      </v-row>
+    </v-card-text>
+  </v-card>
 </template>
 <script>
 import orm from '~/orm'
