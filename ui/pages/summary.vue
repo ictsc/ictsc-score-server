@@ -6,7 +6,7 @@
   </v-container>
 </template>
 <script>
-import PageTitle from '~/components/atoms/PageTitle'
+import PageTitle from '~/components/commons/PageTitle'
 
 export default {
   name: 'Summary',

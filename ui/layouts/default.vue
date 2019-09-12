@@ -10,8 +10,8 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import Navigation from '~/components/organisms/Navigation'
-import NotificationArea from '~/components/organisms/NotificationArea'
+import Navigation from '~/components/misc/Navigation'
+import NotificationArea from '~/components/misc/NotificationArea'
 
 export default {
   components: {

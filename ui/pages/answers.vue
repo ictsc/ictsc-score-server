@@ -30,7 +30,7 @@
 
           <v-row class="mx-0" justify="start" align="start">
             <template v-for="answer in filter(problem.answers)">
-              <answer-list-card
+              <answer-card
                 v-show="isDisplayAnswer(answer)"
                 :key="answer.id"
                 :answer="answer"
@@ -49,15 +49,15 @@
 <script>
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
-import PageTitle from '~/components/atoms/PageTitle'
-import AnswerListCard from '~/components/molecules/AnswerListCard'
+import PageTitle from '~/components/commons/PageTitle'
+import AnswerCard from '~/components/answers/AnswerCard'
 
 // TODO: code, writer, title, statusで検索
 
 export default {
   name: 'Answers',
   components: {
-    AnswerListCard,
+    AnswerCard,
     PageTitle
   },
   mixins: [

@@ -12,8 +12,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import Markdown from '~/components/atoms/Markdown'
-import PageTitle from '~/components/atoms/PageTitle'
+import Markdown from '~/components/commons/Markdown'
+import PageTitle from '~/components/commons/PageTitle'
 
 export default {
   name: 'Guide',

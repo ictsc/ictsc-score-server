@@ -5,7 +5,7 @@
 
       <v-flex class="mb-6">
         <!-- 状態選択ボタン -->
-        <issue-status-select-buttons
+        <status-toggle-buttons
           v-model="displayStatuses"
           red="unsolved"
           yellow="in_progress"
@@ -41,7 +41,7 @@
       <v-flex>
         <template v-for="issue in issues">
           <!-- v-forで絞らず、v-showで表示切り替えするとインタラクションが良い -->
-          <issue-list-card
+          <issue-card
             v-show="issueFilter(issue)"
             :key="issue.id"
             :issue="issue"
@@ -55,16 +55,16 @@
 <script>
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
-import PageTitle from '~/components/atoms/PageTitle'
-import IssueStatusSelectButtons from '~/components/molecules/IssueStatusSelectButtons'
-import IssueListCard from '~/components/molecules/IssueListCard'
+import PageTitle from '~/components/commons/PageTitle'
+import StatusToggleButtons from '~/components/issues/StatusToggleButtons'
+import IssueCard from '~/components/issues/IssueCard'
 
 export default {
   name: 'Issues',
   components: {
     PageTitle,
-    IssueStatusSelectButtons,
-    IssueListCard
+    StatusToggleButtons,
+    IssueCard
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる

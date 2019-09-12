@@ -4,7 +4,7 @@
     <v-row>
       <!-- 左の問題詳細パネル -->
       <v-col :cols="showRigthPanel ? 6 : undefined">
-        <problem-details-panel v-if="problemIsReadable" :problem="problem" />
+        <details-panel v-if="problemIsReadable" :problem="problem" />
       </v-col>
 
       <!-- 右の質問・解答パネル -->
@@ -43,9 +43,9 @@
   </v-container>
 </template>
 <script>
-import AnswerPanel from '~/components/organisms/AnswerPanel'
-import IssuePanel from '~/components/organisms/IssuePanel'
-import ProblemDetailsPanel from '~/components/organisms/ProblemDetailsPanel'
+import AnswerPanel from '~/components/problems/id/AnswerPanel'
+import IssuePanel from '~/components/problems/id/IssuePanel'
+import DetailsPanel from '~/components/problems/id/DetailsPanel'
 import orm from '~/orm'
 
 const MODE_REGEXP = /^#(issues|answers)(=(.*))?$/
@@ -55,7 +55,7 @@ export default {
   components: {
     AnswerPanel,
     IssuePanel,
-    ProblemDetailsPanel
+    DetailsPanel
   },
   data() {
     return {
