@@ -27,7 +27,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'AnswerAttention',
+  name: 'Attention',
   computed: {
     ...mapGetters('contestInfo', [
       'gradingDelaySec',

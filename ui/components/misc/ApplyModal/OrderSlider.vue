@@ -26,7 +26,7 @@
   </editable-slider>
 </template>
 <script>
-import EditableSlider from '~/components/molecules/EditableSlider'
+import EditableSlider from '~/components/commons/EditableSlider'
 
 export default {
   name: 'OrderSlider',

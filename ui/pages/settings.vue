@@ -70,7 +70,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
-import PageTitle from '~/components/atoms/PageTitle'
+import PageTitle from '~/components/commons/PageTitle'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
 import DeleteArea from '~/components/settings/DeleteArea'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'

@@ -55,9 +55,9 @@
 <script>
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
-import PageTitle from '~/components/atoms/PageTitle'
-import IssueStatusSelectButtons from '~/components/molecules/IssueStatusSelectButtons'
-import IssueListCard from '~/components/molecules/IssueListCard'
+import PageTitle from '~/components/commons/PageTitle'
+import IssueStatusSelectButtons from '~/components/issues/IssueStatusSelectButtons'
+import IssueListCard from '~/components/issues/IssueListCard'
 
 export default {
   name: 'Issues',

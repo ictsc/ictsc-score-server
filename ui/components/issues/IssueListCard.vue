@@ -63,7 +63,7 @@
   </v-card>
 </template>
 <script>
-import Markdown from '~/components/atoms/Markdown'
+import Markdown from '~/components/commons/Markdown'
 
 export default {
   name: 'IssueListCard',

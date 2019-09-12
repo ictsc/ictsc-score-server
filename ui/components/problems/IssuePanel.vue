@@ -63,8 +63,8 @@
 </template>
 <script>
 import orm from '~/orm'
-import MarkdownTextArea from '~/components/molecules/MarkdownTextArea'
-import IssueCommentCard from '~/components/molecules/IssueCommentCard'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
+import IssueCommentCard from '~/components/problems/IssueCommentCard'
 
 export default {
   name: 'IssuePanel',

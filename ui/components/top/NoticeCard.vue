@@ -53,9 +53,9 @@
 </template>
 <script>
 import orm from '~/orm'
-import PinButton from '~/components/atoms/PinButton'
-import DeleteButton from '~/components/atoms/DeleteButton'
-import Markdown from '~/components/atoms/Markdown'
+import PinButton from '~/components/commons/PinButton'
+import DeleteButton from '~/components/commons/DeleteButton'
+import Markdown from '~/components/commons/Markdown'
 
 export default {
   name: 'NoticeCard',

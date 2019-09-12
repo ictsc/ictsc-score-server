@@ -60,12 +60,12 @@
   </v-layout>
 </template>
 <script>
-import Markdown from '~/components/atoms/Markdown'
-import PenButton from '~/components/atoms/PenButton'
-import ProblemEnvironmentArea from '~/components/organisms/ProblemEnvironmentArea'
-import ProblemModal from '~/components/organisms/ProblemModal'
-import ProblemInfoChipsArea from '~/components/molecules/ProblemInfoChipsArea'
-import ProblemSupplementArea from '~/components/organisms/ProblemSupplementArea'
+import Markdown from '~/components/commons/Markdown'
+import PenButton from '~/components/commons/PenButton'
+import ProblemEnvironmentArea from '~/components/problems/ProblemEnvironmentArea'
+import ProblemModal from '~/components/misc/ProblemModal'
+import ProblemInfoChipsArea from '~/components/problems/ProblemInfoChipsArea'
+import ProblemSupplementArea from '~/components/problems/ProblemSupplementArea'
 
 // TODO: 現在の得点が見たい
 

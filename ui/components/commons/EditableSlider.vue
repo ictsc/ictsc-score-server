@@ -34,7 +34,7 @@
   </v-row>
 </template>
 <script>
-import NumberTextField from '~/components/atoms/NumberTextField'
+import NumberTextField from '~/components/commons/NumberTextField'
 
 export default {
   name: 'EditableSlider',

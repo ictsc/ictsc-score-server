@@ -79,7 +79,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
-import NumberTextField from '~/components/atoms/NumberTextField'
+import NumberTextField from '~/components/commons/NumberTextField'
 
 export default {
   name: 'GradeForm',

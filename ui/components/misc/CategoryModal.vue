@@ -67,14 +67,14 @@
 </template>
 <script>
 import orm from '~/orm'
-import MarkdownTextArea from '~/components/molecules/MarkdownTextArea'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 
-import ApplyModalFields from '~/components/molecules/ApplyModal/ApplyModalFields'
-import ActionButtons from '~/components/molecules/ApplyModal/ActionButtons'
-import OrderSlider from '~/components/molecules/ApplyModal/OrderSlider'
-import OriginDataChangedWarning from '~/components/molecules/ApplyModal/OriginDataChangedWarning'
-import TitleTextField from '~/components/molecules/ApplyModal/TitleTextField'
-import CodeTextField from '~/components/molecules/ApplyModal/CodeTextField'
+import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
+import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
+import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
+import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
+import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 
 const fields = {
   code: '',

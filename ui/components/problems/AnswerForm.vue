@@ -99,10 +99,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
-import AnswerFormRadioButton from '~/components/molecules/AnswerFormRadioButton'
-import AnswerFormCheckbox from '~/components/molecules/AnswerFormCheckbox'
-import Markdown from '~/components/atoms/Markdown'
-import MarkdownTextArea from '~/components/molecules/MarkdownTextArea'
+import AnswerFormRadioButton from '~/components/problems/AnswerFormRadioButton'
+import AnswerFormCheckbox from '~/components/problems/AnswerFormCheckbox'
+import Markdown from '~/components/commons/Markdown'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 
 const answerPlaceholder = `解答はマークダウンで記述できます。
 

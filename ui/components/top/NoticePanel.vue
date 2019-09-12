@@ -41,9 +41,9 @@
 </template>
 <script>
 import orm from '~/orm'
-import PenButton from '~/components/atoms/PenButton'
-import NoticeCard from '~/components/molecules/NoticeCard'
-import NoticeModal from '~/components/organisms/NoticeModal'
+import PenButton from '~/components/commons/PenButton'
+import NoticeCard from '~/components/top/NoticeCard'
+import NoticeModal from '~/components/top/NoticeModal'
 
 export default {
   name: 'NoticePanel',

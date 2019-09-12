@@ -32,8 +32,8 @@
   </div>
 </template>
 <script>
-import ExpandableButton from '~/components/molecules/ExpandableButton'
-import ProblemEnvironmentTable from '~/components/molecules/ProblemEnvironmentTable'
+import ExpandableButton from '~/components/commons/ExpandableButton'
+import ProblemEnvironmentTable from '~/components/problems/ProblemEnvironmentTable'
 
 export default {
   name: 'ProblemEnvironmentArea',

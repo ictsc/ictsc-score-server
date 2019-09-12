@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'AnswerFlowItem',
+  name: 'FlowItem',
   props: {
     title: {
       type: String,

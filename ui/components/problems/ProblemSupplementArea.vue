@@ -36,10 +36,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
-import PenButton from '~/components/atoms/PenButton'
-import ExpandableButton from '~/components/molecules/ExpandableButton'
-import ProblemSupplementSheet from '~/components/molecules/ProblemSupplementSheet'
-import MarkdownEditorModal from '~/components/organisms/MarkdownEditorModal'
+import PenButton from '~/components/commons/PenButton'
+import ExpandableButton from '~/components/commons/ExpandableButton'
+import ProblemSupplementSheet from '~/components/problems/ProblemSupplementSheet'
+import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 
 export default {
   name: 'ProblemSupplementArea',

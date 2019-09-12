@@ -113,8 +113,8 @@ Markdownを書いて送信するモーダルのベースコンポーネント
   </div>
 </template>
 <script>
-import Markdown from '~/components/atoms/Markdown'
-import MarkdownTextArea from '~/components/molecules/MarkdownTextArea'
+import Markdown from '~/components/commons/Markdown'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 
 export default {
   name: 'MarkdownEditorModal',

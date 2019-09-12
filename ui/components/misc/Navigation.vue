@@ -51,7 +51,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import NavigationLink from '~/components/atoms/NavigationLink'
+import NavigationLink from '~/components/misc/NavigationLink'
 
 export default {
   name: 'Navigation',

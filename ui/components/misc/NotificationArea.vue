@@ -14,7 +14,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import NotificationSheet from '~/components/molecules/NotificationSheet'
+import NotificationSheet from '~/components/misc/NotificationSheet'
 
 export default {
   name: 'NotificationArea',

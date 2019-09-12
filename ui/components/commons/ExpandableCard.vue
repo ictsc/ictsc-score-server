@@ -16,7 +16,7 @@
   </v-card>
 </template>
 <script>
-import UpDownChevron from '~/components/atoms/UpDownChevron'
+import UpDownChevron from '~/components/commons/UpDownChevron'
 
 export default {
   name: 'ExpandableCard',

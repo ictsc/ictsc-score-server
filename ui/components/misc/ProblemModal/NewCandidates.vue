@@ -127,9 +127,9 @@
   </v-container>
 </template>
 <script>
-import IconButton from '~/components/molecules/ProblemModal/NewCandidatesIconButton'
-import NarrowTextField from '~/components/molecules/ProblemModal/NewCandidatesNarrowTextField'
-import ItemField from '~/components/molecules/ProblemModal/NewCandidatesItemField'
+import IconButton from '~/components/misc/ProblemModal/NewCandidatesIconButton'
+import NarrowTextField from '~/components/misc/ProblemModal/NewCandidatesNarrowTextField'
+import ItemField from '~/components/misc/ProblemModal/NewCandidatesItemField'
 
 // 内部でcandidatesとcorrectsのコピー持ち、watchでemitする方針の方がシンプルだったかもしれない
 export default {

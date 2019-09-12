@@ -23,8 +23,8 @@
 </template>
 <script>
 import orm from '~/orm'
-import DeleteButton from '~/components/atoms/DeleteButton'
-import Markdown from '~/components/atoms/Markdown'
+import DeleteButton from '~/components/commons/DeleteButton'
+import Markdown from '~/components/commons/Markdown'
 
 export default {
   name: 'ProblemSupplementSheet',

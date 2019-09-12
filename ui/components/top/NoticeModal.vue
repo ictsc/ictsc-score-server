@@ -47,8 +47,8 @@
 import { mapGetters } from 'vuex'
 import { JsonStroage } from '~/plugins/json-storage'
 import orm from '~/orm'
-import PinButton from '~/components/atoms/PinButton'
-import MarkdownEditorModal from '~/components/organisms/MarkdownEditorModal'
+import PinButton from '~/components/commons/PinButton'
+import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 
 const defaultValues = {
   title: '',

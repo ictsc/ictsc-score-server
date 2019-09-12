@@ -27,8 +27,8 @@
   </v-row>
 </template>
 <script>
-import IconButton from '~/components/molecules/ProblemModal/NewCandidatesIconButton'
-import NarrowTextField from '~/components/molecules/ProblemModal/NewCandidatesNarrowTextField'
+import IconButton from '~/components/misc/ProblemModal/NewCandidatesIconButton'
+import NarrowTextField from '~/components/misc/ProblemModal/NewCandidatesNarrowTextField'
 
 export default {
   name: 'NewCandidatesItemField',

@@ -9,7 +9,7 @@
   </v-container>
 </template>
 <script>
-import NoticePanel from '~/components/organisms/NoticePanel'
+import NoticePanel from '~/components/top/NoticePanel'
 
 export default {
   name: 'Index',

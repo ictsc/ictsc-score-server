@@ -43,9 +43,9 @@
   </v-container>
 </template>
 <script>
-import AnswerPanel from '~/components/organisms/AnswerPanel'
-import IssuePanel from '~/components/organisms/IssuePanel'
-import ProblemDetailsPanel from '~/components/organisms/ProblemDetailsPanel'
+import AnswerPanel from '~/components/problems/AnswerPanel'
+import IssuePanel from '~/components/problems/IssuePanel'
+import ProblemDetailsPanel from '~/components/problems/ProblemDetailsPanel'
 import orm from '~/orm'
 
 const MODE_REGEXP = /^#(issues|answers)(=(.*))?$/

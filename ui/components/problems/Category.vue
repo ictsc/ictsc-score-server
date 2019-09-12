@@ -34,13 +34,13 @@
 </template>
 
 <script>
-import PenButton from '~/components/atoms/PenButton'
-import Markdown from '~/components/atoms/Markdown'
-import ProblemCard from '~/components/molecules/ProblemCard'
-import CategoryModal from '~/components/organisms/CategoryModal'
+import PenButton from '~/components/commons/PenButton'
+import Markdown from '~/components/commons/Markdown'
+import ProblemCard from '~/components/problems/ProblemCard'
+import CategoryModal from '~/components/misc/CategoryModal'
 
 export default {
-  name: 'CategoryArea',
+  name: 'Category',
   components: {
     CategoryModal,
     Markdown,

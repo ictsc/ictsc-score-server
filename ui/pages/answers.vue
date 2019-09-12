@@ -49,8 +49,8 @@
 <script>
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
-import PageTitle from '~/components/atoms/PageTitle'
-import AnswerListCard from '~/components/molecules/AnswerListCard'
+import PageTitle from '~/components/commons/PageTitle'
+import AnswerListCard from '~/components/answers/AnswerListCard'
 
 // TODO: code, writer, title, statusで検索
 

@@ -17,8 +17,8 @@
   </div>
 </template>
 <script>
-import AnswerCard from '~/components/organisms/AnswerCard'
-import AnswerForm from '~/components/organisms/AnswerForm'
+import AnswerCard from '~/components/problems/AnswerCard'
+import AnswerForm from '~/components/problems/AnswerForm'
 export default {
   name: 'AnswerPanel',
   components: {
