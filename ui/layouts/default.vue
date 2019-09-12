@@ -1,11 +1,13 @@
 <template>
   <v-app>
     <navigation />
-    <nuxt style="min-width: 500px" />
+    <v-content>
+      <!-- 最低幅を保証する -->
+      <nuxt style="min-width: 500px" />
+    </v-content>
     <notification-area />
   </v-app>
 </template>
-
 <script>
 import { mapActions } from 'vuex'
 import Navigation from '~/components/organisms/Navigation'
