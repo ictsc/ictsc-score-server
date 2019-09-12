@@ -56,7 +56,7 @@
     </div>
 
     <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
-      <v-card style="overflow-wrap: break-word">
+      <v-card>
         <v-card-title>
           <span>プレビュー</span>
         </v-card-title>
