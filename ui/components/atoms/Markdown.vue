@@ -23,6 +23,10 @@ export default {
 // 小要素にスタイルを適用するためdeep-selectを使っている
 .markdown
   ::v-deep
+    p
+      // 最後に余白ができるのを抑制
+      &:last-child
+        margin-bottom: 0
     // テーブル表示をGitHub風にする
     table
       border-collapse: collapse
