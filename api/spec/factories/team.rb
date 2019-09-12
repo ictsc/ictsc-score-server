@@ -8,6 +8,8 @@ FactoryBot.define do
     password { name }
     organization { "Org. #{name}" }
     sequence(:number) {|n| n }
+    created_at { Time.current - Random.rand(60).minutes - Random.rand(60).seconds }
+    updated_at { created_at }
 
     trait :staff do
       name { "staff #{alphabets[number - 1]}" }

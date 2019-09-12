@@ -9,5 +9,7 @@ FactoryBot.define do
     sequence(:password) {|n| "password#{n}" }
     team { nil }
     problem { nil }
+    created_at { Time.current - Random.rand(60).minutes - Random.rand(60).seconds }
+    updated_at { created_at }
   end
 end

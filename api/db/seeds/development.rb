@@ -171,8 +171,8 @@ def create_answers(problems, players)
   bottom_players = players[-10..]
 
   answers = [
-    *build_answers(problems, top_players, 0..5),
-    *build_answers(problems.sample(problems.size / 2), middle_players, 0..2),
+    *build_answers(problems, top_players, 0..4),
+    *build_answers(problems.sample(problems.size / 6), middle_players, 0..1),
     *build_answers(problems.sample(1), bottom_players, 0..1)
   ].shuffle
 
