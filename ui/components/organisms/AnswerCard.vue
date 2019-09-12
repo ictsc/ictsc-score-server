@@ -1,7 +1,8 @@
 <template>
   <expandable-card v-model="opened" color="white">
-    <!-- TODO: ボタンの内容の表示位置を固定したい(縦に揃えたい) -->
+    <!-- カードの帯 -->
     <template v-slot:button>
+      <!-- TODO: ボタンの内容の表示位置を固定したい(縦に揃えたい) -->
       <v-layout row align-center>
         <v-flex>
           <span v-if="!realtimeGrading && isPlayer">
@@ -32,12 +33,16 @@
       </v-layout>
     </template>
 
+    <!-- 採点フォーム -->
     <template v-if="isStaff">
       <grade-form :answer="answer" :problem-body="problemBody" />
       <v-divider />
     </template>
 
+    <!-- 提出時刻 -->
     <p class="text-right caption">提出時刻: {{ answer.createdAtShort }}</p>
+
+    <!-- 解答本体 -->
     <markdown
       v-if="problemBody.modeIsTextbox"
       :content="answer.bodies[0][0]"

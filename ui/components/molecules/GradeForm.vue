@@ -46,8 +46,11 @@
                 採点
               </v-btn>
             </template>
+
             <span v-if="hideAllScore">採点結果は参加者には非公開です</span>
-            <span v-else>時間内の再採点は参加者に認知されません</span>
+            <span v-else-if="realtimeGrading">
+              時間内の再採点は参加者に認知されません
+            </span>
           </v-tooltip>
         </template>
       </v-slider>
@@ -105,7 +108,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('contestInfo', ['hideAllScore']),
+    ...mapGetters('contestInfo', ['realtimeGrading', 'hideAllScore']),
     validPoint() {
       return this.text === 'null' || this.validPointNumberText(this.text)
     },
