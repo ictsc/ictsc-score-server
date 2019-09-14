@@ -31,4 +31,17 @@ export default class ProblemBody extends BaseModel {
   get modeIsCheckbox() {
     return this.mode === 'checkbox'
   }
+
+  get modeJp() {
+    switch (this.mode) {
+      case 'textbox':
+        return 'テキストボックス'
+      case 'radio_button':
+        return 'ラジオボタン'
+      case 'checkbox':
+        return 'チェックボックス'
+      default:
+        return '不明'
+    }
+  }
 }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationRecord < ActiveRecord::Base
-  include Filterable
+  include Readable
   self.abstract_class = true
   # daterange系もActiveSupport::TimeWithZoneにキャストする
   self.time_zone_aware_types += %i[daterange tsrange tstzrange]
@@ -25,7 +25,7 @@ class ApplicationRecord < ActiveRecord::Base
   class << self
     def models(ignore: [])
       # subclassesはautoload環境では動作しない
-      [Answer, Attachment, Category, Config, FirstCorrectAnswer, Issue, IssueComment, Notice, Problem, ProblemBody, ProblemEnvironment, ProblemSupplement, Score, Team] - [*ignore]
+      [Answer, Attachment, Category, Config, FirstCorrectAnswer, Issue, IssueComment, Notice, Problem, ProblemBody, ProblemEnvironment, ProblemSupplement, Score, Team] - Array.wrap(ignore)
     end
   end
 end

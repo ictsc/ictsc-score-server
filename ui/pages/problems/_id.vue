@@ -4,17 +4,17 @@
     <v-row>
       <!-- 左の問題詳細パネル -->
       <v-col :cols="showRigthPanel ? 6 : undefined">
-        <problem-details-panel v-if="problemIsReadable" :problem="problem" />
+        <details-panel v-if="problemIsReadable" :problem="problem" />
       </v-col>
 
       <!-- 右の質問・解答パネル -->
       <v-col v-if="showRigthPanel" cols="6">
         <v-tabs v-model="tabMode" grow active-class="always-active-color">
           <v-tabs-slider></v-tabs-slider>
-          <v-tab replace append :to="'#' + answersTabName" class="mx-0">
+          <v-tab replace append :to="'#' + answersTabName">
             解答
           </v-tab>
-          <v-tab replace append :to="'#' + issuesTabName" class="mx-0">
+          <v-tab replace append :to="'#' + issuesTabName">
             質問
           </v-tab>
         </v-tabs>
@@ -43,9 +43,9 @@
   </v-container>
 </template>
 <script>
-import AnswerPanel from '~/components/organisms/AnswerPanel'
-import IssuePanel from '~/components/organisms/IssuePanel'
-import ProblemDetailsPanel from '~/components/organisms/ProblemDetailsPanel'
+import AnswerPanel from '~/components/problems/id/AnswerPanel'
+import IssuePanel from '~/components/problems/id/IssuePanel'
+import DetailsPanel from '~/components/problems/id/DetailsPanel'
 import orm from '~/orm'
 
 const MODE_REGEXP = /^#(issues|answers)(=(.*))?$/
@@ -55,7 +55,7 @@ export default {
   components: {
     AnswerPanel,
     IssuePanel,
-    ProblemDetailsPanel
+    DetailsPanel
   },
   data() {
     return {
@@ -110,8 +110,7 @@ export default {
           'previousProblem',
           'environments.team',
           'supplements',
-          'answers.score',
-          'answers.problem.body',
+          'answers',
           'issues.comments'
         ])
         .find(this.problemId)

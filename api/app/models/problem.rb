@@ -43,9 +43,9 @@ class Problem < ApplicationRecord
       # 依存問題がない
       # 自チームが依存問題を解決
       # 他チームが依存問題を解決していてteam_isolate == false
-      where(previous_problem: nil)
-        .or(where(previous_problem: my_team_fcas))
-        .or(where(previous_problem: all_team_fcas, team_isolate: false))
+      where(previous_problem_id: nil)
+        .or(where(previous_problem_id: my_team_fcas.pluck(:problem_id).uniq))
+        .or(where(previous_problem_id: all_team_fcas.pluck(:problem_id).uniq, team_isolate: false))
     end
 
     # 公開期間的に見えるかどうか

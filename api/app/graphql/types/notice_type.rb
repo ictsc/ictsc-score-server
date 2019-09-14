@@ -10,8 +10,6 @@ module Types
     field :target_team,    Types::TeamType, null: true
     field :created_at,     Types::DateTime, null: false
 
-    def target_team
-      RecordLoader.for(Team).load(self.object.target_team_id)
-    end
+    belongs_to :target_team
   end
 end

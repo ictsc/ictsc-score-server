@@ -12,7 +12,8 @@ module Mutations
       Acl.permit!(mutation: self, args: { issue_comment: issue_comment })
 
       if issue_comment.destroy
-        { issue_comment: issue_comment }
+        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
+        { issue_comment: issue_comment.filter_columns(team: self.current_team!) }
       else
         add_errors(issue_comment)
       end

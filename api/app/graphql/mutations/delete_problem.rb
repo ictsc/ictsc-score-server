@@ -15,7 +15,8 @@ module Mutations
       problem_body = problem.body
 
       if problem.destroy
-        { problem: problem, problem_body: problem_body }
+        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
+        { problem: problem.filter_columns(team: self.current_team!), problem_body: problem_body.filter_columns(team: self.current_team!) }
       else
         add_errors(problem)
       end

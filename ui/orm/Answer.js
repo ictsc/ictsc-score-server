@@ -14,7 +14,8 @@ export default class Answer extends BaseModel {
       problem: this.belongsTo(orm.Problem, 'problemId'),
       teamId: this.string(),
       team: this.belongsTo(orm.Team, 'teamId'),
-      score: this.hasOne(orm.Score, 'answerId'),
+      point: this.number().nullable(),
+      percent: this.number().nullable(),
       createdAt: this.string()
     }
   }
@@ -25,6 +26,17 @@ export default class Answer extends BaseModel {
       resolve,
       mutation: 'addAnswer',
       params: { problemId, bodies },
+      fields: [Answer],
+      type: 'upsert'
+    })
+  }
+
+  static applyScore({ action, resolve, params: { answerId, percent } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyScore',
+      params: { answerId, percent },
       fields: [Answer],
       type: 'upsert'
     })
@@ -47,21 +59,6 @@ export default class Answer extends BaseModel {
 
   // scoreが無い or score.pointがnullなら採点中
   get hasPoint() {
-    return (
-      !!this.score &&
-      this.score.point !== null &&
-      this.score.point !== undefined
-    )
-  }
-
-  // withでanswer.problem.bodyを指定しないと失敗する
-  get point() {
-    // undefinedだとJSONやYAMLにするときとつらい
-    if (!this.hasPoint) {
-      return null
-    }
-
-    // 順序大事
-    return Math.floor((this.score.point * this.problem.body.perfectPoint) / 100)
+    return this.percent !== null && this.percent !== undefined
   }
 }

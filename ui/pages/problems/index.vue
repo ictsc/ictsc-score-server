@@ -53,16 +53,16 @@
       </v-flex>
 
       <v-flex v-if="realtimeGrading">
-        <answer-flow />
+        <flow />
       </v-flex>
 
       <v-flex mt-2>
-        <answer-attention />
+        <attention />
       </v-flex>
 
       <v-flex v-for="category in categories" :key="category.id" class="mt-2">
         <v-divider class="mb-1" />
-        <problem-category :category="category" />
+        <category :category="category" />
       </v-flex>
     </v-layout>
   </v-container>
@@ -72,22 +72,22 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import PageTitle from '~/components/atoms/PageTitle'
-import AnswerAttention from '~/components/molecules/AnswerAttention'
-import AnswerFlow from '~/components/molecules/AnswerFlow'
-import CategoryModal from '~/components/organisms/CategoryModal'
-import ProblemCategory from '~/components/organisms/ProblemCategory'
-import ProblemModal from '~/components/organisms/ProblemModal'
+import PageTitle from '~/components/commons/PageTitle'
+import Attention from '~/components/problems/Attention'
+import Flow from '~/components/problems/Flow'
+import CategoryModal from '~/components/misc/CategoryModal'
+import Category from '~/components/problems/Category'
+import ProblemModal from '~/components/misc/ProblemModal'
 import orm from '~/orm'
 
 export default {
   name: 'Problems',
   components: {
-    AnswerAttention,
-    AnswerFlow,
+    Attention,
+    Flow,
     CategoryModal,
     PageTitle,
-    ProblemCategory,
+    Category,
     ProblemModal
   },
   data() {

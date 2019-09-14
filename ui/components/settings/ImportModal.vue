@@ -4,7 +4,7 @@
     max-width="80%"
     :persistent="sending"
     scrollable
-    @input="close"
+    @input="!$event && close()"
   >
     <v-card>
       <v-card-title> {{ label }} インポート </v-card-title>
@@ -80,6 +80,7 @@ import YAML from 'js-yaml'
 export default {
   name: 'ImportModal',
   props: {
+    // v-model
     value: {
       type: Boolean,
       required: true
@@ -119,6 +120,8 @@ export default {
     file(value) {
       if (value) {
         this.loadFile()
+      } else {
+        this.items = []
       }
     }
   },

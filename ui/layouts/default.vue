@@ -1,15 +1,17 @@
 <template>
   <v-app>
     <navigation />
-    <nuxt class="mt-10" style="min-width: 500px" />
+    <v-content>
+      <!-- 最低幅を保証する -->
+      <nuxt style="min-width: 500px" />
+    </v-content>
     <notification-area />
   </v-app>
 </template>
-
 <script>
 import { mapActions } from 'vuex'
-import Navigation from '~/components/organisms/Navigation'
-import NotificationArea from '~/components/organisms/NotificationArea'
+import Navigation from '~/components/misc/Navigation'
+import NotificationArea from '~/components/misc/NotificationArea'
 
 export default {
   components: {
@@ -47,7 +49,9 @@ export default {
   background: white !important
 </style>
 <style lang="sass">
-// 横スクロールを有効にする
 html
+  // 横スクロールを有効にする
   overflow-x: auto
+  // 縦スクロールを必要に応じて表示する
+  // overflow-y: auto
 </style>

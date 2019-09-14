@@ -14,13 +14,13 @@ module Mutations
 
       Acl.permit!(mutation: self, args: { issue: issue })
 
-      issue.transition_by_comment(team: Context.current_team!)
-      issue_comment = IssueComment.new(text: text, from_staff: Context.current_team!.staff?)
+      issue.transition_by_comment(team: self.current_team!)
+      issue_comment = IssueComment.new(text: text, from_staff: self.current_team!.staff?)
 
       # issueも同時にsaveされる
       if issue_comment.update(issue: issue)
         SlackNotifierJob.perform_later(mutation: self.class.name.demodulize, obj: issue_comment)
-        { issue: issue.readable, issue_comment: issue_comment.readable }
+        { issue: issue.readable(team: self.current_team!), issue_comment: issue_comment.readable(team: self.current_team!) }
       else
         add_errors(issue, issue_comment)
       end

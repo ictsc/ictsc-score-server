@@ -30,10 +30,11 @@
 
           <v-row class="mx-0" justify="start" align="start">
             <template v-for="answer in filter(problem.answers)">
-              <answer-list-card
+              <answer-card
                 v-show="isDisplayAnswer(answer)"
                 :key="answer.id"
                 :answer="answer"
+                :problem="problem"
                 class="ma-1"
               />
             </template>
@@ -48,15 +49,15 @@
 <script>
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
-import PageTitle from '~/components/atoms/PageTitle'
-import AnswerListCard from '~/components/molecules/AnswerListCard'
+import PageTitle from '~/components/commons/PageTitle'
+import AnswerCard from '~/components/answers/AnswerCard'
 
 // TODO: code, writer, title, statusで検索
 
 export default {
   name: 'Answers',
   components: {
-    AnswerListCard,
+    AnswerCard,
     PageTitle
   },
   mixins: [
@@ -67,7 +68,7 @@ export default {
   computed: {
     problems() {
       const problems = orm.Problem.query()
-        .with(['body', 'answers.team', 'answers.score', 'answers.problem.body'])
+        .with(['body', 'answers', 'answers.team'])
         .all()
 
       return this.$_.sortBy(problems, p => this.$elvis(p, 'body.title'))
@@ -82,9 +83,10 @@ export default {
     shrinkAnswers(answers) {
       const teamsAnswers = this.$_.groupBy(answers, answer => answer.teamId)
 
+      // TODO: 本戦では未採点の最も古い解答を出すべき
       // そのチームの複数解答を最も新しい解答1つに上書き
       return Object.keys(teamsAnswers).map(teamId =>
-        this.findLatestAnswer(teamsAnswers[teamId])
+        this.findNewer(teamsAnswers[teamId])
       )
     },
     filterAnswers(answers) {

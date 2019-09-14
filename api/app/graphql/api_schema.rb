@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class ApiSchema < GraphQL::Schema
-  mutation(Types::MutationType)
-  query(Types::QueryType)
-  use(GraphQL::Batch)
+  mutation Types::MutationType
+  query Types::QueryType
+  context_class CustomContext
+  use GraphQL::Batch
 
   # TODO: mutationとqueryが同時に来たら事故る気がする -> できない気がする
   # TODO: mutationの想定外の例外補足

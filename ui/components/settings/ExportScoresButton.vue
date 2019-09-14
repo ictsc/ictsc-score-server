@@ -26,12 +26,7 @@ export default {
 
       this.problems = this.sortByOrder(
         orm.Problem.query()
-          .with([
-            'body',
-            'answers.score',
-            'answers.team',
-            'answers.problem.body'
-          ])
+          .with(['body', 'answers.team'])
           .all()
       )
 
@@ -43,6 +38,8 @@ export default {
     async exportData() {
       this.loading = true
       await this.fetch()
+
+      let ungradedCount = 0
 
       // 各問題の解答を1チーム1つにする(得点)
       // problems[0].answers[teamId] == 最終提出解答得点
@@ -57,6 +54,7 @@ export default {
 
           // 未採点ならマズイので警告
           if (!latestAnswer.hasScore) {
+            ungradedCount += 1
             const team = orm.Team.find(teamId)
             console.warn(
               `未採点 問題: ${problem.title}, チーム: ${team.displayName}`
@@ -67,6 +65,12 @@ export default {
           return answers
         }, {})
       })
+
+      if (ungradedCount !== 0) {
+        this.notifyWarning({
+          message: `有効解答の内 ${ungradedCount}件が未採点です`
+        })
+      }
 
       // 未提出,未採点なら0ではなくnullになる
       const data = this.problems.reduce((obj, problem) => {
@@ -83,7 +87,11 @@ export default {
         return obj
       }, {})
 
-      this.download('text/json', `成績一覧.json`, JSON.stringify(data))
+      this.download(
+        'text/json',
+        `成績一覧 ${this.currentDateTimeString()}.json`,
+        JSON.stringify(data)
+      )
       this.loading = false
     },
     buildField(team, problem) {

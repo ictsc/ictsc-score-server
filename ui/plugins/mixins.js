@@ -34,6 +34,10 @@ Vue.mixin({
       'notifyError'
     ]),
 
+    currentDateTimeString() {
+      return this.$moment(new Date()).format('MM-DD HH:mm:ss')
+    },
+
     download(type, filename, data) {
       const blob = new Blob([data], { type })
       const link = document.createElement('a')
@@ -61,17 +65,26 @@ Vue.mixin({
     },
 
     // filter
-    findLatestAnswer(answers) {
-      if (answers.length === 0) {
+    findOlder(records) {
+      if (records.length === 0) {
+        return null
+      }
+
+      // mixはanswersが[]の場合-Inifnityになる
+      return this.$_.min(records, record => new Date(record.createdAt))
+    },
+    findNewer(records) {
+      if (records.length === 0) {
         return null
       }
 
       // maxはanswersが[]の場合-Inifnityになる
-      return this.$_.max(answers, answer => new Date(answer.createdAt))
+      return this.$_.max(records, record => new Date(record.createdAt))
     },
+
     findEffectAnswer(answers) {
-      // 予選はとりあえずこれ
-      return this.findLatestAnswer(answers)
+      // TODO: 予選はとりあえずこれ
+      return this.findNewer(answers)
     }
   }
 })

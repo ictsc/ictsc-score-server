@@ -13,7 +13,7 @@ module Mutations
 
       if problem_supplement.destroy
         # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
-        { problem_supplement: problem_supplement }
+        { problem_supplement: problem_supplement.filter_columns(team: self.current_team!) }
       else
         add_errors(problem_supplement)
       end

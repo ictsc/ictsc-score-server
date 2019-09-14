@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
+  before_action :require_login, only: %i[current logout]
+
   def current
-    if logged_in?
-      team = Team.find_by(id: session[:team_id])
-      render json: build_current_team_response(team), status: :ok
-    else
-      head :unauthorized
-    end
+    render json: build_current_team_response(current_team), status: :ok
   end
 
   def login
@@ -23,22 +20,15 @@ class SessionsController < ApplicationController
   end
 
   def logout
-    if logged_in?
-      reset_session
-      head :no_content
-    else
-      head :unauthorized
-    end
+    reset_session
+    head :no_content
   end
 
   private
 
   def login_params
-    params.permit(:name, :password)
-  end
-
-  def logged_in?
-    Team.exists?(id: session[:team_id])
+    # wrap_parameter
+    params.require(:session).permit(:name, :password)
   end
 
   # 必要な値だけ返す

@@ -59,6 +59,7 @@ export default {
     // Docs: https://github.com/markdown-it/markdown-it
     preset: 'default',
     linkify: true,
+    // スペース2つだけでなく、通常の改行でも開業するようになる
     breaks: true,
     // $mdを使えるようにする
     injected: true,
@@ -70,9 +71,7 @@ export default {
       // 補足を最下部に生成
       'markdown-it-footnote',
       // サニタイズ
-      'markdown-it-sanitizer',
-      // TeX
-      '@iktakahiro/markdown-it-katex'
+      'markdown-it-sanitizer'
     ]
   },
   moment: {
@@ -97,10 +96,10 @@ export default {
   },
   // TODO: 廃止予定
   styleResources: {
-    sass: ['~/assets/css/variables.sass']
+    // sass: ['~/assets/css/variables.sass']
   },
   vuetify: {
-    customVariables: ['~/assets/css/variables.sass'],
+    // customVariables: ['~/assets/css/variables.sass'],
     theme: {
       themes: {
         light: {

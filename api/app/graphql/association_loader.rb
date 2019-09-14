@@ -6,7 +6,8 @@ class AssociationLoader < GraphQL::Batch::Loader
     nil
   end
 
-  def initialize(model, association_name)
+  def initialize(context, model, association_name)
+    @context = context
     @model = model
     @association_name = association_name
     validate
@@ -38,7 +39,7 @@ class AssociationLoader < GraphQL::Batch::Loader
   end
 
   def preload_association(records)
-    ::ActiveRecord::Associations::Preloader.new.preload(records, @association_name, association_model.readables)
+    ::ActiveRecord::Associations::Preloader.new.preload(records, @association_name, association_model.readables(team: @context.current_team!))
   end
 
   def association_model
