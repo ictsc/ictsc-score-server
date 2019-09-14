@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+    namespace: __VAR__NAMESPACE
     name: api
     labels:
       app: api
-      namespace: __VAR__NAMESPACE
 spec:
   replicas: 1
   template:
