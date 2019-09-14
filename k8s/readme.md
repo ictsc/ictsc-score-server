@@ -40,6 +40,7 @@ kubectl apply -f mandatory.yaml
 
 # cert-managerをinstall
 # 全体の構成に必須なので一度のみ  
+wget https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml
 kubectl apply -f 00-crds.yaml
 kubectl create namespace cert-manager
 kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
