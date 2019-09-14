@@ -13,6 +13,30 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
     * 埋めたら `direnv allow` で適用される。このカレントディレクトリでその環境変数が適用される。
     * `var.yml`に ansibleで作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
     * `wget https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml` を `cluster_provisioning`のディレクトリでしておく
+    * api.yamlとui.yamlの以下のような部分をよしなに直そう。使い方は、ここのmetadataのnameをingress.yamlのpathに指定しよう
+```
+# api.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-production-bind-svc　#<name>-<namespace>-bind-svcのフォーマットで書きましょう
+spec:
+  type: ExternalName
+  externalName: api.production.svc.cluster.local #<name>.<namespace>.svc~~~のフォーマットで書きましょう
+
+# ingress.yaml
+http:
+    paths:
+    - path: /
+        backend:
+        serviceName: ui-production-bind-svc
+        servicePort: 3000
+    - path: /api
+          backend:
+            serviceName: api-production-bind-svc
+            servicePort: 3000
+```
+
 * `terraform apply -auto-approve` をしてVMが上がるのを待とう。生成された `id_rsa` は `user:ubuntu` 向けに作られているものです
 * `sh inventry.sh` でinventryfileを作成
 * `ssh-keygen  -f ~/.ssh/ictsc` でこの名前の鍵を作成
