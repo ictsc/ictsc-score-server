@@ -12,6 +12,7 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
     * `.envrc` にさくらのクラウドのアクセストークンとシークレットとゾーンを書く。 `.envrc.sample` に例があるのでそこの `hoge` とかの変数をいい感じに埋めよう
     * 埋めたら `direnv allow` で適用される。このカレントディレクトリでその環境変数が適用される。
     * `var.yml`に ansibleで作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
+    * `wget https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml` を `cluster_provisioning`のディレクトリでしておく
 * `terraform apply -auto-approve` をしてVMが上がるのを待とう。生成された `id_rsa` は `user:ubuntu` 向けに作られているものです
 * `sh inventry.sh` でinventryfileを作成
 * `ssh-keygen  -f ~/.ssh/ictsc` でこの名前の鍵を作成
@@ -40,7 +41,6 @@ kubectl apply -f mandatory.yaml
 
 # cert-managerをinstall
 # 全体の構成に必須なので一度のみ  
-wget https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml
 kubectl apply -f 00-crds.yaml
 kubectl create namespace cert-manager
 kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
