@@ -10,11 +10,15 @@ path = os.path.abspath(".")
 repatter = re.compile("^__VAR__.*")
 
 
-targets_file = [
+
+apps_manifests = [
     "api.yaml", # applcartion
     "redis.yaml",
     "ui.yaml",
     "db.yaml",
+]
+
+cluster_provisioning_manifests = [
     "ingress.yaml", # FQDN, Cert
     "mandatory.yaml",
     "cretificate.yaml",
@@ -27,26 +31,13 @@ targets_file = [
     "monitering_manifests.yaml", # monitering
 ]
 
+targets_dir ={
+    "apps": apps_manifests,
+    "cluster_provisioning": cluster_provisioning_manifests,
+}
+
 env_yaml_path =  "/env.yaml"
 output_dir = "/deploy_ready_output"
-
-
-class PyColor:
-    BLACK = "\033[30m"
-    RED = "\033[31m"
-    GREEN = "\033[32m"
-    YELLOW = "\033[33m"
-    BLUE = "\033[34m"
-    PURPLE = "\033[35m"
-    CYAN = "\033[36m"
-    WHITE = "\033[37m"
-    END = "\033[0m"
-    BOLD = "\038[1m"
-    UNDERLINE = "\033[4m"
-    INVISIBLE = "\033[08m"
-    REVERCE = "\033[07m"
-
-
 
 def search_val(yaml_ctx, env_yaml: dict):
 
@@ -79,14 +70,15 @@ def main():
     with open(path + env_yaml_path) as f:
         env_yaml = list(yaml.load_all(f,Loader=yaml.UnsafeLoader))
 
-    for e in targets_file:
-        if os.path.exists(path + "/" + e):
-            with open(path + "/" + e ) as f:
-                origin_yaml = list(yaml.load_all(f,Loader=yaml.UnsafeLoader))
-                write_yaml = search_val(origin_yaml, env_yaml[0])
+    for dir, files in targets_dir.items():
+        for file in files:
+            if os.path.exists(path + "/" + dir +  "/" + file):
+                with open(path + "/" + dir +  "/" + file) as f:
+                    origin_yaml = list(yaml.load_all(f,Loader=yaml.UnsafeLoader))
+                    write_yaml = search_val(origin_yaml, env_yaml[0])
 
-            with open(path + output_dir + "/" + e, mode="w") as f:
-                f.write(yaml.dump_all(write_yaml))
+                with open(path + output_dir + "/" + file, mode="w") as f:
+                    f.write(yaml.dump_all(write_yaml))
 
 
 if __name__ == "__main__":
