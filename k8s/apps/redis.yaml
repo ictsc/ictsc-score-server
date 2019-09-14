@@ -5,12 +5,14 @@ metadata:
   labels:
     app: redis
   name: redis
+  namespace: __VAR__NAMESPACE
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         app: redis
+      namespace: __VAR__NAMESPACE
     spec:
       containers:
         - image: redis:5.0.4-alpine
@@ -26,6 +28,7 @@ metadata:
   labels:
     app: redis
   name: redis
+  namespace: __VAR__NAMESPACE
 spec:
   ports:
     - name: redis
