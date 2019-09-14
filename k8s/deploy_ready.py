@@ -86,7 +86,7 @@ def main():
                 write_yaml = search_val(origin_yaml, env_yaml[0])
 
             with open(path + output_dir + "/" + e, mode="w") as f:
-                f.write("\n---\n".join(list(map(lambda x: yaml.dump(x), write_yaml))))
+                f.write(yaml.dump_all(write_yaml))
 
 
 if __name__ == "__main__":
