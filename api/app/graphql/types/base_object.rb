@@ -10,7 +10,8 @@ module Types
     class << self
       # 'AnswerType' を Answerクラスにする
       def model_by_query_name
-        self.class_name.sub(/Type$/, '').constantize
+        # self.class_nameはproductionで動かない
+        self.name.demodulize.sub(/Type$/, '').constantize
       end
 
       # AssociationLoaderを使ったレコード読み込みを手軽に定義する
