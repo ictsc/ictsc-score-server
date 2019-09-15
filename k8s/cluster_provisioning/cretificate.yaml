@@ -11,7 +11,7 @@ spec:
     kind: ClusterIssuer
   dnsNames:
       - __VAR__DEV_CONTEST_FQDN # ドメイン
-      - __VAR__PROD_CONTEST_FQDN # ドメイン
+      - __VAR__PROD_CONTEST_FQDN
       - __VAR__TRAINING_CONTEST_FQDN
   acme:
     config:
@@ -19,7 +19,7 @@ spec:
         provider: cloudflare
       domains:
       - __VAR__DEV_CONTEST_FQDN # ドメイン
-      - __VAR__PROD_CONTEST_FQDN # ドメイン
+      - __VAR__PROD_CONTEST_FQDN
       - __VAR__TRAINING_CONTEST_FQDN
 
     # - http01:
