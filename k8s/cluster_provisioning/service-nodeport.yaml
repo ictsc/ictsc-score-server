@@ -22,5 +22,3 @@ spec:
     app.kubernetes.io/part-of: ingress-nginx
   externalIPs:
     - __VAR__THIS_YOU_EXTERNAL_IP
----
-
