@@ -19,7 +19,7 @@ spec:
         image: jwilder/dockerize
         args: ['sh', '-c', 'dockerize -wait tcp://redis:6379 -timeout 100s', 'dockerize -wait tcp://db:5432 -timeout 100s']
       containers:
-      - image: upluse10/ictsc-score-server:api-develop
+      - image: __VAR__API_IMAGE
         imagePullPolicy: Always
         name: api
         ports:
