@@ -13,7 +13,7 @@ spec:
       namespace: __VAR__NAMESPACE
     spec:
       containers:
-        - image: upluse10/ictsc-score-server:ui-develop
+        - image: __VAR__UI_IMAGE
           imagePullPolicy: Always
           name: ui
           ports:

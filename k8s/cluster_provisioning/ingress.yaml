@@ -12,7 +12,7 @@ spec:
   - secretName: cert-manager-tls
     hosts:
     - __VAR__DEV_CONTEST_FQDN # ドメイン
-    - __VAR__PROD_CONTEST_FQDN # ドメイン
+    - __VAR__PROD_CONTEST_FQDN
     - __VAR__TRAINING_CONTEST_FQDN
   rules:
   - host: __VAR__PROD_CONTEST_FQDN
