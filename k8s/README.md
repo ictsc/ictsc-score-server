@@ -54,6 +54,7 @@ http:
 
 ### Try kubectl apply!
 kubectl applyした時に前後関係があるので気持ち1~2秒ずつ打っていくといいです
+<!--（TODO: 最初に数字を書いて前後の順番をつけておくと良さそう） -->
 ```sh
 # flannelをinstall
 # 全体の構成に必須なので一度のみ  
