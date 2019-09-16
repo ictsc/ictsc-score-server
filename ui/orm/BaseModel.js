@@ -140,10 +140,8 @@ export default class BaseModel extends Model {
 
       return res
     } catch (error) {
+      // apollo client側でハンドル済みなため、ここでは通知しない
       console.error(error)
-      if (action) {
-        notify('notifyError', `想定外のエラーにより${action}に失敗しました`)
-      }
     }
   }
 
