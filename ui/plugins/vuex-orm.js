@@ -4,7 +4,7 @@ import VuexORMGraphQLPlugin, {
   ConnectionMode
 } from '@vuex-orm/plugin-graphql'
 import orm from '~/orm'
-import apolloClient from '~/apollo/client'
+import apolloClient from '~/plugins/apollo-client'
 
 class CustomAdapter extends DefaultAdapter {
   getConnectionMode() {
