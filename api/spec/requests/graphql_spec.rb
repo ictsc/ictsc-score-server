@@ -11,7 +11,8 @@ RSpec.describe 'Graphql', type: :request do
 
       post_query '{ me { id } }'
       expect(response).to have_http_status(:ok)
-      expect(json_response).to eq('data' => { 'me' => { 'id' => current_team.id } })
+      expect(response_json).not_to have_gq_errors
+      expect(response_json).to eq('data' => { 'me' => { 'id' => current_team.id } })
     end
   end
 
@@ -38,7 +39,8 @@ RSpec.describe 'Graphql', type: :request do
 
     it 'fail in sending GraphQL query' do
       post_query '{ me { id } }'
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to have_http_status(:ok)
+      expect(response_json).to have_gq_errors('UNAUTHORIZED')
     end
   end
 end

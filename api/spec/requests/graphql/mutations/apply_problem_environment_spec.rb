@@ -14,9 +14,8 @@ RSpec.describe 'applyProblemEnvironment', type: :request do
     let(:query_string) do
       <<~GQL
         applyProblemEnvironment(input: { problemCode: "#{problem.code}", teamNumber: #{team.number},
-            status: #{status}, host: #{host}, user: #{user}, password: #{password} }) {
+            status: "#{status}", host: "#{host}", user: "#{user}", password: "#{password}" }) {
 
-          errors
           problemEnvironment {
             host
             user
@@ -31,8 +30,10 @@ RSpec.describe 'applyProblemEnvironment', type: :request do
 
     it 'send problem env' do
       post_mutation query_string
+      expect(response).to have_http_status(:ok)
+      expect(response_json).not_to have_gq_errors
 
-      pp json_response
+      # TODO: dataを確認
     end
 
     # 新規作成, 上書き
