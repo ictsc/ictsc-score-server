@@ -14,6 +14,7 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
     * `var.yml`に ansibleで作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
     * `wget https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml` を `cluster_provisioning`のディレクトリでしておく
     * api.yamlとui.yamlの以下のような部分をよしなに直そう。使い方は、ここのmetadataのnameをingress.yamlのpathに指定しよう
+      * `<name>-<namespace>-bind-svc` の をenv.yamlの ｀__VAR__NAMESPACE｀｀ と一致させるようにしましょう。
 ```
 # api.yaml
 apiVersion: v1
@@ -50,7 +51,13 @@ http:
 * `pipenv install` をしたあと `pipenv shell` でサブシェルに入って `python deploy_ready.py` を叩く。これで各パラメーターを入れたk8sのmanifestが出来上がる。
 * ここのカレントディレクトリで `scp -i ictsc -r ./deploy_ready_output ictsc@xxx.xxx.xxx.xxx:/home/ictsc`でmasterサーバーにファイルを転送する
   * ここでいうmasterServerというのは　`k8s-master-01-server` のことです。
-* `https://helm.sh/docs/using_helm/#installing-helm` をしていい感じにinstallしてほしい
+* helm をインストール
+```sh
+# helm install
+wget https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz
+tar -zxvf helm-v3.0.0-beta.3-linux-amd64.tar.gz
+sudo mv linux-amd64/helm /usr/local/bin/helm
+```
 
 ### Try kubectl apply!
 kubectl applyした時に前後関係があるので気持ち1~2秒ずつ打っていくといいです
@@ -85,7 +92,7 @@ kubectl apply -f cretificate.yaml
 kubectl apply -f ingress.yaml
 
 # applicationのinstall
-kubectl -f redis.yaml,ui.yaml,db.yaml,api.yaml,service-nodeport.yaml
+kubectl apply -f redis.yaml,ui.yaml,db.yaml,api.yaml,service-nodeport.yaml
 ```
 
 これを通じて無事立ち上げることができました！
