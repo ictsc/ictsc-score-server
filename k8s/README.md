@@ -14,7 +14,7 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
     * `var.yml`に ansibleで作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
     * `wget https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml` を `cluster_provisioning`のディレクトリでしておく
     * api.yamlとui.yamlの以下のような部分をよしなに直そう。使い方は、ここのmetadataのnameをingress.yamlのpathに指定しよう
-      * `<name>-<namespace>-bind-svc` の をenv.yamlの ｀__VAR__NAMESPACE｀｀ と一致させるようにしましょう。
+      * `<name>-<namespace>-bind-svc` の をenv.yamlの ｀__VAR__NAMESPACE｀ と一致させるようにしましょう。
 ```
 # api.yaml
 apiVersion: v1
