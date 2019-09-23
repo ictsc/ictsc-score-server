@@ -44,6 +44,9 @@ gem 'tzinfo-data'
 
 gem 'slack-notifier'
 gem 'bugsnag', '~> 6.12'
+gem 'ddtrace'
+gem 'fluent-logger'
+gem 'lograge'
 
 # プロダクションに必須ではないがあると便利
 gem 'factory_bot_rails'

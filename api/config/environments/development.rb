@@ -47,4 +47,29 @@ Rails.application.configure do
 
   # Prepend all log lines with the following tags.
   config.log_tags = %i[request_id]
+  config.colorize_logging = false
+
+  # Docs. https://github.com/roidrage/lograge
+  # https://github.com/fluent/fluent-logger-ruby
+  # Fluent::Logger::ConsoleLogger.open(STDOUT)
+
+  fluent_logger = Fluent::Logger::LevelFluentLogger.new(nil, host: ENV.fetch('FLUENTD_HOST'), use_nonblock: true, wait_writeable: false).tap do |fluent|
+    fluent.formatter = proc do |severity, datetime, progname, message|
+      # TODO: request_id や host_ip を jsonとして欲しいならthread_attr系使うかsubscriber使うか
+
+      log = {
+        level: severity,
+        datetime: datetime,
+        stage: Rails.env,
+        service_name: 'api',
+        request_id: ApplicationController.logger_payload[:request_id]
+      }
+      log[:message] = message if message
+      log[:progname] = progname if progname
+
+      log
+    end
+  end
+
+  config.logger = ActiveSupport::TaggedLogging.new(fluent_logger)
 end

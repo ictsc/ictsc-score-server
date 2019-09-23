@@ -1,7 +1,16 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
+  thread_cattr_accessor :logger_paylod
+
+  before_action :setup_logger_payload
+
   private
+
+  def setup_logger_payload
+    Rails.logger.debug ApplicationController.new
+
+  end
 
   def logged_in?
     current_team.present?

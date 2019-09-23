@@ -5,6 +5,7 @@ class ApiSchema < GraphQL::Schema
   query Types::QueryType
   context_class CustomContext
   use GraphQL::Batch
+  use GraphQL::Tracing::DataDogTracing
 
   # TODO: mutationとqueryが同時に来たら事故る気がする -> できない気がする
   # TODO: mutationの想定外の例外補足
