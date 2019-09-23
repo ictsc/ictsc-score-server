@@ -127,6 +127,11 @@ export default class Problem extends BaseModel {
     return this.category && this.category.code
   }
 
+  // helpers
+  get isReadable() {
+    return this.body !== null && this.body !== undefined
+  }
+
   get displayTitle() {
     // eslint-disable-next-line no-undef
     return $nuxt.isStaff ? `${this.code}. ${this.title}` : this.title
