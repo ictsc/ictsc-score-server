@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# belongs_to
 class RecordLoader < GraphQL::Batch::Loader
   def initialize(context, model, column: model.primary_key, where: nil)
     @context = context

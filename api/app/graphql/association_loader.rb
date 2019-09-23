@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# has_many has_one
 class AssociationLoader < GraphQL::Batch::Loader
   def self.validate(model, association_name)
     new(model, association_name)
