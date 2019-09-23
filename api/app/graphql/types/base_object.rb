@@ -15,6 +15,7 @@ module Types
       end
 
       # AssociationLoaderを使ったレコード読み込みを手軽に定義する
+      #
       # e.g. AnswerType での `has_one :score` は以下を定義する
       #
       # def score
@@ -40,7 +41,9 @@ module Types
       alias has_one has_many
 
       # RecordLoaderを使ったレコード読み込みを手軽に定義する
+      #
       # e.g. AnswerType での `belongs_to :problem` は以下を定義する
+      #
       # def problem
       #   RecordLoader.for(Problem).load(self.object.problem_id)
       # end

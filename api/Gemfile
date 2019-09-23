@@ -43,6 +43,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'tzinfo-data'
 
 gem 'slack-notifier'
+gem 'bugsnag', '~> 6.12'
 
 # プロダクションに必須ではないがあると便利
 gem 'factory_bot_rails'

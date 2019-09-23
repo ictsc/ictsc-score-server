@@ -35,4 +35,7 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Prepend all log lines with the following tags.
+  config.log_tags = %i[request_id]
 end

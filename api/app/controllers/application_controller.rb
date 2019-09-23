@@ -4,11 +4,11 @@ class ApplicationController < ActionController::API
   private
 
   def logged_in?
-    Team.exists?(id: session[:team_id])
+    current_team.present?
   end
 
   def current_team
-    Team.find_by(id: session[:team_id])
+    session[:team_id].present? && Team.find_by(id: session[:team_id])
   end
 
   def require_login

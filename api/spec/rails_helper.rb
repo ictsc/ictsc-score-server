@@ -49,6 +49,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
   config.include FactoryBot::Syntax::Methods
   config.include SessionHelpers
   config.include RequestHelpers
+  config.include GraphqlHelpers
 
   config.infer_spec_type_from_file_location!
 
