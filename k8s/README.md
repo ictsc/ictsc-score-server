@@ -14,7 +14,7 @@ hint: [Terraform for さくらのクラウド](https://sacloud.github.io/terrafo
     * `var.yml`に ansibleで作成したいuserを書く。 `var.sample.yml` に例があるのでパスワードとかをいい感じに変えよう
     * `wget https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml` を `cluster_provisioning`のディレクトリでしておく
     * api.yamlとui.yamlの以下のような部分をよしなに直そう。使い方は、ここのmetadataのnameをingress.yamlのpathに指定しよう
-      * `<name>-<namespace>-bind-svc` の をenv.yamlの ｀__VAR__NAMESPACE｀ と一致させるようにしましょう。
+      * `<name>-<namespace>-bind-svc` の をenv.yamlの `__VAR__NAMESPACE` と一致させるようにしましょう。
 ```
 # api.yaml
 apiVersion: v1
@@ -78,11 +78,7 @@ kubectl create namespace cert-manager
 kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm install \
-  --name cert-manager \
-  --namespace cert-manager \
-  --version v0.9.1 \
-  jetstack/cert-manager
+helm install -g jetstack/cert-manager --namespace cert-manager --version v0.9.1
 kubectl apply -f 00-crds.yaml
 
 # cert-managerで動く証明書の設定
