@@ -5,7 +5,7 @@ module Mutations
     field :problem_supplement, Types::ProblemSupplementType, null: true
 
     argument :problem_code, String, required: true
-    argument :text, String, required: true
+    argument :text,         String, required: true
 
     def resolve(problem_code:, text:)
       Acl.permit!(mutation: self, args: {})

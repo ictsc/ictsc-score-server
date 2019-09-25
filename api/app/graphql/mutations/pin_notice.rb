@@ -4,8 +4,8 @@ module Mutations
   class PinNotice < BaseMutation
     field :notice, Types::NoticeType, null: true
 
-    argument :notice_id, ID, required: true
-    argument :pinned, Boolean, required: true
+    argument :notice_id, ID,      required: true
+    argument :pinned,    Boolean, required: true
 
     def resolve(notice_id:, pinned:)
       Acl.permit!(mutation: self, args: {})

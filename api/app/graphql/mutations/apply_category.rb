@@ -4,10 +4,10 @@ module Mutations
   class ApplyCategory < BaseMutation
     field :category, Types::CategoryType, null: true
 
-    argument :code, String, required: true
-    argument :title, String, required: true
-    argument :description, String, required: true
-    argument :order, Integer, required: true
+    argument :code,        String,  required: true
+    argument :title,       String,  required: true
+    argument :description, String,  required: true
+    argument :order,       Integer, required: true
 
     def resolve(code:, title:, description:, order:)
       Acl.permit!(mutation: self, args: {})

@@ -2,12 +2,12 @@
 
 module Mutations
   class StartIssue < BaseMutation
-    field :issue, Types::IssueType, null: true
+    field :issue,         Types::IssueType,        null: true
     field :issue_comment, Types::IssueCommentType, null: true
 
     # 質問を開始する問題IDと最初のコメントを引数にとる
-    argument :problem_id, ID, required: true
-    argument :text, String, required: true
+    argument :problem_id, ID,     required: true
+    argument :text,       String, required: true
 
     def resolve(problem_id:, text:)
       problem = Problem.find_by(id: problem_id)

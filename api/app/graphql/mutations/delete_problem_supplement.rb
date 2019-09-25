@@ -3,6 +3,7 @@
 module Mutations
   class DeleteProblemSupplement < BaseMutation
     field :problem_supplement, Types::ProblemSupplementType, null: true
+
     argument :problem_supplement_id, ID, required: true
 
     def resolve(problem_supplement_id:)

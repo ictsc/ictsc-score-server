@@ -3,6 +3,7 @@
 module Mutations
   class DeleteProblemEnvironment < BaseMutation
     field :problem_environment, Types::ProblemEnvironmentType, null: true
+
     argument :problem_supplement_id, ID, required: true
 
     def resolve(problem_supplement_id:)

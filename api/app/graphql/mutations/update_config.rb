@@ -4,8 +4,8 @@ module Mutations
   class UpdateConfig < BaseMutation
     field :config, Types::ConfigType, null: true
 
-    argument :key,        ID,     required: false
-    argument :value,      String, required: false
+    argument :key,   ID,     required: false
+    argument :value, String, required: false
 
     def resolve(key:, value:)
       Acl.permit!(mutation: self, args: {})
