@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: コメントがない場合のempty state -->
   <div>
     <!-- ステータスボタン -->
     <v-layout v-if="!!issue" column align-center class="pb-1">

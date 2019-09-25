@@ -2,7 +2,6 @@
   <expandable-card v-model="opened" color="white">
     <!-- カードの帯 -->
     <template v-slot:button>
-      <!-- TODO: ボタンの内容の表示位置を固定したい(縦に揃えたい) -->
       <v-layout row align-center>
         <v-flex>
           <span v-if="!realtimeGrading && isPlayer">

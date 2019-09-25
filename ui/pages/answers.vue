@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <!-- TODO: 仮実装 -->
     <v-layout column align-center>
       <page-title title="解答一覧" />
 
@@ -51,8 +50,6 @@ import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
 import PageTitle from '~/components/commons/PageTitle'
 import AnswerCard from '~/components/answers/AnswerCard'
-
-// TODO: code, writer, title, statusで検索
 
 export default {
   name: 'Answers',

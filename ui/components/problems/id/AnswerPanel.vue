@@ -7,7 +7,6 @@
       class="mb-1"
     />
 
-    <!-- TODO: 解答が0のときは何か表示する(特にstaff) -->
     <answer-card
       v-for="answer in sortedAnswers"
       :key="answer.id"

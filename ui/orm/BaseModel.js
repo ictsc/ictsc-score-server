@@ -43,14 +43,6 @@ export default class BaseModel extends Model {
   }
 
   static buildMutation(mutation, fields) {
-    // TODO: delete comments
-    // const fields = Object.keys(this.fields()).filter(field => field !== '$isPersisted').join(" ")
-    // const operationParams = Object.entries(params).map(o => o.join(': ')).join(', ')
-    // const mutationParams = Object.keys(params).map(o => `${o.slice(1)}: ${o}`).join(', ')
-    // const query = 'mutation addAnswer($input: AddAnswerInput!) {addAnswer(input: $input) { errors answer { id  }  }}'
-    // const variables = { input: { problemId: '3230156e-75ab-442d-9fdf-3d9d19981c43', bodies: [['']]  } }
-    // $nuxt.$store.dispatch('entities/simpleMutation', { query, variables })
-
     const fieldsString =
       typeof fields === 'string'
         ? fields

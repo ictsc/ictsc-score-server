@@ -26,7 +26,6 @@
 
       <!-- お知らせなし -->
       <div v-else class="grey--text text-center title">
-        <!-- TODO: fetchingは仮実装 -->
         <template v-if="fetching">
           読み込み中
         </template>

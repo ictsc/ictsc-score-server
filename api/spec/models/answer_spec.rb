@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Answer, type: :model do
-  # TODO: invalid: unique, 順序, 超過, 選択肢外
-
   describe '#bodies' do
     include_context 'answer_bodies_variables'
 

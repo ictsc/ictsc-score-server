@@ -70,10 +70,10 @@ const httpLink = createHttpLink({ uri: '/api/graphql' })
 export default new ApolloClient({
   defaultOptions: {
     watchQuery: {
-      // fetch時にキャッシュしない
-      // TODO: vuex-orm/plugin-graphql側で制御されているので効かない
-      // fetchPolicy: 'no-cache',
       errorPolicy: 'all'
+      // vuex-orm/plugin-graphql側で制御されているので効かない
+      // fetch時にキャッシュしない
+      // fetchPolicy: 'no-cache',
     }
   },
   link: errorLink.concat(httpLink),

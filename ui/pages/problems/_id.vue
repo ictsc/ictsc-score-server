@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: ここでreadable判定してもいいかも → Loadingしたい -->
   <v-container fluid grid-list-md>
     <v-row>
       <!-- 左の問題詳細パネル -->
@@ -98,9 +97,6 @@ export default {
       return !this.isPlayer && this.teamId ? `=${this.teamId}` : ''
     },
     problem() {
-      // TODO: bodyが無ければ loading
-      // TODO: エラー通知&表示
-
       // 編集モーダルや各表示部で使うデータを結合する
       // categoryとpreviousProblemは編集モーダルで必要
       return orm.Problem.query()
@@ -130,7 +126,6 @@ export default {
     }
   },
   fetch({ params }) {
-    // TODO: bodyが取得できないならエラーにする
     // TODO: modeによって動作を変えたい?(staffの操作が少し軽くなる)
 
     orm.Problem.eagerFetch(params.id, [
@@ -143,7 +138,6 @@ export default {
   mounted() {
     this.tabMode = this.mode
 
-    // TODO: contestInfoと同時にfetchしたほうがいいかもしれない
     if (!this.isPlayer) {
       orm.Team.eagerFetch()
     }
