@@ -1,6 +1,14 @@
 <template>
   <div>
     <v-row align="center">
+      <v-btn
+        :disabled="!selectedValue || fetching"
+        @click.stop="showDialog = true"
+      >
+        削除
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
+
       <v-select
         v-model="selectedValue"
         :loading="fetching"
@@ -11,37 +19,25 @@
         item-text="title"
         :item-value="itemValue"
         :label="label"
+        class="ml-4"
         @focus="fetchItems"
       />
-      <v-btn
-        :disabled="!selectedValue || fetching"
-        class="ml-8"
-        @click.stop="showDialog = true"
-      >
-        削除
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
     </v-row>
 
     <v-dialog v-model="showDialog" max-width="20em">
       <v-card>
-        <v-card-text class="title">
+        <v-card-text class="title text-center pt-2">
           本当に削除しますか?
         </v-card-text>
 
         <v-card-actions>
-          <div class="flex-grow-1"></div>
-
-          <v-btn
-            color="error"
-            :loading="sending"
-            class="mr-4"
-            @click="deleteStart"
-          >
+          <v-btn color="error" :loading="sending" @click="deleteStart">
             削除
           </v-btn>
 
-          <v-btn :disabled="sending" @click="showDialog = false">
+          <v-spacer />
+
+          <v-btn left :disabled="sending" @click="showDialog = false">
             キャンセル
           </v-btn>
         </v-card-actions>

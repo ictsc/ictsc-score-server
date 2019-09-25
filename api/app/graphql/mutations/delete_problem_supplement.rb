@@ -7,14 +7,17 @@ module Mutations
     argument :problem_supplement_id, ID, required: true
 
     def resolve(problem_supplement_id:)
-      problem_supplement = ProblemSupplement.find_by(id: problem_supplement_id)
+      # 削除時は事前にフィルタする必要がある
+      problem_supplement = ProblemSupplement
+        .readables(team: self.current_team!)
+        .find_by(id: problem_supplement_id)
+
       raise RecordNotExists.new(ProblemSupplement, id: problem_supplement_id) if problem_supplement.nil?
 
       Acl.permit!(mutation: self, args: { problem_supplement: problem_supplement })
 
       if problem_supplement.destroy
-        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
-        { problem_supplement: problem_supplement.filter_columns(team: self.current_team!) }
+        { problem_supplement: problem_supplement }
       else
         add_errors(problem_supplement)
       end

@@ -2,6 +2,6 @@
 
 class RecordNotExists < GraphQL::ExecutionError
   def initialize(model, **params)
-    super("#{model.inspect} #{params.inspect} not exists")
+    super("#{model} #{params.inspect} not exists")
   end
 end

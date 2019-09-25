@@ -8,16 +8,19 @@ module Mutations
     argument :code, String, required: true
 
     def resolve(code:)
-      problem = Problem.find_by(code: code)
+      # 削除時は事前にフィルタする必要がある
+      problem = Problem
+        .readables(team: self.current_team!)
+        .find_by(code: code)
+
       raise RecordNotExists.new(Problem, code: code) if problem.nil?
 
       Acl.permit!(mutation: self, args: { problem: problem })
 
-      problem_body = problem.body
+      problem_body = problem.body.readable(team: self.current_team!)
 
       if problem.destroy
-        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
-        { problem: problem.filter_columns(team: self.current_team!), problem_body: problem_body.filter_columns(team: self.current_team!) }
+        { problem: problem, problem_body: problem_body }
       else
         add_errors(problem)
       end

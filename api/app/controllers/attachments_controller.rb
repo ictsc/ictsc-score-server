@@ -41,12 +41,14 @@ class AttachmentsController < ApplicationController
       filename: file.original_filename,
       data: file.read,
       content_type: file.content_type,
+      size: file.size,
       team: current_team
     )
 
     if attachment.save
       render json: attachment_path(attachment.token), status: :ok
     else
+      Rails.logger.error attachment.errors.full_messages
       render json: attachment.errors.messages, status: :bad_request
     end
   end
