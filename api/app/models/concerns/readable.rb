@@ -39,6 +39,8 @@ module Readable
       case self.to_s
       when 'Answer'
         %w[confirming] unless team.staff?
+      when 'Attachment'
+        %w[data]
       when 'Category'
         %w[code] unless team.staff?
       when 'Problem'
@@ -47,7 +49,7 @@ module Readable
         %w[corrects] if team.player?
       when 'Team'
         %w[password_digest]
-      when 'Attachment', 'Config', 'FirstCorrectAnswer', 'Notice', 'ProblemEnvironment', 'ProblemSupplement', 'Issue', 'IssueComment', 'Score'
+      when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'ProblemEnvironment', 'ProblemSupplement', 'Score'
         # permit all
         %w[]
       else

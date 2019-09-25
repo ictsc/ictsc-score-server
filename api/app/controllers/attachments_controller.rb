@@ -10,7 +10,7 @@ class AttachmentsController < ApplicationController
     # filenameには間違えて問題コードを含んでしまうことが多いので代わりにtokenを返す
     send_data(
       attachment.data,
-      filename: attachment.token,
+      filename: attachment.token + File.extname(attachment.filename),
       type: attachment.content_type,
       disposition: 'inline',
       stream: 'true',

@@ -8,5 +8,7 @@ module Types
     field :organization, String,  null: true
     field :number,       Integer, null: true
     field :color,        String,  null: true
+
+    has_many :attachments
   end
 end
