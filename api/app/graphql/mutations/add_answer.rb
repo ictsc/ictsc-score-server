@@ -4,8 +4,8 @@ module Mutations
   class AddAnswer < BaseMutation
     field :answer, Types::AnswerType, null: true
 
-    argument :problem_id, ID, required: true
-    argument :bodies, [[String]], required: true
+    argument :problem_id, ID,         required: true
+    argument :bodies,     [[String]], required: true
 
     def resolve(problem_id:, bodies:)
       problem = Problem.find_by(id: problem_id)

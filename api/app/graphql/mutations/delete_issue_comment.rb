@@ -3,6 +3,7 @@
 module Mutations
   class DeleteIssueComment < BaseMutation
     field :issue_coment, Types::IssueCommentType, null: true
+
     argument :issue_coment_id, ID, required: true
 
     def resolve(issue_coment_id:)

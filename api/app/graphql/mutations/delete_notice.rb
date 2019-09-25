@@ -3,6 +3,7 @@
 module Mutations
   class DeleteNotice < BaseMutation
     field :notice, Types::NoticeType, null: true
+
     argument :notice_id, ID, required: true
 
     def resolve(notice_id:)

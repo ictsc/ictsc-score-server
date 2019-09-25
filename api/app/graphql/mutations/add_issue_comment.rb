@@ -2,11 +2,11 @@
 
 module Mutations
   class AddIssueComment < BaseMutation
-    field :issue, Types::IssueType, null: true
+    field :issue,         Types::IssueType,        null: true
     field :issue_comment, Types::IssueCommentType, null: true
 
-    argument :issue_id, ID, required: true
-    argument :text, String, required: true
+    argument :issue_id, ID,     required: true
+    argument :text,     String, required: true
 
     def resolve(issue_id:, text:)
       issue = Issue.find_by(id: issue_id)

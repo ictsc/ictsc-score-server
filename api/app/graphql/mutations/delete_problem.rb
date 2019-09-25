@@ -2,8 +2,9 @@
 
 module Mutations
   class DeleteProblem < BaseMutation
-    field :problem, Types::ProblemType, null: false
+    field :problem,      Types::ProblemType,     null: false
     field :problem_body, Types::ProblemBodyType, null: false
+
     argument :code, String, required: true
 
     def resolve(code:)

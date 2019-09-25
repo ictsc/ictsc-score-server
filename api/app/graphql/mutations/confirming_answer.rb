@@ -4,7 +4,7 @@ module Mutations
   class ConfirmingAnswer < BaseMutation
     field :answer, Types::AnswerType, null: true
 
-    argument :answer_id, ID, required: true
+    argument :answer_id,  ID,      required: true
     argument :confirming, Boolean, required: true
 
     def resolve(answer_id:, confirming:)

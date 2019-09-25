@@ -4,7 +4,9 @@ module Types
   class QueryType < Types::BaseObject
     field :me,                   Types::TeamType,                 null: true
     field :contest_info,         Types::ContestInfoType,          null: false
+    field :attachments,          [Types::AttachmentType],         null: false
     field :categories,           [Types::CategoryType],           null: false
+    field :configs,              [Types::ConfigType],             null: false
     field :problems,             [Types::ProblemType],            null: false
     field :problem_environments, [Types::ProblemEnvironmentType], null: false
     field :teams,                [Types::TeamType],               null: false
@@ -26,6 +28,10 @@ module Types
     def contest_info
       # ContestInfoTypeがrecord_accessor経由でレコード取得する
       Config
+    end
+
+    def attachments
+      Attachment.readables(team: self.current_team!)
     end
 
     def configs

@@ -4,10 +4,10 @@ module Mutations
   class AddNotice < BaseMutation
     field :notice, Types::NoticeType, null: true
 
-    argument :title, String, required: true
-    argument :text, String, required: true
-    argument :pinned, Boolean, required: true
-    argument :target_team_id, ID, required: false
+    argument :title,          String,  required: true
+    argument :text,           String,  required: true
+    argument :pinned,         Boolean, required: true
+    argument :target_team_id, ID,      required: false
 
     def resolve(title:, text:, pinned:, target_team_id: nil)
       Acl.permit!(mutation: self, args: {})

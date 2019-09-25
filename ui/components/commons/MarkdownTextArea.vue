@@ -184,7 +184,7 @@ export default {
         this.internalValue = this.insertString(
           this.internalValue,
           cursorPos,
-          `![file](${link})`
+          `\n![file](${link})\n`
         )
       }
 
@@ -192,6 +192,10 @@ export default {
       this.uploading = false
     },
     insertString(str, index, insert) {
+      if (!str) {
+        return insert
+      }
+
       return str.slice(0, index) + insert + str.slice(index, str.length)
     },
     async upload(file) {
@@ -209,6 +213,7 @@ export default {
             return res.data
           case 400:
           case 401:
+            console.error(res)
             this.notifyWarning({ message: `アップロードに失敗しました` })
             break
           default:

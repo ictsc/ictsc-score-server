@@ -3,6 +3,7 @@
 module Mutations
   class DeleteCategory < BaseMutation
     field :category, Types::CategoryType, null: true
+
     argument :code, String, required: true
 
     def resolve(code:)

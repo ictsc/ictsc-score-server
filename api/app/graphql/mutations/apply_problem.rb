@@ -2,27 +2,27 @@
 
 module Mutations
   class ApplyProblem < BaseMutation
-    field :problem, Types::ProblemType, null: true
+    field :problem,      Types::ProblemType,     null: true
     field :problem_body, Types::ProblemBodyType, null: true
 
-    argument :code, String, required: true
-    argument :category_code, String, required: false
-    argument :previous_problem_code, String, required: false
-    argument :order, Integer, required: true
-    argument :team_isolate, Boolean, required: true
-    argument :open_at_begin, Types::DateTime, required: false
-    argument :open_at_end, Types::DateTime, required: false
-    argument :writer, String, required: false
-    argument :secret_text, String, required: false
+    argument :code,                  String,                        required: true
+    argument :category_code,         String,                        required: false
+    argument :previous_problem_code, String,                        required: false
+    argument :order,                 Integer,                       required: true
+    argument :team_isolate,          Boolean,                       required: true
+    argument :open_at_begin,         Types::DateTime,               required: false
+    argument :open_at_end,           Types::DateTime,               required: false
+    argument :writer,                String,                        required: false
+    argument :secret_text,           String,                        required: false
 
     # body
-    argument :mode, Types::Enums::ProblemBodyMode, required: true
-    argument :title, String, required: true
-    argument :text, String, required: true
-    argument :perfect_point, Integer, required: true
-    argument :solved_criterion, Integer, required: true
-    argument :candidates, [[String]], required: true
-    argument :corrects, [[String]], required: true
+    argument :mode,                  Types::Enums::ProblemBodyMode, required: true
+    argument :title,                 String,                        required: true
+    argument :text,                  String,                        required: true
+    argument :perfect_point,         Integer,                       required: true
+    argument :solved_criterion,      Integer,                       required: true
+    argument :candidates,            [[String]],                    required: true
+    argument :corrects,              [[String]],                    required: true
 
     # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     def resolve(code:, category_code: nil, previous_problem_code: nil,

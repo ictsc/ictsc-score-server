@@ -4,7 +4,7 @@ module Mutations
   class TransitionIssueState < BaseMutation
     field :issue, Types::IssueType, null: true
 
-    argument :issue_id, ID, required: true
+    argument :issue_id,       ID,                        required: true
     # 同時リクエストで意図しない遷移を防ぐため
     argument :current_status, Types::Enums::IssueStatus, required: true
 
