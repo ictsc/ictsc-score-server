@@ -184,7 +184,7 @@ export default {
         this.internalValue = this.insertString(
           this.internalValue,
           cursorPos,
-          `![file](${link})`
+          `\n![file](${link})\n`
         )
       }
 
@@ -192,6 +192,10 @@ export default {
       this.uploading = false
     },
     insertString(str, index, insert) {
+      if (!str) {
+        return insert
+      }
+
       return str.slice(0, index) + insert + str.slice(index, str.length)
     },
     async upload(file) {
