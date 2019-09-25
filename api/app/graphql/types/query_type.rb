@@ -28,6 +28,10 @@ module Types
       Config
     end
 
+    def configs
+      Config.readables(team: self.current_team!)
+    end
+
     def categories
       Category.readables(team: self.current_team!)
     end
