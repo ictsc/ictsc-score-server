@@ -26,6 +26,8 @@ class Acl
       when 'AddIssueComment', 'TransitionIssueState'
         # staff of issue owner
         team.staff? || args.fetch(:issue).readable?(team: team)
+      when 'UpdateConfig'
+        team.staff?
       when 'StartIssue'
         # player and opened
         team.player? && args.fetch(:problem).body.readable?(team: team)
