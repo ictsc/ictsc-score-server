@@ -213,6 +213,7 @@ export default {
             return res.data
           case 400:
           case 401:
+            console.error(res)
             this.notifyWarning({ message: `アップロードに失敗しました` })
             break
           default:

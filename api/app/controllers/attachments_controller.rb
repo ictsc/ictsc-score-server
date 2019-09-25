@@ -18,7 +18,7 @@ class AttachmentsController < ApplicationController
     )
   end
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength
     file = file_params[:file]
 
     if current_team.audience?
@@ -27,7 +27,13 @@ class AttachmentsController < ApplicationController
     end
 
     if file.blank?
-      head :bad_request
+      render json: '"file" field required', status: :bad_request
+      return
+    end
+
+    # サイズ制限(適当)
+    if current_team.player? && 20.megabyte < file.size
+      render json: 'file size must be 20MB or less', status: :bad_request
       return
     end
 
