@@ -61,11 +61,16 @@ class Config < ApplicationRecord
     attr_reader :required_keys
 
     def get(key)
-      cast(find_by(key: key))
+      # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
+      cast(all.find {|config| config.key == key.to_s })
     end
 
     def get!(key)
-      cast!(find_by!(key: key))
+      # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
+      record = all.find {|config| config.key == key.to_s }
+      raise ConfigKeyNotFound, key if record.nil?
+
+      cast!(record)
     end
 
     def set(key, value)
@@ -74,6 +79,8 @@ class Config < ApplicationRecord
 
     def set!(key, value)
       find_by!(key: key).update!(value: value)
+    rescue ActiveRecord::RecordNotFound
+      raise ConfigKeyNotFound, key
     end
 
     # 設定を透過的にアクセスするためのアクセサーを定義する
