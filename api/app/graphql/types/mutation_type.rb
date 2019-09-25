@@ -12,6 +12,7 @@ module Types
     field :applyScore,               mutation: Mutations::ApplyScore
     field :applyTeam,                mutation: Mutations::ApplyTeam
     field :confirmingAnswer,         mutation: Mutations::ConfirmingAnswer
+    field :deleteAttachment,         mutation: Mutations::DeleteAttachment
     field :deleteCategory,           mutation: Mutations::DeleteCategory
     field :deleteIssueComment,       mutation: Mutations::DeleteIssueComment
     field :deleteNotice,             mutation: Mutations::DeleteNotice

@@ -31,7 +31,7 @@ class Acl
       when 'StartIssue'
         # player and opened
         team.player? && args.fetch(:problem).body.readable?(team: team)
-      when 'DeleteCategory', 'DeleteProblem', 'DeleteProblemEnvironment'
+      when 'DeleteAttachment', 'DeleteCategory', 'DeleteProblem', 'DeleteProblemEnvironment'
         team.staff?
       when 'DeleteNotice'
         team.staff? && Config.before_delete_time_limit?(args.fetch(:notice).created_at)
