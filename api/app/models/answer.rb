@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Answer < ApplicationRecord
-  validates :bodies,     presence: true
+  validates :bodies,     presence: true, answer_bodies: true
   validates :confirming, boolean:  true
   validates :problem,    presence: true, uniqueness: { scope: %i[team_id created_at] }
   validates :team,       presence: true
@@ -12,19 +12,14 @@ class Answer < ApplicationRecord
   has_one :score, dependent: :destroy, autosave: true
   has_one :first_correct_answer, dependent: :destroy, autosave: false
 
-  validate :validate_bodies_format
+  # for bodies validation
+  def mode
+    problem.body.mode
+  end
 
-  def validate_bodies_format
-    # TODO: 実装までの応急処置
-    # rubocop:disable Lint/EmptyWhen
-    case problem.body.mode
-    when 'textbox'
-    when 'radio_button'
-    when 'checkbox'
-    else
-      raise UnhandledProblemBodyMode, problem.body.mode
-    end
-    # rubocop:enable Lint/EmptyWhen
+  # for bodies validation
+  def candidates
+    problem.body.candidates
   end
 
   # ProblemBody#modeに従って採点を行いScoreレコードを作成する
