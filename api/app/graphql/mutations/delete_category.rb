@@ -7,14 +7,17 @@ module Mutations
     argument :code, String, required: true
 
     def resolve(code:)
-      category = Category.find_by(code: code)
+      # 削除時は事前にフィルタする必要がある
+      category = Category
+        .readables(team: self.current_team!)
+        .find_by(code: code)
+
       raise RecordNotExists.new(Category, code: code) if category.nil?
 
       Acl.permit!(mutation: self, args: { category: category })
 
       if category.destroy
-        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
-        { category: category.filter_columns(team: self.current_team!) }
+        { category: category }
       else
         add_errors(category)
       end

@@ -7,14 +7,17 @@ module Mutations
     argument :notice_id, ID, required: true
 
     def resolve(notice_id:)
-      notice = Notice.find_by(id: notice_id)
+      # 削除時は事前にフィルタする必要がある
+      notice = Notice
+        .readables(team: self.current_team!)
+        .find_by(id: notice_id)
+
       raise RecordNotExists.new(Notice, id: notice_id) if notice.nil?
 
       Acl.permit!(mutation: self, args: { notice: notice })
 
       if notice.destroy
-        # 削除されたレコードはreadableが使えないのでカラムのみフィルタする
-        { notice: notice.filter_columns(team: self.current_team!) }
+        { notice: notice }
       else
         add_errors(notice)
       end
