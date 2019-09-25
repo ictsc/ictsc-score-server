@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 class UnhandledProblemBodyMode < StandardError
-  attr_reader :mode
-
   def initialize(mode)
-    @type = mode
-    super("unhandled mode #{mode}")
+    super("unhandled mode #{mode.inspect}")
   end
 end
