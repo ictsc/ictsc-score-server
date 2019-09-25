@@ -3,7 +3,7 @@
 module Types
   class QueryType < Types::BaseObject
     field :me, Types::TeamType, null: true
-    field :contest_info, Types::ContestInfo, null: false
+    field :contest_info, Types::ContestInfoType, null: false
     field :categories, [Types::CategoryType], null: false
     field :problem, Types::ProblemType, null: true do
       argument :id, ID, required: true
@@ -22,7 +22,7 @@ module Types
     end
 
     def contest_info
-      # 全ユーザーが見える情報のみ返す
+      # ContestInfoTypeがrecord_accessor経由でレコード取得する
       Config
     end
 
