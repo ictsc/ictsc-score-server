@@ -18,6 +18,7 @@ class ProblemBody < ApplicationRecord
     checkbox: 30
   }
 
+  # TODO: candidatesやcorrectsがupdateされたら、関連する問題は再採点が必要 毎回採点したほうが良いかもしれない
   # after_commit :regrade_answers
   # candidatesが変更されると既存のanswerのbodiesが矛盾する
   #   delay中のanswerが無ければ無視しても良い
@@ -71,6 +72,4 @@ class ProblemBody < ApplicationRecord
       raise UnhandledProblemBodyMode, mode
     end
   end
-
-  # TODO: candidatesやcorrectsがupdateされたら、関連する問題は再採点が必要 毎回採点したほうが良いかもしれない
 end

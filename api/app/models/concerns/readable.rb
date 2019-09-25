@@ -32,8 +32,8 @@ module Readable
       column_names - reject_columns(team: team)
     end
 
-    # ブラックリスト方式でフィルタする
-    # そのteamが閲覧できるレコードを返す
+    # ブラックリスト方式のカラムフィルタ
+    # そのteamが閲覧できないカラムを返す
     def reject_columns(team:)
       # 文字列として比較しないとautoload環境では正しく動作しない
       case self.to_s
