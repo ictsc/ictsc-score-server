@@ -3,14 +3,14 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: storage-db
-  namespace: default
+  namespace: __VAR__NAMESPACE
 provisioner: kubernetes.io/gce-pd
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: db
-  namespace: default
+  namespace: __VAR__NAMESPACE
 spec:
   capacity:
     storage: 10Gi
@@ -18,15 +18,17 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: "storage-db"
-  nfs:
-    server: 172.16.30.101
-    path: "/export/default-mariadb"
+  hostPath:
+    path: "/mnt/data"
+  # nfs:
+  #   server: 172.16.30.101
+  #   path: "/export/default-postgresql"
 ---
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: db-pvc
-  namespace: default
+  namespace: __VAR__NAMESPACE
 spec:
   storageClassName: "storage-db"
   accessModes:
@@ -38,41 +40,45 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mariadb
-  namespace: default
+  name: db
+  namespace: __VAR__NAMESPACE
 spec:
-  serviceName: "mariadb"
+  serviceName: "db"
   replicas: 1
   podManagementPolicy: "Parallel"
   updateStrategy:
     type: "RollingUpdate"
   selector:
     matchLabels:
-      ictsc2018-score: db
+      app: db
   template:
     metadata:
       labels:
-        ictsc2018-score: db
+        app: db
     spec:
-      priorityClassName: system-cluster-critical
+      # priorityClassName: system-cluster-critical
       containers:
-        - name: mariadb
-          image: mariadb:10.3.13
+        - name: db
+          image: postgres:11.3-alpine
           securityContext:
             runAsUser: 0
           args:
-            - "--character-set-server=utf8mb4"
-            - "--collation-server=utf8mb4_unicode_ci"
+            - -c
+            - max_connections=200
+            - -c
+            - shared_buffers=256MB
+            - -c
+            - work_mem=4MB
           volumeMounts:
-            - name: mariadb
-              mountPath: /var/lib/mysql
+            - name: db
+              mountPath: /var/lib/postgresql/data
           ports:
-            - containerPort: 3306
+            - containerPort: 5432
           envFrom:
             - configMapRef:
                 name: db-env
       volumes:
-        - name: mariadb
+        - name: db
           persistentVolumeClaim:
             claimName: db-pvc
 ---
@@ -80,25 +86,24 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: db-env
-  namespace: default
+  namespace: __VAR__NAMESPACE
 data:
-  TZ: "Asia/Tokyo"
-  MYSQL_ROOT_PASSWORD: "PASSWORD"
-  MYSQL_DATABASE: "ictsc_score_server"
-  MYSQL_PASSWORD: "PASSWORD"
-  MYSQL_START_TIMEOUT: "900"
+  TZ: __VAR__TZ
+  POSTGRES_HOST: __VAR__POSTGRES_HOST
+  POSTGRES_USER: __VAR__POSTGRES_USER
+  POSTGRES_PASSWORD: __VAR__POSTGRES_PASSWORD
+  POSTGRES_MAX_CONNECTIONS: __VAR__POSTGRES_MAX_CONNECTIONS
+  POSTGRES_SHARED_BUFFERS: __VAR__POSTGRES_SHARED_BUFFERS
+  POSTGRES_WORK_MEM: __VAR__POSTGRES_WORK_MEM
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    ictsc2018-score: db
+  namespace: __VAR__NAMESPACE
   name: db
-  namespace: default
 spec:
-  ports:
-    - name: db
-      port: 3306
-      targetPort: 3306
   selector:
-    ictsc2018-score: db
+    app: db
+  type: ClusterIP
+  ports:
+    - port: 5432
