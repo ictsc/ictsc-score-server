@@ -41,6 +41,7 @@ class AttachmentsController < ApplicationController
       filename: file.original_filename,
       data: file.read,
       content_type: file.content_type,
+      size: file.size,
       team: current_team
     )
 
