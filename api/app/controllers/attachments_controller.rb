@@ -47,6 +47,7 @@ class AttachmentsController < ApplicationController
     if attachment.save
       render json: attachment_path(attachment.token), status: :ok
     else
+      Rails.logger.error attachment.errors.full_messages
       render json: attachment.errors.messages, status: :bad_request
     end
   end
