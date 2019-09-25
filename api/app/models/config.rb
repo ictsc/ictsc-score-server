@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/FormatStringToken
-
-# TODO: Configはいろいろ無駄なので作り直す
 class Config < ApplicationRecord
-  class CastFailed < StandardError; end
-
   validates :key,        presence: true, uniqueness: true
   validates :value,      allow_empty: true, length: { maximum: 8192 }
   validates :value_type, presence: true
@@ -20,30 +15,15 @@ class Config < ApplicationRecord
   }
 
   def validate_castable
-    errors.add(:value, ' "%s" is not castable to %s' % [value, value_type]) unless self.class.castable?(self)
+    errors.add(:value, "#{value.inspect} is not castable to #{value_type}") unless self.class.castable?(self)
   end
 
   def reject_update_value_type
-    errors.add(:value_type, 'disallow to update value_type(%s to %s)' % [value_type, value_type_was]) if will_save_change_to_value_type?
+    errors.add(:value_type, "disallow to update value_type(#{value_type} to #{value_type_was})") if will_save_change_to_value_type?
   end
 
+  # cast
   class << self
-    def get(key)
-      cast(find_by(key: key))
-    end
-
-    def get!(key)
-      cast!(find_by!(key: key))
-    end
-
-    def set(key, value)
-      find_by(key: key)&.update(value: value)
-    end
-
-    def set!(key, value)
-      find_by!(key: key).update!(value: value)
-    end
-
     def cast(record) # rubocop:disable Metrics/CyclomaticComplexity
       return nil if record&.value_type.nil?
 
@@ -61,15 +41,14 @@ class Config < ApplicationRecord
       when :date?.to_proc
         Time.zone.parse(record.value) rescue nil # rubocop:disable Style/RescueModifier
       else
-        nil
+        raise UnhandledConfigValueType
       end
     end
 
     def cast!(record)
-      result = cast(record)
-      raise CastFailed, 'key: %s, value: "%s", value_type: %s' % [record.key, record.value, record.value_type] if result.nil?
-
-      result
+      cast(record).tap do |result|
+        raise ConfigValueCastFailed, record if result.nil?
+      end
     end
 
     def castable?(record)
@@ -81,20 +60,46 @@ class Config < ApplicationRecord
   class << self
     attr_reader :required_keys
 
+    def get(key)
+      # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
+      cast(all.find {|config| config.key == key.to_s })
+    end
+
+    def get!(key)
+      # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
+      record = all.find {|config| config.key == key.to_s }
+      raise ConfigKeyNotFound, key if record.nil?
+
+      cast!(record)
+    end
+
+    def set(key, value)
+      find_by(key: key)&.update(value: value)
+    end
+
+    def set!(key, value)
+      find_by!(key: key).update!(value: value)
+    rescue ActiveRecord::RecordNotFound
+      raise ConfigKeyNotFound, key
+    end
+
+    # 設定を透過的にアクセスするためのアクセサーを定義する
+    # e.g. クラス内で以下のような宣言をすると
+    # record_accessor :hoge
+    #
+    # 以下の用に透過的に操作できる
+    # puts Config.hoge
+    # Config.hoge = 'fuga'
     def record_accessor(key)
       @required_keys ||= []
       @required_keys << key
-      var_name = "@#{key}"
 
       define_singleton_method(key) do
-        # キャッシュすると永続する
-        # return instance_variable_get(var_name) if instance_variable_defined?(var_name)
-        instance_variable_set(var_name, get!(key))
+        get!(key)
       end
 
       define_singleton_method("#{key}=") do |value|
         set!(key, value)
-        instance_variable_set(var_name, get!(key))
       end
     end
 
@@ -105,7 +110,10 @@ class Config < ApplicationRecord
     def insufficient_keys
       @required_keys.map(&:to_s) - all.pluck(:key)
     end
+  end
 
+  # helpers
+  class << self
     def competition_time
       [
         [competition_section1_start_at, competition_section1_end_at],
@@ -123,6 +131,10 @@ class Config < ApplicationRecord
       competition_time.last.last
     end
 
+    def competition?
+      !competition_stop && competition_time.any? {|section| Time.current.between?(section.first, section.last) }
+    end
+
     def scoreboard
       {
         hide_at: scoreboard_hide_at,
@@ -133,7 +145,7 @@ class Config < ApplicationRecord
 
     def scoreboard_display
       {
-        all: { # staff and current team
+        all: {
           team: true,
           score: true
         },
@@ -152,24 +164,27 @@ class Config < ApplicationRecord
       delete_time_limit_sec.seconds
     end
 
+    def before_delete_time_limit?(datetime)
+      Time.current - datetime <= Config.delete_time_limit_sec
+    end
+
     # 構造化された設定
     def to_h
-      # TODO: 未修正
       {
+        # 構造化
+        scoreboard: scoreboard,
         competition_time: competition_time,
+
+        # そのまま
         competition_stop: competition_stop,
         all_problem_force_open_at: all_problem_force_open_at,
         grading_delay_sec: grading_delay_sec,
-        scoreboard: scoreboard
+        hide_all_score: hide_all_score,
+        realtime_grading: realtime_grading,
+        text_size_limit: text_size_limit,
+        delete_time_limit_sec: delete_time_limit_sec,
+        guide_page: guide_page
       }
-    end
-
-    def competition?
-      !competition_stop && competition_time.any? {|section| Time.current.between?(section.first, section.last) }
-    end
-
-    def before_delete_time_limit?(datetime)
-      Time.current - datetime <= Config.delete_time_limit_sec
     end
   end
 
@@ -192,6 +207,7 @@ class Config < ApplicationRecord
   record_accessor :delete_time_limit_sec
   record_accessor :guide_page
 
+  # スコアボードの表示設定
   record_accessor :scoreboard_hide_at
   record_accessor :scoreboard_top
   record_accessor :scoreboard_display_top_team
@@ -199,5 +215,3 @@ class Config < ApplicationRecord
   record_accessor :scoreboard_display_above_team
   record_accessor :scoreboard_display_above_score
 end
-
-# rubocop:enable Style/FormatStringToken

@@ -21,5 +21,6 @@ module Types
     field :pinNotice, mutation: Mutations::PinNotice
     field :startIssue, mutation: Mutations::StartIssue
     field :transitionIssueState, mutation: Mutations::TransitionIssueState
+    field :updateConfig, mutation: Mutations::UpdateConfig
   end
 end

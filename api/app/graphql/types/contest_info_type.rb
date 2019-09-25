@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Types
-  # ユーザーに提供されるコンテスト情報
+  # 全ユーザーが見える情報のみ返す
   # UIの描画に使われる
-  class ContestInfo < Types::BaseObject
+  class ContestInfoType < Types::BaseObject
     field :competition_time,      [[Types::DateTime]], null: false
     field :grading_delay_sec,     Integer,             null: false
     field :hide_all_score,        Boolean,             null: false
