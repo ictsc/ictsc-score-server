@@ -45,11 +45,17 @@ ActiveRecord::Base.logger = nil
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
+
 RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
   config.include FactoryBot::Syntax::Methods
   config.include SessionHelpers
   config.include RequestHelpers
-  config.include GraphqlHelpers
 
   config.infer_spec_type_from_file_location!
 

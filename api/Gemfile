@@ -77,7 +77,8 @@ group :test do
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'rspec_junit_formatter'
-  gem 'spring-commands-rspec'
   gem 'json_matchers'
+  gem 'shoulda-matchers'
+  gem 'spring-commands-rspec'
   gem 'simplecov', require: false
 end
