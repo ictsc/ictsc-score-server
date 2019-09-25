@@ -5,6 +5,7 @@ module Types
     field :me,                   Types::TeamType,                 null: true
     field :contest_info,         Types::ContestInfoType,          null: false
     field :categories,           [Types::CategoryType],           null: false
+    field :configs,              [Types::ConfigType],             null: false
     field :problems,             [Types::ProblemType],            null: false
     field :problem_environments, [Types::ProblemEnvironmentType], null: false
     field :teams,                [Types::TeamType],               null: false
