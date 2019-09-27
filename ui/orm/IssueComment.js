@@ -32,4 +32,8 @@ export default class IssueComment extends BaseModel {
       (!this.fromStaff && $nuxt.isPlayer) || (this.fromStaff && !$nuxt.isPlayer)
     )
   }
+
+  get color() {
+    return this.isOurComment ? 'grey lighten-2' : 'white'
+  }
 }

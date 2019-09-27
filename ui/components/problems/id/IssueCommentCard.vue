@@ -2,10 +2,7 @@
   <v-layout row align-end :reverse="comment.isOurComment">
     <v-flex xs10 d-flex child-flex>
       <v-card>
-        <markdown
-          :content="comment.text"
-          :color="comment.isOurComment ? 'white' : 'grey lighten-2'"
-        />
+        <markdown :content="comment.text" :color="comment.color" />
       </v-card>
     </v-flex>
 
