@@ -36,10 +36,8 @@ export default {
     problemURL() {
       if (!this.problem.isReadable) {
         return ''
-      } else if (this.isPlayer) {
-        return `${this.problem.id}#answers`
       } else {
-        return this.problem.id
+        return `${this.problem.id}#answers`
       }
     }
   }
