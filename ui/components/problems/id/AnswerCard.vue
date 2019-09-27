@@ -2,8 +2,8 @@
   <expandable-card v-model="opened" color="white">
     <!-- カードの帯 -->
     <template v-slot:button>
-      <v-layout row align-center>
-        <v-flex>
+      <v-row align="center">
+        <v-col>
           <span v-if="!realtimeGrading && isPlayer">
             提出済
           </span>
@@ -21,15 +21,15 @@
               採点中
             </template>
           </span>
-        </v-flex>
+        </v-col>
 
         <!-- 採点猶予後から10分はタイマーを表示する -->
-        <v-flex v-if="isStaff && -600 <= answer.delayFinishInSec">
+        <v-col v-if="isStaff && -600 <= answer.delayFinishInSec">
           <span>
             {{ answer.delayFinishInSec | tickDuration('mm:ss') }}
           </span>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </template>
 
     <!-- 採点フォーム -->

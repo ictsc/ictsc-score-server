@@ -1,6 +1,6 @@
 <template>
-  <v-layout row align-end justify-space-between>
-    <v-flex v-if="problemBody.modeIsTextbox">
+  <v-row align="end" justify="space-between">
+    <template v-if="problemBody.modeIsTextbox">
       <v-slider
         v-model="slider"
         :step="stepEnable ? 5 : undefined"
@@ -54,9 +54,9 @@
           </v-tooltip>
         </template>
       </v-slider>
-    </v-flex>
+    </template>
 
-    <v-flex
+    <template
       v-else-if="problemBody.modeIsRadioButton || problemBody.modeIsCheckbox"
     >
       <!-- TODO: API側が未実装なので非表示 -->
@@ -69,12 +69,12 @@
       >
         再採点
       </v-btn>
-    </v-flex>
+    </template>
 
-    <v-flex v-else>
+    <template v-else>
       未実装の問題タイプです
-    </v-flex>
-  </v-layout>
+    </template>
+  </v-row>
 </template>
 <script>
 import { mapGetters } from 'vuex'
