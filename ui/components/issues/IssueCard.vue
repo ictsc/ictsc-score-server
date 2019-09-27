@@ -14,7 +14,14 @@
       <v-col class="pa-0 ml-2 mr-3 card-info">
         <div class="body-2 text-truncate">
           {{ issue.problem.displayTitle }}<br />
-          {{ issue.team.displayName }}<br />
+
+          <template v-if="!isPlayer">
+            {{ issue.team.displayName }}<br />
+          </template>
+          <template v-else>
+            <div class="pt-2" />
+          </template>
+
           最新返答 {{ issue.latestReplyAtDisplay }}
         </div>
       </v-col>
