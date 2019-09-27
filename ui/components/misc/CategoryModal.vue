@@ -1,10 +1,9 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="internalValue"
     :persistent="sending"
     max-width="70em"
     scrollable
-    @input="!$event && close()"
   >
     <v-card>
       <v-card-title>
@@ -111,6 +110,7 @@ export default {
   data() {
     return {
       // ApplyModalFieldsでapplyCategoryに必要な値がmixinされる
+      internalValue: this.value,
       valid: false,
       sending: false,
       descriptionPlaceholder: '記述可能\n\n空も可'
@@ -132,7 +132,11 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {})
+    }, {}),
+
+    internalValue() {
+      this.$emit('input', this.internalValue)
+    }
   },
   fetch() {
     orm.Category.eagerFetch({}, [])
@@ -158,7 +162,7 @@ export default {
       return fieldKeys
     },
     close() {
-      this.$emit('input', false)
+      this.internalValue = false
     },
     validate() {
       this.$refs.form.validate()
