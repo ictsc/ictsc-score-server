@@ -19,7 +19,7 @@ import orm from '~/orm'
 import DeleteComponent from '~/components/settings/DeleteComponent'
 
 export default {
-  name: 'DeleteArea',
+  name: 'DeleteComponentArea',
   components: {
     DeleteComponent
   },

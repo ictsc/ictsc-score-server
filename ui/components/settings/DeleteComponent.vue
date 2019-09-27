@@ -48,7 +48,6 @@
 <script>
 export default {
   name: 'DeleteComponent',
-
   props: {
     label: {
       type: String,

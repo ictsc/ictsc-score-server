@@ -63,7 +63,7 @@
         hide-details
       />
 
-      <delete-area v-show="showDelete1 && showDelete2" class="ml-4" />
+      <delete-component-area v-show="showDelete1 && showDelete2" class="ml-4" />
     </v-layout>
   </v-container>
 </template>
@@ -72,7 +72,7 @@ import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import PageTitle from '~/components/commons/PageTitle'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
-import DeleteArea from '~/components/settings/DeleteArea'
+import DeleteComponentArea from '~/components/settings/DeleteComponentArea'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'
 
 const contestInfoKeys = [
@@ -88,7 +88,7 @@ export default {
   name: 'Settings',
   components: {
     ExportImportButtons,
-    DeleteArea,
+    DeleteComponentArea,
     ExportScoresButton,
     PageTitle
   },
