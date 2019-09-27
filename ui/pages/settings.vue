@@ -4,10 +4,6 @@
       <page-title title="設定" />
     </v-layout>
 
-    <!-- TODO: カテゴリ追加 -->
-    <!-- TODO: 問題追加 -->
-    <!-- TODO: チーム追加-->
-
     <v-layout column align-center>
       <export-import-buttons
         label="チーム一覧"
@@ -29,6 +25,43 @@
         :fields="problemFields"
         class="mt-4"
       />
+
+      <export-scores-button class="mt-8" />
+    </v-layout>
+
+    <!-- 追加・編集 -->
+    <v-layout column align-center class="mt-8">
+      <apply-button
+        :fetch="fetchTeams"
+        label="チーム 追加・編集"
+        item-text="displayName"
+      >
+        <template v-slot="{ item, isNew }">
+          <team-modal value :team="item" :is-new="isNew" />
+        </template>
+      </apply-button>
+
+      <apply-button
+        :fetch="fetchCategories"
+        label="カテゴリ 追加・編集"
+        item-text="title"
+        class="mt-4"
+      >
+        <template v-slot="{ item, isNew }">
+          <category-modal value :category="item" :is-new="isNew" />
+        </template>
+      </apply-button>
+
+      <apply-button
+        :fetch="fetchProblems"
+        label="問題 追加・編集"
+        item-text="title"
+        class="mt-4"
+      >
+        <template v-slot="{ item, isNew }">
+          <problem-modal value :problem="item" :is-new="isNew" />
+        </template>
+      </apply-button>
     </v-layout>
 
     <v-layout column align-center class="mt-8">
@@ -43,8 +76,6 @@
         class="elevation-1"
       />
     </v-layout>
-
-    <export-scores-button class="mt-8" />
 
     <v-layout column align-start class="mt-12 pt-12 white">
       <v-switch
@@ -70,10 +101,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
-import PageTitle from '~/components/commons/PageTitle'
-import ExportImportButtons from '~/components/settings/ExportImportButtons'
+import ApplyButton from '~/components/settings/ApplyButton'
+import CategoryModal from '~/components/misc/CategoryModal'
 import DeleteComponentArea from '~/components/settings/DeleteComponentArea'
+import ExportImportButtons from '~/components/settings/ExportImportButtons'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'
+import PageTitle from '~/components/commons/PageTitle'
+import ProblemModal from '~/components/misc/ProblemModal'
+import TeamModal from '~/components/misc/TeamModal'
 
 const contestInfoKeys = [
   'gradingDelayString',
@@ -87,10 +122,14 @@ const contestInfoKeys = [
 export default {
   name: 'Settings',
   components: {
-    ExportImportButtons,
+    ApplyButton,
+    CategoryModal,
     DeleteComponentArea,
+    ExportImportButtons,
     ExportScoresButton,
-    PageTitle
+    PageTitle,
+    ProblemModal,
+    TeamModal
   },
   data() {
     return {
