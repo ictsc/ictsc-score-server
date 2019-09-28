@@ -367,7 +367,7 @@ export default {
         this.writer = null
       }
 
-      this.perfectPoint = parseInt(this.perfectPoint)
+      this.perfectPoint = this.perfectPoint
 
       await orm.Mutation.applyProblem({
         action: this.modalTitle,
