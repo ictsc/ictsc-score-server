@@ -1,7 +1,7 @@
 <template>
   <v-container fluid :class="background">
     <v-layout column align-center>
-      <page-title title="設定" />
+      <page-title title="管理" />
     </v-layout>
 
     <v-layout column align-center>
@@ -23,6 +23,13 @@
         :fetch="fetchProblems"
         :apply="applyProblem"
         :fields="problemFields"
+        class="mt-4"
+      />
+      <export-import-buttons
+        label="設定一覧"
+        :fetch="fetchConfigs"
+        :apply="updateConfig"
+        :fields="configFields"
         class="mt-4"
       />
 
@@ -66,15 +73,7 @@
 
     <v-layout column align-center class="mt-8">
       <label>コンテスト設定</label>
-
-      <v-data-table
-        :headers="contestInfoHeaders"
-        :items="contestInfoItems"
-        :items-per-page="1000"
-        hide-default-footer
-        dense
-        class="elevation-1"
-      />
+      <config-table />
     </v-layout>
 
     <v-layout column align-start class="mt-12 pt-12 white">
@@ -99,10 +98,10 @@
   </v-container>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import ApplyButton from '~/components/settings/ApplyButton'
 import CategoryModal from '~/components/misc/CategoryModal'
+import ConfigTable from '~/components/settings/ConfigTable'
 import DeleteComponentArea from '~/components/settings/DeleteComponentArea'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'
@@ -110,20 +109,12 @@ import PageTitle from '~/components/commons/PageTitle'
 import ProblemModal from '~/components/misc/ProblemModal'
 import TeamModal from '~/components/misc/TeamModal'
 
-const contestInfoKeys = [
-  'gradingDelayString',
-  'hideAllScore',
-  'realtimeGrading',
-  'textSizeLimit',
-  'deleteTimeLimitString',
-  'competitionTime'
-]
-
 export default {
   name: 'Settings',
   components: {
     ApplyButton,
     CategoryModal,
+    ConfigTable,
     DeleteComponentArea,
     ExportImportButtons,
     ExportScoresButton,
@@ -145,6 +136,7 @@ export default {
         'color'
       ],
       categoryFields: ['code', 'title', 'order', 'description'],
+      configFields: ['key', 'value'],
       problemFields: [
         'code',
         'categoryCode',
@@ -166,17 +158,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', contestInfoKeys),
-
-    contestInfoHeaders() {
-      return [{ text: '名前', value: 'name' }, { text: '値', value: 'value' }]
-    },
-    contestInfoItems() {
-      return contestInfoKeys.map(k => ({
-        name: k,
-        value: JSON.stringify(this[k])
-      }))
-    },
     background() {
       if (this.showDelete2 === true) {
         return 'error'
@@ -203,11 +184,15 @@ export default {
     async fetchTeams() {
       // パスワードは全てnullになる
       await orm.Team.eagerFetch({}, [])
-      return this.sortByNumber(orm.Team.query().all())
+      return this.sortByNumber(orm.Team.all())
     },
     async fetchCategories() {
       await orm.Category.eagerFetch({}, [])
-      return this.sortByOrder(orm.Category.query().all())
+      return this.sortByOrder(orm.Category.all())
+    },
+    async fetchConfigs() {
+      await orm.Config.eagerFetch({}, [])
+      return this.$_.sortBy(orm.Config.all(), 'key')
     },
     async fetchProblems() {
       await orm.Problem.eagerFetch({}, [])
@@ -241,6 +226,16 @@ export default {
       let result = false
 
       await orm.Mutation.applyProblem({
+        resolve: () => (result = true),
+        params: { ...params }
+      })
+
+      return result
+    },
+    async updateConfig(params) {
+      let result = false
+
+      await orm.Mutation.updateConfig({
         resolve: () => (result = true),
         params: { ...params }
       })

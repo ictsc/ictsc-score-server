@@ -2,9 +2,10 @@
 
 class Config < ApplicationRecord
   validates :key,        presence: true, uniqueness: true
-  validates :value,      allow_empty: true, length: { maximum: 8192 }
+  # 文字数制限なし. 空文字列とfalseは許可. nil不可
+  validates :value,      presence: false
   validates :value_type, presence: true
-  validate :validate_castable
+  validate :validate_value
   validate :reject_update_value_type, on: :update
 
   enum value_type: {
@@ -14,45 +15,36 @@ class Config < ApplicationRecord
     date: 40
   }
 
-  def validate_castable
-    errors.add(:value, "#{value.inspect} is not castable to #{value_type}") unless self.class.castable?(self)
+  def validate_value
+    errors.add(:value, "#{value.inspect} is not #{value_type}") unless self.valid_value?
   end
 
   def reject_update_value_type
     errors.add(:value_type, "disallow to update value_type(#{value_type} to #{value_type_was})") if will_save_change_to_value_type?
   end
 
-  # cast
-  class << self
-    def cast(record) # rubocop:disable Metrics/CyclomaticComplexity
-      return nil if record&.value_type.nil?
-
-      case record
-      when :boolean?.to_proc
-        case record.value
-        when 'true', 't', '1' then true
-        when 'false', 'f', '0' then false
-        else nil
-        end
-      when :integer?.to_proc
-        Integer(record.value, exception: false)
-      when :string?.to_proc
-        record.value
-      when :date?.to_proc
-        Time.zone.parse(record.value) rescue nil # rubocop:disable Style/RescueModifier
-      else
-        raise UnhandledConfigValueType
-      end
+  def value
+    if self.date?
+      Time.zone.parse(self[:value])
+    else
+      self[:value]
     end
+  end
 
-    def cast!(record)
-      cast(record).tap do |result|
-        raise ConfigValueCastFailed, record if result.nil?
-      end
-    end
+  def valid_value? # rubocop:disable Metrics/CyclomaticComplexity
+    return false if self[:value].nil?
 
-    def castable?(record)
-      cast(record) != nil
+    case self.value_type
+    when 'boolean'
+      self[:value] == true || self[:value] == false
+    when 'integer'
+      self[:value].is_a?(Integer)
+    when 'string'
+      self[:value].is_a?(String)
+    when 'date'
+      Time.zone.parse(self[:value]).present? rescue false # rubocop:disable Style/RescueModifier
+    else
+      raise UnhandledConfigValueType
     end
   end
 
@@ -60,17 +52,20 @@ class Config < ApplicationRecord
   class << self
     attr_reader :required_keys
 
+    # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
+    def find_by_key?(key)
+      all.find {|config| config.key == key.to_s }
+    end
+
     def get(key)
-      # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
-      cast(all.find {|config| config.key == key.to_s })
+      find_by_key?(key)&.value # rubocop:disable Rails/DynamicFindBy
     end
 
     def get!(key)
-      # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
-      record = all.find {|config| config.key == key.to_s }
+      record = find_by_key?(key) # rubocop:disable Rails/DynamicFindBy
       raise ConfigKeyNotFound, key if record.nil?
 
-      cast!(record)
+      record.value
     end
 
     def set(key, value)
@@ -103,7 +98,7 @@ class Config < ApplicationRecord
       end
     end
 
-    def valid?
+    def sufficient?
       insufficient_keys.empty?
     end
 

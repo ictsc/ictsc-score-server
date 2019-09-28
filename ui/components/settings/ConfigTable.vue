@@ -1,0 +1,55 @@
+<template>
+  <v-data-table
+    :items="configs"
+    :headers="headers"
+    item-key="key"
+    sort-by="key"
+    hide-default-header
+    hide-default-footer
+    disable-pagination
+    dense
+    class="elevation-2"
+  >
+    <template v-slot:item.action="{ item, header, value }">
+      <config-modal :config="item">
+        <template v-slot:activator="{ on }">
+          <v-icon small @click="on">mdi-pen</v-icon>
+        </template>
+      </config-modal>
+    </template>
+
+    <template v-slot:item.value="{ item, header, value }">
+      <div class="text-truncate" style="width: 14em">
+        {{ item.displayValue }}
+      </div>
+    </template>
+  </v-data-table>
+</template>
+<script>
+import orm from '~/orm'
+import ConfigModal from '~/components/misc/ConfigModal'
+
+export default {
+  name: 'ConfigTable',
+  components: {
+    ConfigModal
+  },
+  data() {
+    return {
+      headers: [
+        { text: 'action', value: 'action', sortable: false },
+        { text: '名前', value: 'key' },
+        { text: '値', value: 'value' }
+      ]
+    }
+  },
+  computed: {
+    configs() {
+      return orm.Config.all()
+    }
+  },
+  beforeCreate() {
+    orm.Config.eagerFetch({}, [])
+  }
+}
+</script>

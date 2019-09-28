@@ -123,7 +123,18 @@ export default {
       return this.problem.answers.filter(o => o.teamId === this.teamId)
     },
     teams() {
+      // 無理やりリアクティブ
+      // eslint-disable-next-line no-unused-expressions
+      this.fetchTeams
       return this.sortByNumber(orm.Team.query().all())
+    },
+    // eslint-disable-next-line vue/return-in-computed-property
+    fetchTeams() {
+      // isStaffがセットされたらクエリを発行する
+      // mountedなどだとセッションが未取得な可能性がある
+      if (!this.isPlayer) {
+        orm.Team.eagerFetch()
+      }
     }
   },
   watch: {
@@ -147,10 +158,6 @@ export default {
     // dataではisPlayerが使えないためここでセット
     this.selectedTeamId = this.teamId
     this.currentTab = this.tabMode
-
-    if (!this.isPlayer) {
-      orm.Team.eagerFetch()
-    }
   }
 }
 </script>

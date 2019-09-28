@@ -12,7 +12,7 @@
         :label="label"
         :suffix="suffix"
         @focus="stepEnable = false"
-        @input="$emit('input', parseInt($event) || 0)"
+        @input="$emit('input', $event)"
       />
     </v-col>
 

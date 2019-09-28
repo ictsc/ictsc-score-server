@@ -22,7 +22,7 @@
           v-model="selectedItems"
           :headers="headers"
           :items="items"
-          :items-per-page="1000"
+          disable-pagination
           show-select
           item-key="__index"
           hide-default-footer

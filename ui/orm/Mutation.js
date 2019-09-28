@@ -342,4 +342,15 @@ export default class Mutation extends BaseModel {
       type: 'upsert'
     })
   }
+
+  static updateConfig({ action, resolve, params: { key, value } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'updateConfig',
+      params: { key, value },
+      fields: [orm.Config],
+      type: 'upsert'
+    })
+  }
 }

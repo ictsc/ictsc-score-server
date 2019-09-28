@@ -2,9 +2,9 @@
   ページタイトルを表示して、タブのタイトルも設定する
 -->
 <template>
-  <div>
+  <div class="mb-4">
     <span class="headline">{{ title }}</span>
-    <v-spacer class="mb-4" />
+    <slot />
   </div>
 </template>
 <script>

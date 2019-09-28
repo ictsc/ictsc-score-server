@@ -1,6 +1,7 @@
 import Mutation from '~/orm/Mutation'
 import Answer from '~/orm/Answer'
 import Category from '~/orm/Category'
+import Config from '~/orm/Config'
 import Notice from '~/orm/Notice'
 import Issue from '~/orm/Issue'
 import IssueComment from '~/orm/IssueComment'
@@ -14,6 +15,7 @@ export default {
   Mutation,
   Answer,
   Category,
+  Config,
   Notice,
   Issue,
   IssueComment,
