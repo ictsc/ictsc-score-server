@@ -119,6 +119,10 @@ export default {
       return 'teamModal'
     },
     // ApplyModalFieldsに必要
+    storageKeyUniqueField() {
+      return 'number'
+    },
+    // ApplyModalFieldsに必要
     fields() {
       return fields
     },

@@ -335,6 +335,10 @@ export default {
       return 'problemModal'
     },
     // ApplyModalFieldsに必要
+    storageKeyUniqueField() {
+      return 'code'
+    },
+    // ApplyModalFieldsに必要
     fields() {
       return fields
     },

@@ -154,6 +154,10 @@ export default {
       return 'categoryModal'
     },
     // ApplyModalFieldsに必要
+    storageKeyUniqueField() {
+      return 'code'
+    },
+    // ApplyModalFieldsに必要
     fields() {
       return fields
     },

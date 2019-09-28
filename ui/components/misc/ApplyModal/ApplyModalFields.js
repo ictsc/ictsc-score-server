@@ -29,8 +29,8 @@ export default {
   },
   methods: {
     storageKey(field) {
-      const key = this.isNew ? 'new' : this.item().code
-      return `${this.storageKeyPrefix()}-${field}-${key}`
+      const key = this.isNew ? 'new' : this.item()[this.storageKeyUniqueField()]
+      return `${this.storageKeyPrefix()}-${key}-${field}`
     },
     getStorage(field, defaultValue) {
       return this.$jsonStorage.get(this.storageKey(field), defaultValue)
