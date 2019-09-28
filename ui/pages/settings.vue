@@ -25,6 +25,13 @@
         :fields="problemFields"
         class="mt-4"
       />
+      <export-import-buttons
+        label="設定一覧"
+        :fetch="fetchConfigs"
+        :apply="updateConfig"
+        :fields="configFields"
+        class="mt-4"
+      />
 
       <export-scores-button class="mt-8" />
     </v-layout>
@@ -129,6 +136,7 @@ export default {
         'color'
       ],
       categoryFields: ['code', 'title', 'order', 'description'],
+      configFields: ['key', 'value'],
       problemFields: [
         'code',
         'categoryCode',
@@ -182,6 +190,10 @@ export default {
       await orm.Category.eagerFetch({}, [])
       return this.sortByOrder(orm.Category.all())
     },
+    async fetchConfigs() {
+      await orm.Config.eagerFetch({}, [])
+      return this.$_.sortBy(orm.Config.all(), 'key')
+    },
     async fetchProblems() {
       await orm.Problem.eagerFetch({}, [])
       return this.sortByOrder(
@@ -214,6 +226,16 @@ export default {
       let result = false
 
       await orm.Mutation.applyProblem({
+        resolve: () => (result = true),
+        params: { ...params }
+      })
+
+      return result
+    },
+    async updateConfig(params) {
+      let result = false
+
+      await orm.Mutation.updateConfig({
         resolve: () => (result = true),
         params: { ...params }
       })
