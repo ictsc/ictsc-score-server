@@ -1,25 +1,36 @@
 <template>
-  <!-- TODO: ここでreadable判定してもいいかも → Loadingしたい -->
   <v-container fluid grid-list-md>
-    <v-row>
+    <v-row v-if="problemIsReadable">
       <!-- 左の問題詳細パネル -->
-      <v-col :cols="showRigthPanel ? 6 : undefined">
-        <details-panel v-if="problemIsReadable" :problem="problem" />
+      <v-col cols="6">
+        <details-panel :problem="problem" />
       </v-col>
 
       <!-- 右の質問・解答パネル -->
-      <v-col v-if="showRigthPanel" cols="6">
-        <v-tabs v-model="tabMode" grow active-class="always-active-color">
+      <v-col cols="6">
+        <!-- チーム名&セレクタ -->
+        <v-select
+          v-if="!isPlayer"
+          v-model="selectedTeamId"
+          :items="teams"
+          item-text="displayName"
+          item-value="id"
+          label="チーム"
+          clearable
+          hide-defaults
+        />
+
+        <v-tabs v-model="currentTab" grow active-class="always-active-color">
           <v-tabs-slider></v-tabs-slider>
-          <v-tab replace append :to="'#' + answersTabName">
-            解答
-          </v-tab>
-          <v-tab replace append :to="'#' + issuesTabName">
-            質問
-          </v-tab>
+          <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
+          <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
         </v-tabs>
 
-        <v-tabs-items v-model="tabMode" class="pt-2 transparent">
+        <v-tabs-items
+          v-if="teamId"
+          v-model="currentTab"
+          class="pt-4 transparent"
+        >
           <v-tab-item :value="answersTabName">
             <answer-panel :answers="answers" :problem-body="problem.body" />
           </v-tab-item>
@@ -29,17 +40,6 @@
         </v-tabs-items>
       </v-col>
     </v-row>
-
-    <!-- チーム名 -->
-    <v-snackbar :value="isStaff && !!teamId" :timeout="0" color="primary">
-      <v-row justify="center">
-        <v-progress-circular v-if="!team" indeterminate />
-
-        <template v-else>
-          <span>{{ team.displayName }}</span>
-        </template>
-      </v-row>
-    </v-snackbar>
   </v-container>
 </template>
 <script>
@@ -59,7 +59,8 @@ export default {
   },
   data() {
     return {
-      tabMode: null
+      selectedTeamId: null,
+      currentTab: null
     }
   },
   head() {
@@ -68,13 +69,21 @@ export default {
     }
   },
   computed: {
-    mode() {
+    teamId() {
+      if (this.isPlayer) {
+        return this.currentTeamId
+      }
+
+      const match = MODE_REGEXP.exec(this.$route.hash)
+      return match ? match[3] : null
+    },
+    tabMode() {
       // URL末尾の #issues=:team_id からモードを判定する
       const match = MODE_REGEXP.exec(this.$route.hash)
       return match ? match[1] : null
     },
     modeIsBlank() {
-      return !this.mode
+      return !this.tabMode
     },
     answersTabName() {
       return 'answers' + this.hashTailTeamId
@@ -85,22 +94,14 @@ export default {
     problemId() {
       return this.$route.params.id
     },
-    teamId() {
-      if (this.isPlayer) {
-        return this.currentTeamId
-      }
-
-      const match = MODE_REGEXP.exec(this.$route.hash)
-      return match ? match[3] : null
-    },
     hashTailTeamId() {
       // プレイヤーならURL末尾にチームIDを付与しない
-      return !this.isPlayer && this.teamId ? `=${this.teamId}` : ''
+      // playerではselectedTeamId === currentTeamId
+      return !this.isPlayer && this.selectedTeamId
+        ? `=${this.selectedTeamId}`
+        : ''
     },
     problem() {
-      // TODO: bodyが無ければ loading
-      // TODO: エラー通知&表示
-
       // 編集モーダルや各表示部で使うデータを結合する
       // categoryとpreviousProblemは編集モーダルで必要
       return orm.Problem.query()
@@ -116,23 +117,25 @@ export default {
         .find(this.problemId)
     },
     problemIsReadable() {
-      // bodyが取得できるなら、公開問題と判断する
-      return !!this.elvis(this.problem, 'body')
-    },
-    showRigthPanel() {
-      return this.problemIsReadable && !!this.teamId
+      return this.problem && this.problem.isReadable
     },
     answers() {
       return this.problem.answers.filter(o => o.teamId === this.teamId)
     },
-    team() {
-      return orm.Team.query().find(this.teamId)
+    teams() {
+      return this.sortByNumber(orm.Team.query().all())
+    }
+  },
+  watch: {
+    selectedTeamId(value) {
+      this.$router.replace({
+        name: this.$route.name,
+        params: this.$route.params,
+        hash: `#${this.tabMode}${this.hashTailTeamId}`
+      })
     }
   },
   fetch({ params }) {
-    // TODO: bodyが取得できないならエラーにする
-    // TODO: modeによって動作を変えたい?(staffの操作が少し軽くなる)
-
     orm.Problem.eagerFetch(params.id, [
       'environments',
       'supplements',
@@ -141,9 +144,10 @@ export default {
     ])
   },
   mounted() {
-    this.tabMode = this.mode
+    // dataではisPlayerが使えないためここでセット
+    this.selectedTeamId = this.teamId
+    this.currentTab = this.tabMode
 
-    // TODO: contestInfoと同時にfetchしたほうがいいかもしれない
     if (!this.isPlayer) {
       orm.Team.eagerFetch()
     }
@@ -154,6 +158,7 @@ export default {
 .always-active-color
   &::before
     opacity: 0.12 !important
+
 .transparent
   background-color: none
 </style>

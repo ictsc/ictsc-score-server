@@ -15,21 +15,14 @@ export default class IssueComment extends BaseModel {
     }
   }
 
-  static addIssueComment({ action, resolve, params: { issueId, text } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'addIssueComment',
-      params: { issueId, text },
-      fields: [orm.Issue, IssueComment],
-      type: 'upsert'
-    })
-  }
-
   get isOurComment() {
     return (
       // eslint-disable-next-line no-undef
       (!this.fromStaff && $nuxt.isPlayer) || (this.fromStaff && !$nuxt.isPlayer)
     )
+  }
+
+  get color() {
+    return this.isOurComment ? 'grey lighten-2' : 'white'
   }
 }

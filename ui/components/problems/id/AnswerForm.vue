@@ -216,7 +216,7 @@ export default {
     async submit() {
       this.sending = true
 
-      await orm.Answer.addAnswer({
+      await orm.Mutation.addAnswer({
         action: '解答提出',
         resolve: () => {
           this.confirming = false

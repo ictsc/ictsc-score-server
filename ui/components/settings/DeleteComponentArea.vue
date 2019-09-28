@@ -19,7 +19,7 @@ import orm from '~/orm'
 import DeleteComponent from '~/components/settings/DeleteComponent'
 
 export default {
-  name: 'DeleteArea',
+  name: 'DeleteComponentArea',
   components: {
     DeleteComponent
   },
@@ -38,7 +38,7 @@ export default {
     },
     async deleteCategory(code) {
       let result = false
-      await orm.Category.deleteCategory({
+      await orm.Mutation.deleteCategory({
         action: 'カテゴリ削除',
         resolve: () => (result = true),
         params: { code }
@@ -48,7 +48,7 @@ export default {
     },
     async deleteProblem(code) {
       let result = false
-      await orm.Problem.deleteProblem({
+      await orm.Mutation.deleteProblem({
         action: '問題削除',
         resolve: () => (result = true),
         params: { code }

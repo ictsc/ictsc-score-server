@@ -25,7 +25,6 @@ export default {
       // setTimeout(() => this.$nuxt.$loading.finish(), 500)
 
       if (await this.fetchCurrentSession()) {
-        // TODO: エラーハンドリング
         await this.fetchContestInfo()
         // this.$nuxt.$loading.finish()
       } else {

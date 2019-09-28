@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: コメントがない場合のempty state -->
   <div>
     <!-- ステータスボタン -->
     <v-layout v-if="!!issue" column align-center class="pb-1">
@@ -148,14 +147,14 @@ export default {
       const resolve = () => (this.text = '')
 
       if (this.issue) {
-        await orm.IssueComment.addIssueComment({
+        await orm.Mutation.addIssueComment({
           action,
           resolve,
           params: { issueId: this.issue.id, text: this.text }
         })
       } else {
         // playerが質問する際、issueが無ければstartIssueでissueを作る
-        await orm.Issue.startIssue({
+        await orm.Mutation.startIssue({
           action,
           resolve,
           params: { problemId: this.problem.id, text: this.text }
@@ -167,7 +166,7 @@ export default {
     async transition() {
       this.statusUpdating = true
 
-      await orm.Issue.transitionIssueState({
+      await orm.Mutation.transitionIssueState({
         action: '状態遷移',
         params: { issueId: this.issue.id, currentStatus: this.issue.status }
       })

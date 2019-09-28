@@ -14,41 +14,16 @@
       <v-card-text>
         <v-container py-0>
           <v-form ref="form" v-model="valid">
-            <title-text-field v-model="title" :readonly="sending" />
-
-            <code-text-field
-              v-model="code"
-              :readonly="sending"
-              :is-new="isNew"
-              :items="categories"
-            />
-
-            <order-slider
-              v-model="order"
-              :readonly="sending"
-              :items="categories"
-              :self-id="isNew ? null : category.id"
-              title-param="title"
-              label="順序"
-              class="mt-2"
-            />
-
-            <markdown-text-area
-              v-model="description"
-              :readonly="sending"
-              :placeholder="descriptionPlaceholder"
-              label="説明"
-              preview-width="70em"
-              allow-empty
-              @submit="submit"
-            />
+            <div>
+              Comming soon!!
+            </div>
           </v-form>
         </v-container>
       </v-card-text>
 
       <template v-if="originDataChanged()">
         <v-divider />
-        <origin-data-changed-warning :updated-at="category.updatedAt" />
+        <origin-data-changed-warning :updated-at="team.updatedAt" />
       </template>
 
       <v-divider />
@@ -66,33 +41,23 @@
 </template>
 <script>
 import orm from '~/orm'
-import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
-
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
-import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
-import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
-import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 
 const fields = {
-  code: '',
-  title: '',
-  description: '',
-  order: 0
+  role: '',
+  name: '',
+  organization: '',
+  number: 0,
+  color: null
 }
 
 const fieldKeys = Object.keys(fields)
 
 export default {
-  name: 'CategoryModal',
+  name: 'TeamModal',
   components: {
-    ActionButtons,
-    CodeTextField,
-    MarkdownTextArea,
-    OriginDataChangedWarning,
-    OrderSlider,
-    TitleTextField
+    ActionButtons
   },
   mixins: [ApplyModalFields],
   props: {
@@ -101,7 +66,7 @@ export default {
       type: Boolean,
       required: true
     },
-    category: {
+    team: {
       type: Object,
       default: null
     }
@@ -109,7 +74,7 @@ export default {
   },
   data() {
     return {
-      // ApplyModalFieldsでapplyCategoryに必要な値がmixinされる
+      // ApplyModalFieldsでapplyTeamに必要な値がmixinされる
       internalValue: this.value,
       valid: false,
       sending: false,
@@ -118,10 +83,10 @@ export default {
   },
   computed: {
     modalTitle() {
-      return this.isNew ? 'カテゴリ追加' : 'カテゴリ編集'
+      return this.isNew ? 'チーム追加' : 'チーム編集'
     },
-    categories() {
-      return this.sortByOrder(orm.Category.query().all())
+    teams() {
+      return this.sortByOrder(orm.Team.query().all())
     }
   },
   watch: {
@@ -139,7 +104,7 @@ export default {
     }
   },
   fetch() {
-    orm.Category.eagerFetch({}, [])
+    orm.Team.eagerFetch({}, [])
   },
   mounted() {
     this.validate()
@@ -147,11 +112,11 @@ export default {
   methods: {
     // ApplyModalFieldsに必要
     item() {
-      return this.category
+      return this.team
     },
     // ApplyModalFieldsに必要
     storageKeyPrefix() {
-      return 'categoryModal'
+      return 'teamModal'
     },
     // ApplyModalFieldsに必要
     fields() {
@@ -174,7 +139,7 @@ export default {
 
       this.sending = true
 
-      await orm.Mutation.applyCategory({
+      await orm.Mutation.applyTeam({
         action: this.modalTitle,
         resolve: () => {
           this.reset()

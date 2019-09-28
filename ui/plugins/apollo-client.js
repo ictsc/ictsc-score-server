@@ -2,7 +2,6 @@ import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { elvis } from '~/plugins/elvis'
 
 const errorLink = onError(
   ({ operation, response, graphQLErrors, networkError, forward }) => {
@@ -35,21 +34,6 @@ const errorLink = onError(
           }
         }
       })
-
-      // errorsをnullにしないと例外が発生するのでdata入れて無理やり回避
-      // vuex-orm/plugin-graphqlが自動で発行するスキーマ取得はハンドルしない
-      if (operation.operationName !== 'Introspection') {
-        response.data.errors = response.errors
-        response.data.errorMessages = response.errors
-          .map(o => o.message)
-          .join('\n')
-        response.errors = null
-      }
-
-      // errorsが空ならキーを削除することで、フロントでのエラー処理を簡易化
-      if (elvis(response, 'data.errors.length') === 0) {
-        delete response.data.errors
-      }
     }
 
     // APIに疎通が無い, 200以外が返ってくるなど
@@ -62,6 +46,20 @@ const errorLink = onError(
         timeout: 0
       })
     }
+
+    // errorsをnullにしないと例外が発生するのでdata入れて回避
+    // vuex-orm/plugin-graphqlが自動で発行するスキーマ取得はハンドルしない
+    if (operation.operationName === 'Introspection') {
+      return
+    }
+
+    const errors = response.errors
+    delete response.errors
+
+    // errorsが空でない配列ときのみdataに入れる
+    if (Array.isArray(errors) && errors.length !== 0) {
+      response.data.errors = errors
+    }
   }
 )
 
@@ -70,10 +68,10 @@ const httpLink = createHttpLink({ uri: '/api/graphql' })
 export default new ApolloClient({
   defaultOptions: {
     watchQuery: {
-      // fetch時にキャッシュしない
-      // TODO: vuex-orm/plugin-graphql側で制御されているので効かない
-      // fetchPolicy: 'no-cache',
       errorPolicy: 'all'
+      // vuex-orm/plugin-graphql側で制御されているので効かない
+      // fetch時にキャッシュしない
+      // fetchPolicy: 'no-cache',
     }
   },
   link: errorLink.concat(httpLink),

@@ -19,32 +19,6 @@ export default class Issue extends BaseModel {
     }
   }
 
-  static startIssue({ action, resolve, params: { problemId, text } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'startIssue',
-      params: { problemId, text },
-      fields: [Issue, orm.IssueComment],
-      type: 'upsert'
-    })
-  }
-
-  static transitionIssueState({
-    action,
-    resolve,
-    params: { issueId, currentStatus }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'transitionIssueState',
-      params: { issueId, currentStatus },
-      fields: [Issue],
-      type: 'upsert'
-    })
-  }
-
   get statusNum() {
     switch (this.status) {
       case 'unsolved':

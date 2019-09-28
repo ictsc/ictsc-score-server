@@ -40,7 +40,6 @@ export default {
         }
       `
 
-      // TODO: エラー処理
       const res = await dispatch(
         'entities/simpleQuery',
         { query, bypassCache: true },

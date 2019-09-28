@@ -7,6 +7,11 @@ class AttachmentsController < ApplicationController
     # tokenを知っているなら誰でも取得可能
     attachment = Attachment.find_by(token: params[:id])
 
+    if attachment.nil?
+      render json: "attachment(#{params[:id]}) not found", status: :not_found
+      return
+    end
+
     # filenameには間違えて問題コードを含んでしまうことが多いので代わりにtokenを返す
     send_data(
       attachment.data,

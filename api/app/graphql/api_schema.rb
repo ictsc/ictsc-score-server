@@ -7,7 +7,6 @@ class ApiSchema < GraphQL::Schema
   use GraphQL::Batch
 
   # TODO: mutationとqueryが同時に来たら事故る気がする -> できない気がする
-  # TODO: mutationの想定外の例外補足
   # TODO: https://graphql-ruby.org/schema/definition.html#execution-configuration
   # max_depth 10
   # max_complexity 300

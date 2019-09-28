@@ -37,7 +37,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
               :autofocus="autofocus"
               :preview-width="maxWidth"
               placeholder="Markdownで記述できます"
-              @submit="confirm"
+              @submit="confirmButtonEnable && confirm()"
             />
           </v-form>
 
@@ -56,7 +56,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
 
           <v-spacer />
           <v-btn
-            :disabled="!valid || confirming"
+            :disabled="!confirmButtonEnable"
             color="success"
             @click.stop="confirm"
           >
@@ -175,6 +175,9 @@ export default {
     }
   },
   computed: {
+    confirmButtonEnable() {
+      return this.valid && !this.confirming
+    },
     resetable() {
       return this.edited || this.text !== ''
     }

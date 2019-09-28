@@ -3,8 +3,7 @@
 class Scoreboard
   delegate :map, to: :teams_scores
 
-  # TODO: コピペ
-  # servie-objectにしたほうが良さそう
+  # TODO: コピペ(未修正)
 
   def initialize(user:)
     # [{1st_team, score}, {2nd_team, score}, {3rd_team, score}, ...]

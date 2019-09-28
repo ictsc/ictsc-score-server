@@ -7,12 +7,12 @@
         class="elevation-6 my-2"
         @click="showProblemModal = true"
       >
-        <v-layout row align-center justify-start>
+        <v-row align="center" justify="start">
           <v-icon>mdi-plus</v-icon>
           <span class="text-left">
             問題追加
           </span>
-        </v-layout>
+        </v-row>
       </v-btn>
 
       <v-btn
@@ -20,12 +20,12 @@
         class="elevation-6"
         @click="showCategoryModal = true"
       >
-        <v-layout row align-center justify-start>
+        <v-row align="center" justify="start">
           <v-icon>mdi-plus</v-icon>
           <span class="text-left">
             カテゴリ追加
           </span>
-        </v-layout>
+        </v-row>
       </v-btn>
     </v-layout>
 
@@ -67,9 +67,6 @@
     </v-layout>
   </v-container>
 </template>
-
-<style scoped lang="sass"></style>
-
 <script>
 import { mapGetters } from 'vuex'
 import PageTitle from '~/components/commons/PageTitle'

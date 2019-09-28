@@ -50,11 +50,6 @@ module Mutations
 
       open_at = open_at_begin...open_at_end if open_at_begin.present? && open_at_end.present?
 
-      # TODO: shuffle: true
-      #   リロードする度にシャッフルされるのは鬱陶しい  -> あまり意味のある実装にはならなそうなのでやらない
-      #   登録するときにシャッフルすれば良いかも(force shuffle) -> これ
-      #   シャッフルしてほしくない問題もあるかもしれない -> UIで送信時にシャッフルすれば良さそう
-
       # ここでproblem_bodyも保存される
       if problem.update(body: problem_body, category: category, previous_problem: previous_problem, order: order, team_isolate: team_isolate, open_at: open_at, writer: writer, secret_text: secret_text)
         { problem: problem.readable(team: self.current_team!), problem_body: problem_body.readable(team: self.current_team!) }

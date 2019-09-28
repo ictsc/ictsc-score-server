@@ -20,28 +20,6 @@ export default class Answer extends BaseModel {
     }
   }
 
-  static addAnswer({ action, resolve, params: { problemId, bodies } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'addAnswer',
-      params: { problemId, bodies },
-      fields: [Answer],
-      type: 'upsert'
-    })
-  }
-
-  static applyScore({ action, resolve, params: { answerId, percent } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'applyScore',
-      params: { answerId, percent },
-      fields: [Answer],
-      type: 'upsert'
-    })
-  }
-
   // この書き方でもリアクティブになる
   get delayFinishInSec() {
     const now = this.$store().getters['time/currentTimeMsec']

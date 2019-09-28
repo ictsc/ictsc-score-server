@@ -14,7 +14,14 @@
       <v-col class="pa-0 ml-2 mr-3 card-info">
         <div class="body-2 text-truncate">
           {{ issue.problem.displayTitle }}<br />
-          {{ issue.team.displayName }}<br />
+
+          <template v-if="!isPlayer">
+            {{ issue.team.displayName }}<br />
+          </template>
+          <template v-else>
+            <div class="pt-2" />
+          </template>
+
           最新返答 {{ issue.latestReplyAtDisplay }}
         </div>
       </v-col>
@@ -38,7 +45,7 @@
               <v-card
                 height="4em"
                 width="10em"
-                :color="commentColor(comment)"
+                :color="comment.color"
                 v-on="on"
               >
                 <!-- 一覧ではただのテキストとして表示 -->
@@ -49,7 +56,7 @@
             </template>
 
             <!-- ツールチップではMarkdownとして表示 -->
-            <markdown :content="comment.text" :color="commentColor(comment)" />
+            <markdown :content="comment.text" :color="comment.color" />
           </v-tooltip>
         </v-col>
 
@@ -110,11 +117,6 @@ export default {
       } else {
         return `${base}=${this.issue.teamId}`
       }
-    }
-  },
-  methods: {
-    commentColor(comment) {
-      return comment.isOurComment ? 'white' : 'grey lighten-2'
     }
   }
 }

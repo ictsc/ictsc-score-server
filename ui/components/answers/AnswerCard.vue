@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: 仮実装 -->
   <v-card
     :to="answerURL"
     width="12em"

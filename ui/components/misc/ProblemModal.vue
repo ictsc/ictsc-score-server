@@ -1,10 +1,9 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="internalValue"
     :persistent="sending"
     max-width="70em"
     scrollable
-    @input="!$event && close()"
   >
     <v-card>
       <v-card-title>
@@ -31,7 +30,6 @@
               :readonly="sending"
               :items="categories"
               :hint="categoryCode"
-              :rules="requiredRules"
               clearable
               persistent-hint
               item-text="title"
@@ -237,6 +235,7 @@ export default {
   data() {
     return {
       // ApplyModalFieldsでapplyproblemに必要な値がmixinされる
+      internalValue: this.value,
       valid: false,
       sending: false,
       requiredRules: [v => !!v || '必須'],
@@ -313,7 +312,11 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {})
+    }, {}),
+
+    internalValue() {
+      this.$emit('input', this.internalValue)
+    }
   },
   mounted() {
     // 最初に開いた時に読み直す
@@ -341,7 +344,7 @@ export default {
     },
 
     close() {
-      this.$emit('input', false)
+      this.internalValue = false
     },
     validate() {
       this.$refs.form.validate()
@@ -366,7 +369,7 @@ export default {
 
       this.perfectPoint = parseInt(this.perfectPoint)
 
-      await orm.Problem.applyProblem({
+      await orm.Mutation.applyProblem({
         action: this.modalTitle,
         resolve: () => {
           this.reset()

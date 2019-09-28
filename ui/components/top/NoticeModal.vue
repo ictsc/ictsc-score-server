@@ -110,7 +110,7 @@ export default {
     async addNotice(text) {
       this.sending = true
 
-      await orm.Notice.addNotice({
+      await orm.Mutation.addNotice({
         action: 'お知らせ追加',
         resolve: () => this.$refs.modal.succeeded(),
         params: {

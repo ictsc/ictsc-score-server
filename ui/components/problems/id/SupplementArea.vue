@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     async addSupplement(text) {
-      await orm.ProblemSupplement.addProblemSupplement({
+      await orm.Mutation.addProblemSupplement({
         action: '補足追加',
         resolve: () => this.$refs.modal.succeeded(),
         params: {

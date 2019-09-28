@@ -25,8 +25,6 @@ export default {
       // config.devtool = 'eval-source-map'
     }
   },
-  // Customize the progress-bar color
-  // TODO: Vuetifyのプログレスバーとかに任せれば良い気がする
   loading: false,
   plugins: [
     '~/plugins/axios',
@@ -45,8 +43,6 @@ export default {
     '@nuxtjs/markdownit',
     '@nuxtjs/moment',
     '@nuxtjs/proxy'
-    // TODO: lint通らないと動作確認すらできない
-    // '@nuxtjs/eslint-module',
   ],
 
   // ---- Nuxtモジュールの設定 ----
@@ -78,7 +74,8 @@ export default {
     locales: ['es-us', 'ja']
   },
   proxy: {
-    // TODO: 環境変数から取れるようにする?(本番構成決めてから)
+    // 開発時のyarn run devなど、jsでリクエストを受けている場合に使う
+    // 本番環境では前段のLBでリクエストを振り分ける
     '/api': 'http://api:3000'
   },
   storage: {

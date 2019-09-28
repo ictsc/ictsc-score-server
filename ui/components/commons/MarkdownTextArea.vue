@@ -79,8 +79,6 @@
 import { mapGetters } from 'vuex'
 import Markdown from '~/components/commons/Markdown'
 
-// TODO: auto-growの自動スクロールにもうちょい余裕を持たせる
-
 export default {
   name: 'MarkdownTextArea',
   components: {

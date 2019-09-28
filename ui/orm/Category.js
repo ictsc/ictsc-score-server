@@ -15,30 +15,4 @@ export default class Category extends BaseModel {
       updatedAt: this.string()
     }
   }
-
-  static applyCategory({
-    action,
-    resolve,
-    params: { code, title, description, order }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'applyCategory',
-      params: { code, title, description, order },
-      fields: [Category],
-      type: 'upsert'
-    })
-  }
-
-  static deleteCategory({ action, resolve, params: { code } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'deleteCategory',
-      params: { code },
-      fields: [Category],
-      type: 'delete'
-    })
-  }
 }
