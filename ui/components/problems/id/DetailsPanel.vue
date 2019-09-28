@@ -67,8 +67,6 @@ import ProblemModal from '~/components/misc/ProblemModal'
 import InfoChipsArea from '~/components/problems/id/InfoChipsArea'
 import SupplementArea from '~/components/problems/id/SupplementArea'
 
-// TODO: 現在の得点が見たい
-
 export default {
   name: 'DetailsPanel',
   components: {
@@ -92,4 +90,3 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass"></style>

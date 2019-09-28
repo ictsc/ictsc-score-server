@@ -1,7 +1,7 @@
 <template>
   <v-container fluid :class="background">
     <v-layout column align-center>
-      <page-title title="設定" />
+      <page-title title="管理" />
     </v-layout>
 
     <v-layout column align-center>
@@ -66,7 +66,6 @@
 
     <v-layout column align-center class="mt-8">
       <label>コンテスト設定</label>
-
       <v-data-table
         :headers="contestInfoHeaders"
         :items="contestInfoItems"
@@ -203,11 +202,11 @@ export default {
     async fetchTeams() {
       // パスワードは全てnullになる
       await orm.Team.eagerFetch({}, [])
-      return this.sortByNumber(orm.Team.query().all())
+      return this.sortByNumber(orm.Team.all())
     },
     async fetchCategories() {
       await orm.Category.eagerFetch({}, [])
-      return this.sortByOrder(orm.Category.query().all())
+      return this.sortByOrder(orm.Category.all())
     },
     async fetchProblems() {
       await orm.Problem.eagerFetch({}, [])
