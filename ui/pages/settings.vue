@@ -66,14 +66,7 @@
 
     <v-layout column align-center class="mt-8">
       <label>コンテスト設定</label>
-      <v-data-table
-        :headers="contestInfoHeaders"
-        :items="contestInfoItems"
-        :items-per-page="1000"
-        hide-default-footer
-        dense
-        class="elevation-1"
-      />
+      <config-table />
     </v-layout>
 
     <v-layout column align-start class="mt-12 pt-12 white">
@@ -98,10 +91,10 @@
   </v-container>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import ApplyButton from '~/components/settings/ApplyButton'
 import CategoryModal from '~/components/misc/CategoryModal'
+import ConfigTable from '~/components/settings/ConfigTable'
 import DeleteComponentArea from '~/components/settings/DeleteComponentArea'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'
@@ -109,20 +102,12 @@ import PageTitle from '~/components/commons/PageTitle'
 import ProblemModal from '~/components/misc/ProblemModal'
 import TeamModal from '~/components/misc/TeamModal'
 
-const contestInfoKeys = [
-  'gradingDelayString',
-  'hideAllScore',
-  'realtimeGrading',
-  'textSizeLimit',
-  'deleteTimeLimitString',
-  'competitionTime'
-]
-
 export default {
   name: 'Settings',
   components: {
     ApplyButton,
     CategoryModal,
+    ConfigTable,
     DeleteComponentArea,
     ExportImportButtons,
     ExportScoresButton,
@@ -165,17 +150,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', contestInfoKeys),
-
-    contestInfoHeaders() {
-      return [{ text: '名前', value: 'name' }, { text: '値', value: 'value' }]
-    },
-    contestInfoItems() {
-      return contestInfoKeys.map(k => ({
-        name: k,
-        value: JSON.stringify(this[k])
-      }))
-    },
     background() {
       if (this.showDelete2 === true) {
         return 'error'

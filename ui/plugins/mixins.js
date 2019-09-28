@@ -37,6 +37,13 @@ Vue.mixin({
     currentDateTimeString() {
       return this.$moment(new Date()).format('MM-DD HH:mm:ss')
     },
+    formatDateTime(value) {
+      // 2112-09-03T03:22:00+09:00 iso8601
+      return this.$moment(value, this.$moment.ISO_8601).format()
+    },
+    isValidDateTime(value) {
+      return this.$moment(value, this.$moment.ISO_8601).isValid()
+    },
 
     download(type, filename, data) {
       const blob = new Blob([data], { type })
