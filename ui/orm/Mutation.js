@@ -1,0 +1,345 @@
+import inflection from 'inflection'
+import orm from '~/orm'
+import BaseModel from '~/orm/BaseModel'
+
+export default class Mutation extends BaseModel {
+  // -- Mutation build helpers --
+
+  // fields: Modelの配列かクエリ文字列
+  static buildMutation(mutation, fields) {
+    const fieldsString =
+      typeof fields === 'string'
+        ? fields
+        : fields.map(m => m.buildField()).join('\n')
+
+    const query = `
+      mutation operator($input: ${inflection.camelize(mutation)}Input!) {
+        ${mutation}(input: $input) {
+          ${fieldsString}
+        }
+      }
+    `
+
+    return query
+  }
+
+  // try catchで囲めばキャッチできる
+  // storeに対してcreate update delete処理をする
+  // レスポンスは各モデルを想定
+  static async sendMutationBase(mutation, params, fields, type) {
+    const query = this.buildMutation(mutation, fields)
+    const response = await this.store().dispatch('entities/simpleMutation', {
+      query,
+      variables: { input: params }
+    })
+
+    // エラーなら終了
+    if (!!response.errors && response.errors.length !== 0) {
+      return response
+    }
+
+    const responseForEach = func => {
+      Object.keys(response[mutation])
+        .filter(key => key[0] !== '_')
+        .forEach(key => {
+          const getter = `entities/${inflection.pluralize(key)}`
+          const model = this.store().getters[getter]().model
+
+          // レスポンスから取得したモデルとレコードを関数に渡す
+          func(model, response[mutation][key])
+        })
+    }
+
+    // Vuexへの登録・削除を行う
+    switch (type) {
+      case 'upsert':
+        responseForEach((model, record) =>
+          model.insertOrUpdate({ data: record })
+        )
+        break
+      case 'delete':
+        responseForEach((model, record) => model.delete(record.id))
+        break
+      default:
+        throw new Error(`unsupported type ${type}`)
+    }
+
+    return response
+  }
+
+  // sendMutationBaseに加え、結果の通知を行う
+  // 例外は全てここで握りつぶされる
+  // actionを指定すると、成功・失敗・例外 の通知を出す
+  static async sendMutation({
+    mutation,
+    params,
+    fields,
+    type,
+    subject,
+    resolve,
+    action
+  }) {
+    try {
+      const response = await this.sendMutationBase(
+        mutation,
+        params,
+        fields,
+        type
+      )
+
+      if (response.errors) {
+        console.error(response.errors)
+        if (action) {
+          // eslint-disable-next-line no-undef
+          $nuxt.notifyWarning({
+            message: `${action}に失敗しました`
+          })
+        }
+      } else {
+        if (action) {
+          // eslint-disable-next-line no-undef
+          $nuxt.notifySuccess({
+            message: `${action}に成功しました`
+          })
+        }
+
+        // resolveがあれば実行する
+        !!resolve && resolve(response)
+      }
+
+      return response
+    } catch (error) {
+      // apollo client側でハンドル済みなため、ここでは通知しない
+      console.error(error)
+    }
+  }
+
+  // -- Mutations --
+
+  static applyProblem({
+    action,
+    resolve,
+    params: {
+      code,
+      categoryCode,
+      previousProblemCode,
+      order,
+      teamIsolate,
+      openAtBegin,
+      openAtEnd,
+      writer,
+      secretText,
+      mode,
+      title,
+      text,
+      perfectPoint,
+      solvedCriterion,
+      candidates,
+      corrects
+    }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyProblem',
+      params: {
+        code,
+        categoryCode,
+        previousProblemCode,
+        order,
+        teamIsolate,
+        openAtBegin,
+        openAtEnd,
+        writer,
+        secretText,
+        mode,
+        title,
+        text,
+        perfectPoint,
+        solvedCriterion,
+        candidates,
+        corrects
+      },
+      fields: [orm.Problem, orm.ProblemBody],
+      type: 'upsert'
+    })
+  }
+
+  static deleteProblem({ action, resolve, params: { code } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteProblem',
+      params: { code },
+      fields: [orm.Problem, orm.ProblemBody],
+      type: 'delete'
+    })
+  }
+
+  static addProblemSupplement({
+    action,
+    resolve,
+    params: { problemCode, text }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'addProblemSupplement',
+      params: { problemCode, text },
+      fields: [orm.ProblemSupplement],
+      type: 'upsert'
+    })
+  }
+
+  static deleteProblemSupplement({
+    action,
+    resolve,
+    params: { problemSupplementId }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteProblemSupplement',
+      params: { problemSupplementId },
+      fields: [orm.ProblemSupplement],
+      type: 'delete'
+    })
+  }
+
+  static startIssue({ action, resolve, params: { problemId, text } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'startIssue',
+      params: { problemId, text },
+      fields: [orm.Issue, orm.IssueComment],
+      type: 'upsert'
+    })
+  }
+
+  static transitionIssueState({
+    action,
+    resolve,
+    params: { issueId, currentStatus }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'transitionIssueState',
+      params: { issueId, currentStatus },
+      fields: [orm.Issue],
+      type: 'upsert'
+    })
+  }
+
+  static addIssueComment({ action, resolve, params: { issueId, text } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'addIssueComment',
+      params: { issueId, text },
+      fields: [orm.Issue, orm.IssueComment],
+      type: 'upsert'
+    })
+  }
+
+  static applyCategory({
+    action,
+    resolve,
+    params: { code, title, description, order }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyCategory',
+      params: { code, title, description, order },
+      fields: [orm.Category],
+      type: 'upsert'
+    })
+  }
+
+  static deleteCategory({ action, resolve, params: { code } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteCategory',
+      params: { code },
+      fields: [orm.Category],
+      type: 'delete'
+    })
+  }
+
+  static addAnswer({ action, resolve, params: { problemId, bodies } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'addAnswer',
+      params: { problemId, bodies },
+      fields: [orm.Answer],
+      type: 'upsert'
+    })
+  }
+
+  static applyScore({ action, resolve, params: { answerId, percent } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyScore',
+      params: { answerId, percent },
+      fields: [orm.Answer],
+      type: 'upsert'
+    })
+  }
+
+  static applyTeam({
+    action,
+    resolve,
+    params: { name, number, role, password, organization, color }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyTeam',
+      params: { name, number, role, password, organization, color },
+      fields: [orm.Team],
+      type: 'upsert'
+    })
+  }
+
+  static addNotice({
+    action,
+    resolve,
+    params: { title, text, pinned, targetTeamId }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'addNotice',
+      params: { title, text, pinned, targetTeamId },
+      fields: [orm.Notice],
+      type: 'upsert'
+    })
+  }
+
+  static deleteNotice({ action, resolve, params: { noticeId } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteNotice',
+      params: { noticeId },
+      fields: [orm.Notice],
+      type: 'delete'
+    })
+  }
+
+  static pinNotice({ action, resolve, params: { noticeId, pinned } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'pinNotice',
+      params: { noticeId, pinned },
+      fields: [orm.Notice],
+      type: 'upsert'
+    })
+  }
+}

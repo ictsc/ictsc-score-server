@@ -174,7 +174,7 @@ export default {
 
       this.sending = true
 
-      await orm.Category.applyCategory({
+      await orm.Mutation.applyCategory({
         action: this.modalTitle,
         resolve: () => {
           this.reset()

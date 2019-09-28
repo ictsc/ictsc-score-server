@@ -44,7 +44,7 @@ export default {
     async destroy() {
       this.deleteButtonDisabled = true
 
-      await orm.ProblemSupplement.deleteProblemSupplement({
+      await orm.Mutation.deleteProblemSupplement({
         action: '補足削除',
         params: { problemSupplementId: this.supplement.id }
       })

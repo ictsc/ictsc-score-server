@@ -369,7 +369,7 @@ export default {
 
       this.perfectPoint = parseInt(this.perfectPoint)
 
-      await orm.Problem.applyProblem({
+      await orm.Mutation.applyProblem({
         action: this.modalTitle,
         resolve: () => {
           this.reset()

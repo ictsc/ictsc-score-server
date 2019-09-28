@@ -220,7 +220,7 @@ export default {
     async applyTeam(params) {
       let result = false
 
-      await orm.Team.applyTeam({
+      await orm.Mutation.applyTeam({
         resolve: () => (result = true),
         params: { ...params }
       })
@@ -230,7 +230,7 @@ export default {
     async applyCategory(params) {
       let result = false
 
-      await orm.Category.applyCategory({
+      await orm.Mutation.applyCategory({
         resolve: () => (result = true),
         params: { ...params }
       })
@@ -240,7 +240,7 @@ export default {
     async applyProblem(params) {
       let result = false
 
-      await orm.Problem.applyProblem({
+      await orm.Mutation.applyProblem({
         resolve: () => (result = true),
         params: { ...params }
       })

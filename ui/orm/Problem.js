@@ -31,66 +31,6 @@ export default class Problem extends BaseModel {
     }
   }
 
-  static applyProblem({
-    action,
-    resolve,
-    params: {
-      code,
-      categoryCode,
-      previousProblemCode,
-      order,
-      teamIsolate,
-      openAtBegin,
-      openAtEnd,
-      writer,
-      secretText,
-      mode,
-      title,
-      text,
-      perfectPoint,
-      solvedCriterion,
-      candidates,
-      corrects
-    }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'applyProblem',
-      params: {
-        code,
-        categoryCode,
-        previousProblemCode,
-        order,
-        teamIsolate,
-        openAtBegin,
-        openAtEnd,
-        writer,
-        secretText,
-        mode,
-        title,
-        text,
-        perfectPoint,
-        solvedCriterion,
-        candidates,
-        corrects
-      },
-      fields: [Problem, orm.ProblemBody],
-      type: 'upsert'
-    })
-  }
-
-  static deleteProblem({ action, resolve, params: { code } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'deleteProblem',
-      params: { code },
-      fields: [Problem, orm.ProblemBody],
-      type: 'delete'
-    })
-  }
-
   // ProblemBodyのフィールドに透過的にアクセスするためのゲッター
   // 特にProblemModalに必要
   get mode() {

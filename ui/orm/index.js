@@ -1,3 +1,4 @@
+import Mutation from '~/orm/Mutation'
 import Answer from '~/orm/Answer'
 import Category from '~/orm/Category'
 import Notice from '~/orm/Notice'
@@ -10,6 +11,7 @@ import ProblemEnvironment from '~/orm/ProblemEnvironment'
 import Team from '~/orm/Team'
 
 export default {
+  Mutation,
   Answer,
   Category,
   Notice,

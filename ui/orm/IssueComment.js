@@ -15,17 +15,6 @@ export default class IssueComment extends BaseModel {
     }
   }
 
-  static addIssueComment({ action, resolve, params: { issueId, text } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'addIssueComment',
-      params: { issueId, text },
-      fields: [orm.Issue, IssueComment],
-      type: 'upsert'
-    })
-  }
-
   get isOurComment() {
     return (
       // eslint-disable-next-line no-undef

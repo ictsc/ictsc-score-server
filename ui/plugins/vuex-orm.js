@@ -13,7 +13,9 @@ class CustomAdapter extends DefaultAdapter {
 }
 
 const database = new Database()
-Object.values(orm).forEach(model => database.register(model))
+Object.values(orm)
+  .filter(model => !!model.entity)
+  .forEach(model => database.register(model))
 
 const options = {
   adapter: new CustomAdapter(),

@@ -151,7 +151,7 @@ export default {
       this.sending = true
 
       const percent = this.text === 'null' ? null : parseInt(this.text)
-      await orm.Answer.applyScore({
+      await orm.Mutation.applyScore({
         action: '採点',
         resolve: () => {
           this.previous = this.slider

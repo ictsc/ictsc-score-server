@@ -139,7 +139,7 @@ export default {
 
       this.sending = true
 
-      await orm.Team.applyTeam({
+      await orm.Mutation.applyTeam({
         action: this.modalTitle,
         resolve: () => {
           this.reset()
