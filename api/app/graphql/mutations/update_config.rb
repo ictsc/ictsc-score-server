@@ -13,11 +13,13 @@ module Mutations
       config = Config.find_by(key: key)
       raise RecordNotExists.new(Config, key: key) if config.nil?
 
-      if config.update(value: value)
+      if config.update(value: JSON.parse(value))
         { config: config.readable(team: self.current_team!) }
       else
         add_errors(config)
       end
+    rescue JSON::ParserError
+      raise GraphQL::ExecutionError, 'value is invalid json'
     end
   end
 end
