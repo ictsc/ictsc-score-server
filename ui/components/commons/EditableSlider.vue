@@ -4,19 +4,17 @@
 -->
 <template>
   <v-row no-gutters>
-    <v-col cols="1">
-      <number-text-field
-        :value="value"
-        :readonly="readonly"
-        :rules="rules"
-        :label="label"
-        :suffix="suffix"
-        @focus="stepEnable = false"
-        @input="$emit('input', $event)"
-      />
-    </v-col>
+    <number-text-field
+      :value="value"
+      :readonly="readonly"
+      :rules="rules"
+      :label="label"
+      :suffix="suffix"
+      @focus="stepEnable = false"
+      @input="$emit('input', $event)"
+    />
 
-    <v-col class="ml-1">
+    <v-layout column class="ma-0">
       <v-slider
         :value="value"
         :step="stepEnable ? step : undefined"
@@ -25,12 +23,11 @@
         :min="sliderMin"
         :max="sliderMax"
         hide-details
-        @start="stepEnable = true"
-        @input="$emit('input', $event)"
+        class="ml-4"
+        @input="updateBySlider"
       />
-
       <slot name="bottom" />
-    </v-col>
+    </v-layout>
   </v-row>
 </template>
 <script>
@@ -95,6 +92,20 @@ export default {
       }
 
       return this.stepEnable ? this.min : this.value
+    }
+  },
+  watch: {
+    value(value) {
+      if (value % this.step !== 0) {
+        // 外部の入力でvalueを変更する場合、無効にする必要がある
+        this.stepEnable = false
+      }
+    }
+  },
+  methods: {
+    updateBySlider(value) {
+      this.stepEnable = true
+      this.$emit('input', Math.floor(value / this.step) * this.step)
     }
   }
 }

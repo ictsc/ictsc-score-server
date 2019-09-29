@@ -49,7 +49,8 @@ export default {
 </script>
 <style scoped lang="sass">
 .number-text-field
-  width: 4em
+  max-width: 4em
+  min-width: 4em
   ::v-deep
     input
       text-align: right
