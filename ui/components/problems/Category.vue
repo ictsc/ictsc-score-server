@@ -1,7 +1,6 @@
 <template>
   <div>
-    <!-- エラー防止のためにモーダルをレンダリングしない -->
-    <category-modal v-if="showModal" v-model="showModal" :item="category" />
+    <category-modal v-if="isStaff" v-model="showModal" :item="category" />
 
     <!-- タイトル -->
     <v-container my-0 py-1>

@@ -19,10 +19,13 @@ export default {
   watch: {
     internalValue() {
       this.$emit('input', this.internalValue)
+    },
+    value(value) {
+      this.internalValue = value
+      if (value === true) {
+        this.$nextTick(() => this.validate())
+      }
     }
-  },
-  mounted() {
-    this.validate()
   },
   methods: {
     open() {
