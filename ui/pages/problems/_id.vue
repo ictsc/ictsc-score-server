@@ -132,7 +132,7 @@ export default {
       return this.problem.answers.filter(o => o.teamId === this.teamId)
     },
     teams() {
-      return this.sortByNumber(orm.Team.query().all())
+      return this.sortByNumber(orm.Team.players)
     }
   },
   watch: {
