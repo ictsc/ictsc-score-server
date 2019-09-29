@@ -1,9 +1,10 @@
-// CategoryModal, ProblemModalにmixinする
+// CategoryModal, ProblemModal, TeaModalにmixinする
 // ローカルストレージ周りが複雑なためmixinに切り出した
 
 // mixinする側で実装するもの
 // item()
 // storageKeyPrefix()
+// storageKeyUniqueField()
 // fields()
 // fieldKeys()
 // 各フィールドのwatch

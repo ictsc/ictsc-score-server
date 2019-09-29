@@ -5,6 +5,10 @@
     max-width="70em"
     scrollable
   >
+    <template v-slot:activator="{}">
+      <slot name="activator" :on="open" />
+    </template>
+
     <v-card>
       <v-card-title>
         <span>{{ modalTitle }}</span>
@@ -41,7 +45,9 @@
 </template>
 <script>
 import orm from '~/orm'
+
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
 
 const fields = {
@@ -59,25 +65,17 @@ export default {
   components: {
     ActionButtons
   },
-  mixins: [ApplyModalFields],
+  mixins: [ApplyModalCommons, ApplyModalFields],
   props: {
-    // v-model
-    value: {
-      type: Boolean,
-      required: true
-    },
+    // mixinしたモジュールから必要な値がmixinされる
     team: {
       type: Object,
       default: null
     }
-    // ApplyModalFieldsでisNewがmixinされる
   },
   data() {
     return {
-      // ApplyModalFieldsでapplyTeamに必要な値がmixinされる
-      internalValue: this.value,
-      valid: false,
-      sending: false,
+      // mixinしたモジュールから必要な値がmixinされる
       descriptionPlaceholder: '記述可能\n\n空も可'
     }
   },
@@ -97,45 +95,30 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {}),
-
-    internalValue() {
-      this.$emit('input', this.internalValue)
-    }
+    }, {})
   },
   fetch() {
     orm.Team.eagerFetch({}, [])
   },
-  mounted() {
-    this.validate()
-  },
   methods: {
-    // ApplyModalFieldsに必要
+    // -- ApplyModalFieldsに必要なメソッド郡 --
     item() {
       return this.team
     },
-    // ApplyModalFieldsに必要
     storageKeyPrefix() {
       return 'teamModal'
     },
-    // ApplyModalFieldsに必要
     storageKeyUniqueField() {
       return 'number'
     },
-    // ApplyModalFieldsに必要
     fields() {
       return fields
     },
-    // ApplyModalFieldsに必要
     fieldKeys() {
       return fieldKeys
     },
-    close() {
-      this.internalValue = false
-    },
-    validate() {
-      this.$refs.form.validate()
-    },
+    // -- END --
+
     async submit() {
       if (!this.valid || this.sending) {
         return

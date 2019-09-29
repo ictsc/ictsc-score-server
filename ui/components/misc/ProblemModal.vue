@@ -5,6 +5,10 @@
     max-width="70em"
     scrollable
   >
+    <template v-slot:activator="{}">
+      <slot name="activator" :on="open" />
+    </template>
+
     <v-card>
       <v-card-title>
         <span>{{ modalTitle }}</span>
@@ -173,17 +177,18 @@
 </template>
 <script>
 import orm from '~/orm'
-import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
-import EditableSlider from '~/components/commons/EditableSlider'
-import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
 
-import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
+import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
+import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
+import EditableSlider from '~/components/commons/EditableSlider'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
+import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
 import NumberTextField from '~/components/commons/NumberTextField'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
 import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
-import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 
 const fields = {
   title: '',
@@ -213,31 +218,23 @@ export default {
     CodeTextField,
     EditableSlider,
     MarkdownTextArea,
-    NumberTextField,
     NewCandidates,
-    OriginDataChangedWarning,
+    NumberTextField,
     OrderSlider,
+    OriginDataChangedWarning,
     TitleTextField
   },
-  mixins: [ApplyModalFields],
+  mixins: [ApplyModalCommons, ApplyModalFields],
   props: {
-    // v-model
-    value: {
-      type: Boolean,
-      required: true
-    },
+    // mixinしたモジュールから必要な値がmixinされる
     problem: {
       type: Object,
       default: null
     }
-    // ApplyModalFieldsでisNewがmixinされる
   },
   data() {
     return {
-      // ApplyModalFieldsでapplyproblemに必要な値がmixinされる
-      internalValue: this.value,
-      valid: false,
-      sending: false,
+      // mixinしたモジュールから必要な値がmixinされる
       requiredRules: [v => !!v || '必須'],
       perfectPointRules: [
         v => !['', null, undefined].includes(v) || '必須',
@@ -312,47 +309,33 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {}),
-
-    internalValue() {
-      this.$emit('input', this.internalValue)
-    }
+    }, {})
   },
   mounted() {
     // 最初に開いた時に読み直す
     // カテゴリに所属していない問題も取得できる
     orm.Problem.eagerFetch({}, [])
     orm.Category.eagerFetch({}, [])
-    this.validate()
   },
   methods: {
-    // ApplyModalFieldsに必要
+    // -- ApplyModalFieldsに必要なメソッド郡 --
     item() {
       return this.problem
     },
-    // ApplyModalFieldsに必要
     storageKeyPrefix() {
       return 'problemModal'
     },
-    // ApplyModalFieldsに必要
     storageKeyUniqueField() {
       return 'code'
     },
-    // ApplyModalFieldsに必要
     fields() {
       return fields
     },
-    // ApplyModalFieldsに必要
     fieldKeys() {
       return fieldKeys
     },
+    // -- END --
 
-    close() {
-      this.internalValue = false
-    },
-    validate() {
-      this.$refs.form.validate()
-    },
     async submit() {
       if (!this.valid || this.sending) {
         return

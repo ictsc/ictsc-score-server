@@ -5,6 +5,10 @@
     max-width="70em"
     scrollable
   >
+    <template v-slot:activator="{}">
+      <slot name="activator" :on="open" />
+    </template>
+
     <v-card>
       <v-card-title>
         <span>{{ modalTitle }}</span>
@@ -66,14 +70,15 @@
 </template>
 <script>
 import orm from '~/orm'
-import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 
-import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
+import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
+import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
 import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
-import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 
 const fields = {
   code: '',
@@ -90,29 +95,21 @@ export default {
     ActionButtons,
     CodeTextField,
     MarkdownTextArea,
-    OriginDataChangedWarning,
     OrderSlider,
+    OriginDataChangedWarning,
     TitleTextField
   },
-  mixins: [ApplyModalFields],
+  mixins: [ApplyModalCommons, ApplyModalFields],
   props: {
-    // v-model
-    value: {
-      type: Boolean,
-      required: true
-    },
+    // mixinしたモジュールから必要な値がmixinされる
     category: {
       type: Object,
       default: null
     }
-    // ApplyModalFieldsでisNewがmixinされる
   },
   data() {
     return {
-      // ApplyModalFieldsでapplyCategoryに必要な値がmixinされる
-      internalValue: this.value,
-      valid: false,
-      sending: false,
+      // mixinしたモジュールから必要な値がmixinされる
       descriptionPlaceholder: '記述可能\n\n空も可'
     }
   },
@@ -132,45 +129,30 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {}),
-
-    internalValue() {
-      this.$emit('input', this.internalValue)
-    }
+    }, {})
   },
   fetch() {
     orm.Category.eagerFetch({}, [])
   },
-  mounted() {
-    this.validate()
-  },
   methods: {
-    // ApplyModalFieldsに必要
+    // -- ApplyModalFieldsに必要なメソッド郡 --
     item() {
       return this.category
     },
-    // ApplyModalFieldsに必要
     storageKeyPrefix() {
       return 'categoryModal'
     },
-    // ApplyModalFieldsに必要
     storageKeyUniqueField() {
       return 'code'
     },
-    // ApplyModalFieldsに必要
     fields() {
       return fields
     },
-    // ApplyModalFieldsに必要
     fieldKeys() {
       return fieldKeys
     },
-    close() {
-      this.internalValue = false
-    },
-    validate() {
-      this.$refs.form.validate()
-    },
+    // -- END --
+
     async submit() {
       if (!this.valid || this.sending) {
         return
