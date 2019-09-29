@@ -35,7 +35,6 @@ export default {
     '~/plugins/vuex-orm'
   ],
   modules: [
-    '@nuxtjs/universal-storage',
     '@nuxtjs/vuetify',
     // 各コンポーネントでSASSの変数を手軽に共有する TODO: 廃止予定
     '@nuxtjs/style-resources',
@@ -77,19 +76,6 @@ export default {
     // 開発時のyarn run devなど、jsでリクエストを受けている場合に使う
     // 本番環境では前段のLBでリクエストを振り分ける
     '/api': 'http://api:3000'
-  },
-  storage: {
-    vuex: {
-      namespace: 'storage'
-    },
-    cookie: {
-      prefix: '',
-      options: {
-        path: '/'
-      }
-    }
-    // localStorage: { prefix: '' },
-    // ignoreExceptions: false,
   },
   // TODO: 廃止予定
   styleResources: {
