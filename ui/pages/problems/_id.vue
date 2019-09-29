@@ -9,15 +9,22 @@
       <!-- 右の質問・解答パネル -->
       <v-col cols="6">
         <!-- チーム名&セレクタ -->
-        <v-select
+        <v-overflow-btn
           v-if="!isPlayer"
           v-model="selectedTeamId"
+          :loading="teamFetching"
           :items="teams"
           item-text="displayName"
           item-value="id"
-          label="チーム"
+          label="チーム選択"
+          auto-select-first
           clearable
-          hide-defaults
+          editable
+          overflow
+          dense
+          hide-details
+          class="mb-2"
+          @focus="fetchTeams"
         />
 
         <v-tabs v-model="currentTab" grow active-class="always-active-color">
@@ -60,7 +67,9 @@ export default {
   data() {
     return {
       selectedTeamId: null,
-      currentTab: null
+      currentTab: null,
+      teamFetching: false,
+      teamFetched: false
     }
   },
   head() {
@@ -123,18 +132,7 @@ export default {
       return this.problem.answers.filter(o => o.teamId === this.teamId)
     },
     teams() {
-      // 無理やりリアクティブ
-      // eslint-disable-next-line no-unused-expressions
-      this.fetchTeams
       return this.sortByNumber(orm.Team.query().all())
-    },
-    // eslint-disable-next-line vue/return-in-computed-property
-    fetchTeams() {
-      // isStaffがセットされたらクエリを発行する
-      // mountedなどだとセッションが未取得な可能性がある
-      if (!this.isPlayer) {
-        orm.Team.eagerFetch()
-      }
     }
   },
   watch: {
@@ -158,6 +156,18 @@ export default {
     // dataではisPlayerが使えないためここでセット
     this.selectedTeamId = this.teamId
     this.currentTab = this.tabMode
+  },
+  methods: {
+    async fetchTeams() {
+      if (this.teamFetched) {
+        return
+      }
+
+      this.teamFetching = true
+      await orm.Team.eagerFetch({}, [])
+      this.teamFetching = false
+      this.teamFetched = true
+    }
   }
 }
 </script>
