@@ -1,8 +1,8 @@
 <template>
   <v-card-actions>
     <v-btn
-      right
       :disabled="sending || !edited"
+      right
       color="warning"
       @click="$emit('click-reset')"
     >
@@ -12,13 +12,13 @@
     <v-spacer />
 
     <v-btn
-      left
-      :disabled="!valid"
+      :disabled="!valid || !edited"
       :loading="sending"
-      color="success"
-      @click="$emit('click-submit')"
+      :color="conflicted ? 'error' : 'success'"
+      left
+      @click="$emit('click-submit', conflicted)"
     >
-      {{ isNew ? '追加' : '更新' }}
+      {{ submitText }}
     </v-btn>
 
     <v-btn left :disabled="sending" @click="$emit('click-cancel')">
@@ -34,6 +34,10 @@ export default {
       type: Boolean,
       default: false
     },
+    conflicted: {
+      type: Boolean,
+      required: true
+    },
     edited: {
       type: Boolean,
       required: true
@@ -45,6 +49,15 @@ export default {
     valid: {
       type: Boolean,
       required: true
+    }
+  },
+  computed: {
+    submitText() {
+      if (this.isNew) {
+        return '追加'
+      }
+
+      return this.conflicted ? '強制更新' : '更新'
     }
   }
 }

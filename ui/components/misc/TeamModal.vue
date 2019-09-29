@@ -25,9 +25,12 @@
         </v-container>
       </v-card-text>
 
-      <template v-if="originDataChanged()">
+      <template v-if="conflicted">
         <v-divider />
-        <origin-data-changed-warning :updated-at="team.updatedAt" />
+        <conflict-warning
+          :latest-updated-at="item.updatedAt"
+          :conflict-fields="conflictFields"
+        />
       </template>
 
       <v-divider />
@@ -36,6 +39,7 @@
         :valid="valid"
         :is-new="isNew"
         :edited="edited"
+        :conflicted="conflicted"
         @click-submit="submit"
         @click-cancel="close"
         @click-reset="reset"
@@ -66,13 +70,6 @@ export default {
     ActionButtons
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
-  props: {
-    // mixinしたモジュールから必要な値がmixinされる
-    team: {
-      type: Object,
-      default: null
-    }
-  },
   data() {
     return {
       // mixinしたモジュールから必要な値がmixinされる
@@ -102,9 +99,6 @@ export default {
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    item() {
-      return this.team
-    },
     storageKeyPrefix() {
       return 'teamModal'
     },
@@ -117,14 +111,18 @@ export default {
     fieldKeys() {
       return fieldKeys
     },
+    async fetchSelf() {
+      await orm.Team.eagerFetch(this.item.id, [])
+    },
     // -- END --
 
-    async submit() {
-      if (!this.valid || this.sending) {
+    async submit(force) {
+      this.sending = true
+
+      if (!this.isNew && (await this.checkConlict()) && !force) {
+        this.sending = false
         return
       }
-
-      this.sending = true
 
       await orm.Mutation.applyTeam({
         action: this.modalTitle,

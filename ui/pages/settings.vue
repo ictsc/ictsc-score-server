@@ -44,7 +44,7 @@
         item-text="displayName"
       >
         <template v-slot="{ item, isNew }">
-          <team-modal value :team="item" :is-new="isNew" />
+          <team-modal value :item="item" :is-new="isNew" />
         </template>
       </apply-button>
 
@@ -55,7 +55,7 @@
         class="mt-4"
       >
         <template v-slot="{ item, isNew }">
-          <category-modal value :category="item" :is-new="isNew" />
+          <category-modal value :item="item" :is-new="isNew" />
         </template>
       </apply-button>
 
@@ -66,7 +66,7 @@
         class="mt-4"
       >
         <template v-slot="{ item, isNew }">
-          <problem-modal value :problem="item" :is-new="isNew" />
+          <problem-modal value :item="item" :is-new="isNew" />
         </template>
       </apply-button>
     </v-layout>

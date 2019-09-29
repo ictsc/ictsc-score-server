@@ -1,7 +1,7 @@
 <template>
   <v-layout column>
     <!-- エラー防止のためにモーダルをレンダリングしない -->
-    <problem-modal v-if="showModal" v-model="showModal" :problem="problem" />
+    <problem-modal v-if="showModal" v-model="showModal" :item="problem" />
 
     <!-- 編集ボタン, タイトル -->
     <v-flex>

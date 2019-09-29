@@ -46,7 +46,7 @@
               v-model="order"
               :readonly="sending"
               :items="problemsOnlySameCategory"
-              :self-id="isNew ? null : problem.id"
+              :self-id="isNew ? null : item.id"
               title-param="title"
               label="順序"
             />
@@ -141,7 +141,6 @@
               preview-width="70em"
               class="pt-4"
               allow-empty
-              @submit="submit"
             />
 
             <markdown-text-area
@@ -151,15 +150,17 @@
               label="問題文"
               preview-width="70em"
               class="pt-4"
-              @submit="submit"
             />
           </v-form>
         </v-container>
       </v-card-text>
 
-      <template v-if="originDataChanged()">
+      <template v-if="conflicted">
         <v-divider />
-        <origin-data-changed-warning :updated-at="problem.updatedAt" />
+        <conflict-warning
+          :latest-updated-at="item.updatedAt"
+          :conflict-fields="conflictFields"
+        />
       </template>
 
       <v-divider />
@@ -168,6 +169,7 @@
         :valid="valid"
         :is-new="isNew"
         :edited="edited"
+        :conflicted="conflicted"
         @click-submit="submit"
         @click-cancel="close"
         @click-reset="reset"
@@ -187,7 +189,7 @@ import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
 import NumberTextField from '~/components/commons/NumberTextField'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
 const fields = {
@@ -221,17 +223,10 @@ export default {
     NewCandidates,
     NumberTextField,
     OrderSlider,
-    OriginDataChangedWarning,
+    ConflictWarning,
     TitleTextField
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
-  props: {
-    // mixinしたモジュールから必要な値がmixinされる
-    problem: {
-      type: Object,
-      default: null
-    }
-  },
   data() {
     return {
       // mixinしたモジュールから必要な値がmixinされる
@@ -287,14 +282,14 @@ export default {
 
       // 同一カテゴリの自分以外
       const same = this.problemsOnlySameCategory.filter(
-        v => this.isNew || v.id !== this.problem.id
+        v => this.isNew || v.id !== this.item.id
       )
 
       // 違うカテゴリの自分以外
       const diff = this.problems.filter(
         v =>
           v.categoryId !== this.selectedCategory.id &&
-          (this.isNew || v.id !== this.problem.id)
+          (this.isNew || v.id !== this.item.id)
       )
 
       // dividerで区切りを入れる
@@ -312,16 +307,12 @@ export default {
     }, {})
   },
   mounted() {
-    // 最初に開いた時に読み直す
-    // カテゴリに所属していない問題も取得できる
+    // カテゴリに属していない問題や問題に属していないカテゴリも取得する
     orm.Problem.eagerFetch({}, [])
     orm.Category.eagerFetch({}, [])
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    item() {
-      return this.problem
-    },
     storageKeyPrefix() {
       return 'problemModal'
     },
@@ -334,14 +325,18 @@ export default {
     fieldKeys() {
       return fieldKeys
     },
+    async fetchSelf() {
+      await orm.Problem.eagerFetch(this.item.id, [])
+    },
     // -- END --
 
-    async submit() {
-      if (!this.valid || this.sending) {
+    async submit(force) {
+      this.sending = true
+
+      if (!this.isNew && (await this.checkConlict()) && !force) {
+        this.sending = false
         return
       }
-
-      this.sending = true
 
       // textboxなら空にしないとバリデーションエラーになる
       if (this.mode === 'textbox') {

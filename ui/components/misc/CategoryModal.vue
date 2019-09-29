@@ -31,7 +31,7 @@
               v-model="order"
               :readonly="sending"
               :items="categories"
-              :self-id="isNew ? null : category.id"
+              :self-id="isNew ? null : item.id"
               title-param="title"
               label="順序"
               class="mt-2"
@@ -44,15 +44,17 @@
               label="説明"
               preview-width="70em"
               allow-empty
-              @submit="submit"
             />
           </v-form>
         </v-container>
       </v-card-text>
 
-      <template v-if="originDataChanged()">
+      <template v-if="conflicted">
         <v-divider />
-        <origin-data-changed-warning :updated-at="category.updatedAt" />
+        <conflict-warning
+          :latest-updated-at="item.updatedAt"
+          :conflict-fields="conflictFields"
+        />
       </template>
 
       <v-divider />
@@ -61,6 +63,7 @@
         :valid="valid"
         :is-new="isNew"
         :edited="edited"
+        :conflicted="conflicted"
         @click-submit="submit"
         @click-cancel="close"
         @click-reset="reset"
@@ -77,7 +80,7 @@ import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
 const fields = {
@@ -96,17 +99,10 @@ export default {
     CodeTextField,
     MarkdownTextArea,
     OrderSlider,
-    OriginDataChangedWarning,
+    ConflictWarning,
     TitleTextField
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
-  props: {
-    // mixinしたモジュールから必要な値がmixinされる
-    category: {
-      type: Object,
-      default: null
-    }
-  },
   data() {
     return {
       // mixinしたモジュールから必要な値がmixinされる
@@ -136,9 +132,6 @@ export default {
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    item() {
-      return this.category
-    },
     storageKeyPrefix() {
       return 'categoryModal'
     },
@@ -151,14 +144,18 @@ export default {
     fieldKeys() {
       return fieldKeys
     },
+    async fetchSelf() {
+      await orm.Category.eagerFetch(this.item.id, [])
+    },
     // -- END --
 
-    async submit() {
-      if (!this.valid || this.sending) {
+    async submit(force) {
+      this.sending = true
+
+      if (!this.isNew && (await this.checkConlict()) && !force) {
+        this.sending = false
         return
       }
-
-      this.sending = true
 
       await orm.Mutation.applyCategory({
         action: this.modalTitle,

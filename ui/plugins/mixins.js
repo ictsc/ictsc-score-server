@@ -34,6 +34,10 @@ Vue.mixin({
       'notifyError'
     ]),
 
+    isSame(item1, item2) {
+      return JSON.stringify(item1) === JSON.stringify(item2)
+    },
+
     currentDateTimeString() {
       return this.$moment(new Date()).format('MM-DD HH:mm:ss')
     },
