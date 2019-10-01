@@ -5,6 +5,10 @@
     max-width="70em"
     scrollable
   >
+    <template v-slot:activator="{}">
+      <slot name="activator" :on="open" />
+    </template>
+
     <v-card>
       <v-card-title>
         <span>{{ modalTitle }}</span>
@@ -42,7 +46,7 @@
               v-model="order"
               :readonly="sending"
               :items="problemsOnlySameCategory"
-              :self-id="isNew ? null : problem.id"
+              :self-id="isNew ? null : item.id"
               title-param="title"
               label="順序"
             />
@@ -137,7 +141,6 @@
               preview-width="70em"
               class="pt-4"
               allow-empty
-              @submit="submit"
             />
 
             <markdown-text-area
@@ -147,15 +150,17 @@
               label="問題文"
               preview-width="70em"
               class="pt-4"
-              @submit="submit"
             />
           </v-form>
         </v-container>
       </v-card-text>
 
-      <template v-if="originDataChanged()">
+      <template v-if="conflicted">
         <v-divider />
-        <origin-data-changed-warning :updated-at="problem.updatedAt" />
+        <conflict-warning
+          :latest-updated-at="item.updatedAt"
+          :conflict-fields="conflictFields"
+        />
       </template>
 
       <v-divider />
@@ -164,6 +169,7 @@
         :valid="valid"
         :is-new="isNew"
         :edited="edited"
+        :conflicted="conflicted"
         @click-submit="submit"
         @click-cancel="close"
         @click-reset="reset"
@@ -173,17 +179,18 @@
 </template>
 <script>
 import orm from '~/orm'
-import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
-import EditableSlider from '~/components/commons/EditableSlider'
-import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
 
-import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
+import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
+import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
+import EditableSlider from '~/components/commons/EditableSlider'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
+import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
 import NumberTextField from '~/components/commons/NumberTextField'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
-import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 
 const fields = {
   title: '',
@@ -213,31 +220,16 @@ export default {
     CodeTextField,
     EditableSlider,
     MarkdownTextArea,
-    NumberTextField,
     NewCandidates,
-    OriginDataChangedWarning,
+    NumberTextField,
     OrderSlider,
+    ConflictWarning,
     TitleTextField
   },
-  mixins: [ApplyModalFields],
-  props: {
-    // v-model
-    value: {
-      type: Boolean,
-      required: true
-    },
-    problem: {
-      type: Object,
-      default: null
-    }
-    // ApplyModalFieldsでisNewがmixinされる
-  },
+  mixins: [ApplyModalCommons, ApplyModalFields],
   data() {
     return {
-      // ApplyModalFieldsでapplyproblemに必要な値がmixinされる
-      internalValue: this.value,
-      valid: false,
-      sending: false,
+      // mixinしたモジュールから必要な値がmixinされる
       requiredRules: [v => !!v || '必須'],
       perfectPointRules: [
         v => !['', null, undefined].includes(v) || '必須',
@@ -290,14 +282,14 @@ export default {
 
       // 同一カテゴリの自分以外
       const same = this.problemsOnlySameCategory.filter(
-        v => this.isNew || v.id !== this.problem.id
+        v => this.isNew || v.id !== this.item.id
       )
 
       // 違うカテゴリの自分以外
       const diff = this.problems.filter(
         v =>
           v.categoryId !== this.selectedCategory.id &&
-          (this.isNew || v.id !== this.problem.id)
+          (this.isNew || v.id !== this.item.id)
       )
 
       // dividerで区切りを入れる
@@ -312,49 +304,39 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {}),
-
-    internalValue() {
-      this.$emit('input', this.internalValue)
-    }
+    }, {})
   },
   mounted() {
-    // 最初に開いた時に読み直す
-    // カテゴリに所属していない問題も取得できる
+    // カテゴリに属していない問題や問題に属していないカテゴリも取得する
     orm.Problem.eagerFetch({}, [])
     orm.Category.eagerFetch({}, [])
-    this.validate()
   },
   methods: {
-    // ApplyModalFieldsに必要
-    item() {
-      return this.problem
-    },
-    // ApplyModalFieldsに必要
+    // -- ApplyModalFieldsに必要なメソッド郡 --
     storageKeyPrefix() {
       return 'problemModal'
     },
-    // ApplyModalFieldsに必要
+    storageKeyUniqueField() {
+      return 'code'
+    },
     fields() {
       return fields
     },
-    // ApplyModalFieldsに必要
     fieldKeys() {
       return fieldKeys
     },
+    async fetchSelf() {
+      await orm.Problem.eagerFetch(this.item.id, [])
+    },
+    // -- END --
 
-    close() {
-      this.internalValue = false
-    },
-    validate() {
-      this.$refs.form.validate()
-    },
-    async submit() {
-      if (!this.valid || this.sending) {
+    async submit(force) {
+      this.sending = true
+
+      if (!this.isNew && (await this.checkConlict()) && !force) {
+        this.sending = false
         return
       }
-
-      this.sending = true
 
       // textboxなら空にしないとバリデーションエラーになる
       if (this.mode === 'textbox') {

@@ -5,6 +5,10 @@
     max-width="70em"
     scrollable
   >
+    <template v-slot:activator="{}">
+      <slot name="activator" :on="open" />
+    </template>
+
     <v-card>
       <v-card-title>
         <span>{{ modalTitle }}</span>
@@ -27,7 +31,7 @@
               v-model="order"
               :readonly="sending"
               :items="categories"
-              :self-id="isNew ? null : category.id"
+              :self-id="isNew ? null : item.id"
               title-param="title"
               label="順序"
               class="mt-2"
@@ -40,15 +44,17 @@
               label="説明"
               preview-width="70em"
               allow-empty
-              @submit="submit"
             />
           </v-form>
         </v-container>
       </v-card-text>
 
-      <template v-if="originDataChanged()">
+      <template v-if="conflicted">
         <v-divider />
-        <origin-data-changed-warning :updated-at="category.updatedAt" />
+        <conflict-warning
+          :latest-updated-at="item.updatedAt"
+          :conflict-fields="conflictFields"
+        />
       </template>
 
       <v-divider />
@@ -57,6 +63,7 @@
         :valid="valid"
         :is-new="isNew"
         :edited="edited"
+        :conflicted="conflicted"
         @click-submit="submit"
         @click-cancel="close"
         @click-reset="reset"
@@ -66,14 +73,15 @@
 </template>
 <script>
 import orm from '~/orm'
-import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 
-import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
-import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import OriginDataChangedWarning from '~/components/misc/ApplyModal/OriginDataChangedWarning'
-import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
+import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
+import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
+import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
+import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
 const fields = {
   code: '',
@@ -90,29 +98,14 @@ export default {
     ActionButtons,
     CodeTextField,
     MarkdownTextArea,
-    OriginDataChangedWarning,
     OrderSlider,
+    ConflictWarning,
     TitleTextField
   },
-  mixins: [ApplyModalFields],
-  props: {
-    // v-model
-    value: {
-      type: Boolean,
-      required: true
-    },
-    category: {
-      type: Object,
-      default: null
-    }
-    // ApplyModalFieldsでisNewがmixinされる
-  },
+  mixins: [ApplyModalCommons, ApplyModalFields],
   data() {
     return {
-      // ApplyModalFieldsでapplyCategoryに必要な値がmixinされる
-      internalValue: this.value,
-      valid: false,
-      sending: false,
+      // mixinしたモジュールから必要な値がmixinされる
       descriptionPlaceholder: '記述可能\n\n空も可'
     }
   },
@@ -132,47 +125,37 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {}),
-
-    internalValue() {
-      this.$emit('input', this.internalValue)
-    }
+    }, {})
   },
   fetch() {
     orm.Category.eagerFetch({}, [])
   },
-  mounted() {
-    this.validate()
-  },
   methods: {
-    // ApplyModalFieldsに必要
-    item() {
-      return this.category
-    },
-    // ApplyModalFieldsに必要
+    // -- ApplyModalFieldsに必要なメソッド郡 --
     storageKeyPrefix() {
       return 'categoryModal'
     },
-    // ApplyModalFieldsに必要
+    storageKeyUniqueField() {
+      return 'code'
+    },
     fields() {
       return fields
     },
-    // ApplyModalFieldsに必要
     fieldKeys() {
       return fieldKeys
     },
-    close() {
-      this.internalValue = false
+    async fetchSelf() {
+      await orm.Category.eagerFetch(this.item.id, [])
     },
-    validate() {
-      this.$refs.form.validate()
-    },
-    async submit() {
-      if (!this.valid || this.sending) {
+    // -- END --
+
+    async submit(force) {
+      this.sending = true
+
+      if (!this.isNew && (await this.checkConlict()) && !force) {
+        this.sending = false
         return
       }
-
-      this.sending = true
 
       await orm.Mutation.applyCategory({
         action: this.modalTitle,

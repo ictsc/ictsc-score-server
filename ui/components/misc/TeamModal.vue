@@ -5,6 +5,10 @@
     max-width="70em"
     scrollable
   >
+    <template v-slot:activator="{}">
+      <slot name="activator" :on="open" />
+    </template>
+
     <v-card>
       <v-card-title>
         <span>{{ modalTitle }}</span>
@@ -21,9 +25,12 @@
         </v-container>
       </v-card-text>
 
-      <template v-if="originDataChanged()">
+      <template v-if="conflicted">
         <v-divider />
-        <origin-data-changed-warning :updated-at="team.updatedAt" />
+        <conflict-warning
+          :latest-updated-at="item.updatedAt"
+          :conflict-fields="conflictFields"
+        />
       </template>
 
       <v-divider />
@@ -32,6 +39,7 @@
         :valid="valid"
         :is-new="isNew"
         :edited="edited"
+        :conflicted="conflicted"
         @click-submit="submit"
         @click-cancel="close"
         @click-reset="reset"
@@ -41,7 +49,9 @@
 </template>
 <script>
 import orm from '~/orm'
+
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
 
 const fields = {
@@ -59,25 +69,10 @@ export default {
   components: {
     ActionButtons
   },
-  mixins: [ApplyModalFields],
-  props: {
-    // v-model
-    value: {
-      type: Boolean,
-      required: true
-    },
-    team: {
-      type: Object,
-      default: null
-    }
-    // ApplyModalFieldsでisNewがmixinされる
-  },
+  mixins: [ApplyModalCommons, ApplyModalFields],
   data() {
     return {
-      // ApplyModalFieldsでapplyTeamに必要な値がmixinされる
-      internalValue: this.value,
-      valid: false,
-      sending: false,
+      // mixinしたモジュールから必要な値がmixinされる
       descriptionPlaceholder: '記述可能\n\n空も可'
     }
   },
@@ -97,47 +92,37 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {}),
-
-    internalValue() {
-      this.$emit('input', this.internalValue)
-    }
+    }, {})
   },
   fetch() {
     orm.Team.eagerFetch({}, [])
   },
-  mounted() {
-    this.validate()
-  },
   methods: {
-    // ApplyModalFieldsに必要
-    item() {
-      return this.team
-    },
-    // ApplyModalFieldsに必要
+    // -- ApplyModalFieldsに必要なメソッド郡 --
     storageKeyPrefix() {
       return 'teamModal'
     },
-    // ApplyModalFieldsに必要
+    storageKeyUniqueField() {
+      return 'number'
+    },
     fields() {
       return fields
     },
-    // ApplyModalFieldsに必要
     fieldKeys() {
       return fieldKeys
     },
-    close() {
-      this.internalValue = false
+    async fetchSelf() {
+      await orm.Team.eagerFetch(this.item.id, [])
     },
-    validate() {
-      this.$refs.form.validate()
-    },
-    async submit() {
-      if (!this.valid || this.sending) {
+    // -- END --
+
+    async submit(force) {
+      this.sending = true
+
+      if (!this.isNew && (await this.checkConlict()) && !force) {
+        this.sending = false
         return
       }
-
-      this.sending = true
 
       await orm.Mutation.applyTeam({
         action: this.modalTitle,

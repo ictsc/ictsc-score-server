@@ -1,15 +1,18 @@
 <template>
   <v-row align="center">
-    <v-select
+    <v-overflow-btn
       v-model="internalValue"
-      :loading="fetching"
       :label="label"
+      :loading="fetching"
       :items="items"
       :item-text="itemText"
       return-object
+      auto-select-first
       clearable
-      hide-defaults
-      class="ml-4"
+      editable
+      overflow
+      dense
+      hide-details
       @focus="fetchItems"
       @input="updateItem"
     />

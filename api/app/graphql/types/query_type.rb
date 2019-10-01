@@ -13,6 +13,10 @@ module Types
     field :notices,              [Types::NoticeType],             null: false
     field :sessions,             [Types::SessionType],            null: false
 
+    field :category, Types::CategoryType, null: true do
+      argument :id, ID, required: true
+    end
+
     field :problem, Types::ProblemType, null: true do
       argument :id, ID, required: true
     end
@@ -40,6 +44,10 @@ module Types
 
     def categories
       Category.readables(team: self.current_team!)
+    end
+
+    def category(id:)
+      Category.readables(team: self.current_team!).find_by(id: id)
     end
 
     def problem(id:)

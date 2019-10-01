@@ -34,19 +34,35 @@
 
     <!-- 採点フォーム -->
     <template v-if="isStaff">
-      <grading-form :answer="answer" :problem-body="problemBody" />
-      <v-divider />
+      <grading-form :answer="answer" :problem-body="problemBody" class="px-2" />
     </template>
 
     <!-- 提出時刻 -->
-    <p class="text-right caption">提出時刻: {{ answer.createdAtShort }}</p>
+    <p class="text-right caption mb-0">提出時刻: {{ answer.createdAtShort }}</p>
 
     <!-- 解答本体 -->
-    <markdown
-      v-if="problemBody.modeIsTextbox"
-      :content="answer.bodies[0][0]"
-      readonly
-    />
+    <template v-if="problemBody.modeIsTextbox">
+      <!-- Markdown ↔ Raw 切り替えボタン -->
+      <v-row class="px-2">
+        <v-spacer />
+        <v-btn
+          :color="textboxAsMarkdown ? 'primary' : undefined"
+          text
+          icon
+          large
+          @click="textboxAsMarkdown = !textboxAsMarkdown"
+        >
+          <v-icon>mdi-markdown-outline</v-icon>
+        </v-btn>
+      </v-row>
+
+      <markdown
+        v-if="textboxAsMarkdown"
+        :content="answer.bodies[0][0]"
+        readonly
+      />
+      <raw-text v-else :content="answer.bodies[0][0]" class="pa-2" />
+    </template>
 
     <answer-form-radio-button
       v-else-if="problemBody.modeIsRadioButton"
@@ -77,6 +93,7 @@ import AnswerFormCheckbox from '~/components/problems/id/AnswerFormCheckbox'
 import ExpandableCard from '~/components/commons/ExpandableCard'
 import GradingForm from '~/components/problems/id/GradingForm'
 import Markdown from '~/components/commons/Markdown'
+import RawText from '~/components/commons/RawText'
 
 export default {
   name: 'AnswerCard',
@@ -85,7 +102,8 @@ export default {
     AnswerFormRadioButton,
     ExpandableCard,
     GradingForm,
-    Markdown
+    Markdown,
+    RawText
   },
   props: {
     answer: {
@@ -99,7 +117,8 @@ export default {
   },
   data() {
     return {
-      opened: null
+      opened: null,
+      textboxAsMarkdown: true
     }
   },
   computed: {

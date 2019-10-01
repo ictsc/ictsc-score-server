@@ -31,8 +31,8 @@ export default {
       )
 
       // team99は毎回使われるテストユーザー
-      this.teams = this.sortByNumber(orm.Team.query().all()).filter(
-        t => t.role === 'player' && t.name !== 'team99'
+      this.teams = this.sortByNumber(orm.Team.players).filter(
+        t => t.name !== 'team99'
       )
     },
     async exportData() {

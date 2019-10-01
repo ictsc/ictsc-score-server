@@ -1,94 +1,90 @@
 <template>
-  <div>
-    <slot name="activator" :on="open" />
+  <v-dialog
+    v-model="showModal"
+    :persistent="sending"
+    max-width="40em"
+    scrollable
+    @input="!$event && close()"
+  >
+    <template v-slot:activator="{}">
+      <slot name="activator" :on="open" />
+    </template>
 
-    <v-dialog
-      v-model="showModal"
-      :persistent="sending"
-      max-width="40em"
-      scrollable
-      @input="!$event && close()"
-    >
-      <v-card>
-        <v-card-title>{{ config.key }}</v-card-title>
-        <v-card-text class="px-4 pb-0">
-          <v-form ref="form" v-model="valid">
-            <template v-if="config.valueTypeIsBoolean">
-              <v-switch v-model="configValue" :readonly="sending" inset />
-            </template>
-            <template v-else-if="config.valueTypeIsInteger">
-              <number-text-field
-                v-model="configValue"
+    <v-card>
+      <v-card-title>{{ config.key }}</v-card-title>
+      <v-card-text class="px-4 pb-0">
+        <v-form ref="form" v-model="valid">
+          <template v-if="config.valueTypeIsBoolean">
+            <v-switch v-model="configValue" :readonly="sending" inset />
+          </template>
+          <template v-else-if="config.valueTypeIsInteger">
+            <number-text-field
+              v-model="configValue"
+              :readonly="sending"
+              :rules="integerRules"
+            />
+          </template>
+          <template v-else-if="config.valueTypeIsString">
+            <markdown-text-area
+              v-model="configValue"
+              :readonly="sending"
+              allow-empty
+              placeholder="Markdownで記述できます"
+            />
+          </template>
+          <template v-else-if="config.valueTypeIsDate">
+            <v-row justify="center">
+              <v-date-picker
+                v-model="datePicker"
                 :readonly="sending"
-                :rules="integerRules"
+                reactive
+                show-current
+                scrollable
+                locale="ja-jp"
               />
-            </template>
-            <template v-else-if="config.valueTypeIsString">
-              <markdown-text-area
-                v-model="configValue"
+
+              <v-time-picker
+                v-model="timePicker"
                 :readonly="sending"
-                allow-empty
-                placeholder="Markdownで記述できます"
+                format="24hr"
+                scrollable
+                color="primary"
+                class="ml-2"
               />
-            </template>
-            <template v-else-if="config.valueTypeIsDate">
-              <v-row justify="center">
-                <v-date-picker
-                  v-model="datePicker"
-                  :readonly="sending"
-                  reactive
-                  show-current
-                  scrollable
-                  locale="ja-jp"
-                />
+            </v-row>
 
-                <v-time-picker
-                  v-model="timePicker"
-                  :readonly="sending"
-                  format="24hr"
-                  scrollable
-                  color="primary"
-                  class="ml-2"
-                />
-              </v-row>
+            <v-text-field
+              v-model="configValue"
+              :readonly="sending"
+              :rules="dateRules"
+            >
+              <template v-slot:prepend>
+                <v-btn small @click="setNow">now</v-btn>
+              </template>
+            </v-text-field>
+          </template>
+          <template v-else>
+            未実装
+          </template>
+        </v-form>
+      </v-card-text>
 
-              <v-text-field
-                v-model="configValue"
-                :readonly="sending"
-                :rules="dateRules"
-              >
-                <template v-slot:prepend>
-                  <v-btn small @click="setNow">now</v-btn>
-                </template>
-              </v-text-field>
-            </template>
-            <template v-else>
-              未実装
-            </template>
-          </v-form>
-        </v-card-text>
+      <v-card-actions>
+        <v-btn :disabled="sending || !resetable" color="warning" @click="reset">
+          リセット
+        </v-btn>
 
-        <v-card-actions>
-          <v-btn
-            :disabled="sending || !resetable"
-            color="warning"
-            @click="reset"
-          >
-            リセット
-          </v-btn>
+        <v-spacer />
 
-          <v-spacer />
-
-          <v-btn :disabled="!valid || !changed" color="success" @click="submit">
-            更新
-          </v-btn>
-          <v-btn :disabled="sending" @click="close">
-            キャンセル
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+        <v-btn :disabled="!valid || !changed" color="success" @click="submit">
+          更新
+        </v-btn>
+        <v-btn :disabled="sending" @click="close">
+          キャンセル
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <script>
 import { mapActions } from 'vuex'

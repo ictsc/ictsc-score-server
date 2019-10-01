@@ -9,7 +9,7 @@
     @input="$emit('input', $event)"
   >
     <template v-slot:bottom>
-      <v-row dense justify="space-around">
+      <v-row dense justify="space-around" class="mb-1">
         <v-col cols="3" class="text-truncate">
           {{ ItemToString(prevItem) }}
         </v-col>
