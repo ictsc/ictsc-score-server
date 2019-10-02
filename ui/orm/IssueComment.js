@@ -17,7 +17,6 @@ export default class IssueComment extends BaseModel {
 
   get isOurComment() {
     return (
-      // eslint-disable-next-line no-undef
       (!this.fromStaff && $nuxt.isPlayer) ||
       (this.fromStaff && $nuxt.isNotPlayer)
     )

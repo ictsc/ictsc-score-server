@@ -67,13 +67,11 @@ export default class Issue extends BaseModel {
   }
 
   get latestReplyAt() {
-    // eslint-disable-next-line no-undef
     const comment = $nuxt.findNewer(this.theirsComments)
     return comment ? comment.createdAt : null
   }
 
   get latestReplyAtDisplay() {
-    // eslint-disable-next-line no-undef
     const comment = $nuxt.findNewer(this.theirsComments)
     return comment ? comment.createdAtShort : 'なし'
   }

@@ -19,7 +19,6 @@ export default class Config extends BaseModel {
   get displayValue() {
     if (this.valueTypeIsDate) {
       // e.g. 2112-09-03 12:00+09:00
-      // eslint-disable-next-line no-undef
       return $nuxt.$moment(this.parsedValue).format('YYYY-MM-DD HH:mmZ')
     } else {
       return this.value

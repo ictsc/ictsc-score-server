@@ -73,7 +73,6 @@ export default class Problem extends BaseModel {
   }
 
   get displayTitle() {
-    // eslint-disable-next-line no-undef
     return $nuxt.isStaff ? `${this.code}. ${this.title}` : this.title
   }
 }

@@ -90,14 +90,12 @@ export default class Mutation extends BaseModel {
       if (response.errors) {
         console.error(response.errors)
         if (action) {
-          // eslint-disable-next-line no-undef
           $nuxt.notifyWarning({
             message: `${action}に失敗しました`
           })
         }
       } else {
         if (action) {
-          // eslint-disable-next-line no-undef
           $nuxt.notifySuccess({
             message: `${action}に成功しました`
           })
