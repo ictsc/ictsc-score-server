@@ -20,10 +20,9 @@
           auto-select-first
           clearable
           editable
-          overflow
           dense
           hide-details
-          class="mb-2"
+          class="mt-0 mb-2"
           @focus="fetchTeams"
         />
 

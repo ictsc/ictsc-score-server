@@ -10,7 +10,6 @@
       auto-select-first
       clearable
       editable
-      overflow
       dense
       hide-details
       @focus="fetchItems"
