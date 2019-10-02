@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/MethodLength, Rails/Output
 include FactoryBot::Syntax::Methods # rubocop:disable Style/MixinUsage
 
 def create_config
@@ -37,6 +36,5 @@ def create_config
   puts 'done'
   configs
 end
-# rubocop:enable Metrics/MethodLength, Rails/Output
 
 create_config
