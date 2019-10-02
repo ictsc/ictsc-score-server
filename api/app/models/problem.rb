@@ -20,6 +20,12 @@ class Problem < ApplicationRecord
   has_many :issues,                dependent: :destroy
   has_many :first_correct_answers, dependent: :destroy
 
+  validate :validate_previous_problem, on: :update
+
+  def validate_previous_problem
+    errors.add(:previous_problem_id, 'disallow set previous_problem to self') if self.previous_problem_id == self.id
+  end
+
   def opened?(team:)
     self.class.opened(team: team).exists?(id: self.id)
   end
