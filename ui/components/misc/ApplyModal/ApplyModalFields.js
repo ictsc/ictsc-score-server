@@ -91,8 +91,10 @@ export default {
       this.$jsonStorage.set(this.storageKeyOld(field), undefined)
     },
     setStorage(field, value) {
-      if (!this.isNew && this.isSame(value, this.item[field])) {
-        // ストアと同じ値ならストレージから削除して終了
+      const defaultValue = this.isNew ? this.fields()[field] : this.item[field]
+
+      if (this.isSame(value, defaultValue)) {
+        // デフォルト値か変更前の値と同じ値ならストレージから削除して終了
         this.removeStorage(field)
         return
       }
