@@ -63,9 +63,12 @@ export const actions = {
 
 export const getters = {
   currentTeamId: state => state.teamId,
-  isStaff: (state, getters) => !getters.isNoLogin && state.role === 'staff',
-  isAudience: (state, getters) =>
-    !getters.isNoLogin && state.role === 'audience',
-  isPlayer: (state, getters) => !getters.isNoLogin && state.role === 'player',
-  isNoLogin: state => state.role === null
+  isLoggedIn: state => state.role !== null && state.role !== undefined,
+  isStaff: state => state.role === 'staff',
+  isAudience: state => state.role === 'audience',
+  isPlayer: state => state.role === 'player',
+  isNotLoggedIn: (state, getters) => !getters.isLoggedIn,
+  isNotStaff: (state, getters) => getters.isLoggedIn && !getters.isStaff,
+  isNotAudience: (state, getters) => getters.isLoggedIn && !getters.isAudience,
+  isNotPlayer: (state, getters) => getters.isLoggedIn && !getters.isPlayer
 }

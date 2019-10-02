@@ -2,7 +2,7 @@
   <div>
     <expandable-button
       v-model="show"
-      :togglable="!isPlayer"
+      :togglable="isStaff"
       :maximum-open="isStaff"
     >
       問題環境

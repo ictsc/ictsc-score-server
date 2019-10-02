@@ -15,7 +15,7 @@
         <div class="body-2 text-truncate">
           {{ issue.problem.displayTitle }}<br />
 
-          <template v-if="!isPlayer">
+          <template v-if="isNotPlayer">
             {{ issue.team.displayName }}<br />
           </template>
           <template v-else>

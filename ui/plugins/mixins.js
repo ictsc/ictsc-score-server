@@ -19,10 +19,14 @@ Vue.mixin({
   computed: {
     ...mapGetters('session', [
       'currentTeamId',
+      'isLoggedIn',
       'isStaff',
       'isAudience',
       'isPlayer',
-      'isNoLogin'
+      'isNotLoggedIn',
+      'isNotStaff',
+      'isNotAudience',
+      'isNotPlayer'
     ])
   },
   methods: {
