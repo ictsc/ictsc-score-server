@@ -13,8 +13,9 @@ module Mutations
     argument :host,         String,  required: true
     argument :user,         String,  required: true
     argument :password,     String,  required: true
+    argument :note,         String,  required: false
 
-    def resolve(problem_code:, team_number:, status:, host:, user:, password:)
+    def resolve(problem_code:, team_number:, status:, host:, user:, password:, note: nil)
       Acl.permit!(mutation: self, args: {})
 
       problem = Problem.find_by(code: problem_code)
@@ -25,7 +26,7 @@ module Mutations
 
       p_env = ProblemEnvironment.find_or_initialize_by(problem: problem, team: team)
 
-      if p_env.update(status: status, host: host, user: user, password: password)
+      if p_env.update(status: status, host: host, user: user, password: password, note: note)
         { problem_environment: p_env.readable(team: self.current_team!) }
       else
         add_errors(p_env)

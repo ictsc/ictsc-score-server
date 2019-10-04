@@ -9,6 +9,7 @@ FactoryBot.define do
     sequence(:password) {|n| "password#{n}" }
     team { nil }
     problem { nil }
+    note { Random.rand(2).odd? ? Faker::Books::Dune.quote : nil }
     created_at { Time.current - Random.rand(60).minutes - Random.rand(60).seconds }
     updated_at { created_at }
   end
