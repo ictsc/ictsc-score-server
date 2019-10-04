@@ -162,7 +162,7 @@
       <template v-if="conflicted">
         <v-divider />
         <conflict-warning
-          :latest-updated-at="item.updatedAt"
+          :latest-updated-at="item.updatedAtSimple"
           :conflict-fields="conflictFields"
         />
       </template>

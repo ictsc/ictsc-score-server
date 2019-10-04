@@ -2,7 +2,7 @@
   <span class="warning lighten-2 px-4 py-1">
     編集箇所が別セッションで変更されました<br />
     {{ conflictFields.join(', ') }} <br />
-    最新版 更新時刻 {{ latestUpdatedAtShort }}
+    最新版更新時刻 {{ latestUpdatedAt }}
   </span>
 </template>
 <script>
@@ -16,11 +16,6 @@ export default {
     conflictFields: {
       type: Array,
       required: true
-    }
-  },
-  computed: {
-    latestUpdatedAtShort() {
-      return this.$moment(this.latestUpdatedAt).format('M月D日 HH:mm:ssZ')
     }
   }
 }
