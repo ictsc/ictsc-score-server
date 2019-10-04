@@ -1,4 +1,3 @@
-import orm from '~/orm'
 import BaseModel from '~/orm/BaseModel'
 
 export default class ProblemBody extends BaseModel {
@@ -13,7 +12,6 @@ export default class ProblemBody extends BaseModel {
       perfectPoint: this.number(),
       solvedCriterion: this.number(),
       problemId: this.string(),
-      problem: this.belongsTo(orm.Problem, 'problemId'),
       // 本当は[[this.string()]].nullable()
       candidates: this.attr(),
       corrects: this.attr().nullable(),
