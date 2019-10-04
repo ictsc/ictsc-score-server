@@ -2,14 +2,27 @@
   <v-data-table
     :headers="headers"
     :items="environments"
-    :search="search"
+    :search="!!search ? search : ''"
     :sort-by="sortBy"
-    :items-per-page="itemsPerPage"
+    :items-per-page.sync="itemsPerPage"
     :hide-default-footer="environments.length <= itemsPerPage"
     dense
     multi-sort
     class="elevation-2 text-no-wrap"
   >
+    <template v-slot:top>
+      <v-text-field
+        v-if="isStaff"
+        v-model="search"
+        label="Search"
+        append-icon="mdi-table-search"
+        autofocus
+        clearable
+        single-line
+        hide-details
+        class="mt-0 py-1 px-2"
+      />
+    </template>
   </v-data-table>
 </template>
 <script>
@@ -22,15 +35,12 @@ export default {
     environments: {
       type: Array,
       required: true
-    },
-    search: {
-      type: String,
-      required: true
     }
   },
   data() {
     return {
-      itemsPerPage: 10
+      itemsPerPage: 10,
+      search: undefined
     }
   },
   computed: {
