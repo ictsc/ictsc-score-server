@@ -4,7 +4,7 @@
 version: 2
 jobs:
   build:
-    parallelism: 3
+    parallelism: 2
     environment:
       - TZ=Asia/Tokyo
 
