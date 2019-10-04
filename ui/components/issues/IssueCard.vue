@@ -35,7 +35,7 @@
         >
           <!-- 通常はただの文字列して表示し、ホバーでMarkdownツールチップ -->
           <v-tooltip
-            open-delay="300"
+            open-delay="400"
             min-width="50%"
             max-width="50%"
             bottom
