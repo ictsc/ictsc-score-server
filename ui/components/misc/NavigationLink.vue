@@ -1,7 +1,7 @@
 <template>
   <v-btn
     :to="to"
-    :disabled="isNoLogin && !always"
+    :disabled="isNotLoggedIn && !always"
     nuxt
     text
     height="100%"

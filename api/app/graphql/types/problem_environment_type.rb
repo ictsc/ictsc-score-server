@@ -11,6 +11,7 @@ module Types
     field :host,       String,             null: false
     field :user,       String,             null: false
     field :password,   String,             null: false
+    field :note,       String,             null: true
     field :created_at, Types::DateTime,    null: false
     field :updated_at, Types::DateTime,    null: false
 

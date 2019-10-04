@@ -47,9 +47,11 @@ module Readable
         %w[code secret_text writer] unless team.staff?
       when 'ProblemBody'
         %w[corrects] if team.player?
+      when 'ProblemEnvironment'
+        %w[note] unless team.staff?
       when 'Team'
         %w[password_digest]
-      when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'ProblemEnvironment', 'ProblemSupplement', 'Score'
+      when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'ProblemSupplement', 'Score'
         # permit all
         %w[]
       else

@@ -10,7 +10,7 @@
       <v-col cols="6">
         <!-- チーム名&セレクタ -->
         <v-overflow-btn
-          v-if="!isPlayer"
+          v-if="isNotPlayer"
           v-model="selectedTeamId"
           :loading="teamFetching"
           :items="teams"
@@ -20,10 +20,9 @@
           auto-select-first
           clearable
           editable
-          overflow
           dense
           hide-details
-          class="mb-2"
+          class="mt-0 mb-2"
           @focus="fetchTeams"
         />
 
@@ -106,7 +105,7 @@ export default {
     hashTailTeamId() {
       // プレイヤーならURL末尾にチームIDを付与しない
       // playerではselectedTeamId === currentTeamId
-      return !this.isPlayer && this.selectedTeamId
+      return this.isNotPlayer && this.selectedTeamId
         ? `=${this.selectedTeamId}`
         : ''
     },

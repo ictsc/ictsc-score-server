@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/MethodLength, Rails/Output
 include FactoryBot::Syntax::Methods # rubocop:disable Style/MixinUsage
 
 def create_config
@@ -247,7 +246,6 @@ def create_issues(problems, teams)
   puts 'done'
   issues
 end
-# rubocop:enable Metrics/MethodLength, Rails/Output
 
 # rubocop:disable Lint/UselessAssignment
 create_config

@@ -14,7 +14,7 @@
         {{ issue.statusJp }}
       </v-btn>
 
-      <span v-if="!isAudience" class="caption grey--text text--darken-1 pt-1">
+      <span v-if="isNotAudience" class="caption grey--text text--darken-1 pt-1">
         {{ statusDescription }}
       </span>
     </v-layout>

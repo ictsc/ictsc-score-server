@@ -15,6 +15,7 @@ export default class ProblemEnvironment extends BaseModel {
       host: this.string(),
       user: this.string(),
       password: this.string(),
+      note: this.string().nullable(),
       createdAt: this.string(),
       updatedAt: this.string()
     }

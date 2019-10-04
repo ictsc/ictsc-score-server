@@ -3,21 +3,24 @@
     <v-layout column align-center>
       <page-title title="解答一覧" />
 
+      <v-overflow-btn
+        v-model="problemCode"
+        :items="problems"
+        item-text="title"
+        item-value="code"
+        label="問題選択"
+        auto-select-first
+        clearable
+        editable
+        dense
+        hide-details
+        class="mt-0 mb-2"
+      />
+
       <v-switch
         v-model="showAll"
         :label="showAll ? '全表示' : '未採点のみ'"
         hide-details
-      />
-
-      <v-select
-        v-model="problemCode"
-        :items="problems"
-        clearable
-        hide-details
-        item-text="title"
-        item-value="code"
-        label="問題名"
-        class="pb-3"
       />
     </v-layout>
 
@@ -73,7 +76,6 @@ export default {
   },
   fetch() {
     orm.Problem.eagerFetch({}, ['answers', 'team'])
-    orm.Team.eagerFetch({}, [])
   },
   methods: {
     // 各チームの最終解答のみの配列にする

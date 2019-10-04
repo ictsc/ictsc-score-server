@@ -14,11 +14,9 @@ const errorLink = onError(
         if (error.extensions) {
           switch (error.extensions.code) {
             case 'UNAUTHORIZED':
-              // eslint-disable-next-line no-undef
               $nuxt.$router.push('/login')
               break
             case 'UNEXPECTED_ERROR':
-              // eslint-disable-next-line no-undef
               $nuxt.notifyError({
                 message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
                 timeout: 0
@@ -26,7 +24,6 @@ const errorLink = onError(
               break
             default:
               // 実装漏れ
-              // eslint-disable-next-line no-undef
               $nuxt.notifyError({
                 message: `想定外のエラーコードです\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
                 timeout: 0
@@ -40,7 +37,6 @@ const errorLink = onError(
     if (networkError) {
       console.warn('[Network error]', networkError)
 
-      // eslint-disable-next-line no-undef
       $nuxt.notifyError({
         message: `APIから応答がありません\n運営に問い合わせてください\nコード ${networkError.statusCode}`,
         timeout: 0

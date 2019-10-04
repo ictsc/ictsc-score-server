@@ -15,7 +15,7 @@
         <div class="body-2 text-truncate">
           {{ issue.problem.displayTitle }}<br />
 
-          <template v-if="!isPlayer">
+          <template v-if="isNotPlayer">
             {{ issue.team.displayName }}<br />
           </template>
           <template v-else>
@@ -35,7 +35,7 @@
         >
           <!-- 通常はただの文字列して表示し、ホバーでMarkdownツールチップ -->
           <v-tooltip
-            open-delay="300"
+            open-delay="400"
             min-width="50%"
             max-width="50%"
             bottom

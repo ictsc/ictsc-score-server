@@ -24,5 +24,8 @@ module.exports = {
       'error', {
       }
     ]
+  },
+  globals: {
+    "$nuxt": "readonly"
   }
 }

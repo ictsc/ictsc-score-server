@@ -29,17 +29,19 @@
 
             <v-text-field v-model="writer" :readonly="sending" label="作問者" />
 
-            <v-select
+            <label class="caption">カテゴリ</label>
+            <v-overflow-btn
               v-model="categoryCode"
               :readonly="sending"
               :items="categories"
               :hint="categoryCode"
-              clearable
               persistent-hint
               item-text="title"
               item-value="code"
-              label="カテゴリ"
-              class="pb-3"
+              auto-select-first
+              editable
+              dense
+              class="mt-0 pb-3"
             />
 
             <order-slider
@@ -51,17 +53,19 @@
               label="順序"
             />
 
-            <v-select
+            <label class="caption">依存問題</label>
+            <v-overflow-btn
               v-model="previousProblemCode"
               :readonly="sending"
-              :items="problemsSortForPreviousProblem"
+              :items="previousProblemCandidates"
               :hint="previousProblemCode"
-              clearable
               persistent-hint
               item-text="title"
               item-value="code"
-              label="依存問題"
-              class="pb-3"
+              auto-select-first
+              editable
+              dense
+              class="mt-0 pb-3"
             />
 
             <!-- TODO: tooltip: ctf方式の説明 -->
@@ -158,7 +162,7 @@
       <template v-if="conflicted">
         <v-divider />
         <conflict-warning
-          :latest-updated-at="item.updatedAt"
+          :latest-updated-at="item.updatedAtSimple"
           :conflict-fields="conflictFields"
         />
       </template>
@@ -249,7 +253,7 @@ export default {
       return this.isNew ? '問題追加' : '問題編集'
     },
     categories() {
-      return this.sortByOrder(orm.Category.query().all())
+      return this.unshiftDummy(this.sortByOrder(orm.Category.all()))
     },
     problems() {
       return this.sortByOrder(
@@ -265,8 +269,11 @@ export default {
 
       return this.categories.find(o => o.code === this.categoryCode)
     },
+    hasCategory() {
+      return this.selectedCategory && this.selectedCategory.code !== null
+    },
     problemsOnlySameCategory() {
-      if (!this.categoryCode) {
+      if (!this.hasCategory) {
         return this.problems
       }
 
@@ -275,25 +282,24 @@ export default {
       )
     },
     // 同一カテゴリを上に持ってくる
-    problemsSortForPreviousProblem() {
-      if (!this.categoryCode) {
-        return this.problems
+    previousProblemCandidates() {
+      // 自分以外の問題
+      const otherProblems = this.rejectSelf(this.problems)
+
+      if (!this.hasCategory) {
+        return this.unshiftDummy(otherProblems)
       }
 
       // 同一カテゴリの自分以外
-      const same = this.problemsOnlySameCategory.filter(
-        v => this.isNew || v.id !== this.item.id
-      )
+      const same = this.rejectSelf(this.problemsOnlySameCategory)
 
-      // 違うカテゴリの自分以外
-      const diff = this.problems.filter(
-        v =>
-          v.categoryId !== this.selectedCategory.id &&
-          (this.isNew || v.id !== this.item.id)
+      // 他のカテゴリの自分以外
+      const diff = otherProblems.filter(
+        v => v.categoryId !== this.selectedCategory.id
       )
 
       // dividerで区切りを入れる
-      return same.concat([{ divider: true }], diff)
+      return this.unshiftDummy(same.concat([{ divider: true }], diff))
     }
   },
   watch: {
@@ -305,11 +311,6 @@ export default {
       }
       return obj
     }, {})
-  },
-  mounted() {
-    // カテゴリに属していない問題や問題に属していないカテゴリも取得する
-    orm.Problem.eagerFetch({}, [])
-    orm.Category.eagerFetch({}, [])
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -330,6 +331,19 @@ export default {
     },
     // -- END --
 
+    unshiftDummy(items) {
+      items.unshift({ title: 'なし', code: null })
+      return items
+    },
+    rejectSelf(problems) {
+      return this.isNew ? problems : problems.filter(v => v.id !== this.item.id)
+    },
+    // 最初に開いた時に実行される
+    opendAtFirst() {
+      // カテゴリに属していない問題や問題に属していないカテゴリも取得する
+      orm.Problem.eagerFetch({}, [])
+      orm.Category.eagerFetch({}, [])
+    },
     async submit(force) {
       this.sending = true
 

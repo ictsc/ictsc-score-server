@@ -10,7 +10,8 @@ export default class Problem extends BaseModel {
       order: this.number(),
       teamIsolate: this.boolean(),
       previousProblemId: this.string().nullable(),
-      previousProblem: this.belongsTo(orm.Problem, 'previousProblemId'),
+      // ループして5段ネストしたクエリが発行されて2~3倍遅くなるため一旦コメントアウト
+      // previousProblem: this.belongsTo(orm.Problem, 'previousProblemId'),
       categoryId: this.string().nullable(),
       category: this.belongsTo(orm.Category, 'categoryId'),
       // Rangeの[begin: end)
@@ -73,7 +74,6 @@ export default class Problem extends BaseModel {
   }
 
   get displayTitle() {
-    // eslint-disable-next-line no-undef
     return $nuxt.isStaff ? `${this.code}. ${this.title}` : this.title
   }
 }
