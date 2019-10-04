@@ -13,12 +13,18 @@ export default {
     return {
       internalValue: this.value,
       valid: false,
-      sending: false
+      sending: false,
+      opendAtFristCalled: false
     }
   },
   watch: {
-    internalValue() {
-      this.$emit('input', this.internalValue)
+    internalValue(value) {
+      this.$emit('input', value)
+
+      if (value && !this.opendAtFristCalled && this.opendAtFirst) {
+        this.opendAtFristCalled = true
+        this.opendAtFirst()
+      }
     },
     value(value) {
       this.internalValue = value

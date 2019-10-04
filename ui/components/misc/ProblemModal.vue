@@ -312,11 +312,6 @@ export default {
       return obj
     }, {})
   },
-  mounted() {
-    // カテゴリに属していない問題や問題に属していないカテゴリも取得する
-    orm.Problem.eagerFetch({}, [])
-    orm.Category.eagerFetch({}, [])
-  },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
     storageKeyPrefix() {
@@ -342,6 +337,12 @@ export default {
     },
     rejectSelf(problems) {
       return this.isNew ? problems : problems.filter(v => v.id !== this.item.id)
+    },
+    // 最初に開いた時に実行される
+    opendAtFirst() {
+      // カテゴリに属していない問題や問題に属していないカテゴリも取得する
+      orm.Problem.eagerFetch({}, [])
+      orm.Category.eagerFetch({}, [])
     },
     async submit(force) {
       this.sending = true
