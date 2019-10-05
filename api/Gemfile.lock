@@ -273,9 +273,9 @@ PLATFORMS
 DEPENDENCIES
   activerecord-import
   bcrypt (~> 3.1.7)
-  bootsnap (>= 1.1.0)
+  bootsnap (>= 1.4.2)
   brakeman
-  bugsnag (~> 6.12)
+  bugsnag
   bullet
   bundler-audit
   colorize
