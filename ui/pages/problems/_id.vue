@@ -94,20 +94,13 @@ export default {
       return !this.tabMode
     },
     answersTabName() {
-      return 'answers' + this.hashTailTeamId
+      return 'answers' + this.hashTailTeamId()
     },
     issuesTabName() {
-      return 'issues' + this.hashTailTeamId
+      return 'issues' + this.hashTailTeamId()
     },
     problemId() {
       return this.$route.params.id
-    },
-    hashTailTeamId() {
-      // プレイヤーならURL末尾にチームIDを付与しない
-      // playerではselectedTeamId === currentTeamId
-      return this.isNotPlayer && this.selectedTeamId
-        ? `=${this.selectedTeamId}`
-        : ''
     },
     problem() {
       // 編集モーダルや各表示部で使うデータを結合する
@@ -139,7 +132,7 @@ export default {
       this.$router.replace({
         name: this.$route.name,
         params: this.$route.params,
-        hash: `#${this.tabMode}${this.hashTailTeamId}`
+        hash: `#${this.tabMode}${this.hashTailTeamId()}`
       })
     }
   },
@@ -157,6 +150,15 @@ export default {
     this.currentTab = this.tabMode
   },
   methods: {
+    hashTailTeamId() {
+      // プレイヤーならURL末尾にチームIDを付与しない
+      // playerではselectedTeamId === currentTeamId
+
+      // fetchCurrentSession中だとrole判定ができないので応急処置
+      return (!this.currentTeamId || this.isNotPlayer) && this.selectedTeamId
+        ? `=${this.selectedTeamId}`
+        : ''
+    },
     async fetchTeams() {
       if (this.teamFetched) {
         return
