@@ -23,6 +23,8 @@ class Problem < ApplicationRecord
   validate :validate_previous_problem, on: :update
 
   def validate_previous_problem
+    return if self.previous_problem_id.nil?
+
     errors.add(:previous_problem_id, 'disallow set previous_problem to self') if self.previous_problem_id == self.id
   end
 
