@@ -15,6 +15,8 @@ class RecordLoader < GraphQL::Batch::Loader
   end
 
   def perform(keys)
+    Rails.logger.debug "RecordLoader#perform #{@model}##{@column}".magenta
+
     query(keys).each {|record| fulfill(record.public_send(@column), record) }
     keys.each {|key| fulfill(key, nil) unless fulfilled?(key) }
   end
