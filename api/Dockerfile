@@ -14,9 +14,10 @@ WORKDIR /usr/src/app
 # throw errors if Gemfile has been modified since Gemfile.lock
 # RUN bundle config --global frozen 1
 
+# gitはbundler-auditに必要
 RUN apk update \
  && apk add --no-cache --virtual .build-dep build-base postgresql-dev \
- && apk add --no-cache less tzdata postgresql-client \
+ && apk add --no-cache git less tzdata postgresql-client \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && echo "Asia/Tokyo" > /etc/timezone \
  && apk del tzdata
