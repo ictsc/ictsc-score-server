@@ -10,8 +10,8 @@ export default class Problem extends BaseModel {
       order: this.number(),
       teamIsolate: this.boolean(),
       previousProblemId: this.string().nullable(),
-      // ループして5段ネストしたクエリが発行されて2~3倍遅くなるため一旦コメントアウト
-      // previousProblem: this.belongsTo(orm.Problem, 'previousProblemId'),
+      // ループして5段ネストしたクエリが発行されて2~3倍遅くなるが、無いとProblemModalがバグる
+      previousProblem: this.belongsTo(orm.Problem, 'previousProblemId'),
       categoryId: this.string().nullable(),
       category: this.belongsTo(orm.Category, 'categoryId'),
       // Rangeの[begin: end)
