@@ -22,7 +22,6 @@ module Mutations
       if issue_comment.update(issue: issue)
         { issue: issue.readable(team: self.current_team!), issue_comment: issue_comment.readable(team: self.current_team!) }
       else
-        add_errors(issue)
         add_errors(issue, issue_comment)
       end
     end
