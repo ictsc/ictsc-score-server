@@ -9,7 +9,7 @@
   <div>
     <div
       :class="classes"
-      @drop.prevent="insertFileLink($event.dataTransfer.files)"
+      @drop.prevent="uploadFiles($event.dataTransfer.files)"
       @dragover.prevent="dragging = true"
       @dragleave.prevent="dragging = false"
     >
@@ -171,23 +171,28 @@ export default {
 
       return this.valid || '文字数オーバー'
     },
-    async insertFileLink(files) {
+    async uploadFiles(files) {
       this.uploading = true
 
-      const link = await this.upload(files[0])
+      for (const file of files) {
+        const link = await this.upload(file)
 
-      if (link) {
-        const cursorPos = this.$refs.textarea.$refs.input.selectionEnd
-
-        this.internalValue = this.insertString(
-          this.internalValue,
-          cursorPos,
-          `\n![file](${link})\n`
-        )
+        if (link) {
+          this.insertFileLink(link)
+        }
       }
 
       this.dragging = false
       this.uploading = false
+    },
+    insertFileLink(link) {
+      const cursorPos = this.$refs.textarea.$refs.input.selectionEnd
+
+      this.internalValue = this.insertString(
+        this.internalValue,
+        cursorPos,
+        `\n![file](${link})\n`
+      )
     },
     insertString(str, index, insert) {
       if (!str) {
