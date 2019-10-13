@@ -20,7 +20,9 @@ module Mutations
         # TODO: answer.gradeをジョブで実行する -> after create hook
         answer.grade(percent: nil)
         SlackNotifierJob.perform_later(mutation: self.class.name.demodulize, obj: answer)
-        { answer: answer.readable(team: self.current_team!) }
+
+        # gradeでcacheにscoreが残るためreloadして消す
+        { answer: answer.reload.readable(team: self.current_team!) }
       else
         add_errors(answer)
       end
