@@ -16,6 +16,7 @@ export default class Answer extends BaseModel {
       team: this.belongsTo(orm.Team, 'teamId'),
       point: this.number().nullable(),
       percent: this.number().nullable(),
+      solved: this.boolean().nullable(),
       createdAt: this.string()
     }
   }

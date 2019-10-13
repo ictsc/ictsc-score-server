@@ -9,10 +9,10 @@
           </span>
           <span v-else>
             <template v-if="answer.hasPoint">
-              得点 {{ answer.point }}
               <v-icon v-if="answer.solved" small>
                 mdi-check-bold
               </v-icon>
+              得点 {{ answer.point }} ({{ answer.percent }}%)
             </template>
             <template v-else-if="isStaff">
               未採点
