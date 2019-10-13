@@ -33,7 +33,7 @@
     <!-- コメントフォーム -->
     <template v-if="showCommentForm">
       <v-card>
-        <v-card-text class="py-1">
+        <v-card-text class="py-0">
           <v-form v-model="valid">
             <markdown-text-area
               v-model="text"

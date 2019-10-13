@@ -24,8 +24,8 @@
         :rules="rules"
         flat
         auto-grow
-        class="shrink-side-slot pt-1"
-        :class="hideLabelArea ? 'shrink-top' : 'label-margin'"
+        dense
+        class="pt-1 pb-0"
         v-on="$listeners"
         @keyup.ctrl.enter.prevent="valid && $emit('submit')"
       />
@@ -238,23 +238,6 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-// v-textareaの余分な余白を消す(特に左サイド)
-.shrink-side-slot
-  ::v-deep
-    div
-      .v-input__slot
-        padding: 0 0 !important
-
-.shrink-top
-  ::v-deep
-    textarea
-      padding-top: 0
-
-.label-margin
-  ::v-deep
-    textarea
-      margin-top: 2px
-
 .show-in-details
   position: relative
   top: -1.7em
