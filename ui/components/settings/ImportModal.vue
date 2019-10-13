@@ -54,7 +54,7 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn :disabled="sending" color="warning" @click="reset">
+        <v-btn :disabled="sending || !file" color="warning" @click="reset">
           リセット
         </v-btn>
 
@@ -118,10 +118,14 @@ export default {
   },
   watch: {
     file(value) {
-      if (value) {
-        this.loadFile()
+      // valueは[Observer]な可能性がある
+      if (value instanceof File) {
+        this.items = []
+        this.selectedItems = []
+        this.loadFile(value)
       } else {
         this.items = []
+        this.selectedItems = []
       }
     }
   },
@@ -136,10 +140,10 @@ export default {
 
       this.items = items
     },
-    loadFile() {
+    loadFile(file) {
       const reader = new FileReader()
-      reader.onload = () => this.importYAML(reader.result)
-      reader.readAsText(this.file)
+      reader.onload = e => this.importYAML(e.target.result)
+      reader.readAsText(file)
     },
     reset() {
       this.file = null
