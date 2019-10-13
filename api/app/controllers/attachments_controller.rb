@@ -32,7 +32,12 @@ class AttachmentsController < ApplicationController
     end
 
     if file.blank?
-      render json: '"file" field required', status: :bad_request
+      render json: '"file" field is required', status: :bad_request
+      return
+    end
+
+    unless file.is_a?(ActionDispatch::Http::UploadedFile)
+      render json: '"file" field accept only file', status: :bad_request
       return
     end
 
