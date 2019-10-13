@@ -9,16 +9,19 @@
         <v-icon>mdi-delete</v-icon>
       </v-btn>
 
-      <v-select
+      <v-overflow-btn
         v-model="selectedValue"
         :loading="fetching"
         :readonly="sending"
+        :label="label"
         :items="items"
+        :item-value="itemValue"
+        item-text="title"
+        auto-select-first
+        editable
+        dense
         clearable
         hide-defaults
-        item-text="title"
-        :item-value="itemValue"
-        :label="label"
         class="ml-4"
         @focus="fetchItems"
       />
