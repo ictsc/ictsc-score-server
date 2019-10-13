@@ -2,6 +2,7 @@
 
 class AttachmentsController < ApplicationController
   before_action :require_login
+  before_action :reject_audience, :validate_file, only: :create
 
   def show
     # tokenを知っているなら誰でも取得可能
@@ -23,30 +24,7 @@ class AttachmentsController < ApplicationController
     )
   end
 
-  def create # rubocop:disable Metrics/MethodLength
-    file = file_params[:file]
-
-    if current_team.audience?
-      head :forbidden
-      return
-    end
-
-    if file.blank?
-      render json: '"file" field is required', status: :bad_request
-      return
-    end
-
-    unless file.is_a?(ActionDispatch::Http::UploadedFile)
-      render json: '"file" field accept only file', status: :bad_request
-      return
-    end
-
-    # サイズ制限(適当)
-    if current_team.player? && 20.megabyte < file.size
-      render json: 'file size must be 20MB or less', status: :bad_request
-      return
-    end
-
+  def create
     attachment = Attachment.new(
       filename: file.original_filename,
       data: file.read,
@@ -65,7 +43,18 @@ class AttachmentsController < ApplicationController
 
   private
 
-  def file_params
-    params.permit(:file)
+  def file
+    params.permit(:file)[:file]
+  end
+
+  def validate_file
+    if file.blank?
+      render json: '"file" field is required', status: :bad_request
+    elsif !file.is_a?(ActionDispatch::Http::UploadedFile)
+      render json: '"file" field accept only file', status: :bad_request
+    elsif current_team.player? && 20.megabyte < file.size
+      # サイズ制限(適当)
+      render json: 'file size must be 20MB or less', status: :bad_request
+    end
   end
 end
