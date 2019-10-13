@@ -3,9 +3,9 @@
 source 'https://rubygems.org'
 git_source(:github) {|repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.3'
+ruby '2.6.5'
 
-gem 'rails', '~> 5.2.3'
+gem 'rails', '~> 6.0.0'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'colorize'
@@ -23,7 +23,9 @@ gem 'redis-rails'
 # gem 'sinatra', require: false
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
+# gem 'jbuilder', '~> 2.7'
+# Use Active Storage variant
+# gem 'image_processing', '~> 1.2'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
@@ -35,7 +37,7 @@ gem 'activerecord-import'
 # gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', '>= 1.4.2', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
@@ -43,7 +45,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'tzinfo-data'
 
 gem 'slack-notifier'
-gem 'bugsnag', '~> 6.12'
+gem 'bugsnag'
 
 # プロダクションに必須ではないがあると便利
 gem 'factory_bot_rails'

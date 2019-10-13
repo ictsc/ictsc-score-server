@@ -29,7 +29,7 @@ Metrics/PerceivedComplexity:
 ## 長さ系
 Metrics/ClassLength:
   Max: 200
-MethodLength:
+Metrics/MethodLength:
   Max: 20
   Exclude:
     - 'app/graphql/acl.rb'
