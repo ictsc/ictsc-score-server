@@ -9,7 +9,7 @@
   <div>
     <div
       :class="classes"
-      @drop.prevent="insertFileLink($event.dataTransfer.files)"
+      @drop.prevent="uploadFiles($event.dataTransfer.files)"
       @dragover.prevent="dragging = true"
       @dragleave.prevent="dragging = false"
     >
@@ -24,8 +24,8 @@
         :rules="rules"
         flat
         auto-grow
-        class="shrink-side-slot pt-1"
-        :class="hideLabelArea ? 'shrink-top' : 'label-margin'"
+        dense
+        class="pt-1 pb-0"
         v-on="$listeners"
         @keyup.ctrl.enter.prevent="valid && $emit('submit')"
       />
@@ -171,23 +171,28 @@ export default {
 
       return this.valid || '文字数オーバー'
     },
-    async insertFileLink(files) {
+    async uploadFiles(files) {
       this.uploading = true
 
-      const link = await this.upload(files[0])
+      for (const file of files) {
+        const link = await this.upload(file)
 
-      if (link) {
-        const cursorPos = this.$refs.textarea.$refs.input.selectionEnd
-
-        this.internalValue = this.insertString(
-          this.internalValue,
-          cursorPos,
-          `\n![file](${link})\n`
-        )
+        if (link) {
+          this.insertFileLink(link)
+        }
       }
 
       this.dragging = false
       this.uploading = false
+    },
+    insertFileLink(link) {
+      const cursorPos = this.$refs.textarea.$refs.input.selectionEnd
+
+      this.internalValue = this.insertString(
+        this.internalValue,
+        cursorPos,
+        `\n![file](${link})\n`
+      )
     },
     insertString(str, index, insert) {
       if (!str) {
@@ -233,23 +238,6 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-// v-textareaの余分な余白を消す(特に左サイド)
-.shrink-side-slot
-  ::v-deep
-    div
-      .v-input__slot
-        padding: 0 0 !important
-
-.shrink-top
-  ::v-deep
-    textarea
-      padding-top: 0
-
-.label-margin
-  ::v-deep
-    textarea
-      margin-top: 2px
-
 .show-in-details
   position: relative
   top: -1.7em

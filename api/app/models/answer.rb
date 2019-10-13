@@ -29,7 +29,7 @@ class Answer < ApplicationRecord
   def grade(percent:)
     # self.scoreに代入すると即座にsaveされるので注意
     score = self.score || Score.new
-    score.answer = self
+    score.answer ||= self
 
     # 精度とフィルタ設計の上、採点時に実際の得点を計算する必要がある
     case problem.body.mode

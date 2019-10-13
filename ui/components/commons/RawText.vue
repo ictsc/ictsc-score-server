@@ -6,6 +6,7 @@
     flat
     hide-details
     readonly
+    dense
     class="pa-0 ma-0 shrink-side-slot shrink-top"
   />
 </template>

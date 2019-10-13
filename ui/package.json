@@ -18,7 +18,7 @@
     "@nuxtjs/markdownit": "^1.2.5",
     "@nuxtjs/moment": "^1.2.0",
     "@nuxtjs/style-resources": "^1.0.0",
-    "@nuxtjs/vuetify": "~1.8.0",
+    "@nuxtjs/vuetify": "~1.9.0",
     "@vuex-orm/core": "^0.32.0",
     "@vuex-orm/plugin-graphql": "^1.0.0-rc.35",
     "apollo-cache-inmemory": "^1.6.2",

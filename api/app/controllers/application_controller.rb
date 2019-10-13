@@ -12,8 +12,10 @@ class ApplicationController < ActionController::API
   end
 
   def require_login
-    return if logged_in?
+    head :unauthorized unless logged_in?
+  end
 
-    head :unauthorized
+  def reject_audience
+    head :forbidden if current_team.audience?
   end
 end

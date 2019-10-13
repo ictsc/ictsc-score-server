@@ -22,13 +22,17 @@
       />
 
       <!-- 宛先 -->
-      <v-select
+      <v-overflow-btn
         v-model="targetTeamId"
         :readonly="sending"
         :items="teams"
         item-text="displayName"
         item-value="id"
         label="宛先"
+        auto-select-first
+        hide-defaults
+        editable
+        dense
         class="mb-2"
       />
 

@@ -236,7 +236,7 @@ def create_issues(problems, teams)
 
   issues = problems.take(10).each_with_object([]) do |problem, memo|
     teams.take(10).each do |team|
-      memo << build_stubbed(:issue, comment_count: Random.rand(2..6), problem: problem, team: team)
+      memo << build(:issue, comment_count: Random.rand(2..6), problem: problem, team: team)
     end
   end
   issues.shuffle!

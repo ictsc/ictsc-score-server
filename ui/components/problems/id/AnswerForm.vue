@@ -8,7 +8,6 @@
           :readonly="confirming"
           :placeholder="answerPlaceholder"
           hide-details
-          class="pt-2"
         />
 
         <answer-form-radio-button
