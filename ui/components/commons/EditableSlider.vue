@@ -24,7 +24,8 @@
         :max="sliderMax"
         hide-details
         class="ml-4"
-        @input="updateBySlider"
+        @start="stepEnable = true"
+        @input="$emit('input', $event)"
       />
       <slot name="bottom" />
     </v-layout>
@@ -100,12 +101,6 @@ export default {
         // 外部の入力でvalueを変更する場合、無効にする必要がある
         this.stepEnable = false
       }
-    }
-  },
-  methods: {
-    updateBySlider(value) {
-      this.stepEnable = true
-      this.$emit('input', Math.floor(value / this.step) * this.step)
     }
   }
 }
