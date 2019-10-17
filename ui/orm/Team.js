@@ -1,4 +1,3 @@
-import orm from '~/orm'
 import BaseModel from '~/orm/BaseModel'
 
 export default class Team extends BaseModel {
@@ -22,7 +21,7 @@ export default class Team extends BaseModel {
   get numberStr() {
     return this.number.toString()
   }
-   get isStaff() {
+  get isStaff() {
     return this.role === 'staff'
   }
   get isAudience() {

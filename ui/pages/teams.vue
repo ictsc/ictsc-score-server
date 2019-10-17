@@ -3,9 +3,9 @@
     <v-row justify="center">
       <page-title title="チーム一覧" />
     </v-row>
-​
+
     <v-divider class="mt-3 mb-4" />
-​
+
     <v-row align="start" class="mx-5" no-gutters>
       <v-col
         v-for="team of teams"
@@ -14,7 +14,7 @@
       >
         <v-card tile class="mb-5 mr-6">
           <v-card-title class="subtitle-1">
-            {{ team.name }}
+            {{ team.displayName }}
           </v-card-title>
         </v-card>
       </v-col>
@@ -34,19 +34,12 @@ export default {
   computed: {
   teams() {
     return this.sortByNumber(
-      orm.Team.query()
-        .all()
-      ).reverse()
+      orm.Team.players
+      )
     }
   },
-// なぜかfetch()だと呼ばれない
-  async created() {
-    try {
-      this.fetching = true
-      await orm.Team.eagerFetch({})
-    } finally {
-      this.fetching = false
-    }
+  created(){
+    orm.Team.eagerFetch({}, [])
   }
 }
 </script>
