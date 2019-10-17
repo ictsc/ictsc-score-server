@@ -12,7 +12,11 @@
         :key="team.id"
         :cols="isFixedWidth ? 'auto' : 4"
       >
-        <v-card tile class="mb-5 mr-6">
+        <v-card
+          tile
+          class="mb-6 mr-6"
+          :color ="team.teamColor"
+        >
           <v-card-title class="subtitle-1">
             {{ team.displayName }}
           </v-card-title>

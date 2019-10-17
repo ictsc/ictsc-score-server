@@ -3,7 +3,7 @@
     <navigation-link to="/">
       <img class="logo" src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
     </navigation-link>
-    
+
     <v-spacer />
 
     <navigation-link to="/">
