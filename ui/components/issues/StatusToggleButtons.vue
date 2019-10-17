@@ -8,14 +8,18 @@
       全表示
     </v-btn>
 
-    <v-btn :value="red" active-class="error elevation-4" :class="unsolvedClass">
+    <v-btn
+      :value="red"
+      active-class="error white--text elevation-4"
+      :class="unsolvedClass"
+    >
       未解決
     </v-btn>
 
     <v-btn
       v-if="isStaff"
       :value="yellow"
-      active-class="warning elevation-4"
+      active-class="warning white--text elevation-4"
       :class="inProgressClass"
     >
       対応中
@@ -23,7 +27,7 @@
 
     <v-btn
       :value="green"
-      active-class="success elevation-4"
+      active-class="success white--text elevation-4"
       :class="solvedClass"
     >
       解決済
