@@ -12,7 +12,11 @@
         :key="team.id"
         :cols="isFixedWidth ? 'auto' : 4"
       >
-        <v-card tile class="mb-6 mr-6" :color="team.color">
+        <v-card
+          tile
+          class="mb-6 mr-6"
+          :color="team.color"
+        >
           <v-card-title class="subtitle-1">
             {{ team.displayName }}
           </v-card-title>
@@ -36,7 +40,7 @@ export default {
       return this.sortByNumber(orm.Team.players)
     },
     isFixedWidth() {
-      return this.teams.length > 18
+      return this.teams.length < 18
     }
   },
   beforeCreate() {
