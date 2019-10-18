@@ -17,9 +17,6 @@ export default class Team extends BaseModel {
   get displayName() {
     return `No.${this.number} ${this.name}`
   }
-  get teamColor() {
-    return this.color
-  }
   get numberStr() {
     return this.number.toString()
   }
