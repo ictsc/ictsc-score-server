@@ -3,9 +3,9 @@
     <v-row justify="center">
       <page-title title="チーム一覧" />
     </v-row>
-    ​
+
     <v-divider class="mt-3 mb-4" />
-    ​
+
     <v-row align="start" class="mx-5" no-gutters>
       <v-col
         v-for="team of teams"
