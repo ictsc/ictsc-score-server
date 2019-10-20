@@ -25,11 +25,9 @@ export default class Team extends BaseModel {
   get isStaff() {
     return this.role === 'staff'
   }
-
   get isAudience() {
     return this.role === 'audience'
   }
-
   get isPlayer() {
     return this.role === 'player'
   }
