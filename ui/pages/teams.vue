@@ -10,7 +10,7 @@
       <v-col
         v-for="team of teams"
         :key="team.id"
-        :cols="isFixedWidth ? 4 : 'auto' "
+        :cols="isFixedWidth ? 4 : 'auto'"
       >
         <v-card tile class="mb-6 mr-6" :color="team.color">
           <v-card-title class="subtitle-1">
