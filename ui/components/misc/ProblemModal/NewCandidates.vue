@@ -14,6 +14,11 @@
 
         <icon-button
           :disabled="readonly"
+          icon="mdi-shuffle-variant"
+          @click="shuffleCandidateItem(groupIndex)"
+        />
+        <icon-button
+          :disabled="readonly"
           icon="mdi-arrow-up"
           class="mb-1"
           @click="reorderCandidates(groupIndex, true)"
@@ -318,10 +323,18 @@ export default {
       }
 
       this.updateCandidates(candidates)
+      this.refreshCorrects()
+    },
+    shuffleCandidateItem(index) {
+      if (this.candidates[index].length <= 1) {
+        return
+      }
 
-      // updateCandidatesAtと同様の症状
-      // なぜか勝手にチェックが付く問題を回避
-      this.updateCorrects(this.deepCopy(this.corrects))
+      const candidates = this.deepCopy(this.candidates)
+      candidates[index] = this.$_.shuffle(candidates[index])
+
+      this.updateCandidates(candidates)
+      this.refreshCorrects()
     },
 
     // candidatesやcorrectsを更新するための関数郡
@@ -354,6 +367,13 @@ export default {
       const corrects = this.deepCopy(this.corrects)
       corrects[index1] = value || []
       this.updateCorrects(corrects)
+    },
+    // candidatesを入れ替えた後にcorrectsの表示を追従させる
+    refreshCorrects() {
+      // 一旦空にして無理やり再描画
+      const tmp = this.deepCopy(this.corrects)
+      this.updateCorrects(this.corrects.map(e => []))
+      this.$nextTick(() => this.updateCorrects(tmp))
     },
 
     // 基本的な配列操作の関数郡
