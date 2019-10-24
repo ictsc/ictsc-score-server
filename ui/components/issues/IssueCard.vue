@@ -49,7 +49,7 @@
                 v-on="on"
               >
                 <!-- 一覧ではただのテキストとして表示 -->
-                <v-card-text class="caption py-0 truncate">
+                <v-card-text class="caption py-0 truncate-clamp3">
                   {{ comment.text }}
                 </v-card-text>
               </v-card>
@@ -128,7 +128,7 @@ export default {
 .opacity-none
   opacity: 1 !important
 
-.truncate
+.truncate-clamp3
   overflow: hidden
   display: -webkit-box
   -webkit-box-orient: vertical
