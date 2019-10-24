@@ -24,7 +24,7 @@ FactoryBot.define do
     trait :player do
       name { "team #{alphabets[number - 1]}" }
       role { :player }
-      color { Faker::Color.hex_color }
+      color { Random.rand(2).odd? ? nil : Faker::Color.hex_color }
     end
 
     # association :answers # optional: nil
