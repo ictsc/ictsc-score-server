@@ -1,0 +1,63 @@
+<template>
+  <v-menu open-on-hover allow-overflow open-delay="300" max-width="40em">
+    <template v-slot:activator="{ on }">
+      <!-- 一覧に表示されるカード -->
+      <v-card :color="team.color" tile height="100%" v-on="on">
+        <v-row align="center" style="height: 100%">
+          <v-col>
+            <div class="subtitle-1 px-2 truncate-clamp2">
+              <template v-if="showNumber">
+                {{ team.displayName }}
+              </template>
+              <template v-else>
+                {{ team.name }}
+              </template>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card>
+    </template>
+
+    <!-- 詳細情報 -->
+    <v-card>
+      <v-card-text class="pa-3 black--text">
+        <v-col class="pa-0 title font-weight-light">
+          No.{{ team.number }}
+          <v-avatar v-if="team.color" :color="team.color" size="1em" tile />
+
+          <v-divider />
+
+          {{ team.name }}
+
+          <v-divider />
+
+          <template v-if="team.organization">
+            {{ team.organization }}
+          </template>
+        </v-col>
+      </v-card-text>
+    </v-card>
+  </v-menu>
+</template>
+<script>
+export default {
+  name: 'TeamCard',
+  props: {
+    team: {
+      type: Object,
+      required: true
+    },
+    showNumber: {
+      type: Boolean,
+      required: true
+    }
+  }
+}
+</script>
+<style scoped lang="sass">
+.truncate-clamp2
+  overflow: hidden
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 2
+</style>

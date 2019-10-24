@@ -14,10 +14,6 @@
       ガイド
     </navigation-link>
 
-    <navigation-link to="/teams">
-      チーム
-    </navigation-link>
-
     <navigation-link to="/problems">
       問題
     </navigation-link>
@@ -34,6 +30,10 @@
         状況
       </navigation-link>
     </template>
+
+    <navigation-link to="/teams">
+      チーム
+    </navigation-link>
 
     <navigation-link v-if="isStaff" to="/settings">
       <v-icon>mdi-settings-outline</v-icon>
