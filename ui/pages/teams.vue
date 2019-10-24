@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     teams() {
-      return this.sortByNumber(orm.Team.players)
+      return this.sortByNumber(orm.Team.playersWithoutTeam99)
     },
     isFixedWidth() {
       return this.teams.length <= 18
