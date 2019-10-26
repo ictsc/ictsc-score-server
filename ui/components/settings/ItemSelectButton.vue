@@ -17,7 +17,7 @@
     />
 
     <!--
-      ApplyModal系を想定
+      ApplyModal系などを想定
       v-ifで毎回強制再描画することで、モーダルの閉じ開きを再現する
     -->
     <slot
@@ -29,7 +29,7 @@
 </template>
 <script>
 export default {
-  name: 'ApplyButton',
+  name: 'ItemSelectButton',
   props: {
     label: {
       type: String,
@@ -42,11 +42,14 @@ export default {
     fetch: {
       type: Function,
       required: true
+    },
+    prependNewItem: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
-      modal: true,
       fetching: false,
       internalValue: undefined,
       item: undefined,
@@ -63,7 +66,9 @@ export default {
       this.fetching = true
 
       const items = await this.fetch()
-      items.unshift({ [this.itemText]: this.newItemTextValue })
+      if (this.prependNewItem) {
+        items.unshift({ [this.itemText]: this.newItemTextValue })
+      }
       this.items = items
 
       this.fetching = false

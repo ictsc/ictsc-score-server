@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-1">
+  <div>
     <label>{{ label }}</label>
 
     <v-row class="ma-0">

@@ -1,11 +1,16 @@
 <template>
-  <v-layout column align-center>
-    <label>成績出力</label>
-    <v-btn :loading="loading" small @click="exportData">
-      エクスポート
-      <v-icon>mdi-file-export</v-icon>
-    </v-btn>
-  </v-layout>
+  <v-col>
+    <v-row justify="start">
+      <label>成績出力</label>
+    </v-row>
+
+    <v-row justify="start">
+      <v-btn :loading="loading" small @click="exportData">
+        エクスポート
+        <v-icon>mdi-file-export</v-icon>
+      </v-btn>
+    </v-row>
+  </v-col>
 </template>
 <script>
 import orm from '~/orm'

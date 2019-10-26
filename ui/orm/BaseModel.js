@@ -27,18 +27,14 @@ export default class BaseModel extends Model {
   }
 
   // 自身を取得するためのクエリ文字列を構築
-  static buildField() {
-    const name = inflection.singularize(this.entity)
+  static buildField({ isList }) {
+    const name = isList ? this.entity : inflection.singularize(this.entity)
     const fields = this.fields()
     const fieldsText = Object.keys(fields)
       .filter(field => field !== '$isPersisted' && !fields[field].foreignKey)
       .join(' ')
 
-    return `
-      ${name} {
-        ${fieldsText}
-      }
-    `
+    return `${name} { ${fieldsText} }`
   }
 
   // Helpers

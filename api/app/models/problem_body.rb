@@ -18,13 +18,9 @@ class ProblemBody < ApplicationRecord
     checkbox: 30
   }
 
-  # TODO: candidatesやcorrectsがupdateされたら、関連する問題は再採点が必要 毎回採点したほうが良いかもしれない
-  # after_commit :regrade_answers
-  # candidatesが変更されると既存のanswerのbodiesが矛盾する
-  #   delay中のanswerが無ければ無視しても良い
-  #   delay中のanswerがある場合にcandidatesの変更があると不公平が生じる可能性がある
-
   validate :validate_candidates
+
+  after_commit :regrade_answers, on: %i[update], if: :require_regrade_answer?
 
   # フォーマットの詳細は該当スペックを参照
   def validate_candidates # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -47,6 +43,26 @@ class ProblemBody < ApplicationRecord
       end
     else
       raise UnhandledProblemBodyMode, mode
+    end
+  end
+
+  def require_regrade_answer?
+    # これらが変更されていたら再採点する必要がある
+    # 正解の選択肢の変更には対応するがcandidates自体の変更には対応しない(解答の書き換えが必要なため)
+    # saved_changesはafter_*で有効
+    (saved_changes.keys & %w[perfect_point solved_criterion corrects]).present?
+  end
+
+  def regrade_answers
+    failed_count = problem.regrade_answers
+
+    # after_commit後にerrorsを追加するのは違和感があるが、Mutationのエラーハンドリングが手軽
+    unless failed_count.zero?
+      message = "failed to regrade #{failed_count} answer "
+      errors.add(:regrade_answers, message)
+
+      # 本来は失敗しないはずの処理なのでBugsnagにも通知しておく
+      Bugsnag.notify(StandardError.new(message))
     end
   end
 end

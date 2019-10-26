@@ -5,22 +5,30 @@ import BaseModel from '~/orm/BaseModel'
 export default class Mutation extends BaseModel {
   // -- Mutation build helpers --
 
-  // fields: Modelの配列かクエリ文字列
+  static buildMutationField(field) {
+    if (typeof field === 'string') {
+      return field
+    } else if (Array.isArray(field)) {
+      return field[0].buildField({ isList: true })
+    } else {
+      return field.buildField({ isList: false })
+    }
+  }
+
+  // fields: Modelの生クエリ文字列か配列
   static buildMutation(mutation, fields) {
     const fieldsString =
       typeof fields === 'string'
         ? fields
-        : fields.map(m => m.buildField()).join('\n')
+        : fields.map(field => this.buildMutationField(field)).join('\n')
 
-    const query = `
+    return `
       mutation operator($input: ${inflection.camelize(mutation)}Input!) {
         ${mutation}(input: $input) {
           ${fieldsString}
         }
       }
     `
-
-    return query
   }
 
   // try catchで囲めばキャッチできる
@@ -39,15 +47,25 @@ export default class Mutation extends BaseModel {
     }
 
     const responseForEach = func => {
-      Object.keys(response[mutation])
-        .filter(key => key[0] !== '_')
-        .forEach(key => {
-          const getter = `entities/${inflection.pluralize(key)}`
-          const model = this.store().getters[getter]().model
+      Object.keys(response[mutation]).forEach(key => {
+        const value = response[mutation][key]
+        console.info('response value', key, value)
 
-          // レスポンスから取得したモデルとレコードを関数に渡す
-          func(model, response[mutation][key])
-        })
+        // __typenameなどは無視、値がレコードでなくても無視
+        if (key[0] === '_' || typeof value !== 'object') {
+          return
+        }
+
+        const getter = `entities/${inflection.pluralize(key)}`
+        const model = this.store().getters[getter]().model
+
+        // レスポンスから取得したモデルとレコードを関数に渡す
+        if (Array.isArray(value)) {
+          value.forEach(v => func(model, value))
+        } else {
+          func(model, value)
+        }
+      })
     }
 
     // Vuexへの登録・削除を行う
@@ -285,6 +303,17 @@ export default class Mutation extends BaseModel {
       mutation: 'applyScore',
       params: { answerId, percent },
       fields: [orm.Answer],
+      type: 'upsert'
+    })
+  }
+
+  static regradeAnswers({ action, resolve, params: { problemId } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'regradeAnswers',
+      params: { problemId },
+      fields: [[orm.Answer], 'total', 'succeeded', 'failed'],
       type: 'upsert'
     })
   }
