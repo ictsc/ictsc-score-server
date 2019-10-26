@@ -76,6 +76,22 @@
       </v-col>
     </v-row>
 
+    <!-- 再採点 -->
+    <v-row justify="center">
+      <v-col cols="6" class="pt-1">
+        <apply-button
+          :fetch="fetchProblems"
+          :prepend-new-item="false"
+          label="再採点"
+          item-text="title"
+        >
+          <template v-slot="{ item }">
+            <regrade-answers-modal value :problem="item" />
+          </template>
+        </apply-button>
+      </v-col>
+    </v-row>
+
     <v-row justify="center" class="mt-8">
       <v-col cols="auto">
         <label>コンテスト設定</label>
@@ -120,6 +136,7 @@ import ExportImportButtons from '~/components/settings/ExportImportButtons'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'
 import PageTitle from '~/components/commons/PageTitle'
 import ProblemModal from '~/components/misc/ProblemModal'
+import RegradeAnswersModal from '~/components/settings/RegradeAnswersModal'
 import TeamModal from '~/components/misc/TeamModal'
 
 export default {
@@ -133,6 +150,7 @@ export default {
     ExportScoresButton,
     PageTitle,
     ProblemModal,
+    RegradeAnswersModal,
     TeamModal
   },
   data() {

@@ -42,11 +42,14 @@ export default {
     fetch: {
       type: Function,
       required: true
+    },
+    prependNewItem: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
-      modal: true,
       fetching: false,
       internalValue: undefined,
       item: undefined,
@@ -63,7 +66,9 @@ export default {
       this.fetching = true
 
       const items = await this.fetch()
-      items.unshift({ [this.itemText]: this.newItemTextValue })
+      if (this.prependNewItem) {
+        items.unshift({ [this.itemText]: this.newItemTextValue })
+      }
       this.items = items
 
       this.fetching = false

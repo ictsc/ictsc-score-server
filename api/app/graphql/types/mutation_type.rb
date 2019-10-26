@@ -20,6 +20,7 @@ module Types
     field :deleteProblemEnvironment, mutation: Mutations::DeleteProblemEnvironment
     field :deleteProblemSupplement,  mutation: Mutations::DeleteProblemSupplement
     field :pinNotice,                mutation: Mutations::PinNotice
+    field :regradeAnswers,           mutation: Mutations::RegradeAnswers
     field :startIssue,               mutation: Mutations::StartIssue
     field :transitionIssueState,     mutation: Mutations::TransitionIssueState
     field :updateConfig,             mutation: Mutations::UpdateConfig

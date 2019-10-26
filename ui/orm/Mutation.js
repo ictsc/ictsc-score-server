@@ -307,6 +307,17 @@ export default class Mutation extends BaseModel {
     })
   }
 
+  static regradeAnswers({ action, resolve, params: { problemId } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'regradeAnswers',
+      params: { problemId },
+      fields: [[orm.Answer], 'total', 'succeeded', 'failed'],
+      type: 'upsert'
+    })
+  }
+
   static applyTeam({
     action,
     resolve,

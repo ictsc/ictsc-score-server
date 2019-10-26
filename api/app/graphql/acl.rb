@@ -14,7 +14,7 @@ class Acl
       return false if team.audience?
 
       case mutation_str
-      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig'
+      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers'
         # staff only
         team.staff?
       when 'AddAnswer'
