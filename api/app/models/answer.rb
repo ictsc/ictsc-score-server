@@ -38,11 +38,6 @@ class Answer < ApplicationRecord
       score.percent = percent
       score.point = percent && percent * problem.body.perfect_point / 100
     when 'radio_button', 'checkbox'
-      unless percent.nil?
-        score.errors.add(:grading, "in #{problem.body.mode}, disallow grade manually")
-        return false
-      end
-
       # 計算精度注意
       score.percent = 100 * correct_count / problem.body.corrects.size
       score.point = problem.body.perfect_point * correct_count / problem.body.corrects.size
