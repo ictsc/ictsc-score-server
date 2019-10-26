@@ -17,7 +17,7 @@
     />
 
     <!--
-      ApplyModal系を想定
+      ApplyModal系などを想定
       v-ifで毎回強制再描画することで、モーダルの閉じ開きを再現する
     -->
     <slot
@@ -29,7 +29,7 @@
 </template>
 <script>
 export default {
-  name: 'ApplyButton',
+  name: 'ItemSelectButton',
   props: {
     label: {
       type: String,

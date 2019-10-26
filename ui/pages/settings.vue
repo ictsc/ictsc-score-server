@@ -42,7 +42,7 @@
     <!-- 追加・編集 -->
     <v-row justify="center" class="mt-8">
       <v-col cols="6">
-        <apply-button
+        <item-select-button
           :fetch="fetchTeams"
           label="チーム 追加・編集"
           item-text="displayName"
@@ -50,9 +50,9 @@
           <template v-slot="{ item, isNew }">
             <team-modal value :item="item" :is-new="isNew" />
           </template>
-        </apply-button>
+        </item-select-button>
 
-        <apply-button
+        <item-select-button
           :fetch="fetchCategories"
           label="カテゴリ 追加・編集"
           item-text="title"
@@ -61,9 +61,9 @@
           <template v-slot="{ item, isNew }">
             <category-modal value :item="item" :is-new="isNew" />
           </template>
-        </apply-button>
+        </item-select-button>
 
-        <apply-button
+        <item-select-button
           :fetch="fetchProblems"
           label="問題 追加・編集"
           item-text="title"
@@ -72,14 +72,14 @@
           <template v-slot="{ item, isNew }">
             <problem-modal value :item="item" :is-new="isNew" />
           </template>
-        </apply-button>
+        </item-select-button>
       </v-col>
     </v-row>
 
     <!-- 再採点 -->
     <v-row justify="center">
       <v-col cols="6" class="pt-1">
-        <apply-button
+        <item-select-button
           :fetch="fetchProblems"
           :prepend-new-item="false"
           label="再採点"
@@ -88,7 +88,7 @@
           <template v-slot="{ item }">
             <regrade-answers-modal value :problem="item" />
           </template>
-        </apply-button>
+        </item-select-button>
       </v-col>
     </v-row>
 
@@ -128,12 +128,13 @@
 </template>
 <script>
 import orm from '~/orm'
-import ApplyButton from '~/components/settings/ApplyButton'
+
 import CategoryModal from '~/components/misc/CategoryModal'
 import ConfigTable from '~/components/settings/ConfigTable'
 import DeleteComponentArea from '~/components/settings/DeleteComponentArea'
 import ExportImportButtons from '~/components/settings/ExportImportButtons'
 import ExportScoresButton from '~/components/settings/ExportScoresButton'
+import ItemSelectButton from '~/components/settings/ItemSelectButton'
 import PageTitle from '~/components/commons/PageTitle'
 import ProblemModal from '~/components/misc/ProblemModal'
 import RegradeAnswersModal from '~/components/settings/RegradeAnswersModal'
@@ -142,12 +143,12 @@ import TeamModal from '~/components/misc/TeamModal'
 export default {
   name: 'Settings',
   components: {
-    ApplyButton,
     CategoryModal,
     ConfigTable,
     DeleteComponentArea,
     ExportImportButtons,
     ExportScoresButton,
+    ItemSelectButton,
     PageTitle,
     ProblemModal,
     RegradeAnswersModal,
