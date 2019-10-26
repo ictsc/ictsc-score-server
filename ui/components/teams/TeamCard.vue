@@ -2,7 +2,7 @@
   <v-menu open-on-hover allow-overflow open-delay="300" max-width="40em">
     <template v-slot:activator="{ on }">
       <!-- 一覧に表示されるカード -->
-      <v-card :color="team.color" tile height="100%" v-on="on">
+      <v-card :color="team.color" :ripple="false" tile height="100%" v-on="on">
         <v-row align="center" style="height: 100%">
           <v-col>
             <div class="subtitle-1 px-2 truncate-clamp2">

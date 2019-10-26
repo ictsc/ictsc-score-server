@@ -19,7 +19,7 @@ export default class Team extends BaseModel {
   }
 
   get numberStr() {
-    return this.number.toString()
+    return String(this.number)
   }
 
   get isStaff() {
