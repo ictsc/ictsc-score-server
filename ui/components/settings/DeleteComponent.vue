@@ -1,14 +1,6 @@
 <template>
-  <div>
-    <v-row align="center">
-      <v-btn
-        :disabled="!selectedValue || fetching"
-        @click.stop="showDialog = true"
-      >
-        削除
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-
+  <v-row align="center" no-gutters class="flex-nowrap">
+    <v-col cols="10">
       <v-overflow-btn
         v-model="selectedValue"
         :loading="fetching"
@@ -22,10 +14,18 @@
         dense
         clearable
         hide-defaults
-        class="ml-4"
         @focus="fetchItems"
       />
-    </v-row>
+    </v-col>
+
+    <v-btn
+      :disabled="!selectedValue || fetching"
+      class="ml-2"
+      @click.stop="showDialog = true"
+    >
+      削除
+      <v-icon>mdi-delete</v-icon>
+    </v-btn>
 
     <v-dialog v-model="showDialog" max-width="20em">
       <v-card>
@@ -46,7 +46,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-row>
 </template>
 <script>
 export default {
