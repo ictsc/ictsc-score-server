@@ -363,8 +363,6 @@ export default {
         this.writer = null
       }
 
-      this.perfectPoint = this.perfectPoint
-
       await orm.Mutation.applyProblem({
         action: this.modalTitle,
         resolve: () => {
