@@ -35,4 +35,9 @@ export default class Team extends BaseModel {
   static get players() {
     return Team.all().filter(t => t.isPlayer)
   }
+
+  // team99は毎回使われるテストユーザー
+  static get playersWithoutTeam99() {
+    return Team.all().filter(t => t.isPlayer && t.name !== 'team99')
+  }
 }
