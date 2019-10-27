@@ -13,10 +13,7 @@ module Types
     field :updated_at, Types::DateTime,           null: false
 
     def status
-      # staff以外には対応中を見せない
-      return 'unsolved' if !self.current_team!.staff? && self.object.in_progress?
-
-      self.object.status
+      self.object.response_status(team: self.current_team!)
     end
 
     belongs_to :problem

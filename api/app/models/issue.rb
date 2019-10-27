@@ -6,7 +6,7 @@ class Issue < ApplicationRecord
   validates :team,    presence: true
 
   # 状態遷移条件
-  # unsolved: 要対応
+  # unsolved: 未対応
   # in_progress: 対応中
   # solved: 解決
   enum status: {
@@ -18,6 +18,13 @@ class Issue < ApplicationRecord
   belongs_to :problem
   belongs_to :team
   has_many :comments, dependent: :destroy, class_name: 'IssueComment'
+
+  # staff以外には対応中を未対応と表示する
+  def response_status(team:)
+    return 'unsolved' if !team.staff? && in_progress?
+
+    status
+  end
 
   def transition_by_click(team:)
     case status
