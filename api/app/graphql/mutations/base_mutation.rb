@@ -7,12 +7,16 @@ module Mutations
       self.context.current_team!
     end
 
+    def add_error_message(message, ast_node: nil, options: nil, extensions: nil)
+      Rails.logger.error message
+      self.context.add_error(GraphQL::ExecutionError.new(message, message, ast_node, options, extensions))
+    end
+
     def add_errors(*records)
       records.each do |record|
         record.errors.each do |attr, message|
           message = "#{record.model_name} #{attr} #{message}"
-          Rails.logger.error message
-          self.context.add_error(GraphQL::ExecutionError.new(message))
+          self.add_error_message(GraphQL::ExecutionError.new(message))
         end
       end
 

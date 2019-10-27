@@ -1,80 +1,92 @@
 <template>
-  <v-row align="end" justify="space-between">
-    <template v-if="problemBody.modeIsTextbox">
-      <v-slider
-        v-model="slider"
-        :step="stepEnable ? 5 : undefined"
-        :readonly="sending"
-        track-color="grey lighten-2"
-        min="-5"
-        max="100"
-        hide-details
-        @start="stepEnable = true"
-      >
-        <template v-slot:prepend>
-          <number-text-field
-            v-model="text"
+  <v-col>
+    <v-row justify="space-between">
+      <template v-if="problemBody.modeIsTextbox">
+        <v-slider
+          v-model="slider"
+          :step="stepEnable ? 5 : undefined"
+          :readonly="sending"
+          track-color="grey lighten-2"
+          min="-5"
+          max="100"
+          hide-details
+          @start="stepEnable = true"
+        >
+          <template v-slot:prepend>
+            <number-text-field
+              v-model="text"
+              :readonly="sending"
+              suffix="%"
+              hide-details
+              type="string"
+              single-line
+              @focus="stepEnable = false"
+            />
+
+            <!-- 基準突破チェック + 説明ツールチップ -->
+            <v-tooltip open-delay="300" bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon :color="solvedIconColor" class="ml-2" v-on="on">
+                  mdi-check-bold
+                </v-icon>
+              </template>
+              <span>基準を超えるとチェックが付きます</span>
+            </v-tooltip>
+          </template>
+
+          <template v-slot:append>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  :disabled="!validPoint || !changed"
+                  :loading="sending"
+                  color="primary"
+                  @click="applyScore"
+                  v-on="on"
+                >
+                  採点
+                </v-btn>
+              </template>
+
+              <span v-if="hideAllScore">採点結果は参加者には非公開です</span>
+              <span v-else-if="realtimeGrading">
+                時間内の再採点は参加者に認知されません
+              </span>
+            </v-tooltip>
+          </template>
+        </v-slider>
+      </template>
+    </v-row>
+
+    <v-row align="center" justify="end" no-guters>
+      <v-tooltip open-delay="300" bottom>
+        採点担当者間の連携用
+        <template v-slot:activator="{ on }">
+          <v-switch
+            :input-value="answer.confirming"
             :readonly="sending"
-            suffix="%"
+            inset
             hide-details
-            type="string"
-            single-line
-            @focus="stepEnable = false"
-          />
-
-          <!-- 基準突破チェック + 説明ツールチップ -->
-          <v-tooltip open-delay="300" bottom>
-            <template v-slot:activator="{ on }">
-              <v-icon :color="solvedIconColor" class="ml-2" v-on="on">
-                mdi-check-bold
-              </v-icon>
+            color="primary"
+            class="mt-0"
+            @change="confirmingAnswer($event)"
+            v-on="on"
+          >
+            <template v-slot:prepend>
+              <v-col class="px-0 pt-1 pb-1">
+                <template v-if="answer.confirming">
+                  対応中
+                </template>
+                <template v-else>
+                  未対応
+                </template>
+              </v-col>
             </template>
-            <span>基準を超えるとチェックが付きます</span>
-          </v-tooltip>
+          </v-switch>
         </template>
-
-        <template v-slot:append>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                :disabled="!validPoint || !changed"
-                :loading="sending"
-                color="primary"
-                @click="applyScore"
-                v-on="on"
-              >
-                採点
-              </v-btn>
-            </template>
-
-            <span v-if="hideAllScore">採点結果は参加者には非公開です</span>
-            <span v-else-if="realtimeGrading">
-              時間内の再採点は参加者に認知されません
-            </span>
-          </v-tooltip>
-        </template>
-      </v-slider>
-    </template>
-
-    <template
-      v-else-if="problemBody.modeIsRadioButton || problemBody.modeIsCheckbox"
-    >
-      <!-- TODO: API側が未実装なので非表示 -->
-      <v-btn
-        v-if="false"
-        :disabled="!validPoint"
-        :loading="sending"
-        color="primary"
-        @click="regrade"
-      >
-        再採点
-      </v-btn>
-    </template>
-
-    <template v-else>
-      未実装の問題タイプです
-    </template>
-  </v-row>
+      </v-tooltip>
+    </v-row>
+  </v-col>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -161,9 +173,17 @@ export default {
 
       this.sending = false
     },
-    regrade() {
-      // TODO: 実装
-      this.notifyWarning({ message: '未実装です' })
+    async confirmingAnswer(confirming) {
+      console.info(confirming)
+      this.sending = true
+
+      await orm.Mutation.confirmingAnswer({
+        action: '対応状況の遷移',
+        resolve: () => {},
+        params: { answerId: this.answer.id, confirming }
+      })
+
+      this.sending = false
     }
   }
 }

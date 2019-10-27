@@ -307,6 +307,21 @@ export default class Mutation extends BaseModel {
     })
   }
 
+  static confirmingAnswer({
+    action,
+    resolve,
+    params: { answerId, confirming }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'confirmingAnswer',
+      params: { answerId, confirming },
+      fields: [orm.Answer],
+      type: 'upsert'
+    })
+  }
+
   static regradeAnswers({ action, resolve, params: { problemId } }) {
     return this.sendMutation({
       action,
