@@ -1,36 +1,40 @@
 <template>
   <v-container>
-    <v-layout column align-center>
-      <page-title title="解答一覧" />
+    <v-row justify="center">
+      <v-col cols="auto" align="center" class="pt-0">
+        <page-title title="解答一覧" />
 
-      <v-overflow-btn
-        v-model="problemCode"
-        :items="problems"
-        item-text="title"
-        item-value="code"
-        label="問題選択"
-        auto-select-first
-        clearable
-        editable
-        dense
-        hide-details
-        class="mt-0 mb-2"
-      />
+        <v-overflow-btn
+          v-model="problemCode"
+          :items="problems"
+          item-text="title"
+          item-value="code"
+          label="問題選択"
+          auto-select-first
+          clearable
+          editable
+          dense
+          hide-details
+          class="mt-0 mb-2"
+        />
 
-      <v-switch
-        v-model="showAll"
-        :label="showAll ? '全表示' : '未採点のみ'"
-        hide-details
-      />
-    </v-layout>
+        <v-switch
+          v-model="showAll"
+          :label="showAll ? '全表示' : '未採点のみ'"
+          hide-details
+        />
+      </v-col>
+    </v-row>
 
     <!-- 一覧 -->
     <v-container>
-      <v-layout v-for="problem in problems" :key="problem.id">
+      <div v-for="problem in problems" :key="problem.id">
         <div v-show="isDisplayProblem(problem)" class="mb-4">
-          <div class="title">{{ problem.code }} {{ problem.body.title }}</div>
+          <div class="title pl-2">
+            {{ problem.code }} {{ problem.body.title }}
+          </div>
 
-          <v-row class="mx-0" justify="start" align="start">
+          <v-row align="start" justify="start" class="mx-0">
             <template v-for="answer in filter(problem.answers)">
               <answer-card
                 v-show="isDisplayAnswer(answer)"
@@ -44,7 +48,7 @@
             <v-spacer />
           </v-row>
         </div>
-      </v-layout>
+      </div>
     </v-container>
   </v-container>
 </template>

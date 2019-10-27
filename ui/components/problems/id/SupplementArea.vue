@@ -1,25 +1,18 @@
 <template>
-  <v-layout column>
-    <v-flex>
+  <v-col align="start" class="pa-0">
+    <div>
       <expandable-button v-model="show" :togglable="supplements.length !== 0">
         補足事項
       </expandable-button>
 
       <pen-button v-if="isStaff" @click.stop="showModal = true" />
-    </v-flex>
+    </div>
 
-    <!-- v-forとv-showで上手くアニメーションさせるためにv-flexをネストする -->
-    <v-flex
-      v-for="supplement in sortedSupplements"
-      :key="supplement.id"
-      class="pa-0"
-    >
-      <v-expand-transition>
-        <v-flex v-show="show" class="pt-0">
-          <supplement-card :supplement="supplement" />
-        </v-flex>
+    <template v-for="supplement in sortedSupplements">
+      <v-expand-transition :key="supplement.id">
+        <supplement-card v-show="show" :supplement="supplement" class="mt-1" />
       </v-expand-transition>
-    </v-flex>
+    </template>
 
     <markdown-editor-modal
       ref="modal"
@@ -31,7 +24,7 @@
       :supplement="`追加後${deleteTimeLimitString}間は削除可能です`"
       @submit="addSupplement($event)"
     />
-  </v-layout>
+  </v-col>
 </template>
 <script>
 import { mapGetters } from 'vuex'

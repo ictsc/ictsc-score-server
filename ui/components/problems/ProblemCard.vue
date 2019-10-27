@@ -1,26 +1,33 @@
 <template>
   <v-card
-    append
     :disabled="!problem.isReadable"
     :to="problemURL"
+    append
+    tile
     width="12em"
-    height="6em"
-    class="pl-4 pr-2 py-4"
   >
-    <template v-if="problem.isReadable">
-      <div class="subtitle-1 text-truncate">
-        {{ elvis(problem, 'body.title') }}
-      </div>
+    <v-container height="6em">
+      <v-row align="center" justify="center" style="height: 4em;">
+        <v-card-text class="py-0 black--text">
+          <template v-if="problem.isReadable">
+            <div class="subtitle-1 text-truncate">
+              {{ elvis(problem, 'body.title') }}
+            </div>
 
-      <div v-if="isStaff">コード {{ problem.code }}</div>
+            <div v-if="isStaff">コード {{ problem.code }}</div>
 
-      <div class="body-2">満点 {{ elvis(problem, 'body.perfectPoint') }}</div>
-    </template>
-    <template v-else>
-      <v-layout justify-center align-center fill-height>
-        <v-icon>mdi-lock</v-icon>
-      </v-layout>
-    </template>
+            <div class="body-2">
+              満点 {{ elvis(problem, 'body.perfectPoint') }}
+            </div>
+          </template>
+          <template v-else>
+            <v-row justify="center" class="pa-0">
+              <v-icon>mdi-lock</v-icon>
+            </v-row>
+          </template>
+        </v-card-text>
+      </v-row>
+    </v-container>
   </v-card>
 </template>
 <script>

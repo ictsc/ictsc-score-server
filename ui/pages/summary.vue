@@ -1,8 +1,10 @@
 <template>
   <v-container>
-    <v-layout column align-center>
-      <page-title title="状況" />
-    </v-layout>
+    <v-row justify="center" class="pt-0">
+      <v-col cols="auto" align="center">
+        <page-title title="状況" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>

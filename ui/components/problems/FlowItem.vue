@@ -4,7 +4,6 @@
     <div class="caption">{{ body }}</div>
   </div>
 </template>
-
 <script>
 export default {
   name: 'FlowItem',

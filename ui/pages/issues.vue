@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <v-layout column align-center>
-      <page-title title="質問一覧" />
+    <v-row justify="center">
+      <v-col cols="auto" align="center" class="pt-0">
+        <page-title title="質問一覧" />
 
-      <v-flex class="mb-6">
         <!-- 状態選択ボタン -->
         <status-toggle-buttons
           v-model="displayStatuses"
@@ -30,15 +30,17 @@
           label="最新返答順"
           class="mt-0"
         />
-      </v-flex>
 
-      <!-- 補足 -->
-      <span class="mb-4">
-        質問は各問題ページから行ってください
-      </span>
+        <!-- 補足 -->
+        <div class="mt-4">
+          質問は各問題ページから行ってください
+        </div>
+      </v-col>
+    </v-row>
 
-      <!-- 質問一覧 -->
-      <v-flex>
+    <!-- 質問一覧 -->
+    <v-row justify="center">
+      <v-col align="center" cols="auto">
         <template v-for="issue in issues">
           <!-- v-forで絞らず、v-showで表示切り替えするとインタラクションが良い -->
           <issue-card
@@ -48,8 +50,8 @@
             class="mb-2"
           />
         </template>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>

@@ -1,18 +1,19 @@
 <template>
-  <v-layout row align-end :reverse="comment.isOurComment">
-    <v-flex xs10 d-flex child-flex>
+  <v-row align="end" class="pt-0 pb-2">
+    <v-col v-if="comment.isOurComment" cols="2" align="end" class="pa-0">
+      <div class="caption">{{ comment.createdAtHM }}</div>
+    </v-col>
+
+    <v-col cols="10" class="px-2 py-0">
       <v-card>
         <markdown :content="comment.text" :color="comment.color" />
       </v-card>
-    </v-flex>
+    </v-col>
 
-    <v-flex shrink pa-0 d-flex child-flex>
-      <span class="caption">
-        {{ comment.createdAtHM }}
-      </span>
-    </v-flex>
-    <v-spacer />
-  </v-layout>
+    <v-col v-if="!comment.isOurComment" class="pa-0">
+      <div class="caption">{{ comment.createdAtHM }}</div>
+    </v-col>
+  </v-row>
 </template>
 <script>
 import Markdown from '~/components/commons/Markdown'
