@@ -10,7 +10,6 @@
     disable-pagination
     dense
     class="elevation-2 ma-0"
-    style="min-width: 34em; max-width: 34em"
   >
     <template v-slot:item.action="{ item, header, value }">
       <config-modal :config="item">

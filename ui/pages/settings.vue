@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="background">
+  <v-container fluid :class="background" class="px-6">
     <v-row justify="center">
       <page-title title="管理" />
     </v-row>
@@ -39,9 +39,9 @@
       </v-col>
     </v-row>
 
-    <!-- 追加・編集 -->
-    <v-row justify="center" class="mt-8">
-      <v-col cols="6">
+    <!-- 追加・編集・再採点 -->
+    <v-row justify="center">
+      <v-col class="fixed-width">
         <item-select-button
           :fetch="fetchTeams"
           label="チーム 追加・編集"
@@ -73,17 +73,13 @@
             <problem-modal value :item="item" :is-new="isNew" />
           </template>
         </item-select-button>
-      </v-col>
-    </v-row>
 
-    <!-- 再採点 -->
-    <v-row justify="center">
-      <v-col cols="6" class="pt-1">
         <item-select-button
           :fetch="fetchProblems"
           :prepend-new-item="false"
           label="再採点"
           item-text="title"
+          class="mt-4"
         >
           <template v-slot="{ item }">
             <regrade-answers-modal value :problem="item" />
@@ -92,20 +88,23 @@
       </v-col>
     </v-row>
 
-    <v-row justify="center" class="mt-8">
-      <v-col cols="auto">
+    <!-- コンテスト設定 -->
+    <v-row justify="center" no-gutters class="mt-8">
+      <v-col class="fixed-width">
         <label>コンテスト設定</label>
         <config-table />
       </v-col>
     </v-row>
 
-    <v-row justify="start" class="mt-12 pt-12 white">
+    <!-- 削除系 -->
+    <v-row justify="start" class="mt-12 px-2 white" no-gutters>
       <v-col>
         <v-switch
           v-model="showDelete1"
           :label="showDelete1 ? '戻して' : '押すな危険'"
           color="warning"
           hide-details
+          class="mt-12"
         />
 
         <v-switch
@@ -117,8 +116,8 @@
           hide-details
         />
 
-        <v-row justify="center">
-          <v-col cols="6">
+        <v-row justify="center" no-gutters>
+          <v-col class="fixed-width">
             <delete-component-area v-show="showDelete1 && showDelete2" />
           </v-col>
         </v-row>
@@ -277,3 +276,8 @@ export default {
   }
 }
 </script>
+<style scoped lang="sass">
+.fixed-width
+  min-width: 34em
+  max-width: 34em
+</style>
