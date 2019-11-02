@@ -7,7 +7,7 @@
     width="12em"
   >
     <v-container height="6em">
-      <v-row align="center" justify="center" style="height: 4em;">
+      <v-row align="center" justify="center" style="height: 4em">
         <v-card-text class="py-0 black--text">
           <template v-if="problem.isReadable">
             <div class="subtitle-1 text-truncate">

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet :color="color" class="pa-2 ma-0" style="overflow-wrap: break-word">
+  <v-sheet :color="color" class="pa-2 ma-0">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div class="markdown" v-html="$md.render(content)" />
   </v-sheet>

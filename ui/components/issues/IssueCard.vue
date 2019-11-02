@@ -1,9 +1,9 @@
 <template>
   <v-card :to="issueURL" height="5em">
-    <v-row align="center" justify="start" class="ml-0 pr-2 full-height">
+    <v-row align="center" justify="start" class="ml-0 pr-2 height-full">
       <!-- 状態 -->
-      <v-sheet :class="statusColor" class="full-height status right-no-radius">
-        <v-row align="center" justify="center" class="full-height">
+      <v-sheet :class="statusColor" class="height-full status no-right-radius">
+        <v-row align="center" justify="center" class="height-full">
           {{ issue.statusJp }}
         </v-row>
       </v-sheet>
@@ -37,7 +37,7 @@
             open-delay="400"
             max-width="50%"
             bottom
-            content-class="pa-0 elevation-8 opacity-none"
+            content-class="pa-0 elevation-8 opacity-1"
           >
             <!-- ツールチップではMarkdownとして表示 -->
             <markdown :content="comment.text" :color="comment.color" />
@@ -120,25 +120,9 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.full-height
-  height: 100%
-
-.opacity-none
-  opacity: 1 !important
-
-.truncate-clamp3
-  overflow: hidden
-  display: -webkit-box
-  -webkit-box-orient: vertical
-  -webkit-line-clamp: 3
-
 .status
   max-width: 4.2em
   min-width: 4.2em
-
-.right-no-radius
-  border-top-right-radius: 0
-  border-bottom-right-radius: 0
 
 .card-info
   max-width: 10em

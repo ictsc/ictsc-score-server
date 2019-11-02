@@ -50,6 +50,7 @@
           text
           icon
           large
+          class="always-active-color"
           @click="textboxAsMarkdown = !textboxAsMarkdown"
         >
           <v-icon>mdi-markdown-outline</v-icon>

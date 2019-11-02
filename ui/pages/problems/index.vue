@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <!-- 問題・カテゴリ追加ボタン -->
-    <v-col v-if="isStaff" cols="auto" class="floating-area pa-0">
+    <v-col v-if="isStaff" cols="auto" class="floating-area-100 top-right pa-0">
       <v-btn
         block
         color="primary"
@@ -102,9 +102,7 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.floating-area
-  position: fixed
-  z-index: 100
+.top-right
   top: 3rem
   right: 0.5rem
 </style>

@@ -18,6 +18,7 @@ export default {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
+  css: ['~/assets/css/commons.sass'],
   build: {
     // Extend webpack config
     extend(config, { isDev, isClient }) {

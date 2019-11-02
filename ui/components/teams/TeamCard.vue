@@ -1,9 +1,15 @@
 <template>
-  <v-menu open-on-hover allow-overflow open-delay="300" max-width="40em">
+  <v-menu
+    open-on-hover
+    offset-y
+    allow-overflow
+    open-delay="300"
+    max-width="40em"
+  >
     <template v-slot:activator="{ on }">
       <!-- 一覧に表示されるカード -->
       <v-card :color="team.color" :ripple="false" tile height="100%" v-on="on">
-        <v-row align="center" style="height: 100%">
+        <v-row align="center" class="height-full">
           <v-col>
             <div class="subtitle-1 px-2 truncate-clamp2">
               <template v-if="showNumber">
@@ -20,7 +26,7 @@
 
     <!-- 詳細情報 -->
     <v-card>
-      <v-card-text class="pa-3 black--text">
+      <v-card-text class="px-4 py-2 black--text">
         <v-col class="pa-0 title font-weight-light">
           No.{{ team.number }}
           <v-avatar v-if="team.color" :color="team.color" size="1em" tile />
@@ -54,10 +60,3 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass">
-.truncate-clamp2
-  overflow: hidden
-  display: -webkit-box
-  -webkit-box-orient: vertical
-  -webkit-line-clamp: 2
-</style>
