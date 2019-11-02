@@ -36,8 +36,6 @@ export default {
   ],
   modules: [
     '@nuxtjs/vuetify',
-    // 各コンポーネントでSASSの変数を手軽に共有する TODO: 廃止予定
-    '@nuxtjs/style-resources',
     '@nuxtjs/axios',
     '@nuxtjs/markdownit',
     '@nuxtjs/moment',
@@ -76,10 +74,6 @@ export default {
     // 開発時のyarn run devなど、jsでリクエストを受けている場合に使う
     // 本番環境では前段のLBでリクエストを振り分ける
     '/api': 'http://api:3000'
-  },
-  // TODO: 廃止予定
-  styleResources: {
-    // sass: ['~/assets/css/variables.sass']
   },
   vuetify: {
     // customVariables: ['~/assets/css/variables.sass'],
