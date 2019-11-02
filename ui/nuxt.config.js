@@ -34,13 +34,8 @@ export default {
     '~/plugins/vue-underscore',
     '~/plugins/vuex-orm'
   ],
-  modules: [
-    '@nuxtjs/vuetify',
-    '@nuxtjs/axios',
-    '@nuxtjs/markdownit',
-    '@nuxtjs/moment',
-    '@nuxtjs/proxy'
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/markdownit', '@nuxtjs/proxy'],
+  buildModules: ['@nuxtjs/moment', '@nuxtjs/vuetify'],
 
   // ---- Nuxtモジュールの設定 ----
   axios: {
