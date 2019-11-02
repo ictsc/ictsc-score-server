@@ -8,6 +8,7 @@
         :type="notification.type"
         :timeout="notification.timeout"
         :message="notification.message"
+        :details="notification.details"
         class="mt-2"
       />
     </v-slide-x-reverse-transition>

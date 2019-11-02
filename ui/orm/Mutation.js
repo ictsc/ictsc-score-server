@@ -106,10 +106,10 @@ export default class Mutation extends BaseModel {
       )
 
       if (response.errors) {
-        console.error(response.errors)
         if (action) {
           $nuxt.notifyWarning({
-            message: `${action}に失敗しました`
+            message: `${action}に失敗しました`,
+            details: response.errors.map(e => e.message).join('\n')
           })
         }
       } else {
@@ -126,7 +126,6 @@ export default class Mutation extends BaseModel {
       return response
     } catch (error) {
       // apollo client側でハンドル済みなため、ここでは通知しない
-      console.error(error)
     }
   }
 
