@@ -1,5 +1,5 @@
 <template>
-  <v-container align-end justify-end column class="notification-area">
+  <v-col align="right" class="px-0 mx-2 notification-area">
     <v-slide-x-reverse-transition group>
       <notification-card
         v-for="notification in reverseNotifications"
@@ -8,9 +8,10 @@
         :type="notification.type"
         :timeout="notification.timeout"
         :message="notification.message"
+        class="mt-2"
       />
     </v-slide-x-reverse-transition>
-  </v-container>
+  </v-col>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -35,5 +36,4 @@ export default {
   z-index: 1000
   bottom: 0
   right: 0
-  width: 30em
 </style>

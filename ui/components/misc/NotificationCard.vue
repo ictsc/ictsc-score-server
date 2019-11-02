@@ -3,13 +3,14 @@
     v-model="visible"
     :type="type"
     dismissible
-    class="mb-2"
     elevation="6"
+    class="ma-0 text-left"
+    width="30em"
   >
-    <span class="notification-message">{{ message }}</span>
+    <div class="notification-message">{{ message }}</div>
 
     <v-progress-linear
-      active
+      :active="timeout !== 0"
       :value="progressValue"
       :color="progressColor"
       background-opacity="0"
@@ -98,5 +99,6 @@ export default {
 <style scoped lang="sass">
 .notification-message
   white-space: pre-wrap
-  word-wrap: break-word
+  overflow-wrap: break-word
+  width: 380px
 </style>
