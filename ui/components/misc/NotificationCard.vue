@@ -13,13 +13,14 @@
       v-if="!!details"
       max-width="26em"
       top
+      left
       offset-y
       open-delay="400"
       open-on-hover
-      content-class="pa-0 opacity-1"
+      content-class="pa-0 opacity-1 elevation-12"
     >
-      <v-card color="white">
-        <v-card-text class="black--text">
+      <v-card :color="type">
+        <v-card-text class="white--text">
           {{ details }}
         </v-card-text>
       </v-card>
