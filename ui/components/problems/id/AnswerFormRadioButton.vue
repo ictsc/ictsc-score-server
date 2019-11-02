@@ -1,29 +1,30 @@
 <template>
-  <v-layout column>
-    <v-flex
+  <div>
+    <div
       v-for="(candidateGroup, groupIndex) in candidatesGroups"
       :key="groupIndex"
+      class="pt-4 pb-0"
     >
-      <v-layout column>
-        <v-radio-group
-          v-model="internalValue[groupIndex][0]"
-          :label="'選択肢' + (groupIndex + 1)"
-          :readonly="readonly"
-          :rules="rules"
-          column
-          hide-details
-        >
-          <v-radio
-            v-for="(candidate, index) in candidateGroup"
-            :key="index"
-            :label="candidate"
-            :value="candidate"
-            color="primary"
-          />
-        </v-radio-group>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+      <div>{{ '選択肢' + (groupIndex + 1) }}</div>
+      <v-radio-group
+        v-model="internalValue[groupIndex][0]"
+        :readonly="readonly"
+        :rules="rules"
+        column
+        hide-details
+        class="my-0"
+      >
+        <v-radio
+          v-for="(candidate, index) in candidateGroup"
+          :key="index"
+          :label="candidate"
+          :value="candidate"
+          color="primary"
+          class="mb-1"
+        />
+      </v-radio-group>
+    </div>
+  </div>
 </template>
 <script>
 export default {

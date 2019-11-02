@@ -1,25 +1,24 @@
 <template>
-  <v-layout column>
-    <v-flex
+  <div>
+    <div
       v-for="(candidateGroup, groupIndex) in candidatesGroups"
       :key="groupIndex"
+      class="pt-4 pb-0"
     >
-      <v-layout column justify-start pt-4 pb-0>
-        <span>{{ '選択肢' + (groupIndex + 1) }}</span>
-        <v-flex v-for="(candidate, index) in candidateGroup" :key="index" py-0>
-          <v-checkbox
-            v-model="internalValue[groupIndex]"
-            :label="candidate"
-            :value="candidate"
-            :readonly="readonly"
-            hide-details
-            color="primary"
-            class="my-0"
-          />
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+      <div>{{ '選択肢' + (groupIndex + 1) }}</div>
+      <v-checkbox
+        v-for="(candidate, index) in candidateGroup"
+        :key="index"
+        v-model="internalValue[groupIndex]"
+        :label="candidate"
+        :value="candidate"
+        :readonly="readonly"
+        hide-details
+        color="primary"
+        class="my-0"
+      />
+    </div>
+  </div>
 </template>
 <script>
 export default {

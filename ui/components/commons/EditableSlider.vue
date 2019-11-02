@@ -14,7 +14,7 @@
       @input="$emit('input', $event)"
     />
 
-    <v-layout column class="ma-0">
+    <v-col class="ma-0">
       <v-slider
         :value="value"
         :step="stepEnable ? step : undefined"
@@ -28,7 +28,7 @@
         @input="$emit('input', $event)"
       />
       <slot name="bottom" />
-    </v-layout>
+    </v-col>
   </v-row>
 </template>
 <script>

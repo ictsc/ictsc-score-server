@@ -1,4 +1,4 @@
-FROM node:12.4.0-alpine
+FROM node:12.13.0-alpine
 
 LABEL maintainer "ICTSC"
 

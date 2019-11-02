@@ -34,8 +34,8 @@
         align="center"
         justify="end"
         :class="{
-          'show-in-details': showInDetails,
-          'mr-1': showInDetails
+          'show-details': showDetails,
+          'mr-1': showDetails
         }"
       >
         <span class="caption" :class="textCounterColor">
@@ -138,7 +138,7 @@ export default {
 
       return this.textCount > 0 && this.textCount <= this.textSizeLimit
     },
-    showInDetails() {
+    showDetails() {
       return !['', true].includes(this.$attrs['hide-details'])
     },
     previewDisabled() {
@@ -238,13 +238,8 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.show-in-details
+.show-details
   position: relative
   top: -1.7em
   height: 0
-
-.overlay-text
-  position: absolute
-  left: 50%
-  transform: translateX(-50%)
 </style>

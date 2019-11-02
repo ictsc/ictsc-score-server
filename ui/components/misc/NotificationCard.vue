@@ -3,13 +3,46 @@
     v-model="visible"
     :type="type"
     dismissible
-    class="mb-2"
     elevation="6"
+    class="ma-0 text-left"
+    width="30em"
   >
-    <span class="notification-message">{{ message }}</span>
+    <div class="notification-message">{{ message }}</div>
+
+    <v-menu
+      v-if="!!details"
+      max-width="26em"
+      top
+      offset-y
+      open-delay="400"
+      open-on-hover
+      content-class="pa-0 opacity-1"
+    >
+      <v-card color="white">
+        <v-card-text class="black--text">
+          {{ details }}
+        </v-card-text>
+      </v-card>
+
+      <template v-slot:activator="{ on }">
+        <v-row justify="end" no-gutters class="details-area">
+          <v-card
+            :color="type"
+            :ripple="false"
+            outlined
+            tile
+            class="pr-2 lighten-1"
+            v-on="on"
+          >
+            <v-icon dense>mdi-chevron-right</v-icon>
+            詳細
+          </v-card>
+        </v-row>
+      </template>
+    </v-menu>
 
     <v-progress-linear
-      active
+      :active="timeout !== 0"
       :value="progressValue"
       :color="progressColor"
       background-opacity="0"
@@ -41,6 +74,10 @@ export default {
       required: true
     },
     message: {
+      type: String,
+      required: true
+    },
+    details: {
       type: String,
       required: true
     }
@@ -98,5 +135,10 @@ export default {
 <style scoped lang="sass">
 .notification-message
   white-space: pre-wrap
-  word-wrap: break-word
+  overflow-wrap: break-word
+  width: 380px
+
+.details-area
+  bottom: -10px
+  position: relative
 </style>

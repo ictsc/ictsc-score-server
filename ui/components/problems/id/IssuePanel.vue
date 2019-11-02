@@ -1,23 +1,28 @@
 <template>
   <div>
     <!-- ステータスボタン -->
-    <v-layout v-if="!!issue" column align-center class="pb-1">
-      <v-btn
-        :disabled="isAudience"
-        :loading="statusUpdating || commentSending"
-        :color="issue.statusColor"
-        min-width="5em"
-        min-height="5em"
-        fab
-        @click="transition"
-      >
-        {{ issue.statusJp }}
-      </v-btn>
+    <v-row v-if="!!issue" justify="center">
+      <v-col cols="auto" align="center" class="pt-0">
+        <v-btn
+          :disabled="isAudience"
+          :loading="statusUpdating || commentSending"
+          :color="issue.statusColor"
+          min-width="5em"
+          min-height="5em"
+          fab
+          @click="transition"
+        >
+          {{ issue.statusJp }}
+        </v-btn>
 
-      <span v-if="isNotAudience" class="caption grey--text text--darken-1 pt-1">
-        {{ statusDescription }}
-      </span>
-    </v-layout>
+        <div
+          v-if="isNotAudience"
+          class="caption grey--text text--darken-1 pt-1"
+        >
+          {{ statusDescription }}
+        </div>
+      </v-col>
+    </v-row>
 
     <!-- コメント一覧 -->
     <div v-if="comments.length !== 0" class="mb-2">

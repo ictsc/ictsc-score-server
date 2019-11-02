@@ -73,7 +73,7 @@
 
       <!-- checkbox -->
       <div v-else-if="mode === 'checkbox'" class="pb-1">
-        <v-flex v-for="(candidate, index) in candidateGroup" :key="index">
+        <div v-for="(candidate, index) in candidateGroup" :key="index">
           <v-row class="ml-0">
             <v-checkbox
               :input-value="corrects[groupIndex]"
@@ -96,7 +96,7 @@
               @delete="removeCandidateItem(groupIndex, index)"
             />
           </v-row>
-        </v-flex>
+        </div>
       </div>
 
       <!-- 新しい要素 -->

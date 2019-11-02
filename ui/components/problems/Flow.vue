@@ -1,30 +1,30 @@
 <template>
   <v-container>
-    <v-row justify="center" class="grey lighten-3">
-      <v-flex xs3>
+    <v-row justify="center" class="grey lighten-3 flex-nowrap">
+      <v-col cols="3" class="py-0">
         <flow-item
           title="問題を選んで解答"
-          body="解放されている問題を選択し、解答を行ってください。"
+          body="問題を選択し解答を行ってください"
         />
-      </v-flex>
+      </v-col>
 
-      <v-flex shrink class="arrow" />
+      <v-col cols="auto" class="arrow px-0" />
 
-      <v-flex xs3>
+      <v-col cols="3" class="py-0">
         <flow-item
           :title="`運営が採点 (最速${gradingDelayString})`"
-          :body="`解答後${gradingDelayString}間は再解答できません。`"
+          :body="`解答後${gradingDelayString}間は再解答できません`"
         />
-      </v-flex>
+      </v-col>
 
-      <v-flex shrink class="arrow" />
+      <v-col cols="auto" class="arrow px-0" />
 
-      <v-flex xs3>
+      <v-col cols="3" class="py-0">
         <flow-item
           title="採点結果を確認"
-          body="高得点を目指して追加の解答も可能です。"
+          body="高得点を目指して追加の解答も可能です"
         />
-      </v-flex>
+      </v-col>
     </v-row>
   </v-container>
 </template>

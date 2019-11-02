@@ -12,6 +12,7 @@ module Mutations
 
       answer = Answer.find_by(id: answer_id)
       raise RecordNotExists.new(Answer, id: answer_id) if answer.nil?
+      raise ConflictAnswerConfirming, confirming if confirming == answer.confirming
 
       if answer.update(confirming: confirming)
         { answer: answer.readable(team: self.current_team!) }

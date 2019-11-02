@@ -18,6 +18,7 @@ export default {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
+  css: ['~/assets/css/commons.sass'],
   build: {
     // Extend webpack config
     extend(config, { isDev, isClient }) {
@@ -34,15 +35,8 @@ export default {
     '~/plugins/vue-underscore',
     '~/plugins/vuex-orm'
   ],
-  modules: [
-    '@nuxtjs/vuetify',
-    // 各コンポーネントでSASSの変数を手軽に共有する TODO: 廃止予定
-    '@nuxtjs/style-resources',
-    '@nuxtjs/axios',
-    '@nuxtjs/markdownit',
-    '@nuxtjs/moment',
-    '@nuxtjs/proxy'
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/markdownit', '@nuxtjs/proxy'],
+  buildModules: ['@nuxtjs/moment', '@nuxtjs/vuetify'],
 
   // ---- Nuxtモジュールの設定 ----
   axios: {
@@ -76,10 +70,6 @@ export default {
     // 開発時のyarn run devなど、jsでリクエストを受けている場合に使う
     // 本番環境では前段のLBでリクエストを振り分ける
     '/api': 'http://api:3000'
-  },
-  // TODO: 廃止予定
-  styleResources: {
-    // sass: ['~/assets/css/variables.sass']
   },
   vuetify: {
     // customVariables: ['~/assets/css/variables.sass'],

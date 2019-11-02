@@ -172,11 +172,3 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass">
-.always-active-color
-  &::before
-    opacity: 0.12 !important
-
-.transparent
-  background-color: none
-</style>

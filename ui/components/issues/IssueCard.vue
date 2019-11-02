@@ -1,14 +1,12 @@
 <template>
   <v-card :to="issueURL" height="5em">
-    <v-row align="center" justify="start" class="ml-0 pr-2 full-height">
+    <v-row align="center" justify="start" class="ml-0 pr-2 height-full">
       <!-- 状態 -->
-      <v-col class="pa-0 full-height status">
-        <v-sheet :class="statusColor" class="full-height right-no-radius">
-          <v-layout justify-center align-center fill-height>
-            {{ issue.statusJp }}
-          </v-layout>
-        </v-sheet>
-      </v-col>
+      <v-sheet :class="statusColor" class="height-full status no-right-radius">
+        <v-row align="center" justify="center" class="height-full">
+          {{ issue.statusJp }}
+        </v-row>
+      </v-sheet>
 
       <!-- 問題名 チーム名 最終返答 -->
       <v-col class="pa-0 ml-2 mr-3 card-info">
@@ -27,36 +25,36 @@
       </v-col>
 
       <!-- 最近のコメント -->
-      <v-row class="ml-0 mr-3">
+      <v-row justify="start" class="ml-0 mr-3">
         <v-col
           v-for="comment in recentlyComments"
           :key="comment.id"
           class="pa-0 ml-2"
+          cols="auto"
         >
           <!-- 通常はただの文字列して表示し、ホバーでMarkdownツールチップ -->
           <v-tooltip
             open-delay="400"
-            min-width="50%"
             max-width="50%"
             bottom
-            content-class="pa-0 elevation-8 opacity-none"
+            content-class="pa-0 elevation-8 opacity-1"
           >
+            <!-- ツールチップではMarkdownとして表示 -->
+            <markdown :content="comment.text" :color="comment.color" />
+
             <template v-slot:activator="{ on }">
               <v-card
+                :color="comment.color"
                 height="4em"
                 width="10em"
-                :color="comment.color"
                 v-on="on"
               >
                 <!-- 一覧ではただのテキストとして表示 -->
-                <v-card-text class="caption py-0 truncate-clamp3">
+                <v-card-text class="caption text-left py-0 truncate-clamp3">
                   {{ comment.text }}
                 </v-card-text>
               </v-card>
             </template>
-
-            <!-- ツールチップではMarkdownとして表示 -->
-            <markdown :content="comment.text" :color="comment.color" />
           </v-tooltip>
         </v-col>
 
@@ -122,25 +120,9 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.full-height
-  height: 100%
-
-.opacity-none
-  opacity: 1 !important
-
-.truncate-clamp3
-  overflow: hidden
-  display: -webkit-box
-  -webkit-box-orient: vertical
-  -webkit-line-clamp: 3
-
 .status
   max-width: 4.2em
   min-width: 4.2em
-
-.right-no-radius
-  border-top-right-radius: 0
-  border-bottom-right-radius: 0
 
 .card-info
   max-width: 10em

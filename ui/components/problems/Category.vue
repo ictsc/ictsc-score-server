@@ -19,16 +19,21 @@
     <markdown
       v-if="!!category.description"
       :content="category.description"
-      class="body-2 pl-1"
+      class="body-2 pl-1 pt-0"
     />
 
     <!-- 問題一覧 -->
-    <v-container fluid grid-list-md class="pl-0">
-      <v-layout wrap>
-        <v-flex v-for="problem in problems" :key="problem.id" shrink>
+    <v-container fluid class="px-0 py-0">
+      <v-row justify="start" no-gutters>
+        <v-col
+          v-for="problem in problems"
+          :key="problem.id"
+          cols="auto"
+          class="pr-2 pb-2"
+        >
           <problem-card :problem="problem" />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>

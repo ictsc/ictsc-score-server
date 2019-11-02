@@ -6,6 +6,7 @@
     :sort-by="sortBy"
     :items-per-page.sync="itemsPerPage"
     :hide-default-footer="environments.length <= itemsPerPage"
+    :mobile-breakpoint="0"
     dense
     multi-sort
     class="elevation-2 text-no-wrap"

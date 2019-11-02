@@ -1,10 +1,11 @@
 <template>
   <v-container>
     <!-- 問題・カテゴリ追加ボタン -->
-    <v-layout v-if="isStaff" column class="floating-area">
+    <v-col v-if="isStaff" cols="auto" class="floating-area-100 top-right pa-0">
       <v-btn
+        block
         color="primary"
-        class="elevation-6 my-2"
+        class="elevation-4 my-2"
         @click="showProblemModal = true"
       >
         <v-row align="center" justify="start">
@@ -16,8 +17,9 @@
       </v-btn>
 
       <v-btn
+        block
         color="primary"
-        class="elevation-6"
+        class="elevation-4"
         @click="showCategoryModal = true"
       >
         <v-row align="center" justify="start">
@@ -27,7 +29,7 @@
           </span>
         </v-row>
       </v-btn>
-    </v-layout>
+    </v-col>
 
     <!-- モーダル -->
     <!-- エラー防止のためにモーダルをレンダリングしない -->
@@ -45,26 +47,17 @@
       />
     </template>
 
-    <v-layout column justify-start>
-      <v-flex>
-        <v-layout column align-center>
-          <page-title title="問題一覧" />
-        </v-layout>
-      </v-flex>
+    <v-row justify="center">
+      <page-title title="問題一覧" />
+    </v-row>
 
-      <v-flex v-if="realtimeGrading">
-        <flow />
-      </v-flex>
+    <flow v-if="realtimeGrading" />
+    <attention />
 
-      <v-flex mt-2>
-        <attention />
-      </v-flex>
-
-      <v-flex v-for="category in categories" :key="category.id" class="mt-2">
-        <v-divider class="mb-1" />
-        <category :category="category" />
-      </v-flex>
-    </v-layout>
+    <div v-for="category in categories" :key="category.id">
+      <v-divider class="my-2" />
+      <category :category="category" />
+    </div>
   </v-container>
 </template>
 <script>
@@ -109,9 +102,7 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.floating-area
-  position: fixed
-  z-index: 100
+.top-right
   top: 3rem
   right: 0.5rem
 </style>

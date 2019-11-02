@@ -1,62 +1,56 @@
 <template>
-  <v-layout column>
+  <v-col class="pa-0">
     <problem-modal v-if="isStaff" v-model="showModal" :item="problem" />
 
     <!-- 編集ボタン, タイトル -->
-    <v-flex>
-      <v-container fluid py-0>
-        <v-row align="center" justify="start">
-          <pen-button
-            v-if="isStaff"
-            class="mr-2"
-            @click.stop="showModal = true"
-          />
+    <v-container fluid py-0>
+      <v-row align="center" justify="start">
+        <pen-button
+          v-if="isStaff"
+          class="mr-2"
+          @click.stop="showModal = true"
+        />
 
-          <div class="grey--text text--darken-3 display-1">
-            {{ problem.body.title }}
-          </div>
-        </v-row>
-      </v-container>
-      <v-divider class="primary" />
-    </v-flex>
+        <div class="grey--text text--darken-3 display-1">
+          {{ problem.body.title }}
+        </div>
+      </v-row>
+    </v-container>
+    <v-divider class="primary" />
 
     <!-- 問題情報 -->
-    <v-flex class="my-1">
-      <info-chips-area :problem="problem" class="ml-0" />
-    </v-flex>
+    <info-chips-area :problem="problem" class="mt-2 ml-0" />
 
     <!-- 運営メモ -->
-    <v-flex v-if="!!problem.secretText">
-      <v-sheet class="pa-2 elevation-2">
-        <span class="pa-2 body-2">運営用メモ</span>
-        <v-divider class="pb-1" />
-        <markdown :content="problem.secretText" />
-      </v-sheet>
-    </v-flex>
+    <v-sheet v-if="!!problem.secretText" class="pa-2 elevation-2">
+      <span class="pa-2 body-2">運営用メモ</span>
+      <v-divider class="pb-1" />
+      <markdown :content="problem.secretText" />
+    </v-sheet>
 
     <!-- 補足 -->
-    <v-flex v-if="problem.supplements.length !== 0 || isStaff">
-      <supplement-area
-        :supplements="problem.supplements"
-        :problem-code="problem.code"
-      />
-    </v-flex>
+    <supplement-area
+      v-if="problem.supplements.length !== 0 || isStaff"
+      :supplements="problem.supplements"
+      :problem-code="problem.code"
+      class="pt-2"
+    />
 
     <!-- 環境 -->
-    <v-flex v-if="problem.environments.length !== 0">
-      <environment-area :environments="problem.environments" />
-    </v-flex>
+    <environment-area
+      v-if="problem.environments.length !== 0"
+      :environments="problem.environments"
+      class="py-2"
+    />
 
     <!-- 本文 -->
-    <v-flex>
-      <v-sheet class="pa-2 elevation-2">
-        <span class="pa-2 body-2">問題文</span>
-        <v-divider class="pb-1" />
-        <!-- TODO: 長文対応どうするか -->
-        <markdown :content="problem.body.text" />
-      </v-sheet>
-    </v-flex>
-  </v-layout>
+    <v-sheet class="pa-2 elevation-2">
+      <span class="pa-2 body-2">問題文</span>
+      <v-divider class="pb-1" />
+      <!-- TODO: 長文対応どうするか -->
+      <markdown :content="problem.body.text" />
+    </v-sheet>
+  </v-col>
 </template>
 <script>
 import Markdown from '~/components/commons/Markdown'
