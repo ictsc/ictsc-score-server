@@ -10,7 +10,7 @@
 
       <!-- 問題名 チーム名 最終返答 -->
       <v-col class="pa-0 ml-2 mr-3 card-info">
-        <div class="body-2 text-truncate">
+        <div class="body-2 text-truncate text-left">
           {{ issue.problem.displayTitle }}<br />
 
           <template v-if="isNotPlayer">
