@@ -2,6 +2,7 @@
   <v-data-table
     :items="configs"
     :headers="headers"
+    :mobile-breakpoint="0"
     item-key="key"
     sort-by="key"
     hide-default-header

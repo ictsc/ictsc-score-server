@@ -22,6 +22,7 @@
           v-model="selectedItems"
           :headers="headers"
           :items="items"
+          :mobile-breakpoint="0"
           disable-pagination
           show-select
           item-key="__index"
