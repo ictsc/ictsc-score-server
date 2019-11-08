@@ -6,6 +6,7 @@
     :sort-by="sortBy"
     :items-per-page.sync="itemsPerPage"
     :hide-default-footer="environments.length <= itemsPerPage"
+    :disable-sort="environments.length <= 1"
     :mobile-breakpoint="0"
     dense
     multi-sort
@@ -27,6 +28,55 @@
 
     <template v-slot:item.note="{ value }">
       <markdown v-if="!!value" :content="value" />
+    </template>
+
+    <template v-slot:item.sshCommand="{ value }">
+      <v-btn
+        v-clipboard:copy="value"
+        v-clipboard:success="sshCommandCopied"
+        v-clipboard:error="onError"
+        icon
+        small
+      >
+        <v-icon>mdi-clipboard-text-outline</v-icon>
+      </v-btn>
+      {{ value }}
+    </template>
+
+    <template v-slot:item.sshpassCommand="{ value }">
+      <v-tooltip top content-class="pa-0 elevation-8 opacity-1">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-clipboard:copy="value"
+            v-clipboard:success="sshpassCommandCopied"
+            v-clipboard:error="onError"
+            icon
+            small
+            v-on="on"
+          >
+            <v-icon>mdi-clipboard-text-outline</v-icon>
+          </v-btn>
+        </template>
+
+        <v-card>
+          <v-card-text class="black--text">
+            sshpassコマンドを使うとpassword入力の手間が省けます
+          </v-card-text>
+        </v-card>
+      </v-tooltip>
+    </template>
+
+    <template v-slot:item.password="{ value }">
+      <v-btn
+        v-clipboard:copy="value"
+        v-clipboard:success="passwordCopied"
+        v-clipboard:error="onError"
+        icon
+        small
+      >
+        <v-icon>mdi-clipboard-text-outline</v-icon>
+      </v-btn>
+      {{ value }}
     </template>
   </v-data-table>
 </template>
@@ -55,26 +105,39 @@ export default {
       return this.isStaff ? ['team.number'] : []
     },
     headers() {
-      const headers = [
-        { text: 'ホスト', value: 'host' },
-        { text: 'ユーザー', value: 'user' },
-        { text: 'パスワード', value: 'password' }
-      ]
-
       if (this.isStaff) {
-        headers.unshift(
+        return [
           { text: 'No.', value: 'team.number' },
           { text: 'チーム名', value: 'team.name' },
-          { text: '状態', value: 'status' }
-        )
-
-        headers.push(
+          { text: '状態', value: 'status' },
+          { text: 'ホスト', value: 'host' },
+          { text: 'ユーザー', value: 'user' },
+          { text: 'パスワード', value: 'password' },
+          { text: 'sshpass', value: 'sshpassCommand' },
           { text: '更新時刻', value: 'updatedAtSimple' },
           { text: 'メモ', value: 'note' }
-        )
+        ]
+      } else {
+        return [
+          { text: 'コマンド', value: 'sshCommand' },
+          { text: 'パスワード', value: 'password' },
+          { text: 'sshpass', value: 'sshpassCommand' }
+        ]
       }
-
-      return headers
+    }
+  },
+  methods: {
+    sshCommandCopied() {
+      this.notifyInfo({ message: 'sshのコマンドをコピーしました' })
+    },
+    sshpassCommandCopied() {
+      this.notifyInfo({ message: 'sshpassのコマンドをコピーしました' })
+    },
+    passwordCopied() {
+      this.notifyInfo({ message: 'パスワードをコピーしました' })
+    },
+    onError(e) {
+      this.notifyError({ message: 'コピーに失敗しました' })
     }
   }
 }

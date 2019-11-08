@@ -20,4 +20,12 @@ export default class ProblemEnvironment extends BaseModel {
       updatedAt: this.string()
     }
   }
+
+  get sshCommand() {
+    return `ssh "${this.user}@${this.host}"`
+  }
+
+  get sshpassCommand() {
+    return `sshpass -p "${this.password}" ${this.sshCommand}`
+  }
 }
