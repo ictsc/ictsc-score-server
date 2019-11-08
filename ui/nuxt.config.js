@@ -32,6 +32,7 @@ export default {
     '~/plugins/elvis',
     '~/plugins/json-storage',
     '~/plugins/mixins',
+    '~/plugins/vue-clipboard',
     '~/plugins/vue-underscore',
     '~/plugins/vuex-orm'
   ],
