@@ -5,6 +5,7 @@
         <pen-button
           v-if="isStaff"
           :loading="!configGuidePage"
+          elevation="2"
           x-small
           absolute
           class="ml-2 mb-4"
