@@ -16,7 +16,7 @@ export default {
         content: 'ICTSC スコアサーバー'
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
   },
   css: ['~/assets/css/commons.sass'],
   build: {
