@@ -91,7 +91,7 @@ export default {
     categories() {
       return this.sortByOrder(
         orm.Category.query()
-          .with('problems.body')
+          .with(['problems.body', 'problems.category'])
           .all()
       )
     }
