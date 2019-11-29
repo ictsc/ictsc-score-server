@@ -96,6 +96,13 @@
       </v-col>
     </v-row>
 
+    <v-row justify="center" no-gutters class="mt-8">
+      <v-col class="fixed-width">
+        <label>セッション一覧</label>
+        <session-table />
+      </v-col>
+    </v-row>
+
     <!-- 削除系 -->
     <v-row justify="start" class="mt-12 px-2 white" no-gutters>
       <v-col>
@@ -137,6 +144,7 @@ import ItemSelectButton from '~/components/settings/ItemSelectButton'
 import PageTitle from '~/components/commons/PageTitle'
 import ProblemModal from '~/components/misc/ProblemModal'
 import RegradeAnswersModal from '~/components/settings/RegradeAnswersModal'
+import SessionTable from '~/components/settings/SessionTable'
 import TeamModal from '~/components/misc/TeamModal'
 
 export default {
@@ -151,6 +159,7 @@ export default {
     PageTitle,
     ProblemModal,
     RegradeAnswersModal,
+    SessionTable,
     TeamModal
   },
   data() {

@@ -9,10 +9,11 @@ class Session
     end
 
     def all
-      keys.map do |key|
-        value = Marshal.load(redis.get(key)) # rubocop:disable Security/MarshalLoad
-        OpenStruct.new(id: key.sub(/^#{PREFIX}/, ''), team_id: value['team_id'])
-      end
+      keys.map {|key| get(key) }
+    end
+
+    def find_by(id:)
+      get("#{PREFIX}#{id}")
     end
 
     def where(team_id:)
@@ -33,6 +34,14 @@ class Session
     end
 
     private
+
+    def get(key)
+      raw_value = redis.get(key)
+      return nil unless raw_value
+
+      value = Marshal.load(raw_value) # rubocop:disable Security/MarshalLoad
+      OpenStruct.new(id: key.sub(/^#{PREFIX}/, ''), team_id: value['team_id'])
+    end
 
     def redis
       Redis.current
