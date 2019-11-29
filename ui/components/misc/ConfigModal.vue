@@ -166,7 +166,6 @@ export default {
     },
 
     configValue(value) {
-      console.info('configValue', value, typeof value)
       this.$jsonStorage.set(this.storageKey, value)
 
       if (this.config.valueTypeIsDate) {
@@ -174,11 +173,9 @@ export default {
       }
     },
     datePicker(value) {
-      console.info('date', value)
       this.updateDateTimeFromPicker()
     },
     timePicker(value) {
-      console.info('time', value)
       this.updateDateTimeFromPicker()
     }
   },
@@ -186,16 +183,12 @@ export default {
     ...mapActions('contestInfo', ['fetchContestInfo']),
 
     updateDateTimeFromPicker() {
-      console.log('updateDateTimeFromPicker')
-
       // 2112-09-03T03:22:00+09:00 iso8601
       this.configValue = this.formatDateTime(
         `${this.datePicker}T${this.timePicker}`
       )
     },
     updateDateTimeToPicker(value) {
-      console.log('updateDateTimeToPicker')
-
       if (!this.isValidDateTime(value)) {
         return
       }

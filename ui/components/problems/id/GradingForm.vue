@@ -174,7 +174,6 @@ export default {
       this.sending = false
     },
     async confirmingAnswer(confirming) {
-      console.info(confirming)
       this.sending = true
 
       await orm.Mutation.confirmingAnswer({
