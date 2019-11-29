@@ -36,6 +36,9 @@ export default {
       tr
         &:nth-child(2n)
           background-color: #f6f8fa
+    ul
+      margin-bottom: 0.4em
+
     // `` でのみ影を消す
     &:not(pre)
       code

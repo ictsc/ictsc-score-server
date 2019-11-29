@@ -33,7 +33,6 @@ export const actions = {
 
   async logout({ commit }) {
     const res = await this.$axios.delete(ENDPOINT)
-    console.log(res)
 
     switch (res.status) {
       case 204:

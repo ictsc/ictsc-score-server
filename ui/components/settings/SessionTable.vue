@@ -112,7 +112,6 @@ export default {
       const collect = Object.entries(
         this.$_.groupBy(this.selectedItems, session => session.team.role)
       )
-      console.log(collect)
       return collect.map(o => [o[0], o[1].length])
     }
   },
