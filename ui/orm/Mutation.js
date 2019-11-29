@@ -394,4 +394,15 @@ export default class Mutation extends BaseModel {
       type: 'upsert'
     })
   }
+
+  static deleteSession({ action, resolve, params: { sessionId } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteSession',
+      params: { sessionId },
+      fields: [orm.Session],
+      type: 'delete'
+    })
+  }
 }

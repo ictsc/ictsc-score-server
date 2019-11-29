@@ -5,7 +5,7 @@
         補足事項
       </expandable-button>
 
-      <pen-button v-if="isStaff" @click.stop="showModal = true" />
+      <pen-button v-if="isStaff" elevation="2" @click.stop="showModal = true" />
     </div>
 
     <template v-for="supplement in sortedSupplements">

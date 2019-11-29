@@ -9,6 +9,7 @@
 
         <pen-button
           v-if="isStaff"
+          elevation="2"
           class="ml-2"
           @click.stop="showModal = true"
         />

@@ -7,6 +7,7 @@
       <v-row align="center" justify="start">
         <pen-button
           v-if="isStaff"
+          elevation="2"
           class="mr-2"
           @click.stop="showModal = true"
         />

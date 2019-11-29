@@ -16,7 +16,7 @@ export default {
         content: 'ICTSC スコアサーバー'
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
   },
   css: ['~/assets/css/commons.sass'],
   build: {
@@ -32,6 +32,7 @@ export default {
     '~/plugins/elvis',
     '~/plugins/json-storage',
     '~/plugins/mixins',
+    '~/plugins/vue-clipboard',
     '~/plugins/vue-underscore',
     '~/plugins/vuex-orm'
   ],
