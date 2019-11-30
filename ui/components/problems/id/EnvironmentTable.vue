@@ -66,6 +66,19 @@
       </v-tooltip>
     </template>
 
+    <template v-slot:item.vncURL="{ value }">
+      <v-btn
+        v-clipboard:copy="value"
+        v-clipboard:success="vncURLCommandCopied"
+        v-clipboard:error="onError"
+        icon
+        small
+      >
+        <v-icon>mdi-clipboard-text-outline</v-icon>
+      </v-btn>
+      {{ value }}
+    </template>
+
     <template v-slot:item.password="{ value }">
       <v-btn
         v-clipboard:copy="value"
@@ -119,9 +132,10 @@ export default {
         ]
       } else {
         return [
-          { text: 'コマンド', value: 'sshCommand' },
+          { text: 'SSHコマンド', value: 'sshCommand' },
+          { text: 'VNCアクセス先', value: 'vncURL' },
           { text: 'パスワード', value: 'password' },
-          { text: 'sshpass', value: 'sshpassCommand' }
+          { text: 'sshpassコマンド', value: 'sshpassCommand' }
         ]
       }
     }
@@ -132,6 +146,9 @@ export default {
     },
     sshpassCommandCopied() {
       this.notifyInfo({ message: 'sshpassのコマンドをコピーしました' })
+    },
+    vncURLCommandCopied() {
+      this.notifyInfo({ message: 'VNCアクセス先をコピーしました' })
     },
     passwordCopied() {
       this.notifyInfo({ message: 'パスワードをコピーしました' })
