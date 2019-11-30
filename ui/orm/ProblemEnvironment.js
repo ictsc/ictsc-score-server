@@ -28,4 +28,8 @@ export default class ProblemEnvironment extends BaseModel {
   get sshpassCommand() {
     return `sshpass -p "${this.password}" ${this.sshCommand}`
   }
+
+  get vncURL() {
+    return `${this.host}:5901`
+  }
 }
