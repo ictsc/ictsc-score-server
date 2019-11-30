@@ -9,7 +9,9 @@ class Session
     end
 
     def all
-      keys.map {|key| get(key) }
+      keys
+        .map {|key| get(key) }
+        .compact
     end
 
     def find_by(id:)
@@ -40,6 +42,9 @@ class Session
       return nil unless raw_value
 
       value = Marshal.load(raw_value) # rubocop:disable Security/MarshalLoad
+      # ログアウトさせられたユーザーがその状態でアクセスすると{}が登録される
+      return nil if value.blank?
+
       OpenStruct.new(id: key.sub(/^#{PREFIX}/, ''), team_id: value['team_id'])
     end
 
