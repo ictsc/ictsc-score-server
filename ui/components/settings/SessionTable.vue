@@ -117,6 +117,7 @@ export default {
   },
   methods: {
     async fetch() {
+      this.selectedItems = []
       this.loading = true
       await orm.Session.eagerFetch({}, ['team'])
       this.loading = false
