@@ -15,14 +15,10 @@
           editable
           dense
           hide-details
-          class="mt-0 mb-2"
+          class="mt-0"
         />
 
-        <v-switch
-          v-model="showAll"
-          :label="showAll ? '全表示' : '未採点のみ'"
-          hide-details
-        />
+        <display-toggle-buttons v-model="displayToggle" class="mt-4" />
       </v-col>
     </v-row>
 
@@ -57,16 +53,18 @@ import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
 import PageTitle from '~/components/commons/PageTitle'
 import AnswerCard from '~/components/answers/AnswerCard'
+import DisplayToggleButtons from '~/components/answers/DisplayToggleButtons'
 
 export default {
   name: 'Answers',
   components: {
     AnswerCard,
+    DisplayToggleButtons,
     PageTitle
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる
-    JsonStroage.accessor('answer-list', 'showAll', true),
+    JsonStroage.accessor('answer-list', 'displayToggle', []),
     JsonStroage.accessor('answer-list', 'problemCode', undefined)
   ],
   computed: {
@@ -104,7 +102,19 @@ export default {
       return this.sortByTeamNumber(this.filterAnswers(answers))
     },
     isDisplayAnswer(answer) {
-      return this.showAll || !answer.hasPoint
+      if (this.displayToggle.includes('onlyHasNotPoint')) {
+        if (answer.hasPoint) {
+          return false
+        } else {
+          return this.displayToggle.includes('onlyConfirming')
+            ? answer.confirming
+            : true
+        }
+      } else {
+        return this.displayToggle.includes('onlyConfirming')
+          ? answer.confirming
+          : true
+      }
     },
     isDisplayProblem(problem) {
       if (!this.problemCode) {

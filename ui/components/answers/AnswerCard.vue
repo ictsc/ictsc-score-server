@@ -1,10 +1,10 @@
 <template>
   <v-card
     :to="answerURL"
+    :color="color"
     width="12em"
     height="5em"
     class="pa-1 pl-2"
-    :color="color"
   >
     <div class="subtitle-1 text-truncate">
       No.{{ answer.team.number }} {{ answer.team.name }}
@@ -21,6 +21,8 @@
   </v-card>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'AnswerCard',
   props: {
@@ -33,18 +35,31 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      showTimer:
-        this.problem.body.modeIsTextbox && this.answer.delayFinishInSec >= -600
-    }
-  },
   computed: {
+    ...mapGetters('contestInfo', ['realtimeGrading']),
+
+    showTimer() {
+      return (
+        this.realtimeGrading &&
+        this.problem.body.modeIsTextbox &&
+        this.answer.delayFinishInSec >= -600
+      )
+    },
     answerURL() {
       return `/problems/${this.answer.problemId}#answers=${this.answer.teamId}`
     },
     color() {
-      return this.answer.hasPoint ? '' : 'error'
+      if (this.answer.confirming) {
+        if (this.answer.hasPoint) {
+          return 'info lighten-1'
+        } else {
+          return 'purple lighten-3'
+        }
+      } else if (this.answer.hasPoint) {
+        return ''
+      } else {
+        return 'error lighten-1'
+      }
     }
   }
 }
