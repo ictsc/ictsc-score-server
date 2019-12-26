@@ -55,7 +55,7 @@ export default {
     },
     showNumber: {
       type: Boolean,
-      required: true
+      default: true
     }
   }
 }
