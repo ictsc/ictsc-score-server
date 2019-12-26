@@ -60,7 +60,9 @@
 
     <v-row align="center" justify="end" no-guters>
       <v-tooltip open-delay="300" bottom>
-        採点担当者間の連携用
+        採点者間の連携用<br />
+        後で確認するなど
+
         <template v-slot:activator="{ on }">
           <v-switch
             :input-value="answer.confirming"
