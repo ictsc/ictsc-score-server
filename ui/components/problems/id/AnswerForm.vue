@@ -103,7 +103,11 @@ import AnswerFormCheckbox from '~/components/problems/id/AnswerFormCheckbox'
 import Markdown from '~/components/commons/Markdown'
 import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 
+// 「お世話になってます」を入れると何故か解答がキレイになる
+
 const answerPlaceholder = `解答はマークダウンで記述できます。
+
+お世話になっております。〇〇です。
 
 この問題ではxxxxxが原因でトラブルが発生したと考えられました。
 そのため、以下のように設定を変更し、○○が正しく動くことを確認いたしました。
@@ -113,12 +117,6 @@ const answerPlaceholder = `解答はマークダウンで記述できます。
 ## 手順
 
 ### 1. /etc/hoge/hoo.bar の編集
-
-\`config.yaml\` の項目をtrueへ変更
-
-
-### 2. …
-
 `
 
 export default {
