@@ -40,6 +40,10 @@ Vue.mixin({
       return JSON.stringify(item1) === JSON.stringify(item2)
     },
 
+    stringSimplify(str) {
+      return str.replace(/-|_/g, '').toLowerCase()
+    },
+
     currentDateTimeString() {
       return this.$moment(new Date()).format('MM-DD HH:mm:ss')
     },
