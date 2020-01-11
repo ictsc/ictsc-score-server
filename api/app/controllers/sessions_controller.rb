@@ -15,6 +15,10 @@ class SessionsController < ApplicationController
       # 以降のリクエストではこれからcurrent_teamをもとめる
       session[:team_id] = team.id
 
+      # セッション管理用に記録する
+      session[:created_at] = Time.current
+      update_session_info
+
       # Bugsnagなどでのデバッグ用
       # ログイン後に更新される可能性があるので参考程度にする
       session[:team_name] = team.name

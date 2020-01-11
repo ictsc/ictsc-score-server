@@ -134,9 +134,6 @@ export default {
         .filter(e => e !== null && e !== undefined)
         .map(s => this.stringSimplify(s))
         .join(' ')
-    },
-    stringSimplify(str) {
-      return str.replace(/-|_/g, '').toLowerCase()
     }
   }
 }

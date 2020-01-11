@@ -2,7 +2,7 @@
   <v-dialog
     v-model="showModal"
     :persistent="sending"
-    max-width="40em"
+    :max-width="maxWidth"
     scrollable
     @input="!$event && close()"
   >
@@ -143,6 +143,11 @@ export default {
     }
   },
   computed: {
+    maxWidth() {
+      return this.config.valueTypeIsBoolean || this.config.valueTypeIsInteger
+        ? '22em'
+        : '40em'
+    },
     resetable() {
       return this.configValue !== this.config.parsedValue
     },

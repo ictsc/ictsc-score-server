@@ -6,16 +6,31 @@
 
     <v-divider class="mt-3 mb-4" />
 
-    <v-row align="start" class="mx-4" no-gutters>
-      <v-col
-        v-for="team of teams"
-        :key="team.id"
-        :cols="isFixedWidth ? 4 : 'auto'"
-        align-self="stretch"
-        class="pb-3 pr-3"
-      >
-        <team-card :team="team" :show-number="isFixedWidth" />
+    <v-row v-if="isNotPlayer" no-gutters class="mx-4 mb-4">
+      <v-col>
+        <v-text-field
+          v-model="search"
+          placeholder="チーム番号 チーム名 学校"
+          append-icon="mdi-table-search"
+          clearable
+          single-line
+          hide-details
+        />
       </v-col>
+    </v-row>
+
+    <v-row align="start" class="mx-4" no-gutters>
+      <template v-for="team of teams">
+        <v-col
+          v-show="isDisplay(team)"
+          :key="team.id"
+          cols="4"
+          align-self="stretch"
+          class="pb-3 pr-2"
+        >
+          <team-card :team="team" />
+        </v-col>
+      </template>
     </v-row>
   </v-container>
 </template>
@@ -30,16 +45,33 @@ export default {
     PageTitle,
     TeamCard
   },
+  data() {
+    return {
+      search: ''
+    }
+  },
   computed: {
     teams() {
-      return this.sortByNumber(orm.Team.playersWithoutTeam99)
-    },
-    isFixedWidth() {
-      return this.teams.length <= 18
+      return this.sortByNumber(
+        this.isStaff ? orm.Team.all() : orm.Team.playersWithoutTeam99
+      )
     }
   },
   beforeCreate() {
     orm.Team.eagerFetch({}, [])
+  },
+  methods: {
+    isDisplay(team) {
+      if (!this.search) {
+        return true
+      }
+
+      const simpleSearch = this.stringSimplify(this.search)
+
+      return [team.displayName, team.organization].some(str =>
+        this.stringSimplify(str).includes(simpleSearch)
+      )
+    }
   }
 }
 </script>

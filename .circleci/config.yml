@@ -93,7 +93,7 @@ jobs:
       - run:
           name: Run bundler-audit
           working_directory: /root/project/api
-          command: bundle audit check --update
+          command: bundle exec bundle-audit check --update
 
       - run:
           name: Run brakeman

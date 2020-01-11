@@ -121,7 +121,7 @@ export default {
       if (this.isStaff) {
         return [
           { text: 'No.', value: 'team.number' },
-          { text: 'チーム名', value: 'team.name' },
+          { text: 'チーム名', value: 'team.displayName' },
           { text: '状態', value: 'status' },
           { text: 'ホスト', value: 'host' },
           { text: 'ユーザー', value: 'user' },

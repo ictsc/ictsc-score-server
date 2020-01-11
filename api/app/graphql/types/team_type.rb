@@ -4,6 +4,7 @@ module Types
   class TeamType < Types::BaseObject
     field :id,           ID, null: false
     field :role,         Types::Enums::TeamRole, null: false
+    field :beginner,     Boolean, null: false
     field :name,         String,  null: true
     field :organization, String,  null: true
     field :number,       Integer, null: true

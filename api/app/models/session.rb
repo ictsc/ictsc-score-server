@@ -45,7 +45,13 @@ class Session
       # ログアウトさせられたユーザーがその状態でアクセスすると{}が登録される
       return nil if value.blank?
 
-      OpenStruct.new(id: key.sub(/^#{PREFIX}/, ''), team_id: value['team_id'])
+      OpenStruct.new(
+        id: key.sub(/^#{PREFIX}/, ''),
+        team_id: value['team_id'],
+        latest_ip: value['latest_ip'],
+        created_at: value['created_at'],
+        updated_at: value['updated_at']
+      )
     end
 
     def redis

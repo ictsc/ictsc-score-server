@@ -2,18 +2,14 @@
   <!-- TODO: 一時的にelevationを消して背景と同一化させる -->
   <v-sheet elevation="0">
     <v-container fluid>
-      <v-row justify="center">
-        <div class="headline">お知らせ</div>
-
+      <panel-label label="お知らせ">
         <pen-button
           v-if="isStaff"
           elevation="2"
           class="ml-2"
           @click.stop="showModal = true"
         />
-      </v-row>
-
-      <v-divider class="mt-2 mb-4" />
+      </panel-label>
 
       <!-- お知らせ一覧 -->
       <template v-if="notices.length !== 0">
@@ -41,6 +37,7 @@
 </template>
 <script>
 import orm from '~/orm'
+import PanelLabel from '~/components/top/PanelLabel'
 import PenButton from '~/components/commons/PenButton'
 import NoticeCard from '~/components/top/NoticeCard'
 import NoticeModal from '~/components/top/NoticeModal'
@@ -50,6 +47,7 @@ export default {
   components: {
     NoticeCard,
     NoticeModal,
+    PanelLabel,
     PenButton
   },
   data() {

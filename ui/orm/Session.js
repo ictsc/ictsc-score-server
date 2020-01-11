@@ -6,9 +6,12 @@ export default class Session extends BaseModel {
 
   static fields() {
     return {
-      id: this.string(),
-      teamId: this.string(),
-      team: this.belongsTo(orm.Team, 'teamId')
+      id: this.string().nullable(),
+      teamId: this.string().nullable(),
+      team: this.belongsTo(orm.Team, 'teamId'),
+      latestIp: this.string().nullable(),
+      createdAt: this.string().nullable(),
+      updatedAt: this.string().nullable()
     }
   }
 }

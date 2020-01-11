@@ -2,6 +2,7 @@
 
 class Team < ApplicationRecord
   validates :role,            presence: true
+  validates :beginner,        boolean:  true
   validates :number,          presence: true, uniqueness: true
   validates :name,            presence: true, uniqueness: true
   # dummy field

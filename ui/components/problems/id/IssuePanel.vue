@@ -35,6 +35,13 @@
       />
     </div>
 
+    <v-card v-if="team.beginner" color="pink lighten-3">
+      <div class="text-center">
+        初心者サポート対象チームです
+        <v-icon>mdi-face-agent</v-icon>
+      </div>
+    </v-card>
+
     <!-- コメントフォーム -->
     <template v-if="showCommentForm">
       <v-card>
@@ -56,11 +63,12 @@
         :disabled="isAudience || !valid"
         :loading="commentSending"
         block
-        color="success"
+        :color="submitButtonColor"
         class="mt-1"
         @click="sendComment"
       >
         送信
+        <v-icon v-if="team.beginner">mdi-face-agent</v-icon>
       </v-btn>
     </template>
   </div>
@@ -138,6 +146,12 @@ export default {
       }
 
       return this.sortByCreatedAt(this.issue.comments)
+    },
+    team() {
+      return orm.Team.find(this.teamId)
+    },
+    submitButtonColor() {
+      return this.isStaff && this.team.beginner ? 'pink lighten-3' : 'success'
     }
   },
   watch: {

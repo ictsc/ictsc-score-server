@@ -11,7 +11,7 @@
     multi-sort
     show-select
     dense
-    class="elevation-2 ma-0"
+    class="elevation-2 text-no-wrap ma-0"
   >
     <template v-slot:top>
       <v-row no-gutters>
@@ -92,6 +92,9 @@ export default {
       headers: [
         { text: '権限', value: 'team.role' },
         { text: 'チーム', value: 'team.displayName' },
+        { text: '最終アクセスIP', value: 'latestIp' },
+        { text: '最終アクセス時刻', value: 'updatedAtSimple' },
+        { text: 'ログイン時刻', value: 'createdAtSimple' },
         { text: 'セッションID', value: 'id' }
       ]
     }

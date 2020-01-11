@@ -39,26 +39,36 @@ export default class BaseModel extends Model {
 
   // Helpers
   get createdAtHM() {
-    return $nuxt.$moment(this.createdAt).format('HH:mm')
+    return this.createdAt && $nuxt.$moment(this.createdAt).format('HH:mm')
   }
 
   get updatedAtHM() {
-    return $nuxt.$moment(this.updatedAt).format('HH:mm')
+    return this.updatedAt && $nuxt.$moment(this.updatedAt).format('HH:mm')
   }
 
   get createdAtShort() {
-    return $nuxt.$moment(this.createdAt).format('DD日 HH:mm:ss')
+    return (
+      this.createdAt && $nuxt.$moment(this.createdAt).format('DD日 HH:mm:ss')
+    )
   }
 
   get updatedAtShort() {
-    return $nuxt.$moment(this.updatedAt).format('DD日 HH:mm:ss')
+    return (
+      this.updatedAt && $nuxt.$moment(this.updatedAt).format('DD日 HH:mm:ss')
+    )
   }
 
   get createdAtSimple() {
-    return $nuxt.$moment(this.createdAt).format('MM月DD日 HH:mm:ss')
+    return (
+      this.createdAt &&
+      $nuxt.$moment(this.createdAt).format('MM月DD日 HH:mm:ss')
+    )
   }
 
   get updatedAtSimple() {
-    return $nuxt.$moment(this.updatedAt).format('MM月DD日 HH:mm:ss')
+    return (
+      this.updatedAt &&
+      $nuxt.$moment(this.updatedAt).format('MM月DD日 HH:mm:ss')
+    )
   }
 }
