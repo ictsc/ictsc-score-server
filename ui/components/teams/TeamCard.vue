@@ -3,51 +3,49 @@
     open-on-hover
     offset-y
     allow-overflow
-    open-delay="300"
+    open-delay="400"
     max-width="40em"
   >
     <template v-slot:activator="{ on }">
       <!-- 一覧に表示されるカード -->
-      <v-card :color="team.color" :ripple="false" tile height="100%" v-on="on">
-        <v-row align="center" class="height-full">
-          <v-col>
-            <div class="subtitle-1 px-2 truncate-clamp2">
-              <template v-if="showNumber">
-                {{ team.displayName }}
-              </template>
-              <template v-else>
-                {{ team.name }}
-              </template>
-            </div>
+      <v-card
+        :ripple="false"
+        tile
+        height="100%"
+        class="disable-click-effect"
+        v-on="on"
+      >
+        <v-row align="center" class="height-full" no-gutters>
+          <v-avatar
+            :color="team.color"
+            size="0.4em"
+            height="100%"
+            class="py-6"
+            tile
+          />
+
+          <v-col class="subtitle-1 px-2 truncate-clamp2">
+            {{ showNumber ? team.displayName : team.name }}
           </v-col>
+
+          <v-icon v-if="isStaff && team.beginner" class="pr-1">
+            mdi-face-agent
+          </v-icon>
         </v-row>
       </v-card>
     </template>
 
-    <!-- 詳細情報 -->
-    <v-card>
-      <v-card-text class="px-4 py-2 black--text">
-        <v-col class="pa-0 title font-weight-light">
-          No.{{ team.number }}
-          <v-avatar v-if="team.color" :color="team.color" size="1em" tile />
-
-          <v-divider />
-
-          {{ team.name }}
-
-          <v-divider />
-
-          <template v-if="team.organization">
-            {{ team.organization }}
-          </template>
-        </v-col>
-      </v-card-text>
-    </v-card>
+    <team-details-card :team="team" />
   </v-menu>
 </template>
 <script>
+import TeamDetailsCard from '~/components/misc/TeamDetailsCard'
+
 export default {
   name: 'TeamCard',
+  components: {
+    TeamDetailsCard
+  },
   props: {
     team: {
       type: Object,

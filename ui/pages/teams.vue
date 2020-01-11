@@ -26,7 +26,7 @@
           :key="team.id"
           cols="4"
           align-self="stretch"
-          class="pb-3 pr-3"
+          class="pb-3 pr-2"
         >
           <team-card :team="team" />
         </v-col>
