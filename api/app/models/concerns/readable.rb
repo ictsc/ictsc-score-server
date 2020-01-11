@@ -111,6 +111,9 @@ module Readable
         # プレイヤーと見学者は全体宛か、自チーム向けのみ
         # target_team == nil 全体お知らせ
         where(target_team: [nil, team.id])
+      when 'Scoreboard', 'Session'
+        # このクラスはモデル本体に記載
+        raise UnhandledClass, self
       else
         raise UnhandledClass, self
       end

@@ -12,6 +12,7 @@ module Types
     field :teams,                [Types::TeamType],               null: false
     field :notices,              [Types::NoticeType],             null: false
     field :sessions,             [Types::SessionType],            null: false
+    field :scoreboards,          [Types::ScoreboardType],         null: false
 
     field :category, Types::CategoryType, null: true do
       argument :id, ID, required: true
@@ -78,6 +79,10 @@ module Types
       return [] unless self.current_team!.staff?
 
       Session.all
+    end
+
+    def scoreboards
+      Scoreboard.readables(team: self.current_team!)
     end
   end
 end
