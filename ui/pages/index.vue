@@ -1,27 +1,39 @@
 <template>
   <v-container>
-    <v-row justify="center">
-      <!-- TODO: 仮の幅 -->
-      <v-col style="max-width: 40em">
+    <v-row justify="center" class="flex-nowrap">
+      <v-col cols="6" class="px-0 panel-width">
         <notice-panel />
+      </v-col>
+
+      <v-col v-if="realtimeGrading" cols="6" class="px-0 panel-width">
+        <scoreboard-panel />
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import ScoreboardPanel from '~/components/top/ScoreboardPanel'
 import NoticePanel from '~/components/top/NoticePanel'
 
 export default {
   name: 'Index',
   head() {
     return {
-      // TODO: 一時しのぎ
-      // title: 'ダッシュボード'
-      title: 'お知らせ'
+      title: 'トップ'
     }
   },
   components: {
+    ScoreboardPanel,
     NoticePanel
+  },
+  computed: {
+    ...mapGetters('contestInfo', ['realtimeGrading'])
   }
 }
 </script>
+<style scoped lang="sass">
+.panel-width
+  min-width: 20em
+  max-width: 30em
+</style>

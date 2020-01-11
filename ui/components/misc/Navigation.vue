@@ -7,7 +7,7 @@
     <v-spacer />
 
     <navigation-link to="/">
-      お知らせ
+      トップ
     </navigation-link>
 
     <navigation-link to="/guide">
