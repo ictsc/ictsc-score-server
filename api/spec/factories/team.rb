@@ -14,16 +14,19 @@ FactoryBot.define do
     trait :staff do
       name { "staff #{alphabets[number - 1]}" }
       role { :staff }
+      beginner { false }
     end
 
     trait :audience do
       name { "audience #{alphabets[number - 1]}" }
       role { :audience }
+      beginner { false }
     end
 
     trait :player do
       name { "team #{alphabets[number - 1]}" }
       role { :player }
+      beginner { Random.rand(4).zero? } # 1/4ぐらいをbeginnerにする
       color { Random.rand(2).odd? ? nil : Faker::Color.hex_color }
     end
 
