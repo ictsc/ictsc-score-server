@@ -2,9 +2,14 @@
 
 module Types
   class ScoreboardType < Types::BaseObject
-    # TODO: scoreboard_hide_atで隠すよりfreezeする方が良い気がする?
-    #       ただ、自身のスコアも変動しないのは直感的ではない
-    # TODO: scoreboard_hide_atで隠すと自身の総得点も分からなくなる
-    #       順位を消して、得点のみ表示するようにしたほうが良さそう
+    # 設定によってどのカラムもnullになり得る
+    field :rank,    Integer,         null: true
+    field :score,   Integer,         null: true
+    field :team_id, ID,              null: true
+    field :team,    Types::TeamType, null: true
+
+    def team
+      RecordLoader.for(self.context, Team).load(self.object[:team_id]) if self.object[:team_id].present?
+    end
   end
 end

@@ -140,7 +140,7 @@ class Config < ApplicationRecord
 
     def scoreboard_display
       {
-        all: {
+        all: { # for self record
           team: true,
           score: true
         },
@@ -197,7 +197,7 @@ class Config < ApplicationRecord
   record_accessor :all_problem_force_open_at
   record_accessor :grading_delay_sec
   record_accessor :hide_all_score
-  record_accessor :realtime_grading
+  record_accessor :realtime_grading # 有効解答を最終解答にするか最高得点にするかもこれで指定
   record_accessor :text_size_limit
   record_accessor :delete_time_limit_sec
   record_accessor :guide_page
