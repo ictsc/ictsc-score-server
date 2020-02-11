@@ -37,7 +37,7 @@
 
     <v-card v-if="team.beginner" color="pink lighten-3">
       <div class="text-center">
-        初心者サポート対象チームです
+        解答サポート対象チームです
         <v-icon>mdi-face-agent</v-icon>
       </div>
     </v-card>

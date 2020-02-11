@@ -5,7 +5,7 @@
         <panel-label label="順位" />
         <scoreboard-group :scoreboards="notBeginnerScoreboards" />
 
-        <panel-label label="順位(サポート)" class="mt-12" />
+        <panel-label label="順位 - 解答サポート" class="mt-12" />
         <scoreboard-group :scoreboards="beginnerScoreboards" />
       </template>
       <template v-else>

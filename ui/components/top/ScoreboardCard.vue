@@ -27,6 +27,9 @@
 
           <v-row no-gutters>
             <v-col class="truncate-clamp2">
+              <v-icon v-if="isStaff && scoreboard.team.beginner" size="1.3em">
+                mdi-face-agent
+              </v-icon>
               {{ scoreboard.displayTeamName }}
             </v-col>
           </v-row>
