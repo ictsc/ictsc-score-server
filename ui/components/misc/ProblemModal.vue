@@ -327,7 +327,7 @@ export default {
       return fieldKeys
     },
     async fetchSelf() {
-      await orm.Problem.eagerFetch(this.item.id, [])
+      await orm.Queries.problemCategory(this.item.id)
     },
     // -- END --
 
@@ -341,8 +341,8 @@ export default {
     // 最初に開いた時に実行される
     opendAtFirst() {
       // カテゴリに属していない問題や問題に属していないカテゴリも取得する
-      orm.Problem.eagerFetch({}, [])
-      orm.Category.eagerFetch({}, [])
+      orm.Queries.problems()
+      orm.Queries.categories()
     },
     async submit(force) {
       this.sending = true
@@ -363,7 +363,7 @@ export default {
         this.writer = null
       }
 
-      await orm.Mutation.applyProblem({
+      await orm.Mutations.applyProblem({
         action: this.modalTitle,
         resolve: () => {
           this.reset()

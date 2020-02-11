@@ -102,7 +102,7 @@ export default {
     value(value) {
       // 開いた時にfetchする
       if (value) {
-        orm.Team.eagerFetch({}, [])
+        orm.Queries.teams()
       }
     }
   },
@@ -114,7 +114,7 @@ export default {
     async addNotice(text) {
       this.sending = true
 
-      await orm.Mutation.addNotice({
+      await orm.Mutations.addNotice({
         action: 'お知らせ追加',
         resolve: () => this.$refs.modal.succeeded(),
         params: {

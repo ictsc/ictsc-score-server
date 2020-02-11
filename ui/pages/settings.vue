@@ -223,19 +223,19 @@ export default {
   methods: {
     async fetchTeams() {
       // パスワードは全てnullになる
-      await orm.Team.eagerFetch({}, [])
+      await orm.Queries.teams()
       return this.sortByNumber(orm.Team.all())
     },
     async fetchCategories() {
-      await orm.Category.eagerFetch({}, [])
+      await orm.Queries.categories()
       return this.sortByOrder(orm.Category.all())
     },
     async fetchConfigs() {
-      await orm.Config.eagerFetch({}, [])
+      await orm.Queries.configs()
       return this.$_.sortBy(orm.Config.all(), 'key')
     },
     async fetchProblems() {
-      await orm.Problem.eagerFetch({}, [])
+      await orm.Queries.problemsCategory()
       return this.sortByOrder(
         orm.Problem.query()
           .with(['body', 'category'])
@@ -245,7 +245,7 @@ export default {
     async applyTeam(params) {
       let result = false
 
-      await orm.Mutation.applyTeam({
+      await orm.Mutations.applyTeam({
         resolve: () => (result = true),
         params: { ...params }
       })
@@ -255,7 +255,7 @@ export default {
     async applyCategory(params) {
       let result = false
 
-      await orm.Mutation.applyCategory({
+      await orm.Mutations.applyCategory({
         resolve: () => (result = true),
         params: { ...params }
       })
@@ -265,7 +265,7 @@ export default {
     async applyProblem(params) {
       let result = false
 
-      await orm.Mutation.applyProblem({
+      await orm.Mutations.applyProblem({
         resolve: () => (result = true),
         params: { ...params }
       })
@@ -275,7 +275,7 @@ export default {
     async updateConfig(params) {
       let result = false
 
-      await orm.Mutation.updateConfig({
+      await orm.Mutations.updateConfig({
         resolve: () => (result = true),
         params: { ...params }
       })

@@ -50,7 +50,7 @@ export default {
     }
   },
   beforeCreate() {
-    orm.Config.eagerFetch({}, [])
+    orm.Queries.configs()
   }
 }
 </script>

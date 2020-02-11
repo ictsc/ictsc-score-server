@@ -47,18 +47,16 @@ export default {
   computed: {
     ...mapGetters('contestInfo', ['guidePage']),
     configGuidePage() {
-      // 無理やりリアクティブ
-      // eslint-disable-next-line no-unused-expressions
-      this.fetchConfigs
       return orm.Config.find('guide_page')
-    },
-
-    // eslint-disable-next-line vue/return-in-computed-property
-    fetchConfigs() {
-      // isStaffがセットされたらクエリを発行する
-      // mountedなどだとセッションが未取得な可能性がある
-      if (this.isStaff) {
-        orm.Config.eagerFetch({}, [])
+    }
+  },
+  watch: {
+    isStaff: {
+      immediate: true,
+      handler(value) {
+        if (value) {
+          orm.Queries.configs()
+        }
       }
     }
   }

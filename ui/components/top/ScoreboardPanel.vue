@@ -48,9 +48,7 @@ export default {
   async created() {
     try {
       this.fetching = true
-      // 順位変更があるとVuexにある古い値が表示されるので全削除
-      orm.Scoreboard.deleteAll()
-      await orm.Scoreboard.eagerFetch({}, ['team'])
+      await orm.Queries.scoreboardsTeam()
     } finally {
       this.fetching = false
     }

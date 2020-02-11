@@ -1,4 +1,6 @@
-import Mutation from '~/orm/Mutation'
+import Queries from '~/orm/Queries'
+import Mutations from '~/orm/Mutations'
+
 import Answer from '~/orm/Answer'
 import Category from '~/orm/Category'
 import Config from '~/orm/Config'
@@ -14,7 +16,8 @@ import Session from '~/orm/Session'
 import Team from '~/orm/Team'
 
 export default {
-  Mutation,
+  Queries,
+  Mutations,
   Answer,
   Category,
   Config,

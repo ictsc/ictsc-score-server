@@ -77,7 +77,7 @@ export default {
     }
   },
   fetch() {
-    orm.Problem.eagerFetch({}, ['answers', 'team'])
+    orm.Queries.problemsAnswersTeam()
   },
   methods: {
     // 各チームの最終解答のみの配列にする

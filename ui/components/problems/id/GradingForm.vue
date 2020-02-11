@@ -165,7 +165,7 @@ export default {
       this.sending = true
 
       const percent = this.text === 'null' ? null : parseInt(this.text)
-      await orm.Mutation.applyScore({
+      await orm.Mutations.applyScore({
         action: '採点',
         resolve: () => {
           this.previous = this.slider
@@ -178,7 +178,7 @@ export default {
     async confirmingAnswer(confirming) {
       this.sending = true
 
-      await orm.Mutation.confirmingAnswer({
+      await orm.Mutations.confirmingAnswer({
         action: '対応状況の遷移',
         resolve: () => {},
         params: { answerId: this.answer.id, confirming }

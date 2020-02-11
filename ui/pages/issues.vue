@@ -105,7 +105,7 @@ export default {
     }
   },
   fetch() {
-    orm.Problem.eagerFetch({}, ['issues'])
+    orm.Queries.problemsIssuesTeam()
   },
   methods: {
     issueFilter(issue) {

@@ -71,7 +71,7 @@ export default {
   async created() {
     try {
       this.fetching = true
-      await orm.Notice.eagerFetch({}, ['targetTeam'])
+      await orm.Queries.noticesTeam()
     } finally {
       this.fetching = false
     }

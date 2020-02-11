@@ -137,12 +137,7 @@ export default {
     }
   },
   fetch({ params }) {
-    orm.Problem.eagerFetch(params.id, [
-      'environments',
-      'supplements',
-      'answers',
-      'issues'
-    ])
+    orm.Queries.problemMisc(params.id)
   },
   mounted() {
     // dataではisPlayerが使えないためここでセット
@@ -165,7 +160,7 @@ export default {
       }
 
       this.teamFetching = true
-      await orm.Team.eagerFetch({}, [])
+      await orm.Queries.teams()
       this.teamFetching = false
       this.teamFetched = true
     }
