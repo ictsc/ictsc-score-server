@@ -2,22 +2,26 @@ const EndPoint = 'sessions'
 
 function buildState(response) {
   return {
+    channels: response.data.channels,
     teamId: response.data.id,
     role: response.data.role
   }
 }
 
 export const state = () => ({
+  channels: null,
   teamId: null,
   role: null
 })
 
 export const mutations = {
-  setSession(state, { teamId, role }) {
+  setSession(state, { channels, teamId, role }) {
+    state.channels = channels
     state.teamId = teamId
     state.role = role
   },
   unsetSession(state) {
+    state.channels = null
     state.teamId = null
     state.role = null
   }
@@ -69,6 +73,7 @@ export const actions = {
 
 export const getters = {
   currentTeamId: state => state.teamId,
+  subscribeChannels: state => state.channels,
   isLoggedIn: state => state.role !== null && state.role !== undefined,
   isStaff: state => state.role === 'staff',
   isAudience: state => state.role === 'audience',

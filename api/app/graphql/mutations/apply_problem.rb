@@ -55,6 +55,7 @@ module Mutations
         # regrade_answersに失敗するとエラーが追加される
         add_errors(problem_body) if problem_body.errors.key?(:regrade_answers)
 
+        Notification.notify(mutation: self.mutation_name, record: problem)
         { problem: problem.readable(team: self.current_team!), problem_body: problem_body.readable(team: self.current_team!) }
       else
         add_errors(problem, problem_body)

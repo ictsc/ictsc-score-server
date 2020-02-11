@@ -17,6 +17,7 @@ module Mutations
 
       failed = problem.regrade_answers {|answer| add_errors(answer.score) }
 
+      Notification.notify(mutation: self.mutation_name, record: problem)
       {
         answers: problem.answers,
         total: problem.answers.size,

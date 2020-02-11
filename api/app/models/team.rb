@@ -44,6 +44,16 @@ class Team < ApplicationRecord
     BCrypt::Password.new(password_digest).is_password?(plain_password) && self
   end
 
+  # greater than or equal roles
+  def gte_roles
+    Team.roles.select {|_k, v| v >= self.role_before_type_cast }
+  end
+
+  # less than or equal roles
+  def lte_roles
+    Team.roles.select {|_k, v| v <= self.role_before_type_cast }
+  end
+
   class << self
     def login(name:, password:)
       # ハッシュ計算は重いため計算を始める前にコネクションをリリースする

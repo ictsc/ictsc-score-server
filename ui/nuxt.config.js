@@ -30,8 +30,10 @@ export default {
   plugins: [
     '~/plugins/axios',
     '~/plugins/elvis',
+    '~/plugins/eventsource',
     '~/plugins/json-storage',
     '~/plugins/mixins',
+    '~/plugins/push',
     '~/plugins/vue-clipboard',
     '~/plugins/vue-underscore',
     '~/plugins/vuex-orm'

@@ -27,6 +27,7 @@ module Mutations
       p_env = ProblemEnvironment.find_or_initialize_by(problem: problem, team: team)
 
       if p_env.update(status: status, host: host, user: user, password: password, note: note)
+        Notification.notify(mutation: self.mutation_name, record: p_env)
         { problem_environment: p_env.readable(team: self.current_team!) }
       else
         add_errors(p_env)
