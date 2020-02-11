@@ -22,6 +22,7 @@ jobs:
           - RAILS_ENV=test
           - API_STAFF_PASSWORD=staff
           - API_SESSION_EXPIRE_MINUTES=1440
+          - PLASMA_SUBSCRIBER_REDIS_CHANNELS=realtime_notification
 
           # 空にしないと/usr/src/appを参照する
           - BUNDLE_GEMFILE=
