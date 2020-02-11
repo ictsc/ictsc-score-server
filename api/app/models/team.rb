@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class Team < ApplicationRecord
+  # PlasmaでSSEする際にlistenするチャンネル
+  # 認証の代わりに推測困難なIDを使う
+  has_secure_token :channel
+  # create時に生成されるためバリデーション無効
+  validates :channel, presence: true, on: :update
+
   validates :role,            presence: true
   validates :beginner,        boolean:  true
   validates :number,          presence: true, uniqueness: true

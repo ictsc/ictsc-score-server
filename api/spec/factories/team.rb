@@ -10,6 +10,8 @@ FactoryBot.define do
     sequence(:number) {|n| n }
     created_at { Time.current - Random.rand(60).minutes - Random.rand(60).seconds }
     updated_at { created_at }
+    # before_createだとbulk_insertが失敗するためhas_secure_token 長さ指定を無視してる
+    channel { ApplicationRecord.generate_unique_secure_token }
 
     trait :staff do
       name { "staff #{alphabets[number - 1]}" }
