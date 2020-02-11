@@ -117,10 +117,7 @@ export default {
       if (this.sortMode) {
         return -Date.parse(issue.latestReplyAt)
       } else {
-        return `${issue.statusNum} - ${this.$elvis(
-          issue,
-          'problem.body.title'
-        )}`
+        return `${issue.statusNum} - ${this.$elvis(issue, 'problem.title')}`
       }
     },
     issueSummary(issue) {
@@ -129,7 +126,7 @@ export default {
         this.$elvis(issue, 'team.numberStr'),
         this.$elvis(issue, 'problem.code'),
         this.$elvis(issue, 'problem.writer'),
-        this.$elvis(issue, 'problem.body.title')
+        this.$elvis(issue, 'problem.title')
       ]
         .filter(e => e !== null && e !== undefined)
         .map(s => this.stringSimplify(s))

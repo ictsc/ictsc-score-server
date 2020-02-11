@@ -7,13 +7,12 @@ class Acl
     end
 
     def allow?(mutation:, args:)
-      mutation_str = mutation.class.name.demodulize
       team = mutation.context.current_team!
 
       # audienceはデータの作成・更新・削除は一切できない
       return false if team.audience?
 
-      case mutation_str
+      case mutation.mutation_name
       when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers'
         # staff only
         team.staff?
@@ -42,7 +41,7 @@ class Acl
           issue_comment.readable?(team: team) &&
           Config.before_delete_time_limit?(issue_comment.created_at)
       else
-        raise UnhandledClass, mutation_str
+        raise UnhandledClass, mutation.mutation_name
       end
     end
   end

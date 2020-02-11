@@ -20,6 +20,7 @@ module Readable
 
   module ClassMethods
     def readables(team:)
+      # TODO: superclass.to_sで比較してインターフェースを統一する
       readable_records(team: team).filter_columns(team: team)
     end
 

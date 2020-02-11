@@ -9,6 +9,7 @@
     </v-btn>
 
     <v-btn
+      v-if="isStaff"
       value="onlyConfirming"
       :class="onlyConfirmingClass"
       active-class="info white--text elevation-4"

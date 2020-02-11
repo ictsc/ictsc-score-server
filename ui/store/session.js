@@ -1,4 +1,11 @@
-const ENDPOINT = 'sessions'
+const EndPoint = 'sessions'
+
+function buildState(response) {
+  return {
+    teamId: response.data.id,
+    role: response.data.role
+  }
+}
 
 export const state = () => ({
   teamId: null,
@@ -18,11 +25,11 @@ export const mutations = {
 
 export const actions = {
   async login({ commit }, { name, password }) {
-    const res = await this.$axios.post(ENDPOINT, { name, password })
+    const res = await this.$axios.post(EndPoint, { name, password })
 
     switch (res.status) {
       case 200:
-        commit('setSession', { teamId: res.data.id, role: res.data.role })
+        commit('setSession', buildState(res))
         return true
       case 400:
         return false
@@ -32,7 +39,7 @@ export const actions = {
   },
 
   async logout({ commit }) {
-    const res = await this.$axios.delete(ENDPOINT)
+    const res = await this.$axios.delete(EndPoint)
 
     switch (res.status) {
       case 204:
@@ -46,11 +53,11 @@ export const actions = {
   },
 
   async fetchCurrentSession({ commit }) {
-    const res = await this.$axios.get(ENDPOINT)
+    const res = await this.$axios.get(EndPoint)
 
     switch (res.status) {
       case 200:
-        commit('setSession', { teamId: res.data.id, role: res.data.role })
+        commit('setSession', buildState(res))
         return true
       case 401:
         return false

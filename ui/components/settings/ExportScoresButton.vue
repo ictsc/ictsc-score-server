@@ -84,7 +84,7 @@ export default {
 
         obj[problem.title].unshift({
           team: '満点',
-          point: problem.body.perfectPoint
+          point: problem.perfectPoint
         })
 
         return obj

@@ -26,9 +26,7 @@
     <v-container>
       <div v-for="problem in problems" :key="problem.id">
         <div v-show="isDisplayProblem(problem)" class="mb-4">
-          <div class="title pl-2">
-            {{ problem.code }} {{ problem.body.title }}
-          </div>
+          <div class="title pl-2">{{ problem.code }} {{ problem.title }}</div>
 
           <v-row align="start" justify="start" class="mx-0">
             <template v-for="answer in filter(problem.answers)">

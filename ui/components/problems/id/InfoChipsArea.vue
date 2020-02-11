@@ -34,12 +34,12 @@ export default {
     ...mapGetters('contestInfo', ['realtimeGrading']),
 
     chipsLists() {
-      const list = [[{ name: '満点', value: this.problem.body.perfectPoint }]]
+      const list = [[{ name: '満点', value: this.problem.perfectPoint }]]
 
       if (this.isStaff || this.realtimeGrading) {
         list[0].push({
           name: '基準',
-          value: this.problem.body.solvedCriterion + '%'
+          value: this.problem.solvedCriterion + '%'
         })
         list[0].push({ name: '突破チーム数', value: this.problem.solvedCount })
       }
@@ -51,7 +51,7 @@ export default {
             { name: '作問者', value: this.problem.writer }
           ],
           [{ name: '種類', value: this.problem.body.modeJp }],
-          [{ name: '最終更新', value: this.problem.body.updatedAtShort }]
+          [{ name: '最終更新', value: this.problem.updatedAtShort }]
         )
       }
 

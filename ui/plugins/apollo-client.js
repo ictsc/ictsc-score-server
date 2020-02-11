@@ -18,15 +18,13 @@ const errorLink = onError(
               break
             case 'UNEXPECTED_ERROR':
               $nuxt.notifyError({
-                message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
-                timeout: 0
+                message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`
               })
               break
             default:
               // 実装漏れ
               $nuxt.notifyError({
-                message: `想定外のエラーコードです\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
-                timeout: 0
+                message: `想定外のエラーコードです\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`
               })
           }
         }
@@ -38,8 +36,7 @@ const errorLink = onError(
       console.warn('[Network error]', networkError)
 
       $nuxt.notifyError({
-        message: `APIから応答がありません\n運営に問い合わせてください\nコード ${networkError.statusCode}`,
-        timeout: 0
+        message: `APIから応答がありません\n運営に問い合わせてください\nコード ${networkError.statusCode}`
       })
     }
 

@@ -2,6 +2,8 @@
 
 class Attachment < ApplicationRecord
   has_secure_token :token
+  # create時に生成されるためバリデーション無効
+  validates :token,        presence: true, on: :update
   validates :filename,     presence: true
   validates :content_type, presence: true
   validates :data,         presence: true
