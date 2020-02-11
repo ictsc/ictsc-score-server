@@ -9,7 +9,8 @@
   </v-app>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import orm from '~/orm'
 import Navigation from '~/components/misc/Navigation'
 import NotificationArea from '~/components/misc/NotificationArea'
 
@@ -17,6 +18,14 @@ export default {
   components: {
     Navigation,
     NotificationArea
+  },
+  computed: {
+    ...mapGetters('session', ['subscribeChannels'])
+  },
+  watch: {
+    subscribeChannels(events) {
+      this.$eventSource.subscribe(events, this.eventSourceOnMessage)
+    }
   },
   created() {
     this.startInterval()
@@ -31,6 +40,9 @@ export default {
         this.$router.push('/login')
       }
     })
+
+    // 既にブロックされてたら尋ねない
+    this.$push.Permission.request()
   },
   beforeDestroy() {
     this.stopInterval()
@@ -38,7 +50,32 @@ export default {
   methods: {
     ...mapActions('time', ['startInterval', 'stopInterval']),
     ...mapActions('session', ['fetchCurrentSession']),
-    ...mapActions('contestInfo', ['fetchContestInfo'])
+    ...mapActions('contestInfo', ['fetchContestInfo']),
+
+    eventSourceOnMessage(data) {
+      const timeout = 12000
+
+      // URL判定して必要ならリロード
+      orm.Queries.reloadRecords(this.$route.path, data.mutation, data.problemId)
+
+      if (data.title) {
+        if (this.$push.Permission.has()) {
+          // TODO: linkはserviceWorker.jsがないとダメっぽい?
+          //       focusはonClickでやればできる
+
+          // tagは知通表示中なら重複を防げる
+          this.$push.create(data.title, {
+            body: data.body,
+            tag: data.uuid,
+            icon: '/favicon.png',
+            timeout
+          })
+        } else {
+          const message = data.title + '\n' + data.body
+          this.notifyInfo({ message, timeout })
+        }
+      }
+    }
   }
 }
 </script>

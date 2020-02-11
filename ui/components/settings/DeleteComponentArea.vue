@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     async fetchProblems() {
-      await orm.Problem.eagerFetch({}, [])
+      await orm.Queries.problems()
       return this.sortByOrder(
         orm.Problem.query()
           .with('body')
@@ -33,12 +33,12 @@ export default {
       )
     },
     async fetchCategories() {
-      await orm.Category.eagerFetch({}, [])
+      await orm.Queries.categories()
       return this.sortByOrder(orm.Category.query().all())
     },
     async deleteCategory(code) {
       let result = false
-      await orm.Mutation.deleteCategory({
+      await orm.Mutations.deleteCategory({
         action: 'カテゴリ削除',
         resolve: () => (result = true),
         params: { code }
@@ -48,7 +48,7 @@ export default {
     },
     async deleteProblem(code) {
       let result = false
-      await orm.Mutation.deleteProblem({
+      await orm.Mutations.deleteProblem({
         action: '問題削除',
         resolve: () => (result = true),
         params: { code }

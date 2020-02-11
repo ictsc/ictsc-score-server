@@ -154,7 +154,7 @@ export default {
       this.notifyInfo({ message: 'パスワードをコピーしました' })
     },
     onError(e) {
-      this.notifyError({ message: 'コピーに失敗しました' })
+      this.notifyWarning({ message: 'コピーに失敗しました' })
     }
   }
 }

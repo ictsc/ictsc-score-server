@@ -57,8 +57,8 @@ export default {
       )
     }
   },
-  beforeCreate() {
-    orm.Team.eagerFetch({}, [])
+  fetch() {
+    orm.Queries.teams()
   },
   methods: {
     isDisplay(team) {

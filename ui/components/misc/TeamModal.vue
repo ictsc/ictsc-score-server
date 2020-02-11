@@ -79,9 +79,6 @@ export default {
   computed: {
     modalTitle() {
       return this.isNew ? 'チーム追加' : 'チーム編集'
-    },
-    teams() {
-      return this.sortByOrder(orm.Team.query().all())
     }
   },
   watch: {
@@ -93,9 +90,6 @@ export default {
       }
       return obj
     }, {})
-  },
-  fetch() {
-    orm.Team.eagerFetch({}, [])
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -112,7 +106,7 @@ export default {
       return fieldKeys
     },
     async fetchSelf() {
-      await orm.Team.eagerFetch(this.item.id, [])
+      await orm.Queries.team(this.item.id)
     },
     // -- END --
 
@@ -124,7 +118,7 @@ export default {
         return
       }
 
-      await orm.Mutation.applyTeam({
+      await orm.Mutations.applyTeam({
         action: this.modalTitle,
         resolve: () => {
           this.reset()

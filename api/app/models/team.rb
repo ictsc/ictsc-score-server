@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class Team < ApplicationRecord
+  # PlasmaでSSEする際にlistenするチャンネル
+  # 認証の代わりに推測困難なIDを使う
+  has_secure_token :channel
+  # create時に生成されるためバリデーション無効
+  validates :channel, presence: true, on: :update
+
   validates :role,            presence: true
   validates :beginner,        boolean:  true
   validates :number,          presence: true, uniqueness: true
@@ -36,6 +42,16 @@ class Team < ApplicationRecord
 
   def authenticate(plain_password)
     BCrypt::Password.new(password_digest).is_password?(plain_password) && self
+  end
+
+  # greater than or equal roles
+  def gte_roles
+    Team.roles.select {|_k, v| v >= self.role_before_type_cast }
+  end
+
+  # less than or equal roles
+  def lte_roles
+    Team.roles.select {|_k, v| v <= self.role_before_type_cast }
   end
 
   class << self

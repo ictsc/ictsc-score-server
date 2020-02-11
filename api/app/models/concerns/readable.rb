@@ -20,6 +20,7 @@ module Readable
 
   module ClassMethods
     def readables(team:)
+      # TODO: superclass.to_sで比較してインターフェースを統一する
       readable_records(team: team).filter_columns(team: team)
     end
 
@@ -78,7 +79,7 @@ module Readable
       return all if %w[Category Problem].include?(klass)
 
       # 見学者なら一部のテーブルを除き全レコード取得可能
-      return all if team.audience? && models(ignore: %w[Attachment Config Notice]).include?(klass)
+      return all if team.audience? && all_models(ignore: %w[Attachment Config Notice ProblemEnvironment]).include?(klass)
 
       case klass
       when 'Answer'

@@ -37,7 +37,7 @@
 
     <v-card v-if="team.beginner" color="pink lighten-3">
       <div class="text-center">
-        初心者サポート対象チームです
+        解答サポート対象チームです
         <v-icon>mdi-face-agent</v-icon>
       </div>
     </v-card>
@@ -166,14 +166,14 @@ export default {
       const resolve = () => (this.text = '')
 
       if (this.issue) {
-        await orm.Mutation.addIssueComment({
+        await orm.Mutations.addIssueComment({
           action,
           resolve,
           params: { issueId: this.issue.id, text: this.text }
         })
       } else {
         // playerが質問する際、issueが無ければstartIssueでissueを作る
-        await orm.Mutation.startIssue({
+        await orm.Mutations.startIssue({
           action,
           resolve,
           params: { problemId: this.problem.id, text: this.text }
@@ -185,7 +185,7 @@ export default {
     async transition() {
       this.statusUpdating = true
 
-      await orm.Mutation.transitionIssueState({
+      await orm.Mutations.transitionIssueState({
         action: '状態遷移',
         params: { issueId: this.issue.id, currentStatus: this.issue.status }
       })

@@ -122,7 +122,7 @@ export default {
     async fetch() {
       this.selectedItems = []
       this.loading = true
-      await orm.Session.eagerFetch({}, ['team'])
+      await orm.Queries.sessionsTeam()
       this.loading = false
     },
     async deleteSessions() {
@@ -130,7 +130,7 @@ export default {
       let succeededCount = 0
 
       for (const session of this.selectedItems) {
-        await orm.Mutation.deleteSession({
+        await orm.Mutations.deleteSession({
           action: '',
           resolve: () => {
             ++succeededCount

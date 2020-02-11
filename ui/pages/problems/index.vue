@@ -97,7 +97,7 @@ export default {
     }
   },
   fetch() {
-    orm.Category.eagerFetch({}, ['problems'])
+    orm.Queries.categoriesProblems()
   }
 }
 </script>

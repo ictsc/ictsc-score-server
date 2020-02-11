@@ -79,7 +79,7 @@ export default {
     async pinned() {
       this.sending = true
 
-      await orm.Mutation.pinNotice({
+      await orm.Mutations.pinNotice({
         action: 'お知らせのピン変更',
         params: { noticeId: this.notice.id, pinned: !this.notice.pinned }
       })
@@ -90,7 +90,7 @@ export default {
     async destroy() {
       this.sending = true
 
-      await orm.Mutation.deleteNotice({
+      await orm.Mutations.deleteNotice({
         action: 'お知らせ削除',
         params: { noticeId: this.notice.id }
       })

@@ -26,6 +26,9 @@ const options = {
 
 VuexORM.use(VuexORMGraphQLPlugin, options)
 
-export default ({ store }) => {
+export default ({ store }, inject) => {
   VuexORM.install(database)(store)
+
+  // 主にデバッグ用
+  inject('orm', orm)
 }

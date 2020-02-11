@@ -81,7 +81,7 @@ export default {
     async submit() {
       this.sending = true
 
-      const response = await orm.Mutation.regradeAnswers({
+      const response = await orm.Mutations.regradeAnswers({
         action: '採点再実行',
         params: { problemId: this.problem.id }
       })

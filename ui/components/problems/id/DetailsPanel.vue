@@ -13,7 +13,7 @@
         />
 
         <div class="grey--text text--darken-3 display-1">
-          {{ problem.body.title }}
+          {{ problem.title }}
         </div>
       </v-row>
     </v-container>
@@ -49,7 +49,7 @@
       <span class="pa-2 body-2">問題文</span>
       <v-divider class="pb-1" />
       <!-- TODO: 長文対応どうするか -->
-      <markdown :content="problem.body.text" />
+      <markdown :content="problem.text" />
     </v-sheet>
   </v-col>
 </template>

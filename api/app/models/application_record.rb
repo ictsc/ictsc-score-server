@@ -23,9 +23,10 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   class << self
-    def models(ignore: [])
+    def all_models(ignore: [])
       # subclassesはautoload環境では動作しない
-      [Answer, Attachment, Category, Config, FirstCorrectAnswer, Issue, IssueComment, Notice, Problem, ProblemBody, ProblemEnvironment, ProblemSupplement, Score, Team] - Array.wrap(ignore)
+      models = [Answer, Attachment, Category, Config, FirstCorrectAnswer, Issue, IssueComment, Notice, Problem, ProblemBody, ProblemEnvironment, ProblemSupplement, Score, Team].map(&:to_s)
+      models - Array.wrap(ignore)
     end
   end
 end

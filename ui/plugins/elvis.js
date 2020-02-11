@@ -16,11 +16,11 @@ export function elvis(parent, childrens) {
   return parent
 }
 
-// Vueのコンテキストに注入する(this.$elvis, $nuxt.elvis)
-export default ({ app }, inject) => inject('elvis', elvis)
-
 // template内で使えるようにする
 Vue.mixin({
   // 引数を取るため、関数を戻り地にする
   computed: { elvis: () => elvis }
 })
+
+// Vueのコンテキストに注入する(this.$elvis, $nuxt.elvis)
+export default ({ app }, inject) => inject('elvis', elvis)

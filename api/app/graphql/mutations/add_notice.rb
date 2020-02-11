@@ -20,6 +20,7 @@ module Mutations
       notice = Notice.new
 
       if notice.update(title: title, text: text, pinned: pinned, target_team: team)
+        Notification.notify(mutation: self.mutation_name, record: notice)
         { notice: notice.readable(team: self.current_team!) }
       else
         add_errors(notice)

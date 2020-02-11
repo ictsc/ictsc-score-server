@@ -21,6 +21,7 @@ module Mutations
       issue.transition_by_click(team: self.current_team!)
 
       if issue.save
+        Notification.notify(mutation: self.mutation_name, record: issue)
         { issue: issue.readable(team: self.current_team!) }
       else
         add_errors(issue)

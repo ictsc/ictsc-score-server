@@ -25,9 +25,10 @@ export default {
     }
   },
   methods: {
+    // TODO: API側に持ってくる
     async fetch() {
-      await orm.Problem.eagerFetch({}, ['answers'])
-      await orm.Team.eagerFetch({}, [])
+      await orm.Queries.problemsAnswers()
+      await orm.Queries.teams()
 
       this.problems = this.sortByOrder(
         orm.Problem.query()
@@ -83,7 +84,7 @@ export default {
 
         obj[problem.title].unshift({
           team: '満点',
-          point: problem.body.perfectPoint
+          point: problem.perfectPoint
         })
 
         return obj

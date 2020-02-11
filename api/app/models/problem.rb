@@ -32,6 +32,11 @@ class Problem < ApplicationRecord
     self.class.opened(team: team).exists?(id: self.id)
   end
 
+  def readable_players
+    # TODO: fix N+1
+    Team.player.select {|team| self.opened?(team: team) }
+  end
+
   def latest_answer_created_at(team:)
     answers.where(team: team).order(:created_at).last&.created_at || Time.zone.at(0)
   end

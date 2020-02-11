@@ -23,6 +23,7 @@ class SessionsController < ApplicationController
       # ログイン後に更新される可能性があるので参考程度にする
       session[:team_name] = team.name
       session[:team_role] = team.role
+      session[:channel] = team.channel
 
       render json: build_current_team_response(team), status: :ok
     else
@@ -44,7 +45,12 @@ class SessionsController < ApplicationController
 
   # 必要な値だけ返す
   def build_current_team_response(team)
-    # roleはUI側で表示切り替えに使われる
-    { id: team.id, role: team.role }
+    # heartbeat: plasmaにハードコードされてた
+    channels = [team.channel, 'everyone', 'heartbeat']
+    channels << 'player' if team.player?
+
+    # role: UI側で表示切り替えに使われる
+    # channels: 非同期通知用チャンネル
+    { id: team.id, role: team.role, channels: channels }
   end
 end

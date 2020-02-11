@@ -2,8 +2,8 @@ import inflection from 'inflection'
 import orm from '~/orm'
 import BaseModel from '~/orm/BaseModel'
 
-export default class Mutation extends BaseModel {
-  // -- Mutation build helpers --
+export default class Mutations extends BaseModel {
+  // -- Mutations build helpers --
 
   static buildMutationField(field) {
     if (typeof field === 'string') {

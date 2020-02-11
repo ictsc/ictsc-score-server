@@ -7,6 +7,11 @@ module Mutations
       self.context.current_team!
     end
 
+    def mutation_name
+      # class_nameを使ってはいけない
+      self.class.name.demodulize
+    end
+
     def add_error_message(message, ast_node: nil, options: nil, extensions: nil)
       Rails.logger.error message
       self.context.add_error(GraphQL::ExecutionError.new(message, message, ast_node, options, extensions))

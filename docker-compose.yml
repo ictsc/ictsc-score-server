@@ -59,3 +59,10 @@ services:
     volumes:
       - './:/usr/src/app'
     command: yamllint -c /usr/src/app/.yamllint /usr/src/app
+
+  push:
+    image: openfresh/plasma:0.2.2
+    env_file: .env
+    depends_on:
+      - redis
+    ports: ['127.0.0.1:8904:8080']

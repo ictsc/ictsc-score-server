@@ -64,7 +64,7 @@
             </v-text-field>
           </template>
           <template v-else>
-            未実装
+            未実装 "{{ config.valueType }}"
           </template>
         </v-form>
       </v-card-text>
@@ -221,7 +221,7 @@ export default {
     async submit() {
       this.sending = true
 
-      await orm.Mutation.updateConfig({
+      await orm.Mutations.updateConfig({
         action: '設定変更',
         resolve: () => {
           this.fetchContestInfo()

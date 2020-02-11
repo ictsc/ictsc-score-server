@@ -19,6 +19,7 @@ module Mutations
       team = Team.find_or_initialize_by(number: number)
 
       if team.update(role: role, beginner: beginner, name: name, password: password, organization: organization, color: color)
+        Notification.notify(mutation: self.mutation_name, record: team)
         { team: team.readable(team: self.current_team!) }
       else
         add_errors(team)

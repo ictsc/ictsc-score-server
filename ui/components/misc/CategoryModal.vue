@@ -128,7 +128,7 @@ export default {
     }, {})
   },
   fetch() {
-    orm.Category.eagerFetch({}, [])
+    orm.Queries.categories()
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -145,7 +145,7 @@ export default {
       return fieldKeys
     },
     async fetchSelf() {
-      await orm.Category.eagerFetch(this.item.id, [])
+      await orm.Queries.category(this.item.id)
     },
     // -- END --
 
@@ -157,7 +157,7 @@ export default {
         return
       }
 
-      await orm.Mutation.applyCategory({
+      await orm.Mutations.applyCategory({
         action: this.modalTitle,
         resolve: () => {
           this.reset()

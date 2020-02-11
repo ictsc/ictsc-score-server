@@ -2,6 +2,7 @@
 // timeoutが0なら永続
 // mutationsは他のmutationsを呼び出せないため外部で関数化する必要がある
 function addNotification(state, { message, details, timeout, type }) {
+  // long, short, default, eternalとかの文字表現にして長さを統一したほうがいい
   if (timeout === undefined) {
     // デフォルトは7s
     timeout = 7000
@@ -35,6 +36,11 @@ export default {
       addNotification(state, { id, message, details, timeout, type: 'warning' })
     },
     notifyError(state, { id, message, details, timeout }) {
+      if (timeout === undefined) {
+        // 無指定なら無限にする
+        timeout = 0
+      }
+
       addNotification(state, { id, message, details, timeout, type: 'error' })
     },
     removeNotification(state, id) {
