@@ -347,7 +347,7 @@ export default {
     async submit(force) {
       this.sending = true
 
-      if (!this.isNew && (await this.checkConlict()) && !force) {
+      if (!this.isNew && (await this.checkConflict()) && !force) {
         this.sending = false
         return
       }
