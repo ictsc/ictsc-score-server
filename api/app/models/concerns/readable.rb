@@ -51,7 +51,9 @@ module Readable
       when 'ProblemEnvironment'
         %w[note] unless team.staff?
       when 'Team'
-        %w[password_digest]
+        list = %w[password_digest]
+        list << 'secret_text' unless team.staff?
+        list
       when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'ProblemSupplement', 'Score'
         # permit all
         %w[]

@@ -177,6 +177,7 @@ export default {
         'name',
         'beginner',
         'password',
+        'secretText',
         'organization',
         'color'
       ],

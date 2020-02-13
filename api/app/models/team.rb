@@ -16,6 +16,7 @@ class Team < ApplicationRecord
   validates :password_digest, presence: true
   validates :organization,    presence: false
   validates :color,           color_code: true, allow_nil: true
+  validates :secret_text,     allow_empty: true, length: { maximum: 8192 }
 
   has_many :answers,               dependent: :destroy
   has_many :attachments,           dependent: :nullify

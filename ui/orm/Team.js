@@ -9,6 +9,7 @@ export default class Team extends BaseModel {
       role: this.string(),
       beginner: this.boolean(),
       name: this.string().nullable(),
+      secretText: this.string().nullable(),
       organization: this.string().nullable(),
       number: this.number().nullable(),
       color: this.string().nullable()

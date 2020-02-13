@@ -9,6 +9,7 @@ module Types
     field :organization, String,  null: true
     field :number,       Integer, null: true
     field :color,        String,  null: true
+    field :secret_text,  String,  null: true
     # channelはgraphqlでは渡さない
 
     has_many :attachments
