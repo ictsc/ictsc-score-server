@@ -14,7 +14,7 @@ module Mutations
       raise RecordNotExists.new(Config, key: key) if config.nil?
 
       if config.update(value: JSON.parse(value))
-        Notification.notify(mutation: self.mutation_name, record: config)
+        Notification.notify(mutation: self.graphql_name, record: config)
         { config: config.readable(team: self.current_team!) }
       else
         add_errors(config)

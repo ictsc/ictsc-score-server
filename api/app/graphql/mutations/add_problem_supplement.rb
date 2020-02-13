@@ -15,7 +15,7 @@ module Mutations
       problem_supplement = ProblemSupplement.new
 
       if problem_supplement.update(text: text, problem: problem)
-        Notification.notify(mutation: self.mutation_name, record: problem_supplement)
+        Notification.notify(mutation: self.graphql_name, record: problem_supplement)
         { problem_supplement: problem_supplement.readable(team: self.current_team!) }
       else
         add_errors(problem_supplement)

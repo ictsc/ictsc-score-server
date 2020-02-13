@@ -12,7 +12,7 @@ class Acl
       # audienceはデータの作成・更新・削除は一切できない
       return false if team.audience?
 
-      case mutation.mutation_name
+      case mutation.graphql_name
       when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers'
         # staff only
         team.staff?
@@ -41,7 +41,7 @@ class Acl
           issue_comment.readable?(team: team) &&
           Config.before_delete_time_limit?(issue_comment.created_at)
       else
-        raise UnhandledClass, mutation.mutation_name
+        raise UnhandledClass, mutation.graphql_name
       end
     end
   end

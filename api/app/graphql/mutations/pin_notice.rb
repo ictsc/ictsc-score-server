@@ -14,7 +14,7 @@ module Mutations
       raise RecordNotExists.new(Notice, id: notice_id) if notice.nil?
 
       if notice.update(pinned: pinned)
-        Notification.notify(mutation: self.mutation_name, record: notice)
+        Notification.notify(mutation: self.graphql_name, record: notice)
         { notice: notice.readable(team: self.current_team!) }
       else
         add_errors(notice)

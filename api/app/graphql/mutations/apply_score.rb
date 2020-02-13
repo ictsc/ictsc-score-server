@@ -15,7 +15,7 @@ module Mutations
 
       # gradeでscoreレコードが作られる
       if answer.grade(percent: percent)
-        Notification.notify(mutation: self.mutation_name, record: answer)
+        Notification.notify(mutation: self.graphql_name, record: answer)
         { answer: answer.readable(team: self.current_team!) }
       else
         add_errors(answer.score)
