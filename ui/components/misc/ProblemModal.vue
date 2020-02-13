@@ -68,7 +68,6 @@
               class="mt-0 pb-3"
             />
 
-            <!-- TODO: tooltip: ctf方式の説明 -->
             <label class="caption">開放状況</label>
             <v-switch
               v-model="teamIsolate"
@@ -88,7 +87,6 @@
               class="mb-4"
             />
 
-            <!-- TODO: tooltips 突破基準の説明 -->
             <editable-slider
               v-model="solvedCriterion"
               :readonly="sending"
@@ -136,11 +134,10 @@
               />
             </template>
 
-            <!-- TODO: tooltips: これの説明 -->
             <markdown-text-area
               v-model="secretText"
               :readonly="sending"
-              placeholder="Markdownで記述可能"
+              :placeholder="secretTextPlaceholder"
               label="運営用メモ"
               preview-width="70em"
               class="pt-4"
@@ -217,6 +214,9 @@ const fields = {
 
 const fieldKeys = Object.keys(fields)
 
+const secretTextPlaceholder = `Markdownで記述可能
+採点基準などを記載`
+
 export default {
   name: 'ProblemModal',
   components: {
@@ -245,7 +245,8 @@ export default {
         v => !Number.isNaN(parseInt(v)) || '数値',
         v => parseInt(v) >= 50 || '50%以上',
         v => parseInt(v) <= 100 || '100%以下'
-      ]
+      ],
+      secretTextPlaceholder
     }
   },
   computed: {

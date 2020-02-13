@@ -1,5 +1,8 @@
 <template>
   <v-container>
+    <!-- 選択肢が無かった場合にエラーにする -->
+    <v-input v-show="false" :error="candidates.length === 0" />
+
     <!-- 選択肢Nとその要素 -->
     <div
       v-for="(candidateGroup, groupIndex) in candidates"
