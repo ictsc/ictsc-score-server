@@ -103,6 +103,9 @@ export default {
     TitleTextField
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
+  fetch() {
+    orm.Queries.categories()
+  },
   data() {
     return {
       // mixinしたモジュールから必要な値がmixinされる
@@ -126,9 +129,6 @@ export default {
       }
       return obj
     }, {})
-  },
-  fetch() {
-    orm.Queries.categories()
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --

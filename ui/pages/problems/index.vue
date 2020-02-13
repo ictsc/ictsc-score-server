@@ -80,6 +80,9 @@ export default {
     Category,
     ProblemModal
   },
+  fetch() {
+    orm.Queries.categoriesProblems()
+  },
   data() {
     return {
       showCategoryModal: false,
@@ -95,9 +98,6 @@ export default {
           .all()
       )
     }
-  },
-  fetch() {
-    orm.Queries.categoriesProblems()
   }
 }
 </script>

@@ -28,12 +28,15 @@ export default class Config extends BaseModel {
   get valueTypeIsBoolean() {
     return this.valueType === 'boolean'
   }
+
   get valueTypeIsInteger() {
     return this.valueType === 'integer'
   }
+
   get valueTypeIsString() {
     return this.valueType === 'string'
   }
+
   get valueTypeIsDate() {
     return this.valueType === 'date'
   }

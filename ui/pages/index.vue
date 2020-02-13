@@ -18,17 +18,17 @@ import NoticePanel from '~/components/top/NoticePanel'
 
 export default {
   name: 'Index',
-  head() {
-    return {
-      title: 'トップ'
-    }
-  },
   components: {
     ScoreboardPanel,
     NoticePanel
   },
   computed: {
     ...mapGetters('contestInfo', ['realtimeGrading'])
+  },
+  head() {
+    return {
+      title: 'トップ'
+    }
   }
 }
 </script>

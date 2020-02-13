@@ -37,33 +37,43 @@ export default class Problem extends BaseModel {
   get mode() {
     return this.body.mode
   }
+
   get title() {
     return this.body.title
   }
+
   get text() {
     return this.body.text
   }
+
   get perfectPoint() {
     return this.body.perfectPoint
   }
+
   get solvedCriterion() {
     return this.body.solvedCriterion
   }
+
   get candidates() {
     return this.body.candidates
   }
+
   get corrects() {
     return this.body.corrects
   }
+
   get createdAt() {
     return this.body.createdAt
   }
+
   get updatedAt() {
     return this.body.updatedAt
   }
+
   get previousProblemCode() {
     return this.previousProblem && this.previousProblem.code
   }
+
   get categoryCode() {
     return this.category && this.category.code
   }

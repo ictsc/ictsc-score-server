@@ -32,24 +32,24 @@
           class="elevation-1 text-no-wrap"
         >
           <!-- インポート状態 -->
-          <template v-slot:item.__applyStatus="{ value }">
+          <template v-slot:item.__applyStatus="{ value: statusValue }">
             <v-progress-circular
-              v-if="value === 'applying'"
+              v-if="statusValue === 'applying'"
               size="20"
               width="2"
               indeterminate
               color="cyan"
             />
-            <v-icon v-else-if="value === 'pending'" color="warning">
+            <v-icon v-else-if="statusValue === 'pending'" color="warning">
               mdi-clock-outline
             </v-icon>
-            <v-icon v-else-if="value === 'succeeded'" color="success">
+            <v-icon v-else-if="statusValue === 'succeeded'" color="success">
               mdi-check
             </v-icon>
-            <v-icon v-else-if="value === 'failed'" color="error">
+            <v-icon v-else-if="statusValue === 'failed'" color="error">
               mdi-alert-circle-outline
             </v-icon>
-            <div v-else-if="value === 'none'" />
+            <v-icon v-else-if="statusValue === 'none'" />
           </template>
         </v-data-table>
       </v-card-text>

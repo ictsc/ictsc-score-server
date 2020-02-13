@@ -78,6 +78,9 @@ export default {
     JsonStroage.accessor('issue-list', 'issueSearch', ''),
     JsonStroage.accessor('issue-list', 'sortMode', true)
   ],
+  fetch() {
+    orm.Queries.problemsIssuesTeam()
+  },
   computed: {
     // computedを分ければ軽くなるはず?
     allIssues() {
@@ -103,9 +106,6 @@ export default {
 
       return this.issueSearch.split(' ').map(s => this.stringSimplify(s))
     }
-  },
-  fetch() {
-    orm.Queries.problemsIssuesTeam()
   },
   methods: {
     issueFilter(issue) {

@@ -63,9 +63,7 @@
               </template>
             </v-text-field>
           </template>
-          <template v-else>
-            未実装 "{{ config.valueType }}"
-          </template>
+          <template v-else>未実装 "{{ config.valueType }}"</template>
         </v-form>
       </v-card-text>
 

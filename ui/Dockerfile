@@ -1,4 +1,4 @@
-FROM node:12.13.0-alpine
+FROM node:13.8.0-alpine
 
 LABEL maintainer "ICTSC"
 
@@ -16,8 +16,13 @@ WORKDIR /usr/src/app
 # needed because some package refers GitHub.
 # RUN apk add --update --no-cache --virtual .build-dep git && apk del .build-dep
 
+# for node-gyp
+RUN apk add --no-cache --virtual .build-dep g++ make python
+
 ADD package.json yarn.lock .yarnrc /usr/src/app/
 RUN yarn install
+
+RUN apk del .build-dep
 
 COPY . /usr/src/app/
 RUN yarn run build

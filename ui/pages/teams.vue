@@ -45,6 +45,9 @@ export default {
     PageTitle,
     TeamCard
   },
+  fetch() {
+    orm.Queries.teams()
+  },
   data() {
     return {
       search: ''
@@ -56,9 +59,6 @@ export default {
         this.isStaff ? orm.Team.all() : orm.Team.playersWithoutTeam99
       )
     }
-  },
-  fetch() {
-    orm.Queries.teams()
   },
   methods: {
     isDisplay(team) {
