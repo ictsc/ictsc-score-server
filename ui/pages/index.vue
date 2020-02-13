@@ -35,5 +35,5 @@ export default {
 <style scoped lang="sass">
 .panel-width
   min-width: 20em
-  max-width: 30em
+  max-width: 40em
 </style>
