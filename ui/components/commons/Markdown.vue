@@ -1,5 +1,5 @@
 <template>
-  <v-sheet :color="color" class="pa-2 ma-0">
+  <v-sheet :color="color" class="ma-0" :class="{ 'pa-2': !dense }">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div class="markdown" v-html="$md.render(content)" />
   </v-sheet>
@@ -15,6 +15,10 @@ export default {
     content: {
       type: String,
       required: true
+    },
+    dense: {
+      type: Boolean,
+      default: false
     }
   }
 }
