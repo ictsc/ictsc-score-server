@@ -35,7 +35,7 @@
             class="pr-2 lighten-1"
             v-on="on"
           >
-            <v-icon dense>mdi-chevron-right</v-icon>
+            <v-icon dense>mdi-cursor-pointer</v-icon>
             詳細
           </v-card>
         </v-row>
