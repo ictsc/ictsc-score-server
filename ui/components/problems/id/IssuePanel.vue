@@ -35,7 +35,7 @@
       />
     </div>
 
-    <v-card v-if="team.beginner" color="pink lighten-3">
+    <v-card v-if="isStaff && team.beginner" color="pink lighten-3">
       <div class="text-center">
         解答サポート対象チームです
         <v-icon>mdi-face-agent</v-icon>
@@ -68,7 +68,7 @@
         @click="sendComment"
       >
         送信
-        <v-icon v-if="team.beginner">mdi-face-agent</v-icon>
+        <v-icon v-if="isStaff && team.beginner">mdi-face-agent</v-icon>
       </v-btn>
     </template>
   </div>
