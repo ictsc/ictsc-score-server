@@ -17,8 +17,10 @@ function subscribe(events, onMessage) {
   //   console.log('eventsource connected')
   // }
 
-  eventSource.onerror = e => {
-    console.error('error', e)
+  eventSource.onerror = error => {
+    console.error(error)
+    error.target.close()
+
     $nuxt.notifyError({
       message:
         'Push通知と自動リロードが停止しました\nページをリロードしてください'
