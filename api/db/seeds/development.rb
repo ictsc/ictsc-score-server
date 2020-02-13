@@ -197,6 +197,8 @@ def create_problem_environments(problems, teams)
     teams.each do |team|
       memo << build_stubbed(:problem_environment, problem: problem, team: team)
     end
+
+    Random.rand(1..4).times { memo << build_stubbed(:problem_environment, problem: problem, team: nil) }
   }
     .shuffle
 

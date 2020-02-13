@@ -6,7 +6,8 @@ module Mutations
 
     # find key
     argument :problem_code, String,  required: true
-    argument :team_number,  Integer, required: true
+    argument :team_number,  Integer, required: false
+    argument :name,         String,  required: true
 
     # value
     argument :status,       String,  required: true
@@ -15,16 +16,17 @@ module Mutations
     argument :password,     String,  required: true
     argument :note,         String,  required: false
 
-    def resolve(problem_code:, team_number:, status:, host:, user:, password:, note: nil)
+    # team_numberがnilなら共通として扱う
+    def resolve(problem_code:, team_number:, name:, status:, host:, user:, password:, note: nil)
       Acl.permit!(mutation: self, args: {})
 
       problem = Problem.find_by(code: problem_code)
       raise RecordNotExists.new(Problem, code: problem_code) if problem.nil?
 
       team = Team.find_by(number: team_number)
-      raise RecordNotExists.new(Team, number: team_number) if team.nil?
+      raise RecordNotExists.new(Team, number: team_number) if !team_number.nil? && team.nil?
 
-      p_env = ProblemEnvironment.find_or_initialize_by(problem: problem, team: team)
+      p_env = ProblemEnvironment.find_or_initialize_by(problem: problem, team: team, name: name)
 
       if p_env.update(status: status, host: host, user: user, password: password, note: note)
         Notification.notify(mutation: self.graphql_name, record: p_env)
