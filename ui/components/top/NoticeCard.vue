@@ -1,11 +1,11 @@
 <template>
   <v-card elevation="4">
-    <v-card-title class="py-1 px-2">
-      <v-row align="center" class="ml-0">
+    <v-card-title class="py-1 px-3">
+      <v-row align="center" class="ml-0 flex-nowrap">
         <!-- タイトル -->
-        <span class="subtitle-1">
+        <div class="subtitle-1 pr-2">
           {{ notice.title }}
-        </span>
+        </div>
 
         <v-spacer />
 
@@ -23,32 +23,35 @@
     </v-card-title>
     <v-divider />
 
-    <v-card-text class="pa-1">
+    <v-card-text class="px-3 py-2">
       <!-- 宛先 -->
-      <v-chip v-if="notice.targetTeam" small label class="ml-2">
+      <v-chip v-if="notice.targetTeam" small label class="mb-2">
         宛先
         <v-divider vertical class="mx-1" />
-        {{ notice.targetTeam.displayName }}
+        <div class="text-truncate">
+          {{ notice.targetTeam.displayName }}
+        </div>
       </v-chip>
 
-      <!-- 本文 -->
-      <markdown :content="notice.text" />
-    </v-card-text>
+      <!-- 投稿時刻, 削除ボタン -->
+      <v-row align="center" class="pb-1 px-3">
+        <div class="caption">{{ notice.createdAtShort }}</div>
 
-    <!-- 投稿時刻, 削除ボタン -->
-    <v-row align="center" justify="end" class="pb-1 pr-5">
-      <span class="caption">
-        {{ notice.createdAtShort }}
-      </span>
-      <delete-button
-        v-if="isStaff"
-        :start-at-msec="Date.parse(notice.createdAt)"
-        :disabled="sending"
-        color="grey lighten-1"
-        class="ml-2"
-        @click="destroy"
-      />
-    </v-row>
+        <v-spacer />
+
+        <delete-button
+          v-if="isStaff"
+          :start-at-msec="Date.parse(notice.createdAt)"
+          :disabled="sending"
+          color="grey "
+          class="ml-2"
+          @click="destroy"
+        />
+      </v-row>
+
+      <!-- 本文 -->
+      <markdown :content="notice.text" dense />
+    </v-card-text>
   </v-card>
 </template>
 <script>
