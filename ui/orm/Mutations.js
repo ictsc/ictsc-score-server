@@ -335,13 +335,13 @@ export default class Mutations extends BaseModel {
   static applyTeam({
     action,
     resolve,
-    params: { name, number, role, password, organization, color }
+    params: { name, number, role, beginner, password, organization, color }
   }) {
     return this.sendMutation({
       action,
       resolve,
       mutation: 'applyTeam',
-      params: { name, number, role, password, organization, color },
+      params: { name, number, role, beginner, password, organization, color },
       fields: [orm.Team],
       type: 'upsert'
     })

@@ -14,6 +14,10 @@ class Session
         .compact
     end
 
+    def find(id)
+      get("#{PREFIX}#{id}")
+    end
+
     def find_by(id:)
       get("#{PREFIX}#{id}")
     end
@@ -26,13 +30,21 @@ class Session
       redis.del(keys)
     end
 
-    def destroy(id:)
+    def destroy(id)
       redis.del("#{PREFIX}#{id}")
     end
 
     def destroy_by(team_id:)
       keys = where(team_id: team_id).map(&:id).map(&PREFIX.method(:+))
       redis.del(keys) if keys.present?
+    end
+
+    # 存在しないteam_idを持つレコードを消す
+    def prune
+      Session
+        .all
+        .select {|s| Team.find_by(id: s.team_id).nil? }
+        .each {|s| Session.destroy(s.id) }
     end
 
     private
@@ -46,11 +58,11 @@ class Session
       return nil if value.blank?
 
       OpenStruct.new(
-        id: key.sub(/^#{PREFIX}/, ''),
         team_id: value['team_id'],
         latest_ip: value['latest_ip'],
         created_at: value['created_at'],
-        updated_at: value['updated_at']
+        updated_at: value['updated_at'],
+        id: key.sub(/^#{PREFIX}/, '')
       )
     end
 

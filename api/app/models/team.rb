@@ -31,7 +31,13 @@ class Team < ApplicationRecord
     player: 1
   }
 
+  after_commit :delete_session, on: %i[update], if: :saved_change_to_password_digest?
+
   attr_reader :password
+
+  def delete_session
+    Session.destroy_by(team_id: id)
+  end
 
   def password=(value)
     return if value.blank?

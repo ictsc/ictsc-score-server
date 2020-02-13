@@ -7,9 +7,8 @@ module Mutations
       self.context.current_team!
     end
 
-    def mutation_name
-      # class_nameを使ってはいけない
-      self.class.name.demodulize
+    def graphql_name
+      self.class.graphql_name
     end
 
     def add_error_message(message, ast_node: nil, options: nil, extensions: nil)

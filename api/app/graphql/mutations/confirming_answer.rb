@@ -15,7 +15,7 @@ module Mutations
       raise ConflictAnswerConfirming, confirming if confirming == answer.confirming
 
       if answer.update(confirming: confirming)
-        Notification.notify(mutation: self.mutation_name, record: answer)
+        Notification.notify(mutation: self.graphql_name, record: answer)
         { answer: answer.readable(team: self.current_team!) }
       else
         add_errors(answer)

@@ -104,6 +104,8 @@ export default {
       return orm.Session.query()
         .with(['team'])
         .all()
+        .filter(s => s.team)
+      // 存在しないチームIDを持つレコードは表示しない
     },
     hasSessions() {
       return this.sessions.length !== 0
@@ -117,6 +119,9 @@ export default {
       )
       return collect.map(o => [o[0], o[1].length])
     }
+  },
+  mounted() {
+    this.fetch()
   },
   methods: {
     async fetch() {

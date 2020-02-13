@@ -15,7 +15,7 @@ module Mutations
       category = Category.find_or_initialize_by(code: code)
 
       if category.update(title: title, description: description, order: order)
-        Notification.notify(mutation: self.mutation_name, record: category)
+        Notification.notify(mutation: self.graphql_name, record: category)
         { category: category.readable(team: self.current_team!) }
       else
         add_errors(category)

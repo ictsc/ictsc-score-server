@@ -6,6 +6,11 @@ const EndPoint = '/push'
 function subscribe(events, onMessage) {
   console.log('call subscribeEventSource')
 
+  // logout時など
+  if (!events) {
+    return
+  }
+
   const url = `${EndPoint}/?eventType=${events.join(',')}`
   const eventSource = new EventSource(url, { withCredentials: true })
 
@@ -17,8 +22,10 @@ function subscribe(events, onMessage) {
   //   console.log('eventsource connected')
   // }
 
-  eventSource.onerror = e => {
-    console.error('error', e)
+  eventSource.onerror = error => {
+    console.error(error)
+    error.target.close()
+
     $nuxt.notifyError({
       message:
         'Push通知と自動リロードが停止しました\nページをリロードしてください'

@@ -70,7 +70,11 @@
           class="mt-4"
         >
           <template v-slot="{ item, isNew }">
-            <problem-modal value :item="item" :is-new="isNew" />
+            <problem-modal
+              value
+              :item="reloadProblem(item.id)"
+              :is-new="isNew"
+            />
           </template>
         </item-select-button>
 
@@ -171,6 +175,7 @@ export default {
         'role',
         'number',
         'name',
+        'beginner',
         'password',
         'organization',
         'color'
@@ -238,9 +243,15 @@ export default {
       await orm.Queries.problemsCategory()
       return this.sortByOrder(
         orm.Problem.query()
-          .with(['body', 'category'])
+          .with(['body', 'category', 'previousProblem'])
           .all()
       )
+    },
+    // item-select-buttonを通すと一部リアクティブじゃなくなる
+    reloadProblem(id) {
+      return orm.Problem.query()
+        .with(['body', 'category', 'previousProblem'])
+        .find(id)
     },
     async applyTeam(params) {
       let result = false

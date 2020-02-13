@@ -24,7 +24,9 @@
         </v-col>
 
         <!-- 採点猶予後から10分はタイマーを表示する -->
-        <v-col v-if="isStaff && -600 <= answer.delayFinishInSec">
+        <v-col
+          v-if="isStaff && realtimeGrading && -600 <= answer.delayFinishInSec"
+        >
           <span>
             {{ answer.delayFinishInSec | tickDuration('mm:ss') }}
           </span>

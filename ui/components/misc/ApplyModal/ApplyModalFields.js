@@ -149,7 +149,7 @@ export default {
       this.conflictFields = []
       this.$refs.form.resetValidation()
     },
-    async checkConlict() {
+    async checkConflict() {
       await this.fetchSelf()
       return this.conflicted
     }

@@ -10,7 +10,7 @@
       No.{{ answer.team.number }} {{ answer.team.name }}
     </div>
 
-    <div v-if="answer.hasPoint">{{ answer.point }}点</div>
+    <div v-if="answer.hasPoint">{{ answer.percent }}% {{ answer.point }}点</div>
     <div v-else>
       未採点
     </div>

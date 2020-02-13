@@ -13,7 +13,7 @@ module Mutations
 
       Acl.permit!(mutation: self, args: { session: session })
 
-      if Session.destroy(id: session[:id])
+      if Session.destroy(session[:id])
         { session: session }
       else
         add_errors(session)

@@ -81,6 +81,7 @@ export default class Queries {
   }
 
   static sessionsTeam() {
+    orm.Session.deleteAll()
     return orm.Session.eagerFetch({}, ['team'])
   }
 

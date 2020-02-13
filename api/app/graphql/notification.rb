@@ -93,7 +93,7 @@ class Notification
         }
       # when 'DeleteAttachment', 'DeleteCategory', 'DeleteProblem', 'DeleteProblemEnvironment', 'DeleteSession', 'DeleteNotice', 'DeleteProblemSupplement', 'DeleteIssueComment'
       else
-        raise UnhandledClass, mutation.mutation_name
+        raise UnhandledClass, mutation.graphql_name
       end
     end
 

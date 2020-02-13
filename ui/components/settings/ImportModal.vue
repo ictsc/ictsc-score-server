@@ -109,7 +109,12 @@ export default {
   },
   computed: {
     headers() {
-      const applyHeader = { text: '', value: '__applyStatus', align: 'center' }
+      const applyHeader = {
+        text: '',
+        value: '__applyStatus',
+        align: 'center',
+        width: '5em'
+      }
       const headers = this.fields.map(o => ({ text: o, value: o }))
       return [applyHeader, ...headers]
     },

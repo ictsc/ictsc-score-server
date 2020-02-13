@@ -19,7 +19,7 @@ module Mutations
       if answer.update(args.merge(bodies: bodies, confirming: false, team: self.current_team!))
         # TODO: answer.gradeをジョブで実行する -> after create hook
         answer.grade(percent: nil)
-        Notification.notify(mutation: self.mutation_name, record: answer)
+        Notification.notify(mutation: self.graphql_name, record: answer)
 
         # gradeでcacheにscoreが残るためreloadして消す
         { answer: answer.reload.readable(team: self.current_team!) }

@@ -20,7 +20,7 @@ module Mutations
 
       # issueも同時にsaveされる
       if issue_comment.update(issue: issue)
-        Notification.notify(mutation: self.mutation_name, record: issue)
+        Notification.notify(mutation: self.graphql_name, record: issue)
         { issue: issue.readable(team: self.current_team!), issue_comment: issue_comment.readable(team: self.current_team!) }
       else
         add_errors(issue, issue_comment)
