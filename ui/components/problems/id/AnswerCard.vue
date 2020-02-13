@@ -59,12 +59,8 @@
         </v-btn>
       </v-row>
 
-      <markdown
-        v-if="textboxAsMarkdown"
-        :content="answer.bodies[0][0]"
-        readonly
-      />
-      <raw-text v-else :content="answer.bodies[0][0]" class="pa-2" />
+      <markdown v-if="textboxAsMarkdown" :content="textboxContent" readonly />
+      <raw-text v-else :content="textboxContent" class="pa-2" />
     </template>
 
     <answer-form-radio-button
@@ -125,7 +121,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', ['realtimeGrading'])
+    ...mapGetters('contestInfo', ['realtimeGrading']),
+
+    textboxContent() {
+      return this.answer.bodies[0][0]
+    }
   },
   created() {
     // dateではcomputed(isStaff)が使えない

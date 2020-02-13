@@ -254,10 +254,10 @@ create_config
 players, audience = create_teams
 categories = create_categories
 problems = create_problems(categories)
-answers = create_answers(problems, players)
 problem_environments = create_problem_environments(problems, players)
 problem_supplements = create_problem_supplements(problems)
 notices = create_notices(players)
 issues = create_issues(problems, players)
+answers = create_answers(problems, players)
 # TODO: attachments
 # rubocop:enable Lint/UselessAssignment

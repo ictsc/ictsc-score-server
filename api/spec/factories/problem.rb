@@ -10,7 +10,7 @@ FactoryBot.define do
       code
     end
     writer { Faker::Book.author }
-    secret_text { Faker::Books::Dune.planet }
+    secret_text { Array.new(Random.rand(1..2)) { Faker::Books::Dune.quote }.join("\n") }
     order { Random.rand(1000) }
     team_isolate { false }
     open_at { nil }

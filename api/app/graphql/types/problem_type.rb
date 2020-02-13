@@ -22,7 +22,7 @@ module Types
     # staffは全チームの環境を見える, playerは自チームのみ
     field :environments,        [Types::ProblemEnvironmentType], null: false
     field :supplements,         [Types::ProblemSupplementType],  null: false
-    field :answers,             [Types::AnswerType],             null: true
+    field :answers,             [Types::AnswerType],             null: false
     field :issues,              [Types::IssueType],              null: false
     field :solved_count,        Integer,                         null: false
     # created_atとupdated_atは意味がないので見せない(bodyを見るべき)

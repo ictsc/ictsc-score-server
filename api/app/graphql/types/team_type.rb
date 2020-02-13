@@ -12,6 +12,7 @@ module Types
     field :secret_text,  String,  null: true
     # channelはgraphqlでは渡さない
 
+    field :attachments,  [Types::AttachmentType], null: false
     has_many :attachments
   end
 end

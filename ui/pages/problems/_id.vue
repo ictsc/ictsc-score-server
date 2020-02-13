@@ -26,7 +26,12 @@
           @focus="fetchTeams"
         />
 
-        <v-tabs v-model="currentTab" grow active-class="always-active-color">
+        <v-tabs
+          v-model="currentTab"
+          grow
+          class="pb-2"
+          active-class="always-active-color"
+        >
           <v-tabs-slider></v-tabs-slider>
           <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
           <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
@@ -35,7 +40,7 @@
         <v-tabs-items
           v-if="teamId"
           v-model="currentTab"
-          class="pt-4 transparent"
+          class="pt-1 transparent"
         >
           <v-tab-item :value="answersTabName">
             <answer-panel :answers="answers" :problem-body="problem.body" />
@@ -60,8 +65,8 @@ export default {
   name: 'Problem',
   components: {
     AnswerPanel,
-    IssuePanel,
-    DetailsPanel
+    DetailsPanel,
+    IssuePanel
   },
   fetch({ params }) {
     orm.Queries.problemMisc(params.id)
@@ -105,13 +110,13 @@ export default {
       // categoryとpreviousProblemは編集モーダルで必要
       return orm.Problem.query()
         .with([
-          'category',
-          'body',
-          'previousProblem',
-          'environments.team',
-          'supplements',
           'answers',
-          'issues.comments'
+          'body',
+          'category',
+          'environments.team',
+          'issues.comments',
+          'previousProblem',
+          'supplements'
         ])
         .find(this.problemId)
     },
