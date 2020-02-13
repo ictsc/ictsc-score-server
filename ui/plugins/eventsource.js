@@ -6,6 +6,11 @@ const EndPoint = '/push'
 function subscribe(events, onMessage) {
   console.log('call subscribeEventSource')
 
+  // logout時など
+  if (!events) {
+    return
+  }
+
   const url = `${EndPoint}/?eventType=${events.join(',')}`
   const eventSource = new EventSource(url, { withCredentials: true })
 
