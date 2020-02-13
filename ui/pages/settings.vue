@@ -171,6 +171,7 @@ export default {
         'role',
         'number',
         'name',
+        'beginner',
         'password',
         'organization',
         'color'
