@@ -65,6 +65,9 @@ export default {
     JsonStroage.accessor('answer-list', 'displayToggle', []),
     JsonStroage.accessor('answer-list', 'problemCode', undefined)
   ],
+  fetch() {
+    orm.Queries.problemsAnswersTeam()
+  },
   computed: {
     problems() {
       const problems = orm.Problem.query()
@@ -73,9 +76,6 @@ export default {
 
       return this.$_.sortBy(problems, p => this.$elvis(p, 'body.title'))
     }
-  },
-  fetch() {
-    orm.Queries.problemsAnswersTeam()
   },
   methods: {
     // 各チームの最終解答のみの配列にする

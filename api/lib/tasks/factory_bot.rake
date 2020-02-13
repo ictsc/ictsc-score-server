@@ -49,7 +49,7 @@ namespace :factory_bot do # rubocop:disable Metrics/BlockLength
 
     columns = model
       .columns
-      .reject {|c| /_id\z/ =~ c.name || model.primary_key == c.name }
+      .reject {|c| c.name.end_with?('_id') || model.primary_key == c.name }
       .map {|a| { name: a.name, type: a.sql_type_metadata.type, null: a.null, default: (a.default || a.default_function) } }
 
     reflections = model

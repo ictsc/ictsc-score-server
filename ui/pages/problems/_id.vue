@@ -63,17 +63,15 @@ export default {
     IssuePanel,
     DetailsPanel
   },
+  fetch({ params }) {
+    orm.Queries.problemMisc(params.id)
+  },
   data() {
     return {
       selectedTeamId: null,
       currentTab: null,
       teamFetching: false,
       teamFetched: false
-    }
-  },
-  head() {
-    return {
-      title: this.$elvis(this.problem, 'body.title')
     }
   },
   computed: {
@@ -129,15 +127,18 @@ export default {
   },
   watch: {
     selectedTeamId(value) {
-      this.$router.replace({
-        name: this.$route.name,
-        params: this.$route.params,
-        hash: `#${this.tabMode}${this.hashTailTeamId()}`
-      })
+      this.$router
+        .replace({
+          name: this.$route.name,
+          params: this.$route.params,
+          hash: `#${this.tabMode}${this.hashTailTeamId()}`
+        })
+        .catch(err => {
+          if (err.name !== 'NavigationDuplicated') {
+            console.error(err)
+          }
+        })
     }
-  },
-  fetch({ params }) {
-    orm.Queries.problemMisc(params.id)
   },
   mounted() {
     // dataではisPlayerが使えないためここでセット
@@ -163,6 +164,11 @@ export default {
       await orm.Queries.teams()
       this.teamFetching = false
       this.teamFetched = true
+    }
+  },
+  head() {
+    return {
+      title: this.$elvis(this.problem, 'body.title')
     }
   }
 }

@@ -38,11 +38,6 @@ import { mapActions } from 'vuex'
 
 export default {
   name: 'LoginPage',
-  head() {
-    return {
-      title: 'ログイン'
-    }
-  },
   data() {
     return {
       valid: false,
@@ -73,6 +68,11 @@ export default {
       }
 
       this.loading = false
+    }
+  },
+  head() {
+    return {
+      title: 'ログイン'
     }
   }
 }

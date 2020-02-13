@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # 非公開API(Preloader)を使っているためバージョンアップ時は注意
-raise unless ActiveRecord.version.to_s == '6.0.0'
+raise 'unsupported AR version' unless ActiveRecord.version.to_s == '6.0.2.1'
 
 # has_many has_one
 class AssociationLoader < GraphQL::Batch::Loader

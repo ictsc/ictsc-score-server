@@ -11,7 +11,7 @@
     dense
     class="elevation-2 ma-0"
   >
-    <template v-slot:item.action="{ item, header, value }">
+    <template v-slot:item.action="{ item }">
       <config-modal :config="item">
         <template v-slot:activator="{ on }">
           <v-icon small @click="on">mdi-pen</v-icon>
@@ -19,7 +19,7 @@
       </config-modal>
     </template>
 
-    <template v-slot:item.value="{ item, header, value }">
+    <template v-slot:item.value="{ item }">
       <div class="text-truncate" style="width: 14em">
         {{ item.displayValue }}
       </div>

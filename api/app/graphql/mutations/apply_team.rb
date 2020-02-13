@@ -13,7 +13,7 @@ module Mutations
     argument :color,        String,                 required: false
 
     # passwordを省略した場合は更新されない
-    def resolve(role:, beginner:, number:, name:, password:, organization: nil, color: nil)
+    def resolve(role:, beginner:, number:, name:, password:, organization:, color:)
       Acl.permit!(mutation: self, args: {})
 
       team = Team.find_or_initialize_by(number: number)
