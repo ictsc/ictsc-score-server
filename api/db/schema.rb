@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_26_085652) do
+ActiveRecord::Schema.define(version: 2020_02_13_102438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -101,6 +101,17 @@ ActiveRecord::Schema.define(version: 2020_01_26_085652) do
     t.index ["target_team_id"], name: "index_notices_on_target_team_id"
   end
 
+  create_table "penalties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "count", null: false
+    t.uuid "problem_id", null: false
+    t.uuid "team_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["problem_id", "team_id"], name: "index_penalties_on_problem_id_and_team_id", unique: true
+    t.index ["problem_id"], name: "index_penalties_on_problem_id"
+    t.index ["team_id"], name: "index_penalties_on_team_id"
+  end
+
   create_table "problem_bodies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "mode", null: false
     t.string "title", null: false
@@ -121,10 +132,12 @@ ActiveRecord::Schema.define(version: 2020_01_26_085652) do
     t.string "user", null: false
     t.string "password", null: false
     t.uuid "problem_id", null: false
-    t.uuid "team_id", null: false
+    t.uuid "team_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "note", limit: 8192
+    t.string "name", null: false
+    t.index ["problem_id", "team_id", "name"], name: "index_problem_environments_on_problem_id_and_team_id_and_name", unique: true
     t.index ["problem_id"], name: "index_problem_environments_on_problem_id"
     t.index ["team_id"], name: "index_problem_environments_on_team_id"
   end
@@ -174,6 +187,7 @@ ActiveRecord::Schema.define(version: 2020_01_26_085652) do
     t.datetime "updated_at", null: false
     t.boolean "beginner", null: false
     t.string "channel", null: false
+    t.string "secret_text", limit: 8192, null: false
     t.index ["name"], name: "index_teams_on_name", unique: true
     t.index ["number"], name: "index_teams_on_number", unique: true
   end
