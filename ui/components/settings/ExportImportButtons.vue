@@ -41,6 +41,10 @@ export default {
       type: String,
       required: true
     },
+    filenamePrefix: {
+      type: String,
+      required: true
+    },
     apply: {
       type: Function,
       required: true
@@ -67,7 +71,7 @@ export default {
       const yaml = YAML.safeDump(filtered)
       this.download(
         'text/x-yaml',
-        `${this.label} ${this.currentDateTimeString()}.yml`,
+        `${this.filenamePrefix} ${this.currentDateTimeString()}.yml`,
         yaml
       )
     },

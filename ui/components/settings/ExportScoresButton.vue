@@ -92,7 +92,7 @@ export default {
 
       this.download(
         'text/json',
-        `成績一覧 ${this.currentDateTimeString()}.json`,
+        `scores ${this.currentDateTimeString()}.json`,
         JSON.stringify(data)
       )
       this.loading = false
