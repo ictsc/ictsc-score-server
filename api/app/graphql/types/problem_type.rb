@@ -23,6 +23,7 @@ module Types
     field :environments,        [Types::ProblemEnvironmentType], null: false
     field :supplements,         [Types::ProblemSupplementType],  null: false
     field :answers,             [Types::AnswerType],             null: false
+    field :penalties,           [Types::PenaltyType],            null: false
     field :issues,              [Types::IssueType],              null: false
     field :solved_count,        Integer,                         null: false
     # created_atとupdated_atは意味がないので見せない(bodyを見るべき)
@@ -43,6 +44,7 @@ module Types
     has_many :supplements
     has_many :answers
     has_many :issues
+    has_many :penalties
     belongs_to :previous_problem
     belongs_to :category
     has_one :solved_count, :first_correct_answers, &:size

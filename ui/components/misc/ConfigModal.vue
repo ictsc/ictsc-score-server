@@ -132,8 +132,7 @@ export default {
       datePicker,
       timePicker,
       integerRules: [
-        v => (!['', null, undefined].includes(v) && !Number.isNaN(v)) || '必須',
-        v => parseInt(v) >= 0 || '0以上'
+        v => (!['', null, undefined].includes(v) && !Number.isNaN(v)) || '必須'
       ],
       dateRules: [
         v => this.isValidDateTime(v) || '不正なフォーマット(ISO 8601)'

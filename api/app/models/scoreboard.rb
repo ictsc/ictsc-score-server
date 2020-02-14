@@ -12,7 +12,7 @@ class Scoreboard
     def readables(team:)
       return [] if team.player? && (Config.hide_all_score || !Config.competition?)
 
-      records = aggregate(teams: Team.player, answers: effective_answers(team: team))
+      records = aggregate(teams: Team.player, answers: effective_answers(team: team), penalties: Penalty.all)
 
       return records if team.staff? || team.audience?
 
@@ -79,35 +79,44 @@ class Scoreboard
     # チーム毎に集計する
     # {:team_id=>"bc1a8747-ed32-4f62-8811-2090a589d063", :score=>17775, :rank=>1 } のソート済み配列
     # beginnerかどうかで独立してrankが付く
-    def aggregate(teams:, answers:)
+    def aggregate(teams:, answers:, penalties:)
       # &:team にしないこと(実行時間5倍)
       teams_answers = answers.group_by(&:team_id)
+      # SQL側で計算
+      teams_penalty_scores = penalties
+        .group(:team_id)
+        .sum(:count)
+        .transform_values {|total_count| total_count * Config.penalty_weight }
+
+      # ペナルティが無いチーム対策
+      teams_penalty_scores.default = 0
 
       # 解答の無いチームも集計対象とする
-      #   1. 得点集計
+      #   1. チーム毎に得点集計
       #   2. beginnerとそうでないものを分離
       #   3. 分離したものをそれぞれランク付け&結合
       teams
-        .map {|team| build_record(team: team, team_answers: teams_answers[team.id]) }
+        .map {|team| build_record(team: team, team_answers: teams_answers[team.id], penalty_score: teams_penalty_scores[team.id]) }
         .group_by {|record| record[:_beginner] }
         .sum {|_key, records| assign_rank(records: records) }
     end
 
-    def build_record(team:, team_answers:)
+    def build_record(team:, team_answers:, penalty_score:)
       {
         team_id: team.id,
-        score: aggregate_score(team_answers: team_answers),
+        score: aggregate_score(team_answers: team_answers, penalty_score: penalty_score),
         rank: 0, # dummy
         _beginner: team.beginner # ランク付与用
       }
     end
 
-    def aggregate_score(team_answers:)
+    def aggregate_score(team_answers:, penalty_score:)
       # 解答が1つも無い
-      return 0 if team_answers.blank?
+      return penalty_score if team_answers.blank?
 
       select_most_effective_answers(team_answers: team_answers)
         .sum {|_answer_id, answer| answer.score.point }
+        .+ penalty_score
     end
 
     # 各問題の解答から最優先のもののみ取り出す

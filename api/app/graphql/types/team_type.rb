@@ -13,6 +13,9 @@ module Types
     # channelはgraphqlでは渡さない
 
     field :attachments,  [Types::AttachmentType], null: false
+    field :penalties,    [Types::PenaltyType],    null: false
+
     has_many :attachments
+    has_many :penalties
   end
 end

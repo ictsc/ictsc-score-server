@@ -13,7 +13,7 @@ class Acl
       return false if team.audience?
 
       case mutation.graphql_name
-      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers'
+      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'TransitionPenalty', 'UpdateConfig', 'RegradeAnswers'
         # staff only
         team.staff?
       when 'AddAnswer'

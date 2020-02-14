@@ -37,6 +37,12 @@
           <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
         </v-tabs>
 
+        <penalty-counter
+          v-if="teamId"
+          :problem-id="problem.id"
+          :team-id="teamId"
+        />
+
         <v-tabs-items
           v-if="teamId"
           v-model="currentTab"
@@ -57,6 +63,7 @@
 import AnswerPanel from '~/components/problems/id/AnswerPanel'
 import IssuePanel from '~/components/problems/id/IssuePanel'
 import DetailsPanel from '~/components/problems/id/DetailsPanel'
+import PenaltyCounter from '~/components/problems/id/PenaltyCounter'
 import orm from '~/orm'
 
 const MODE_REGEXP = /^#(issues|answers)(=(.*))?$/
@@ -66,7 +73,8 @@ export default {
   components: {
     AnswerPanel,
     DetailsPanel,
-    IssuePanel
+    IssuePanel,
+    PenaltyCounter
   },
   fetch({ params }) {
     orm.Queries.problemMisc(params.id)

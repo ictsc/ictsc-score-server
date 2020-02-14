@@ -26,6 +26,7 @@ export default class Problem extends BaseModel {
       // staffは全チームの環境を見える: playerは自チームのみ
       environments: this.hasMany(orm.ProblemEnvironment, 'problemId'),
       supplements: this.hasMany(orm.ProblemSupplement, 'problemId'),
+      penalties: this.hasMany(orm.Penalty, 'problemId'),
       answers: this.hasMany(orm.Answer, 'problemId'),
       issues: this.hasMany(orm.Issue, 'problemId'),
       solvedCount: this.number()

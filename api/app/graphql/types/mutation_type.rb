@@ -24,6 +24,7 @@ module Types
     field :regradeAnswers,           mutation: Mutations::RegradeAnswers
     field :startIssue,               mutation: Mutations::StartIssue
     field :transitionIssueState,     mutation: Mutations::TransitionIssueState
+    field :transitionPenalty,        mutation: Mutations::TransitionPenalty
     field :updateConfig,             mutation: Mutations::UpdateConfig
   end
 end

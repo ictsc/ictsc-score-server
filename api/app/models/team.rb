@@ -19,6 +19,7 @@ class Team < ApplicationRecord
   validates :secret_text,     allow_empty: true, length: { maximum: 8192 }
 
   has_many :answers,               dependent: :destroy
+  has_many :penalties,             dependent: :destroy
   has_many :attachments,           dependent: :nullify
   has_many :first_correct_answers, dependent: :destroy
   has_many :issues,                dependent: :destroy

@@ -54,7 +54,7 @@ module Readable
         list = %w[password_digest]
         list << 'secret_text' unless team.staff?
         list
-      when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'ProblemSupplement', 'Score'
+      when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'Penalty', 'ProblemSupplement', 'Score'
         # permit all
         %w[]
       else
@@ -102,6 +102,8 @@ module Readable
         where(team: team, problem: Problem.opened(team: team))
       when 'IssueComment'
         where(issue: Issue.readable_records(team: team))
+      when 'Penalty'
+        where(team: team, problem: Problem.opened(team: team))
       when 'ProblemBody', 'ProblemSupplement'
         where(problem: Problem.opened(team: team))
       when 'ProblemEnvironment'
