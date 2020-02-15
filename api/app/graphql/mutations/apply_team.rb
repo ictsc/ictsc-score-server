@@ -7,11 +7,11 @@ module Mutations
     argument :role,         Types::Enums::TeamRole, required: true
     argument :beginner,     Boolean,                required: true
     argument :number,       Integer,                required: true
+    argument :organization, String,                 required: true
+    argument :color,        String,                 required: true
     argument :secret_text,  String,                 required: true
     argument :name,         String,                 required: true
     argument :password,     String,                 required: false
-    argument :organization, String,                 required: false
-    argument :color,        String,                 required: false
 
     # passwordを省略した場合は更新されない
     def resolve(role:, beginner:, number:, secret_text:, name:, password:, organization:, color:)

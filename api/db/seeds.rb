@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Team.create!(role: 'staff', name: 'staff', beginner: false, organization: '運営', number: 999, secret_text: '', password: ENV.fetch('API_STAFF_PASSWORD'))
+Team.create!(role: 'staff', name: 'staff', beginner: false, organization: '運営', color: '', number: 999, secret_text: '', password: ENV.fetch('API_STAFF_PASSWORD'))
 
 seed_file = Rails.root.join('db', 'seeds', "#{Rails.env}.rb")
 

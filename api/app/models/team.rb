@@ -14,8 +14,8 @@ class Team < ApplicationRecord
   # dummy field
   validates :password,        presence: true, length: { maximum: ActiveModel::SecurePassword::MAX_PASSWORD_LENGTH_ALLOWED }, if: :will_save_change_to_password_digest?
   validates :password_digest, presence: true
-  validates :organization,    presence: false
-  validates :color,           color_code: true, allow_nil: true
+  validates :organization,    allow_empty: true
+  validates :color,           allow_empty: true, color_code: true
   validates :secret_text,     allow_empty: true, length: { maximum: 8192 }
 
   has_many :answers,               dependent: :destroy
