@@ -1,7 +1,7 @@
 <template>
   <div>
     <expandable-button v-model="show" :togglable="isStaff">
-      問題環境
+      接続情報
     </expandable-button>
     <v-expand-transition>
       <environment-table

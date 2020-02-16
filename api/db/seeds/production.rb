@@ -22,6 +22,7 @@ def create_config
     { key: :competition_stop,               value_type: :boolean, value: false },
     { key: :text_size_limit,                value_type: :integer, value: 8192 },
     { key: :delete_time_limit_sec,          value_type: :integer, value: 60 },
+    { key: :penalty_weight,                 value_type: :integer, value: -10 },
 
     { key: :all_problem_force_open_at,      value_type: :date,    value: Time.zone.parse('2100-01-01 00:00:00') },
     { key: :scoreboard_hide_at,             value_type: :date,    value: Time.zone.parse('2100-01-01 00:00:00') },

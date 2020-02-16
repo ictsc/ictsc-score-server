@@ -15,6 +15,12 @@
           <v-divider />
           {{ team.organization }}
         </template>
+
+        <template v-if="team.secretText">
+          <v-divider class="pb-2" />
+          <div>運営用メモ</div>
+          {{ team.secretText }}
+        </template>
       </v-col>
     </v-card-text>
   </v-card>

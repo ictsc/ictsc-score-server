@@ -7,6 +7,7 @@ import Config from '~/orm/Config'
 import Notice from '~/orm/Notice'
 import Issue from '~/orm/Issue'
 import IssueComment from '~/orm/IssueComment'
+import Penalty from '~/orm/Penalty'
 import Problem from '~/orm/Problem'
 import ProblemBody from '~/orm/ProblemBody'
 import ProblemSupplement from '~/orm/ProblemSupplement'
@@ -24,6 +25,7 @@ export default {
   Notice,
   Issue,
   IssueComment,
+  Penalty,
   Problem,
   ProblemBody,
   ProblemSupplement,

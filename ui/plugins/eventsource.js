@@ -4,8 +4,6 @@ const EndPoint = '/push'
 
 // events: [String] 購読するイベント名の配列
 function subscribe(events, onMessage) {
-  console.log('call subscribeEventSource')
-
   // logout時など
   if (!events) {
     return

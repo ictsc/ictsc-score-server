@@ -58,6 +58,7 @@ const fields = {
   role: '',
   name: '',
   organization: '',
+  secretText: '',
   number: 0,
   color: null
 }

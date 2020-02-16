@@ -17,6 +17,7 @@ class Problem < ApplicationRecord
   has_many :environments,          dependent: :destroy, class_name: 'ProblemEnvironment'
   has_many :supplements,           dependent: :destroy, class_name: 'ProblemSupplement'
   has_many :answers,               dependent: :destroy
+  has_many :penalties,             dependent: :destroy
   has_many :issues,                dependent: :destroy
   has_many :first_correct_answers, dependent: :destroy
 

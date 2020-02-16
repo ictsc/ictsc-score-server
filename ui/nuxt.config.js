@@ -80,7 +80,7 @@ export default {
     theme: {
       themes: {
         light: {
-          primary: '#ed1848'
+          primary: '#e40046'
         }
       }
     }

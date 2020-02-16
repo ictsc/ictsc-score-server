@@ -26,6 +26,20 @@
       />
     </template>
 
+    <template v-slot:item.team.displayName="{ value }">
+      <template v-if="!!value">
+        {{ value }}
+      </template>
+      <template v-else>
+        <v-icon small>mdi-link-variant</v-icon>
+        共通
+      </template>
+    </template>
+
+    <template v-slot:item.team="{ value }">
+      <v-icon v-if="!value" small>mdi-check</v-icon>
+    </template>
+
     <template v-slot:item.note="{ value }">
       <markdown v-if="!!value" :content="value" />
     </template>
@@ -123,6 +137,7 @@ export default {
           { text: 'No.', value: 'team.number' },
           { text: 'チーム名', value: 'team.displayName' },
           { text: '状態', value: 'status' },
+          { text: '名前', value: 'name' },
           { text: 'ホスト', value: 'host' },
           { text: 'ユーザー', value: 'user' },
           { text: 'パスワード', value: 'password' },
@@ -132,6 +147,8 @@ export default {
         ]
       } else {
         return [
+          { text: '共通', value: 'team', align: 'center' },
+          { text: '名前', value: 'name' },
           { text: 'SSHコマンド', value: 'sshCommand' },
           { text: 'VNCアクセス先', value: 'vncURL' },
           { text: 'パスワード', value: 'password' },

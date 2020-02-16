@@ -14,10 +14,12 @@ class Team < ApplicationRecord
   # dummy field
   validates :password,        presence: true, length: { maximum: ActiveModel::SecurePassword::MAX_PASSWORD_LENGTH_ALLOWED }, if: :will_save_change_to_password_digest?
   validates :password_digest, presence: true
-  validates :organization,    presence: false
-  validates :color,           color_code: true, allow_nil: true
+  validates :organization,    allow_empty: true
+  validates :color,           allow_empty: true, color_code: true
+  validates :secret_text,     allow_empty: true, length: { maximum: 8192 }
 
   has_many :answers,               dependent: :destroy
+  has_many :penalties,             dependent: :destroy
   has_many :attachments,           dependent: :nullify
   has_many :first_correct_answers, dependent: :destroy
   has_many :issues,                dependent: :destroy
@@ -67,6 +69,11 @@ class Team < ApplicationRecord
         .find_by(name: name)
         .tap { connection_pool.release_connection }
         &.authenticate(password)
+    end
+
+    def player_without_team99
+      # team99は毎回使われる特殊チーム
+      player.where.not(name: 'team99')
     end
   end
 end

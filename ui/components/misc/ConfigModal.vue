@@ -33,35 +33,7 @@
             />
           </template>
           <template v-else-if="config.valueTypeIsDate">
-            <v-row justify="center">
-              <v-date-picker
-                v-model="datePicker"
-                :readonly="sending"
-                reactive
-                show-current
-                scrollable
-                locale="ja-jp"
-              />
-
-              <v-time-picker
-                v-model="timePicker"
-                :readonly="sending"
-                format="24hr"
-                scrollable
-                color="primary"
-                class="ml-2"
-              />
-            </v-row>
-
-            <v-text-field
-              v-model="configValue"
-              :readonly="sending"
-              :rules="dateRules"
-            >
-              <template v-slot:prepend>
-                <v-btn small @click="setNow">now</v-btn>
-              </template>
-            </v-text-field>
+            <date-time-picker v-model="configValue" :readonly="sending" />
           </template>
           <template v-else>未実装 "{{ config.valueType }}"</template>
         </v-form>
@@ -89,10 +61,12 @@ import { mapActions } from 'vuex'
 import orm from '~/orm'
 import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import NumberTextField from '~/components/commons/NumberTextField'
+import DateTimePicker from '~/components/commons/DateTimePicker'
 
 export default {
   name: 'ConfigModal',
   components: {
+    DateTimePicker,
     MarkdownTextArea,
     NumberTextField
   },
@@ -114,13 +88,6 @@ export default {
       storageKey,
       this.config.parsedValue
     )
-    let datePicker = null
-    let timePicker = null
-
-    if (this.config.valueTypeIsDate) {
-      datePicker = this.$moment(configValue).format('YYYY-MM-DD')
-      timePicker = this.$moment(configValue).format('HH:mm:ss')
-    }
 
     return {
       showModal: this.value,
@@ -129,14 +96,8 @@ export default {
 
       storageKey,
       configValue,
-      datePicker,
-      timePicker,
       integerRules: [
-        v => (!['', null, undefined].includes(v) && !Number.isNaN(v)) || '必須',
-        v => parseInt(v) >= 0 || '0以上'
-      ],
-      dateRules: [
-        v => this.isValidDateTime(v) || '不正なフォーマット(ISO 8601)'
+        v => (!['', null, undefined].includes(v) && !Number.isNaN(v)) || '必須'
       ]
     }
   },
@@ -167,44 +128,12 @@ export default {
     showModal(value) {
       this.$emit('input', value)
     },
-
     configValue(value) {
       this.$jsonStorage.set(this.storageKey, value)
-
-      if (this.config.valueTypeIsDate) {
-        this.updateDateTimeToPicker(value)
-      }
-    },
-    datePicker(value) {
-      this.updateDateTimeFromPicker()
-    },
-    timePicker(value) {
-      this.updateDateTimeFromPicker()
     }
   },
   methods: {
     ...mapActions('contestInfo', ['fetchContestInfo']),
-
-    updateDateTimeFromPicker() {
-      // 2112-09-03T03:22:00+09:00 iso8601
-      this.configValue = this.formatDateTime(
-        `${this.datePicker}T${this.timePicker}`
-      )
-    },
-    updateDateTimeToPicker(value) {
-      if (!this.isValidDateTime(value)) {
-        return
-      }
-
-      this.datePicker = this.$moment(value).format('YYYY-MM-DD')
-      this.timePicker = this.$moment(value).format('HH:mm')
-    },
-    setNow() {
-      const now = this.$moment()
-      now.second(0)
-      now.minutes(0)
-      this.configValue = now.format()
-    },
 
     open() {
       this.showModal = true

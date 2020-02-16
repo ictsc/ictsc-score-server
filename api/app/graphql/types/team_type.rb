@@ -5,12 +5,18 @@ module Types
     field :id,           ID, null: false
     field :role,         Types::Enums::TeamRole, null: false
     field :beginner,     Boolean, null: false
-    field :name,         String,  null: true
-    field :organization, String,  null: true
-    field :number,       Integer, null: true
-    field :color,        String,  null: true
+    field :name,         String,  null: false
+    field :organization, String,  null: false
+    field :number,       Integer, null: false
+    field :color,        String,  null: false
+    field :secret_text,  String,  null: true
     # channelはgraphqlでは渡さない
+    # field :channel,      String,  null: true
+
+    field :attachments,  [Types::AttachmentType], null: false
+    field :penalties,    [Types::PenaltyType],    null: false
 
     has_many :attachments
+    has_many :penalties
   end
 end

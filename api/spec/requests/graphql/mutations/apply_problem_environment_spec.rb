@@ -6,6 +6,7 @@ RSpec.describe 'applyProblemEnvironment', type: :request do
   context_as_staff do
     let(:problem) { create(:problem) }
     let(:team) { create(:team, :player) }
+    let(:name) { 'great server' }
     let(:status) { 'status' }
     let(:host) { '192.168.0.1' }
     let(:user) { 'ubuntu' }
@@ -14,13 +15,14 @@ RSpec.describe 'applyProblemEnvironment', type: :request do
     let(:query_string) do
       <<~GQL
         applyProblemEnvironment(input: { problemCode: "#{problem.code}", teamNumber: #{team.number},
-            status: "#{status}", host: "#{host}", user: "#{user}", password: "#{password}" }) {
+            name: "#{name}", status: "#{status}", host: "#{host}", user: "#{user}", password: "#{password}" }) {
 
           problemEnvironment {
             host
             user
             password
             status
+            name
             team { number }
             problem { code }
           }

@@ -9,12 +9,14 @@
       <v-col cols="auto">
         <export-import-buttons
           label="チーム一覧"
+          filename-prefix="teams"
           :fetch="fetchTeams"
           :apply="applyTeam"
           :fields="teamFields"
         />
         <export-import-buttons
           label="カテゴリ一覧"
+          filename-prefix="categories"
           :fetch="fetchCategories"
           :apply="applyCategory"
           :fields="categoryFields"
@@ -22,6 +24,7 @@
         />
         <export-import-buttons
           label="問題一覧"
+          filename-prefix="problems"
           :fetch="fetchProblems"
           :apply="applyProblem"
           :fields="problemFields"
@@ -29,6 +32,7 @@
         />
         <export-import-buttons
           label="設定一覧"
+          filename-prefix="configs"
           :fetch="fetchConfigs"
           :apply="updateConfig"
           :fields="configFields"
@@ -177,6 +181,7 @@ export default {
         'name',
         'beginner',
         'password',
+        'secretText',
         'organization',
         'color'
       ],

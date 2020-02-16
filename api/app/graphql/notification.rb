@@ -55,7 +55,7 @@ class Notification
         # 遅延を考慮するとplayerに通知するのは手間なので一先ず無しで
         # なので採点によってスコアボードは自動で更新されない
         { to: %i[staff audience], problem_id: record.problem_id }
-      when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState'
+      when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState', 'TransitionPenalty'
         { to: [:staff, record.team], problem_id: record.problem_id }
       when 'ApplyTeam'
         { to: record.gte_roles }

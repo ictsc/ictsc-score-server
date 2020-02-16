@@ -51,8 +51,10 @@ module Readable
       when 'ProblemEnvironment'
         %w[note] unless team.staff?
       when 'Team'
-        %w[password_digest]
-      when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'ProblemSupplement', 'Score'
+        list = %w[password_digest]
+        list << 'secret_text' unless team.staff?
+        list
+      when 'Config', 'FirstCorrectAnswer', 'Issue', 'IssueComment', 'Notice', 'Penalty', 'ProblemSupplement', 'Score'
         # permit all
         %w[]
       else
@@ -100,11 +102,13 @@ module Readable
         where(team: team, problem: Problem.opened(team: team))
       when 'IssueComment'
         where(issue: Issue.readable_records(team: team))
+      when 'Penalty'
+        where(team: team, problem: Problem.opened(team: team))
       when 'ProblemBody', 'ProblemSupplement'
         where(problem: Problem.opened(team: team))
       when 'ProblemEnvironment'
         # playerには展開が完了した問題環境しか見せない
-        where(team: team, problem: Problem.opened(team: team), status: 'APPLIED')
+        where(team: [team, nil], problem: Problem.opened(team: team), status: 'APPLIED')
       when 'Team'
         # 自分以下の権限のチームを取得できる
         where(role: -Float::INFINITY..Team.roles[team.role])

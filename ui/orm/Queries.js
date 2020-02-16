@@ -35,6 +35,10 @@ export default class Queries {
     return orm.Problem.eagerFetch(id, ['body', 'environments'])
   }
 
+  static problemPenaltiesTeam(id) {
+    return orm.Problem.eagerFetch(id, ['body', 'penalties', 'penalties.team'])
+  }
+
   static problemIssuesTeam(id) {
     return orm.Problem.eagerFetch(id, ['body', 'issues', 'issues.team'])
   }
@@ -45,7 +49,8 @@ export default class Queries {
       'environments',
       'supplements',
       'answers',
-      'issues'
+      'issues',
+      'penalties'
     ])
   }
 
@@ -199,6 +204,14 @@ export default class Queries {
           orm.Queries.problemsIssuesTeam()
         } else if (problem.test(path)) {
           orm.Queries.problemIssuesTeam(problemId)
+        }
+        break
+      case 'TransitionPenalty':
+        console.info('TransitionPenalty')
+        if (top.test(path)) {
+          orm.Queries.scoreboardsTeam()
+        } else if (problem.test(path)) {
+          orm.Queries.problemPenaltiesTeam(problemId)
         }
         break
       case 'UpdateConfig':

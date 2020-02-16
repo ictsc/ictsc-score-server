@@ -201,6 +201,7 @@ class Config < ApplicationRecord
   record_accessor :text_size_limit
   record_accessor :delete_time_limit_sec
   record_accessor :guide_page
+  record_accessor :penalty_weight
 
   # スコアボードの表示設定
   record_accessor :scoreboard_hide_at

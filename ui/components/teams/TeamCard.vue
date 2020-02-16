@@ -28,7 +28,7 @@
             {{ showNumber ? team.displayName : team.name }}
           </v-col>
 
-          <v-icon v-if="isStaff && team.beginner" class="pr-2">
+          <v-icon v-if="team.beginner" class="pr-2">
             mdi-face-agent
           </v-icon>
         </v-row>

@@ -5,6 +5,9 @@
       <!-- 最低幅を保証する -->
       <nuxt style="min-width: 500px" />
     </v-content>
+
+    <scroll-buttons />
+
     <notification-area />
   </v-app>
 </template>
@@ -13,11 +16,13 @@ import { mapActions, mapGetters } from 'vuex'
 import orm from '~/orm'
 import Navigation from '~/components/misc/Navigation'
 import NotificationArea from '~/components/misc/NotificationArea'
+import ScrollButtons from '~/components/misc/ScrollButtons'
 
 export default {
   components: {
     Navigation,
-    NotificationArea
+    NotificationArea,
+    ScrollButtons
   },
   computed: {
     ...mapGetters('session', ['subscribeChannels'])

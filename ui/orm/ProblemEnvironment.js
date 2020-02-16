@@ -7,10 +7,11 @@ export default class ProblemEnvironment extends BaseModel {
   static fields() {
     return {
       id: this.string(),
-      teamId: this.string(),
+      teamId: this.string().nullable(),
       team: this.belongsTo(orm.Team, 'teamId'),
       problemId: this.string(),
       problem: this.belongsTo(orm.Problem, 'problemId'),
+      name: this.string(),
       status: this.string(),
       host: this.string(),
       user: this.string(),
