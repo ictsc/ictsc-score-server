@@ -135,6 +135,9 @@ export default {
   methods: {
     ...mapActions('contestInfo', ['fetchContestInfo']),
 
+    clearStorage() {
+      this.$jsonStorage.set(this.storageKey, undefined)
+    },
     open() {
       this.showModal = true
     },
@@ -143,6 +146,7 @@ export default {
     },
     reset() {
       this.configValue = this.config.parsedValue
+      this.clearStorage()
       this.$refs.form.resetValidation()
     },
     async submit() {
@@ -152,6 +156,7 @@ export default {
         action: '設定変更',
         resolve: () => {
           this.fetchContestInfo()
+          this.clearStorage()
           this.close()
         },
         params: {
