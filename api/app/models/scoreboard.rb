@@ -12,18 +12,21 @@ class Scoreboard
     def readables(team:)
       return [] if team.player? && (Config.hide_all_score || !Config.competition?)
 
-      records = aggregate(teams: Team.player, answers: effective_answers(team: team), penalties: Penalty.all)
+      answers = ScoreAggregator.effective_answers(team: team)
+      records = ScoreAggregator.aggregate(teams: Team.player_without_team99, answers: answers, penalties: Penalty.all)
 
       return records if team.staff? || team.audience?
 
       filter_records_for_player(team: team, records: records)
     end
 
+    private
+
     def filter_records_for_player(team:, records:)
       team_record = records.find {|record| team.id == record[:team_id] }
 
       # team.beginnerの値が同じレコードのみ見える
-      records = records.select {|record| team.beginner == record[:_beginner] }
+      records = records.select {|record| team.beginner == record[:team].beginner }
 
       # 自身のレコードのみ見せる
       records = [team_record] if Config.scoreboard_hide_at <= DateTime.current
@@ -63,93 +66,6 @@ class Scoreboard
       keys << :score if Config.scoreboard_display[display_mode][:score]
 
       record.slice(*keys)
-    end
-  end
-
-  # 集計用関数群
-  class << self
-    private
-
-    # 指定teamのスコアボード生成に使える解答のみ返す
-    def effective_answers(team:)
-      rel = Answer.includes(:score).where(score: Score.where.not(point: nil))
-      (team.player? && Config.realtime_grading) ? rel.delay_filter : rel
-    end
-
-    # チーム毎に集計する
-    # {:team_id=>"bc1a8747-ed32-4f62-8811-2090a589d063", :score=>17775, :rank=>1 } のソート済み配列
-    # beginnerかどうかで独立してrankが付く
-    def aggregate(teams:, answers:, penalties:)
-      # &:team にしないこと(実行時間5倍)
-      teams_answers = answers.group_by(&:team_id)
-      # SQL側で計算
-      teams_penalty_scores = penalties
-        .group(:team_id)
-        .sum(:count)
-        .transform_values {|total_count| total_count * Config.penalty_weight }
-
-      # ペナルティが無いチーム対策
-      teams_penalty_scores.default = 0
-
-      # 解答の無いチームも集計対象とする
-      #   1. チーム毎に得点集計
-      #   2. beginnerとそうでないものを分離
-      #   3. 分離したものをそれぞれランク付け&結合
-      teams
-        .map {|team| build_record(team: team, team_answers: teams_answers[team.id], penalty_score: teams_penalty_scores[team.id]) }
-        .group_by {|record| record[:_beginner] }
-        .sum {|_key, records| assign_rank(records: records) }
-    end
-
-    def build_record(team:, team_answers:, penalty_score:)
-      {
-        team_id: team.id,
-        score: aggregate_score(team_answers: team_answers, penalty_score: penalty_score),
-        rank: 0, # dummy
-        _beginner: team.beginner # ランク付与用
-      }
-    end
-
-    def aggregate_score(team_answers:, penalty_score:)
-      # 解答が1つも無い
-      return penalty_score if team_answers.blank?
-
-      select_most_effective_answers(team_answers: team_answers)
-        .sum {|_answer_id, answer| answer.score.point }
-        .+ penalty_score
-    end
-
-    # 各問題の解答から最優先のもののみ取り出す
-    def select_most_effective_answers(team_answers:)
-      team_answers.each_with_object({}) do |answer, currents|
-        if currents[answer.id].nil? || higher_priority_answer?(current: currents[answer.id], new: answer)
-          currents[answer.id] = answer
-        end
-      end
-    end
-
-    def higher_priority_answer?(current:, new:)
-      if Config.realtime_grading
-        # 最高得点が優先
-        current[answer.id].score.point < new.score.point
-      else
-        # 最終解答が優先
-        current[answer.id].created_at < new.created_at
-      end
-    end
-
-    def assign_rank(records:)
-      return [] if records.empty?
-
-      records.sort_by! {|e| -e[:score] }
-      records.first[:rank] = 1
-
-      # 同点時の順位は 1 2 2 4
-      records.each_cons(2).with_index(2) do |(previous_data, data), index|
-        data[:rank] = (previous_data[:score] == data[:score]) ? previous_data[:rank] : index
-      end
-
-      records
     end
   end
 end

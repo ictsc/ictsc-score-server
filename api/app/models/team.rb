@@ -70,5 +70,10 @@ class Team < ApplicationRecord
         .tap { connection_pool.release_connection }
         &.authenticate(password)
     end
+
+    def player_without_team99
+      # team99は毎回使われる特殊チーム
+      player.where.not(name: 'team99')
+    end
   end
 end
