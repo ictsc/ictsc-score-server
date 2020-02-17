@@ -13,7 +13,7 @@ module Mutations
 
     def add_error_message(message, ast_node: nil, options: nil, extensions: nil)
       Rails.logger.error message
-      self.context.add_error(GraphQL::ExecutionError.new(message, message, ast_node, options, extensions))
+      self.context.add_error(GraphQL::ExecutionError.new(message, ast_node: ast_node, options: options, extensions: extensions))
     end
 
     def add_errors(*records)
