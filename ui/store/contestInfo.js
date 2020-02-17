@@ -3,6 +3,7 @@ export default {
     return {
       competitionTime: [],
       gradingDelaySec: 0,
+      resetDelaySec: 0,
       hideAllScore: false,
       realtimeGrading: false,
       textSizeLimit: 0,
@@ -17,6 +18,7 @@ export default {
         daterange.map(date => new Date(date))
       )
       state.gradingDelaySec = contestInfo.gradingDelaySec
+      state.resetDelaySec = contestInfo.resetDelaySec
       state.hideAllScore = contestInfo.hideAllScore
       state.realtimeGrading = contestInfo.realtimeGrading
       state.textSizeLimit = contestInfo.textSizeLimit
@@ -31,6 +33,7 @@ export default {
           contestInfo {
             competitionTime
             gradingDelaySec
+            resetDelaySec
             hideAllScore
             realtimeGrading
             textSizeLimit
@@ -50,16 +53,12 @@ export default {
     }
   },
   getters: {
-    gradingDelayString: (state, getters) => {
-      return getters.gradingDelaySec < 60
-        ? getters.gradingDelaySecString
-        : getters.gradingDelayMinString
-    },
     gradingDelaySec: state => state.gradingDelaySec,
-    gradingDelaySecString: (state, getters) => `${getters.gradingDelaySec}秒`,
-    gradingDelayMin: (state, getters) =>
-      Math.floor(getters.gradingDelaySec / 60),
-    gradingDelayMinString: (state, getters) => `${getters.gradingDelayMin}分`,
+    gradingDelayString: (state, getters) =>
+      $nuxt.timeSimpleStringJp(getters.gradingDelaySec),
+    resetDelaySec: state => state.resetDelaySec,
+    resetDelayString: (state, getters) =>
+      $nuxt.timeSimpleStringJp(getters.resetDelaySec),
 
     deleteTimeLimitSec: state => state.deleteTimeLimitSec,
     deleteTimeLimitMsec: state => state.deleteTimeLimitSec * 1000,

@@ -1,19 +1,72 @@
 <template>
-  <v-row v-if="isDisplay" align="center" justify="center" class="flex-nowrap">
-    <div>リセット</div>
+  <v-row align="center" justify="center" class="flex-nowrap" no-gutters>
+    <v-dialog
+      v-model="confirming"
+      :persistent="sending"
+      scrollable
+      max-width="40em"
+    >
+      <template v-slot:activator="{ on }">
+        <v-btn
+          v-if="isPlayer"
+          :disabled="sending || waitingSubmitSec !== 0"
+          color="warning"
+          block
+          class="mb-4"
+          v-on="on"
+        >
+          <template v-if="waitingSubmitSec === 0">
+            リセット要求 {{ penalties.length + 1 }}回目
+          </template>
+          <template v-else>
+            {{ penalties.length + 1 }}回目のリセット要求可能まで
+            {{ $nuxt.timeSimpleStringJp(waitingSubmitSec) }}
+          </template>
+        </v-btn>
 
-    <v-btn v-if="isStaff" :disabled="sending" icon @click="submit(-1)">
-      <v-icon>mdi-arrow-left-bold-box-outline</v-icon>
-    </v-btn>
+        <div v-else class="pt-1 pb-2">
+          {{ penalties.length }}回 {{ latestPenaltyDelayFinishInSec }}
+        </div>
+      </template>
 
-    <div class="text-center" style="width: 2.5em">{{ count }}回</div>
+      <v-card>
+        <v-card-title>
+          <div>リセット要求</div>
+        </v-card-title>
 
-    <v-btn v-if="isStaff" :disabled="sending" icon @click="submit(1)">
-      <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
-    </v-btn>
+        <v-divider />
+
+        <v-card-text class="py-2 warning lighten-2 black--text">
+          <!-- 警告 -->
+          <template v-if="resetDelaySec !== 0">
+            <div>
+              リセット依頼後
+              {{ resetDelayString }}
+              経過で新たな問題環境が展開されます<br />
+              展開が完了するまで解答できなくなります
+            </div>
+          </template>
+        </v-card-text>
+
+        <v-divider />
+
+        <v-card-actions>
+          <v-btn :loading="sending" color="warning" @click="submit">
+            リセット要求
+          </v-btn>
+
+          <v-spacer />
+
+          <v-btn :disabled="sending" @click="confirming = false">
+            キャンセル
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import orm from '~/orm'
 
 export default {
@@ -23,39 +76,40 @@ export default {
       type: String,
       required: true
     },
-    teamId: {
-      type: String,
+    penalties: {
+      type: Array,
+      required: true
+    },
+    waitingSubmitSec: {
+      type: Number,
       required: true
     }
   },
   data() {
     return {
+      confirming: false,
       sending: false
     }
   },
   computed: {
-    penalty() {
-      // primaryKey順
-      return orm.Penalty.find([this.problemId, this.teamId])
-    },
-    count() {
-      return this.penalty ? this.penalty.count : 0
-    },
-    isDisplay() {
-      return this.isStaff || this.count !== 0
+    ...mapGetters('contestInfo', ['resetDelaySec', 'resetDelayString']),
+
+    latestPenaltyDelayFinishInSec() {
+      const latestPenalty = this.findNewer(this.penalties)
+      return latestPenalty && latestPenalty.delayFinishInSec > 0
+        ? latestPenalty.delayTickDuration
+        : ''
     }
   },
   methods: {
-    async submit(num) {
-      console.info('submit', num)
+    async submit() {
       this.sending = true
 
-      await orm.Mutations.transitionPenalty({
-        params: {
-          problemId: this.problemId,
-          teamId: this.teamId,
-          from: this.count,
-          to: this.count + num
+      await orm.Mutations.addPenalty({
+        action: 'リセット要求',
+        params: { problemId: this.problemId },
+        resolve: () => {
+          this.confirming = false
         }
       })
 

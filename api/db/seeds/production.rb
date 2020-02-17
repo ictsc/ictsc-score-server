@@ -17,6 +17,7 @@ def create_config
 
     { key: :guide_page,                     value_type: :string,  value: '' },
     { key: :grading_delay_sec,              value_type: :integer, value: 0 },
+    { key: :reset_delay_sec,                value_type: :integer, value: 30 },
     { key: :hide_all_score,                 value_type: :boolean, value: true },
     { key: :realtime_grading,               value_type: :boolean, value: false },
     { key: :competition_stop,               value_type: :boolean, value: false },

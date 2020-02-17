@@ -47,6 +47,7 @@
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
 import PageTitle from '~/components/commons/PageTitle'
@@ -69,6 +70,8 @@ export default {
     orm.Queries.problemsAnswersTeam()
   },
   computed: {
+    ...mapGetters('contestInfo', ['realtimeGrading']),
+
     problems() {
       const problems = orm.Problem.query()
         .with(['body', 'answers', 'answers.team'])
@@ -80,13 +83,31 @@ export default {
   methods: {
     // 各チームの最終解答のみの配列にする
     shrinkAnswers(answers) {
+      // teamIdをキーとしたanswerの配列
       const teamsAnswers = this.$_.groupBy(answers, answer => answer.teamId)
 
       // TODO: 本戦では未採点の最も古い解答を出すべき
+
       // そのチームの複数解答を最も新しい解答1つに上書き
-      return Object.keys(teamsAnswers).map(teamId =>
-        this.findNewer(teamsAnswers[teamId])
-      )
+      if (this.realtimeGrading) {
+        // 未採点の最も古い解答 or 最高得点
+        return Object.keys(teamsAnswers).map(teamId => {
+          const unscoredAnswers = teamsAnswers[teamId].filter(
+            answer => !answer.hasPoint
+          )
+
+          if (unscoredAnswers.length === 0) {
+            return this.$_.max(teamsAnswers[teamId], answer => answer.percent)
+          } else {
+            return this.findOlder(unscoredAnswers)
+          }
+        })
+      } else {
+        // 最新の解答
+        return Object.keys(teamsAnswers).map(teamId =>
+          this.findNewer(teamsAnswers[teamId])
+        )
+      }
     },
     filterAnswers(answers) {
       const result = this.shrinkAnswers(answers)

@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <v-row justify="space-between">
-      <template v-if="problemBody.modeIsTextbox">
+      <template v-if="problem.modeIsTextbox">
         <v-slider
           v-model="slider"
           :step="stepEnable ? 5 : undefined"
@@ -75,14 +75,9 @@
             v-on="on"
           >
             <template v-slot:prepend>
-              <v-col class="px-0 pt-1 pb-1">
-                <template v-if="answer.confirming">
-                  対応中
-                </template>
-                <template v-else>
-                  未対応
-                </template>
-              </v-col>
+              <div class="py-1" style="width: 3.2em">
+                {{ answer.confirming ? '対応中' : '未対応' }}
+              </div>
             </template>
           </v-switch>
         </template>
@@ -105,7 +100,7 @@ export default {
       type: Object,
       required: true
     },
-    problemBody: {
+    problem: {
       type: Object,
       required: true
     }
@@ -130,7 +125,7 @@ export default {
       return this.previous !== this.slider
     },
     solvedIconColor() {
-      return this.problemBody.solvedCriterion <= this.slider
+      return this.problem.solvedCriterion <= this.slider
         ? 'primary'
         : 'grey lighten-2'
     }

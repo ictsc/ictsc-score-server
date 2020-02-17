@@ -13,15 +13,16 @@ class Acl
       return false if team.audience?
 
       case mutation.graphql_name
-      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'TransitionPenalty', 'UpdateConfig', 'RegradeAnswers'
+      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers'
         # staff only
         team.staff?
-      when 'AddAnswer'
-        # player and opened and 最終提出から20s
+      when 'AddAnswer', 'AddPenalty'
+        # player and opened and 解答とペナルティ最終提出から20s
         problem = args.fetch(:problem)
         return false if !team.player? || !problem.body.readable?(team: team)
 
-        problem.latest_answer_created_at(team: team) <= Time.current - Config.grading_delay_sec.seconds
+        problem.latest_answer_created_at(team: team) <= Time.current - Config.grading_delay_sec.seconds &&
+          problem.latest_penalty_created_at(team: team) <= Time.current - Config.grading_delay_sec.seconds
       when 'AddIssueComment', 'TransitionIssueState'
         # staff of issue owner
         team.staff? || args.fetch(:issue).readable?(team: team)

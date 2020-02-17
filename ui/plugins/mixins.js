@@ -5,15 +5,6 @@ import { mapGetters, mapMutations } from 'vuex'
 // やりすぎ注意
 
 Vue.mixin({
-  filters: {
-    tickDuration(sec, format) {
-      if (sec >= 0) {
-        return $nuxt.$moment.utc(sec * 1000).format(format)
-      } else {
-        return '-' + $nuxt.$moment.utc(-sec * 1000).format(format)
-      }
-    }
-  },
   computed: {
     ...mapGetters('session', [
       'currentTeamId',
@@ -54,6 +45,25 @@ Vue.mixin({
     isValidDateTime(value) {
       return this.$moment(value, this.$moment.ISO_8601).isValid()
     },
+    timeSimpleStringJp(sec) {
+      if (sec <= 60) {
+        return `${sec}秒`
+      } else if (sec % 60 === 0) {
+        return `${Math.floor(sec / 60)}分`
+      } else {
+        return `${Math.floor(sec / 60)}分${sec % 60}秒`
+      }
+    },
+    tickDuration(sec) {
+      // 一時間以下でhhを使うと12と表示される
+      const format = this.delayFinishInSec <= -3600 ? 'hh:mm:ss' : 'mm:ss'
+
+      if (sec >= 0) {
+        return $nuxt.$moment.utc(sec * 1000).format(format)
+      } else {
+        return '-' + $nuxt.$moment.utc(-sec * 1000).format(format)
+      }
+    },
 
     download(type, filename, data) {
       const blob = new Blob([data], { type })
@@ -83,25 +93,20 @@ Vue.mixin({
 
     // filter
     findOlder(records) {
+      // mixはrecordsが[]の場合Inifnityになる
       if (records.length === 0) {
         return null
       }
 
-      // mixはanswersが[]の場合-Inifnityになる
       return this.$_.min(records, record => new Date(record.createdAt))
     },
     findNewer(records) {
+      // maxはrecordsが[]の場合-Inifnityになる
       if (records.length === 0) {
         return null
       }
 
-      // maxはanswersが[]の場合-Inifnityになる
       return this.$_.max(records, record => new Date(record.createdAt))
-    },
-
-    findEffectAnswer(answers) {
-      // TODO: 予選はとりあえずこれ
-      return this.findNewer(answers)
     }
   }
 })

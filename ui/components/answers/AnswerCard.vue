@@ -15,14 +15,10 @@
       未採点
     </div>
 
-    <div v-if="showTimer">
-      {{ answer.delayFinishInSec | tickDuration('mm:ss') }}
-    </div>
+    <div v-if="answer.showTimer(problem)">{{ answer.delayTickDuration }}</div>
   </v-card>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
   name: 'AnswerCard',
   props: {
@@ -36,15 +32,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', ['realtimeGrading']),
-
-    showTimer() {
-      return (
-        this.realtimeGrading &&
-        this.problem.body.modeIsTextbox &&
-        this.answer.delayFinishInSec >= -600
-      )
-    },
     answerURL() {
       return `/problems/${this.answer.problemId}#answers=${this.answer.teamId}`
     },

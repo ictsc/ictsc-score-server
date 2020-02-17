@@ -3,7 +3,6 @@
 module Types
   class PenaltyType < Types::BaseObject
     field :id,         ID,                 null: false
-    field :count,      Integer,            null: false
     field :problem_id, ID,                 null: false
     field :problem,    Types::ProblemType, null: false
     field :team_id,    ID,                 null: false

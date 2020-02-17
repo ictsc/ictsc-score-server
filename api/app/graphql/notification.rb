@@ -4,10 +4,10 @@
 class Notification
   class << self
     def notify(mutation:, record:)
+      send_plasma_notification(mutation: mutation, record: record)
+
       slack_message = build_slack_message(mutation: mutation, record: record)
       SlackNotifierJob.perform_later(slack_message) if slack_message.present?
-
-      PlasmaPush.push(**build_plasma_push_args(mutation: mutation, record: record))
 
       # 非同期通知が原因でリクエストが失敗しないようにする
     rescue StandardError => e
@@ -18,14 +18,16 @@ class Notification
 
     private
 
-    def build_plasma_push_args(mutation:, record:)
-      args = generate_plasma_push_args(mutation: mutation, record: record)
-      construction_plasma_push_args(mutation: mutation, **args)
+    def send_plasma_notification(mutation:, record:)
+      args_list = Array.wrap(generate_plasma_push_args(mutation: mutation, record: record))
+      args_list.each do |args|
+        PlasmaPush.push(**construction_plasma_push_args(mutation: mutation, **args))
+      end
     end
 
     # 引数でkeyのバリデーションを軽くしている
     # JS様にkeyをcamelize
-    def construction_plasma_push_args(mutation:, to:, title: nil, body: nil, problem_id: nil)
+    def construction_plasma_push_args(mutation:, to:, title: nil, body: nil, problem_id: nil, options: {})
       {
         to: to,
         data: {
@@ -36,7 +38,10 @@ class Notification
           problem_id: problem_id,
           # デスクトップ通知内容
           title: title,
-          body: body
+          body: body,
+          options: options
+            .compact
+            .transform_keys {|key| key.to_s.camelize(:lower) }
         }
           .compact
           .transform_keys {|key| key.to_s.camelize(:lower) }
@@ -45,7 +50,6 @@ class Notification
 
     def generate_plasma_push_args(mutation:, record:) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       # audienceの自動リロードはおまけ程度
-
       case mutation
       when 'ApplyCategory', 'PinNotice', 'RegradeAnswers', 'UpdateConfig'
         { to: :everyone }
@@ -55,32 +59,66 @@ class Notification
         # 遅延を考慮するとplayerに通知するのは手間なので一先ず無しで
         # なので採点によってスコアボードは自動で更新されない
         { to: %i[staff audience], problem_id: record.problem_id }
-      when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState', 'TransitionPenalty'
+      when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState'
         { to: [:staff, record.team], problem_id: record.problem_id }
       when 'ApplyTeam'
         { to: record.gte_roles }
       when 'ConfirmingAnswer'
         { to: :staff, problem_id: record.problem_id }
       when 'AddNotice'
-        {
-          to: record.target_team || :everyone,
-          title: 'お知らせが追加されました',
-          body: "#{record.title}\n#{record.text}"
-        }
+        [
+          {
+            to: :staff
+            # title: 'お知らせが追加されました',
+            # body: "#{record.title}\n#{record.text}"
+          },
+          {
+            to: record.target_team || %i[audience player],
+            title: 'お知らせが追加されました',
+            body: "#{record.title}\n#{record.text}"
+          }
+        ]
       when 'AddProblemSupplement'
-        {
-          to: record.problem.readable_players,
-          problem_id: record.problem_id,
-          title: '問題補足が追加されました',
-          body: record.problem.body.title
-        }
+        [
+          {
+            to: %i[staff audience],
+            problem_id: record.problem_id
+          },
+          {
+            to: record.problem.readable_players,
+            problem_id: record.problem_id,
+            title: '問題補足が追加されました',
+            body: record.problem.body.title
+          }
+        ]
       when 'AddAnswer'
-        {
-          to: %i[staff audience],
-          problem_id: record.problem_id,
-          title: '解答が提出されました',
-          body: record.problem.body.title
-        }
+        [
+          {
+            to: :staff,
+            problem_id: record.problem_id,
+            title: '解答が提出されました',
+            body: build_team_and_problem_summary(team: record.team, problem: record.problem)
+          },
+          {
+            to: %i[audience player],
+            problem_id: record.problem_id
+          }
+        ]
+      when 'AddPenalty'
+        [
+          {
+            to: :staff,
+            problem_id: record.problem_id,
+            title: 'リセット要求が発生しました',
+            body: build_team_and_problem_summary(team: record.team, problem: record.problem),
+            # 自動リセット対応
+            options: { problem_code: record.problem.code, team_number: record.team.number, created_at: record.created_at }
+          },
+          {
+            to: record.team,
+            problem_id: record.problem_id
+          }
+        ]
       when 'AddIssueComment'
         for_staff = " - #{record.issue.team.name}"
         body = "#{record.issue.problem.body.title}#{record.from_staff ? nil : for_staff}\n#{record.text}"
@@ -99,7 +137,7 @@ class Notification
 
     # Slack通知用のメッセージを作る
     # Slack通知しない場合はnilを返す
-    def build_slack_message(mutation:, record:)
+    def build_slack_message(mutation:, record:) # rubocop:disable Metrics/CyclomaticComplexity
       # TODO: mentionの解決をここで行う?
       #       redisにリストを持っておいてhogehoge
       #       SlackのAPIにリクエスト送るならJobにしたい
@@ -110,8 +148,15 @@ class Notification
 
         <<-MSG
           #{mention}解答提出
-          問題: #{record.problem.code} - #{record.problem.body.title}
-          チーム: No#{record.team.number} - #{record.team.name}
+          #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
+        MSG
+      when 'AddPenalty'
+        # mention = "<@#{record.problem.writer}> " if record.problem.writer.present?
+
+        # メンションしない
+        <<-MSG
+          リセット依頼が発生しました
+          #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
         MSG
       when 'AddIssueComment'
         return if record.from_staff
@@ -122,12 +167,18 @@ class Notification
 
         <<~MSG
           #{mention}質問追加
-          問題: #{problem.code} - #{problem.body.title}
-          チーム: No#{issue.team.number} - #{issue.team.name}
+          #{build_team_and_problem_summary(team: issue.team, problem: problem)}
         MSG
       else
         nil
       end
+    end
+
+    def build_team_and_problem_summary(team:, problem:)
+      <<-MSG
+        問題: #{problem.code} - #{problem.body.title}
+        チーム: No#{team.number} - #{team.name}
+      MSG
     end
   end
 end

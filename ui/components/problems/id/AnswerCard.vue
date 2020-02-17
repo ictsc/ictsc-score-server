@@ -23,27 +23,22 @@
           </span>
         </v-col>
 
-        <!-- 採点猶予後から10分はタイマーを表示する -->
-        <v-col
-          v-if="isStaff && realtimeGrading && -600 <= answer.delayFinishInSec"
-        >
-          <span>
-            {{ answer.delayFinishInSec | tickDuration('mm:ss') }}
-          </span>
+        <v-col v-if="answer.showTimer(problem)">
+          <div>{{ answer.delayTickDuration }}</div>
         </v-col>
       </v-row>
     </template>
 
     <!-- 採点フォーム -->
     <template v-if="isStaff">
-      <grading-form :answer="answer" :problem-body="problemBody" class="px-2" />
+      <grading-form :answer="answer" :problem="problem" class="px-2" />
     </template>
 
     <!-- 提出時刻 -->
     <p class="text-right caption mb-0">提出時刻: {{ answer.createdAtShort }}</p>
 
     <!-- 解答本体 -->
-    <template v-if="problemBody.modeIsTextbox">
+    <template v-if="problem.modeIsTextbox">
       <!-- Markdown ↔ Raw 切り替えボタン -->
       <v-row class="px-2">
         <v-spacer />
@@ -64,17 +59,17 @@
     </template>
 
     <answer-form-radio-button
-      v-else-if="problemBody.modeIsRadioButton"
+      v-else-if="problem.modeIsRadioButton"
       v-model="answer.bodies"
-      :candidates-groups="problemBody.candidates"
+      :candidates-groups="problem.candidates"
       readonly
       class="pb-2"
     />
 
     <answer-form-checkbox
-      v-else-if="problemBody.modeIsCheckbox"
+      v-else-if="problem.modeIsCheckbox"
       v-model="answer.bodies"
-      :candidates-groups="problemBody.candidates"
+      :candidates-groups="problem.candidates"
       readonly
       class="pb-2"
     />
@@ -109,7 +104,7 @@ export default {
       type: Object,
       required: true
     },
-    problemBody: {
+    problem: {
       type: Object,
       required: true
     }

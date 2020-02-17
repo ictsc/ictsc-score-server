@@ -84,6 +84,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
     Config.create!(key: :competition_stop,               value_type: :boolean, value: false)
     Config.create!(key: :all_problem_force_open_at,      value_type: :date,    value: Time.zone.parse('2112-09-03 11:00:00 +0900'))
     Config.create!(key: :grading_delay_sec,              value_type: :integer, value: 30)
+    Config.create!(key: :reset_delay_sec,                value_type: :integer, value: 30)
     Config.create!(key: :hide_all_score,                 value_type: :boolean, value: false)
     Config.create!(key: :realtime_grading,               value_type: :boolean, value: true)
     Config.create!(key: :text_size_limit,                value_type: :integer, value: 8192)

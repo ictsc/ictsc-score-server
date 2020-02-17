@@ -3,7 +3,7 @@
     <v-card color="white" elevation="2">
       <v-card-text class="py-0">
         <markdown-text-area
-          v-if="problemBody.modeIsTextbox"
+          v-if="problem.modeIsTextbox"
           v-model="answerBodies[0][0]"
           :readonly="confirming"
           :placeholder="answerPlaceholder"
@@ -11,17 +11,17 @@
         />
 
         <answer-form-radio-button
-          v-else-if="problemBody.modeIsRadioButton"
+          v-else-if="problem.modeIsRadioButton"
           v-model="answerBodies"
-          :candidates-groups="problemBody.candidates"
+          :candidates-groups="problem.candidates"
           :readonly="confirming"
           class="pb-3"
         />
 
         <answer-form-checkbox
-          v-else-if="problemBody.modeIsCheckbox"
+          v-else-if="problem.modeIsCheckbox"
           v-model="answerBodies"
-          :candidates-groups="problemBody.candidates"
+          :candidates-groups="problem.candidates"
           :readonly="confirming"
           class="pb-3"
         />
@@ -33,17 +33,17 @@
     </v-card>
 
     <v-btn
-      :disabled="!valid || confirming || waitAnswer"
+      :disabled="!valid || confirming || waitingSubmitSec !== 0"
       type="submit"
       color="success"
       class="mt-2"
       block
     >
-      <template v-if="!waitAnswer">
+      <template v-if="waitingSubmitSec === 0">
         確認
       </template>
       <template v-else>
-        再解答まで{{ latestAnswer.delayFinishInString }}
+        解答可能まで{{ $nuxt.timeSimpleStringJp(waitingSubmitSec) }}
       </template>
     </v-btn>
 
@@ -67,7 +67,7 @@
         <!-- 警告 -->
         <v-divider />
         <ul class="warning lighten-2 py-1 pr-1">
-          <template v-if="problemBody.modeIsTextbox">
+          <template v-if="problem.modeIsTextbox">
             <li>マークダウンの体裁を確認してください</li>
           </template>
 
@@ -128,13 +128,13 @@ export default {
     MarkdownTextArea
   },
   props: {
-    problemBody: {
+    problem: {
       type: Object,
       required: true
     },
-    latestAnswer: {
-      type: Object,
-      default: null
+    waitingSubmitSec: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -147,10 +147,6 @@ export default {
     }
   },
   computed: {
-    waitAnswer() {
-      return (this.$elvis(this.latestAnswer, 'delayFinishInSec') || 0) > 0
-    },
-
     ...mapGetters('contestInfo', [
       'gradingDelaySec',
       'gradingDelayString',
@@ -159,11 +155,11 @@ export default {
     ...mapGetters('time', ['currentTimeMsec']),
 
     confirmContent() {
-      if (this.problemBody.modeIsTextbox) {
+      if (this.problem.modeIsTextbox) {
         return this.answerBodies[0][0]
       } else if (
-        this.problemBody.modeIsRadioButton ||
-        this.problemBody.modeIsCheckbox
+        this.problem.modeIsRadioButton ||
+        this.problem.modeIsCheckbox
       ) {
         return this.answerBodies
           .map(
@@ -173,7 +169,7 @@ export default {
           )
           .join('\n')
       } else {
-        throw new Error(`unsupported problem mode ${this.problemBody.mode}`)
+        throw new Error(`unsupported problem mode ${this.problem.mode}`)
       }
     }
   },
@@ -184,7 +180,7 @@ export default {
   },
   methods: {
     storageKey() {
-      return `answerForm-answerBodies-${this.problemBody.problemId}`
+      return `answerForm-answerBodies-${this.problem.id}`
     },
     getStorage() {
       const value = this.$jsonStorage.get(this.storageKey())
@@ -194,15 +190,15 @@ export default {
         return value
       }
 
-      if (this.problemBody.modeIsTextbox) {
+      if (this.problem.modeIsTextbox) {
         this.setStorage([[]])
       } else if (
-        this.problemBody.modeIsRadioButton ||
-        this.problemBody.modeIsCheckbox
+        this.problem.modeIsRadioButton ||
+        this.problem.modeIsCheckbox
       ) {
-        this.setStorage((this.problemBody.candidates || [[]]).map(o => []))
+        this.setStorage((this.problem.candidates || [[]]).map(o => []))
       } else {
-        throw new Error(`unsupported problem mode ${this.problemBody.mode}`)
+        throw new Error(`unsupported problem mode ${this.problem.mode}`)
       }
 
       return this.$jsonStorage.get(this.storageKey())
@@ -222,7 +218,7 @@ export default {
           this.$refs.form.resetValidation()
         },
         params: {
-          problemId: this.problemBody.problemId,
+          problemId: this.problem.id,
           bodies: this.answerBodies
         }
       })

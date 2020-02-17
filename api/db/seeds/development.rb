@@ -17,6 +17,7 @@ def create_config
 
     { key: :guide_page,                     value_type: :string,  value: Array.new(Random.rand(10..30)) { Faker::Books::Dune.quote }.join("\n") },
     { key: :grading_delay_sec,              value_type: :integer, value: 30 },
+    { key: :reset_delay_sec,                value_type: :integer, value: 30 },
     { key: :hide_all_score,                 value_type: :boolean, value: false },
     { key: :realtime_grading,               value_type: :boolean, value: true },
     { key: :competition_stop,               value_type: :boolean, value: false },
@@ -221,11 +222,11 @@ def create_problem_supplements(problems)
   supplements
 end
 
-def create_penalty(problems, teams)
+def create_penalty(problems, players)
   print 'creating penalties...'
   penalties = problems.take(10).each_with_object([]) {|problem, memo|
-    teams.sample(teams.size / 3).each do |team|
-      memo << build_stubbed(:penalty, problem: problem, team: team)
+    (players[0..1] + players.sample(players.size / 2)).each do |team|
+      memo.concat(build_stubbed_list(:penalty, Random.rand(1..5), problem: problem, team: team))
     end
   }
     .shuffle

@@ -25,7 +25,7 @@ class ScoreAggregator
       # ほぼSQL側で集計
       penalties
         .group(:team_id)
-        .sum(:count)
+        .count
         .transform_values {|total_count| total_count * Config.penalty_weight }
         .tap {|hash| hash.default = 0 } # ペナルティが無いチーム対策
     end

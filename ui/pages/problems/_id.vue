@@ -26,6 +26,14 @@
           @focus="fetchTeams"
         />
 
+        <penalty-counter
+          v-if="teamId && isNotAudience"
+          :problem-id="problem.id"
+          :penalties="penalties"
+          :waiting-submit-sec="waitingSubmitSec"
+          class="pb-2"
+        />
+
         <v-tabs
           v-model="currentTab"
           grow
@@ -37,19 +45,17 @@
           <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
         </v-tabs>
 
-        <penalty-counter
-          v-if="teamId"
-          :problem-id="problem.id"
-          :team-id="teamId"
-        />
-
         <v-tabs-items
           v-if="teamId"
           v-model="currentTab"
           class="pt-1 transparent"
         >
           <v-tab-item :value="answersTabName">
-            <answer-panel :answers="answers" :problem-body="problem.body" />
+            <answer-panel
+              :answers="answers"
+              :problem="problem"
+              :waiting-submit-sec="waitingSubmitSec"
+            />
           </v-tab-item>
           <v-tab-item :value="issuesTabName">
             <issue-panel :problem="problem" :team-id="teamId" />
@@ -123,6 +129,7 @@ export default {
           'category',
           'environments.team',
           'issues.comments',
+          'penalties',
           'previousProblem',
           'supplements'
         ])
@@ -134,8 +141,22 @@ export default {
     answers() {
       return this.problem.answers.filter(o => o.teamId === this.teamId)
     },
+    penalties() {
+      return this.problem.penalties.filter(o => o.teamId === this.teamId)
+    },
     teams() {
       return this.sortByNumber(orm.Team.players)
+    },
+    waitingSubmitSec() {
+      const latestAnswer = this.findNewer(this.answers)
+      const latestPenalty = this.findNewer(this.penalties)
+
+      // 最長の待ち時間を返す
+      return this.$_.max([
+        0,
+        this.$elvis(latestAnswer, 'delayFinishInSec'),
+        this.$elvis(latestPenalty, 'delayFinishInSec')
+      ])
     }
   },
   watch: {
