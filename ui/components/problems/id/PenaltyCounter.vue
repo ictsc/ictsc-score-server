@@ -24,7 +24,9 @@
           </template>
         </v-btn>
 
-        <div v-else class="pt-1 pb-2">リセット{{ penalties.length }}回</div>
+        <div v-else class="pt-1 pb-2">
+          {{ penalties.length }}回 {{ latestPenaltyDelayFinishInSec }}
+        </div>
       </template>
 
       <v-card>
@@ -38,7 +40,8 @@
           <!-- 警告 -->
           <template v-if="resetDelaySec !== 0">
             <div>
-              リセット依頼後{{ resetDelayString }}
+              リセット依頼後
+              {{ resetDelayString }}
               経過で新たな問題環境が展開されます<br />
               展開が完了するまで解答できなくなります
             </div>
@@ -89,7 +92,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', ['resetDelaySec', 'resetDelayString'])
+    ...mapGetters('contestInfo', ['resetDelaySec', 'resetDelayString']),
+
+    latestPenaltyDelayFinishInSec() {
+      const latestPenalty = this.findNewer(this.penalties)
+      return latestPenalty && latestPenalty.delayFinishInSec > 0
+        ? latestPenalty.delayTickDuration
+        : ''
+    }
   },
   methods: {
     async submit() {

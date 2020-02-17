@@ -22,4 +22,8 @@ export default class Penalty extends BaseModel {
     const delay = this.$store().getters['contestInfo/resetDelaySec'] * 1000
     return Math.floor((Date.parse(this.createdAt) + delay - now) / 1000)
   }
+
+  get delayTickDuration() {
+    return $nuxt.tickDuration(this.delayFinishInSec)
+  }
 }
