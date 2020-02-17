@@ -2,8 +2,8 @@
   <div>
     <answer-form
       v-if="isPlayer"
-      :problem-body="problemBody"
       :latest-answer="sortedAnswers[0]"
+      :problem="problem"
       class="mb-1"
     />
 
@@ -11,7 +11,7 @@
       v-for="answer in sortedAnswers"
       :key="answer.id"
       :answer="answer"
-      :problem-body="problemBody"
+      :problem="problem"
       class="mb-1"
     />
   </div>
@@ -30,7 +30,7 @@ export default {
       type: Array,
       required: true
     },
-    problemBody: {
+    problem: {
       type: Object,
       required: true
     }

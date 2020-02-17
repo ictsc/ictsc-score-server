@@ -83,19 +83,19 @@ Vue.mixin({
 
     // filter
     findOlder(records) {
+      // mixはrecordsが[]の場合Inifnityになる
       if (records.length === 0) {
         return null
       }
 
-      // mixはanswersが[]の場合-Inifnityになる
       return this.$_.min(records, record => new Date(record.createdAt))
     },
     findNewer(records) {
+      // maxはrecordsが[]の場合-Inifnityになる
       if (records.length === 0) {
         return null
       }
 
-      // maxはanswersが[]の場合-Inifnityになる
       return this.$_.max(records, record => new Date(record.createdAt))
     }
   }

@@ -87,4 +87,29 @@ export default class Problem extends BaseModel {
   get displayTitle() {
     return $nuxt.isStaff ? `${this.code}. ${this.title}` : this.title
   }
+
+  get modeIsTextbox() {
+    return this.mode === 'textbox'
+  }
+
+  get modeIsRadioButton() {
+    return this.mode === 'radio_button'
+  }
+
+  get modeIsCheckbox() {
+    return this.mode === 'checkbox'
+  }
+
+  get modeJp() {
+    switch (this.mode) {
+      case 'textbox':
+        return 'テキストボックス'
+      case 'radio_button':
+        return 'ラジオボタン'
+      case 'checkbox':
+        return 'チェックボックス'
+      default:
+        return '不明'
+    }
+  }
 }

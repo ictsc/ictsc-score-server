@@ -49,7 +49,10 @@
           class="pt-1 transparent"
         >
           <v-tab-item :value="answersTabName">
-            <answer-panel :answers="answers" :problem-body="problem.body" />
+            <answer-panel
+              :answers="answers"
+              :problem="problem"
+            />
           </v-tab-item>
           <v-tab-item :value="issuesTabName">
             <issue-panel :problem="problem" :team-id="teamId" />

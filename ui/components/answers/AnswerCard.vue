@@ -41,7 +41,7 @@ export default {
     showTimer() {
       return (
         this.realtimeGrading &&
-        this.problem.body.modeIsTextbox &&
+        this.problem.modeIsTextbox &&
         this.answer.delayFinishInSec >= -600
       )
     },

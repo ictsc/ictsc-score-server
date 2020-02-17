@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <v-row justify="space-between">
-      <template v-if="problemBody.modeIsTextbox">
+      <template v-if="problem.modeIsTextbox">
         <v-slider
           v-model="slider"
           :step="stepEnable ? 5 : undefined"
@@ -100,7 +100,7 @@ export default {
       type: Object,
       required: true
     },
-    problemBody: {
+    problem: {
       type: Object,
       required: true
     }
@@ -125,7 +125,7 @@ export default {
       return this.previous !== this.slider
     },
     solvedIconColor() {
-      return this.problemBody.solvedCriterion <= this.slider
+      return this.problem.solvedCriterion <= this.slider
         ? 'primary'
         : 'grey lighten-2'
     }
