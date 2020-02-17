@@ -33,6 +33,7 @@ export default {
     '~/plugins/eventsource',
     '~/plugins/json-storage',
     '~/plugins/mixins',
+    '~/plugins/moment-update-locale',
     '~/plugins/push',
     '~/plugins/vue-clipboard',
     '~/plugins/vue-underscore',
