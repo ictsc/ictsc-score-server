@@ -63,6 +63,14 @@ class Team < ApplicationRecord
   end
 
   class << self
+    def special_team_name_staff
+      'staff'
+    end
+
+    def special_team_name_team99
+      'team99'
+    end
+
     def login(name:, password:)
       # ハッシュ計算は重いため計算を始める前にコネクションをリリースする
       Team
@@ -73,7 +81,7 @@ class Team < ApplicationRecord
 
     def player_without_team99
       # team99は毎回使われる特殊チーム
-      player.where.not(name: 'team99')
+      player.where.not(name: special_team_name_team99)
     end
   end
 end

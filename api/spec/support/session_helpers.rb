@@ -48,7 +48,7 @@ module SessionHelpers
 
   class << self
     def set_teams!
-      self.staff = FactoryBot.create(:team, :staff)
+      self.staff = FactoryBot.create(:team, :staff, name: Team.special_team_name_staff)
       self.audience = FactoryBot.create(:team, :audience)
       self.player = FactoryBot.create(:team, :player)
       self.other_player = FactoryBot.create(:team, :player)

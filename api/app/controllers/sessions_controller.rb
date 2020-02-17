@@ -45,12 +45,8 @@ class SessionsController < ApplicationController
 
   # 必要な値だけ返す
   def build_current_team_response(team)
-    # heartbeat: plasmaにハードコードされてた
-    channels = [team.channel, 'everyone', 'heartbeat']
-    channels << 'player' if team.player?
-
     # role: UI側で表示切り替えに使われる
     # channels: 非同期通知用チャンネル
-    { id: team.id, role: team.role, channels: channels }
+    { id: team.id, role: team.role, channels: PlasmaPush.select_listen_channels(team: team) }
   end
 end

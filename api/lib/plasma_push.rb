@@ -11,6 +11,26 @@ class PlasmaPush
       end
     end
 
+    # plasmaにハードコードされてた
+    # これを使うとなぜかセッションが5分以上継続する(上限不明)
+    def heartbeat_channel
+      'heartbeat'
+    end
+
+    def everyone_channel
+      Digest::SHA256.hexdigest(Team.find_by(name: Team.special_team_name_staff).channel + 'everyone')
+    end
+
+    def player_channel
+      Digest::SHA256.hexdigest(Team.find_by(name: Team.special_team_name_staff).channel + 'player')
+    end
+
+    def select_listen_channels(team:)
+      channels = [team.channel, PlasmaPush.everyone_channel, PlasmaPush.heartbeat_channel]
+      channels << PlasmaPush.player_channel if team.player?
+      channels
+    end
+
     private
 
     def redis
@@ -30,9 +50,10 @@ class PlasmaPush
       return [to.channel] if to.respond_to?(:channel)
 
       case to.to_sym
-      when :everyone, :player
-        # 数が多いので専用チャンネルがある
-        [to.to_s]
+      when :everyone
+        [everyone_channel]
+      when :player
+        [player_channel]
       when :staff, :audience
         Team.public_send(to).pluck(:channel)
       else
