@@ -25,6 +25,12 @@ export default {
     }
   },
   methods: {
+    // TODO: 廃止予定
+    findEffectAnswer(answers) {
+      // TODO: 予選はとりあえずこれ
+      return this.findNewer(answers)
+    },
+
     // TODO: API側に持ってくる
     async fetch() {
       await orm.Queries.problemsAnswers()

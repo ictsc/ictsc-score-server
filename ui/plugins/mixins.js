@@ -97,11 +97,6 @@ Vue.mixin({
 
       // maxはanswersが[]の場合-Inifnityになる
       return this.$_.max(records, record => new Date(record.createdAt))
-    },
-
-    findEffectAnswer(answers) {
-      // TODO: 予選はとりあえずこれ
-      return this.findNewer(answers)
     }
   }
 })
