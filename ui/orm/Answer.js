@@ -21,19 +21,11 @@ export default class Answer extends BaseModel {
     }
   }
 
-  // この書き方でもリアクティブになる
   get delayFinishInSec() {
+    // この書き方でもリアクティブになる
     const now = this.$store().getters['time/currentTimeMsec']
     const delay = this.$store().getters['contestInfo/gradingDelaySec'] * 1000
     return Math.floor((Date.parse(this.createdAt) + delay - now) / 1000)
-  }
-
-  get delayFinishInString() {
-    if (this.delayFinishInSec >= 60) {
-      return `${Math.floor(this.delayFinishInSec / 60)}分`
-    } else {
-      return `${this.delayFinishInSec}秒`
-    }
   }
 
   // scoreが無い or score.pointがnullなら採点中

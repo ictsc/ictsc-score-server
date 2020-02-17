@@ -3,7 +3,6 @@ import BaseModel from '~/orm/BaseModel'
 
 export default class Penalty extends BaseModel {
   static entity = 'penalties'
-  static primaryKey = ['problemId', 'teamId']
 
   static fields() {
     return {
@@ -12,9 +11,15 @@ export default class Penalty extends BaseModel {
       problem: this.belongsTo(orm.Problem, 'problemId'),
       teamId: this.string(),
       team: this.belongsTo(orm.Team, 'teamId'),
-      count: this.number(),
       createdAt: this.string(),
       updatedAt: this.string()
     }
+  }
+
+  get delayFinishInSec() {
+    // この書き方でもリアクティブになる
+    const now = this.$store().getters['time/currentTimeMsec']
+    const delay = this.$store().getters['contestInfo/resetDelaySec'] * 1000
+    return Math.floor((Date.parse(this.createdAt) + delay - now) / 1000)
   }
 }

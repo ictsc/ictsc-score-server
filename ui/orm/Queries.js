@@ -127,6 +127,13 @@ export default class Queries {
           orm.Queries.noticesTeam()
         }
         break
+      case 'AddPenalty':
+        if (top.test(path)) {
+          orm.Queries.scoreboardsTeam()
+        } else if (problem.test(path)) {
+          orm.Queries.problemPenaltiesTeam(problemId)
+        }
+        break
       case 'AddProblemSupplement':
         if (problem.test(path)) {
           orm.Queries.problemSupplements(problemId)
@@ -204,14 +211,6 @@ export default class Queries {
           orm.Queries.problemsIssuesTeam()
         } else if (problem.test(path)) {
           orm.Queries.problemIssuesTeam(problemId)
-        }
-        break
-      case 'TransitionPenalty':
-        console.info('TransitionPenalty')
-        if (top.test(path)) {
-          orm.Queries.scoreboardsTeam()
-        } else if (problem.test(path)) {
-          orm.Queries.problemPenaltiesTeam(problemId)
         }
         break
       case 'UpdateConfig':

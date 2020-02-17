@@ -247,21 +247,6 @@ export default class Mutations extends BaseModel {
     })
   }
 
-  static transitionPenalty({
-    action,
-    resolve,
-    params: { problemId, teamId, from, to }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'transitionPenalty',
-      params: { problemId, teamId, from, to },
-      fields: [orm.Penalty],
-      type: 'upsert'
-    })
-  }
-
   static addIssueComment({ action, resolve, params: { issueId, text } }) {
     return this.sendMutation({
       action,
@@ -391,6 +376,17 @@ export default class Mutations extends BaseModel {
       mutation: 'addNotice',
       params: { title, text, pinned, targetTeamId },
       fields: [orm.Notice],
+      type: 'upsert'
+    })
+  }
+
+  static addPenalty({ action, resolve, params: { problemId } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'addPenalty',
+      params: { problemId },
+      fields: [orm.Penalty],
       type: 'upsert'
     })
   }

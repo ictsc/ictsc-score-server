@@ -5,6 +5,7 @@ module Types
     field :addAnswer,                mutation: Mutations::AddAnswer
     field :addIssueComment,          mutation: Mutations::AddIssueComment
     field :addNotice,                mutation: Mutations::AddNotice
+    field :addPenalty,               mutation: Mutations::AddPenalty
     field :addProblemSupplement,     mutation: Mutations::AddProblemSupplement
     field :applyCategory,            mutation: Mutations::ApplyCategory
     field :applyProblem,             mutation: Mutations::ApplyProblem
@@ -24,7 +25,6 @@ module Types
     field :regradeAnswers,           mutation: Mutations::RegradeAnswers
     field :startIssue,               mutation: Mutations::StartIssue
     field :transitionIssueState,     mutation: Mutations::TransitionIssueState
-    field :transitionPenalty,        mutation: Mutations::TransitionPenalty
     field :updateConfig,             mutation: Mutations::UpdateConfig
   end
 end

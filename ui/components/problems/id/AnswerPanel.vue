@@ -2,8 +2,8 @@
   <div>
     <answer-form
       v-if="isPlayer"
-      :latest-answer="sortedAnswers[0]"
       :problem="problem"
+      :waiting-submit-sec="waitingSubmitSec"
       class="mb-1"
     />
 
@@ -32,6 +32,10 @@ export default {
     },
     problem: {
       type: Object,
+      required: true
+    },
+    waitingSubmitSec: {
+      type: Number,
       required: true
     }
   },

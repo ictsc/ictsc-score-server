@@ -42,6 +42,10 @@ class Problem < ApplicationRecord
     answers.where(team: team).order(:created_at).last&.created_at || Time.zone.at(0)
   end
 
+  def latest_penalty_created_at(team:)
+    penalties.where(team: team).order(:created_at).last&.created_at || Time.zone.at(0)
+  end
+
   def regrade_answers(&block)
     answers.inject(0) do |failed_count, answer|
       unless answer.grade(percent: answer.score.percent)

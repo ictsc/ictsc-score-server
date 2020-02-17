@@ -50,7 +50,6 @@ class Notification
 
     def generate_plasma_push_args(mutation:, record:) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       # audienceの自動リロードはおまけ程度
-
       case mutation
       when 'ApplyCategory', 'PinNotice', 'RegradeAnswers', 'UpdateConfig'
         { to: :everyone }
@@ -60,7 +59,7 @@ class Notification
         # 遅延を考慮するとplayerに通知するのは手間なので一先ず無しで
         # なので採点によってスコアボードは自動で更新されない
         { to: %i[staff audience], problem_id: record.problem_id }
-      when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState', 'TransitionPenalty'
+      when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState'
         { to: [:staff, record.team], problem_id: record.problem_id }
       when 'ApplyTeam'
         { to: record.gte_roles }
@@ -105,6 +104,21 @@ class Notification
             problem_id: record.problem_id
           }
         ]
+      when 'AddPenalty'
+        [
+          {
+            to: :staff,
+            problem_id: record.problem_id,
+            title: 'リセット要求が発生しました',
+            body: build_team_and_problem_summary(team: record.team, problem: record.problem),
+            # 自動リセット対応
+            options: { problem_code: record.problem.code, team_number: record.team.number, created_at: record.created_at }
+          },
+          {
+            to: record.team,
+            problem_id: record.problem_id
+          }
+        ]
       when 'AddIssueComment'
         for_staff = " - #{record.issue.team.name}"
         body = "#{record.issue.problem.body.title}#{record.from_staff ? nil : for_staff}\n#{record.text}"
@@ -123,7 +137,7 @@ class Notification
 
     # Slack通知用のメッセージを作る
     # Slack通知しない場合はnilを返す
-    def build_slack_message(mutation:, record:)
+    def build_slack_message(mutation:, record:) # rubocop:disable Metrics/CyclomaticComplexity
       # TODO: mentionの解決をここで行う?
       #       redisにリストを持っておいてhogehoge
       #       SlackのAPIにリクエスト送るならJobにしたい
@@ -134,6 +148,14 @@ class Notification
 
         <<-MSG
           #{mention}解答提出
+          #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
+        MSG
+      when 'AddPenalty'
+        # mention = "<@#{record.problem.writer}> " if record.problem.writer.present?
+
+        # メンションしない
+        <<-MSG
+          リセット依頼が発生しました
           #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
         MSG
       when 'AddIssueComment'

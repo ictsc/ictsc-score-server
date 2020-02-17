@@ -33,17 +33,17 @@
     </v-card>
 
     <v-btn
-      :disabled="!valid || confirming || waitAnswer"
+      :disabled="!valid || confirming || waitingSubmitSec !== 0"
       type="submit"
       color="success"
       class="mt-2"
       block
     >
-      <template v-if="!waitAnswer">
+      <template v-if="waitingSubmitSec === 0">
         確認
       </template>
       <template v-else>
-        再解答まで{{ latestAnswer.delayFinishInString }}
+        解答可能まで{{ $nuxt.timeSimpleStringJp(waitingSubmitSec) }}
       </template>
     </v-btn>
 
@@ -132,9 +132,9 @@ export default {
       type: Object,
       required: true
     },
-    latestAnswer: {
-      type: Object,
-      default: null
+    waitingSubmitSec: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -147,10 +147,6 @@ export default {
     }
   },
   computed: {
-    waitAnswer() {
-      return (this.$elvis(this.latestAnswer, 'delayFinishInSec') || 0) > 0
-    },
-
     ...mapGetters('contestInfo', [
       'gradingDelaySec',
       'gradingDelayString',
