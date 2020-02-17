@@ -41,7 +41,7 @@ export default {
     // v-model
     value: {
       type: String,
-      required: true
+      default: null
     },
     readonly: {
       type: Boolean,
@@ -50,9 +50,9 @@ export default {
   },
   data() {
     return {
-      date: '',
-      time: '',
-      text: '',
+      date: null,
+      time: null,
+      text: null,
       rules: [v => this.isValidDateTime(v) || '不正なフォーマット(ISO 8601)']
     }
   },
@@ -60,6 +60,7 @@ export default {
     value: {
       immediate: true,
       handler(newValue) {
+        // 上流から流れてきたデータはフォーマットしない
         this.valueToDate(newValue)
       }
     }
@@ -67,24 +68,27 @@ export default {
   methods: {
     // 上流からの変更を反映する
     valueToDate(newValue) {
-      this.text = this.formatDateTime(newValue)
-      this.date = this.$moment(newValue).format('YYYY-MM-DD')
+      this.text = newValue
+      if (this.isValidDateString(newValue)) {
+        this.date = this.$moment(newValue).format('YYYY-MM-DD')
+      }
       this.time = this.$moment(newValue).format('HH:mm')
     },
 
     // 各inputからの変更を統合して管理・反映する
     updateDate({ date, time, text }) {
       // 2112-09-03T03:22:00+09:00 iso8601
-      if (date) {
+      if (date !== undefined) {
         this.text = this.formatDateTime(`${date}T${this.time}`)
-      } else if (time) {
+      } else if (time !== undefined) {
         this.text = this.formatDateTime(`${this.date}T${time}`)
-      } else if (text) {
-        // invalidならpickerに反映せず、emitもしない
-        if (!this.isValidDateTime(text)) {
-          return
+      } else if (text !== undefined) {
+        if (this.isValidDateTime(text)) {
+          this.valueToDate(this.formatDateTime(text))
+        } else {
+          // 無効な値でも上流に伝播させたい(ProblemModal)
+          this.text = text
         }
-        this.valueToDate(text)
       }
 
       this.$emit('input', this.text)
@@ -96,6 +100,12 @@ export default {
       now.minutes(0)
 
       this.updateDate({ text: now })
+    },
+
+    // vuetifyのDatePickerの年は4桁まで
+    isValidDateString(string) {
+      const year = this.$moment(string).format('YYYY')
+      return year && year.length <= 4
     }
   }
 }
