@@ -14,7 +14,9 @@
     <template v-slot:item.action="{ item }">
       <config-modal :config="item">
         <template v-slot:activator="{ on }">
-          <v-icon small @click="on">mdi-pen</v-icon>
+          <v-btn icon x-small @click="on">
+            <v-icon small>mdi-pen</v-icon>
+          </v-btn>
         </template>
       </config-modal>
     </template>
