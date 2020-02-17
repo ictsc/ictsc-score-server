@@ -77,7 +77,24 @@
               class="mt-0"
             />
 
-            <!-- TODO: datetime picker openAtBegin openAtEnd -->
+            <v-switch
+              v-model="enableOpenAt"
+              :readonly="sending"
+              label="公開時間指定"
+              color="primary"
+              class="mt-0"
+            />
+
+            <date-time-picker
+              v-if="enableOpenAt"
+              v-model="openAtBegin"
+              :readonly="sending"
+            />
+            <date-time-picker
+              v-if="enableOpenAt"
+              v-model="openAtEnd"
+              :readonly="sending"
+            />
 
             <number-text-field
               v-model="perfectPoint"
@@ -185,6 +202,7 @@ import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
 import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
+import DateTimePicker from '~/components/commons/DateTimePicker'
 import EditableSlider from '~/components/commons/EditableSlider'
 import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
@@ -222,6 +240,7 @@ export default {
   components: {
     ActionButtons,
     CodeTextField,
+    DateTimePicker,
     EditableSlider,
     MarkdownTextArea,
     NewCandidates,
@@ -246,7 +265,8 @@ export default {
         v => parseInt(v) >= 50 || '50%以上',
         v => parseInt(v) <= 100 || '100%以下'
       ],
-      secretTextPlaceholder
+      secretTextPlaceholder,
+      enableOpenAt: !!this.openAtBegin || !!this.openAtEnd
     }
   },
   computed: {
@@ -311,7 +331,30 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {})
+    }, {}),
+
+    // openAtだけ特殊
+    openAtBegin: {
+      immediate: true,
+      handler(value) {
+        this.setStorage('openAtBegin', value)
+        this.enableOpenAt = !!value || this.openAtEnd
+      }
+    },
+    openAtEnd: {
+      immediate: true,
+      handler(value) {
+        this.setStorage('openAtEnd', value)
+        this.enableOpenAt = !!value || this.openAtBegin
+      }
+    },
+
+    enableOpenAt(value) {
+      if (!value) {
+        this.openAtBegin = null
+        this.openAtEnd = null
+      }
+    }
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
