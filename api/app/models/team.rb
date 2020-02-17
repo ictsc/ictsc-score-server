@@ -83,5 +83,10 @@ class Team < ApplicationRecord
       # team99は毎回使われる特殊チーム
       player.where.not(name: special_team_name_team99)
     end
+
+    # デバッグ用ショートハンド
+    def number(number)
+      Team.find_by(number: number)
+    end
   end
 end
