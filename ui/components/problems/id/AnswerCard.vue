@@ -23,13 +23,8 @@
           </span>
         </v-col>
 
-        <!-- 採点猶予後から10分はタイマーを表示する -->
-        <v-col
-          v-if="isStaff && realtimeGrading && -600 <= answer.delayFinishInSec"
-        >
-          <span>
-            {{ answer.delayFinishInSec | tickDuration('mm:ss') }}
-          </span>
+        <v-col v-if="answer.showTimer(problem)">
+          <div>{{ answer.delayTickDuration }}</div>
         </v-col>
       </v-row>
     </template>

@@ -21,6 +21,11 @@ export default class Answer extends BaseModel {
     }
   }
 
+  // scoreが無い or score.pointがnullなら採点中
+  get hasPoint() {
+    return this.percent !== null && this.percent !== undefined
+  }
+
   get delayFinishInSec() {
     // この書き方でもリアクティブになる
     const now = this.$store().getters['time/currentTimeMsec']
@@ -28,8 +33,18 @@ export default class Answer extends BaseModel {
     return Math.floor((Date.parse(this.createdAt) + delay - now) / 1000)
   }
 
-  // scoreが無い or score.pointがnullなら採点中
-  get hasPoint() {
-    return this.percent !== null && this.percent !== undefined
+  get delayTickDuration() {
+    return $nuxt.tickDuration(this.delayFinishInSec)
+  }
+
+  showTimer(problem) {
+    const realtimeGrading = this.$store().getters['contestInfo/realtimeGrading']
+
+    // 採点猶予後から10分はタイマーを表示する
+    return (
+      realtimeGrading &&
+      problem.modeIsTextbox &&
+      (!this.hasPoint || this.delayFinishInSec > -600)
+    )
   }
 }
