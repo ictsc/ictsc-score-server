@@ -75,14 +75,9 @@
             v-on="on"
           >
             <template v-slot:prepend>
-              <v-col class="px-0 pt-1 pb-1">
-                <template v-if="answer.confirming">
-                  対応中
-                </template>
-                <template v-else>
-                  未対応
-                </template>
-              </v-col>
+              <div class="py-1" style="width: 3.2em">
+                {{ answer.confirming ? '対応中' : '未対応' }}
+              </div>
             </template>
           </v-switch>
         </template>
