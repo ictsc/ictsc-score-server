@@ -54,6 +54,15 @@ Vue.mixin({
     isValidDateTime(value) {
       return this.$moment(value, this.$moment.ISO_8601).isValid()
     },
+    timeSimpleStringJp(sec) {
+      if (sec <= 60) {
+        return `${sec}秒`
+      } else if (sec % 60 === 0) {
+        return `${Math.floor(sec / 60)}分`
+      } else {
+        return `${Math.floor(sec / 60)}分${sec % 60}秒`
+      }
+    },
 
     download(type, filename, data) {
       const blob = new Blob([data], { type })

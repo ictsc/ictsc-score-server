@@ -174,11 +174,13 @@ class Config < ApplicationRecord
         competition_stop: competition_stop,
         all_problem_force_open_at: all_problem_force_open_at,
         grading_delay_sec: grading_delay_sec,
+        reset_delay_sec: reset_delay_sec,
         hide_all_score: hide_all_score,
         realtime_grading: realtime_grading,
         text_size_limit: text_size_limit,
         delete_time_limit_sec: delete_time_limit_sec,
-        guide_page: guide_page
+        guide_page: guide_page,
+        penalty_weight: penalty_weight
       }
     end
   end
@@ -196,6 +198,7 @@ class Config < ApplicationRecord
   record_accessor :competition_stop
   record_accessor :all_problem_force_open_at
   record_accessor :grading_delay_sec
+  record_accessor :reset_delay_sec
   record_accessor :hide_all_score
   record_accessor :realtime_grading # 有効解答を最終解答にするか最高得点にするかもこれで指定
   record_accessor :text_size_limit
