@@ -51,7 +51,6 @@
               v-model="text"
               :readonly="commentSending"
               :placeholder="placeholder"
-              preview-width="70em"
               hide-details
               @submit="sendComment"
             />

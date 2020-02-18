@@ -156,7 +156,6 @@
               :readonly="sending"
               :placeholder="secretTextPlaceholder"
               label="運営用メモ"
-              preview-width="70em"
               class="pt-4"
               allow-empty
             />
@@ -166,7 +165,6 @@
               :readonly="sending"
               placeholder="Markdownで記述可能"
               label="問題文"
-              preview-width="70em"
               class="pt-4"
             />
           </v-form>

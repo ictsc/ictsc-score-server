@@ -97,7 +97,7 @@ export default {
     },
     previewWidth: {
       type: String,
-      default: null
+      default: '70em'
     }
   },
   data() {

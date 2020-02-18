@@ -42,7 +42,6 @@
               :readonly="sending"
               :placeholder="descriptionPlaceholder"
               label="説明"
-              preview-width="70em"
               allow-empty
             />
           </v-form>
