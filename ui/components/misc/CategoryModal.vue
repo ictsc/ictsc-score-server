@@ -76,10 +76,11 @@ import orm from '~/orm'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
 import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
+
 import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
 const fields = {

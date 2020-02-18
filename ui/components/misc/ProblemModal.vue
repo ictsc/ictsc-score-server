@@ -199,6 +199,8 @@ import orm from '~/orm'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
 import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
+
 import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 import DateTimePicker from '~/components/commons/DateTimePicker'
 import EditableSlider from '~/components/commons/EditableSlider'
@@ -206,7 +208,6 @@ import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
 import NumberTextField from '~/components/commons/NumberTextField'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
 const fields = {
