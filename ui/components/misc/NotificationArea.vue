@@ -1,5 +1,5 @@
 <template>
-  <v-col align="right" class="px-0 mx-2 floating-area-1000 bottom-right">
+  <v-col align="right" class="py-0 px-0 mx-2 floating-area-1000 bottom-right">
     <v-slide-x-reverse-transition group>
       <notification-card
         v-for="notification in reverseNotifications"
@@ -9,7 +9,7 @@
         :timeout="notification.timeout"
         :message="notification.message"
         :details="notification.details"
-        class="mt-2"
+        class="mb-2"
       />
     </v-slide-x-reverse-transition>
   </v-col>

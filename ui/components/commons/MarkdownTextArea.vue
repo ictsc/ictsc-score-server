@@ -97,7 +97,7 @@ export default {
     },
     previewWidth: {
       type: String,
-      default: null
+      default: '70em'
     }
   },
   data() {
@@ -175,23 +175,25 @@ export default {
       this.uploading = true
 
       for (const file of files) {
-        const link = await this.upload(file)
+        const { url, type } = await this.upload(file)
 
-        if (link) {
-          this.insertFileLink(link)
+        console.log(type)
+        if (url) {
+          this.insertFileLink(url, type)
         }
       }
 
       this.dragging = false
       this.uploading = false
     },
-    insertFileLink(link) {
+    insertFileLink(url, type) {
       const cursorPos = this.$refs.textarea.$refs.input.selectionEnd
+      const fileMode = this.isImage(type) ? '![image]' : '[file]'
 
       this.internalValue = this.insertString(
         this.internalValue,
         cursorPos,
-        `\n![file](${link})\n`
+        `\n${fileMode}(${url})\n`
       )
     },
     insertString(str, index, insert) {
@@ -200,6 +202,9 @@ export default {
       }
 
       return str.slice(0, index) + insert + str.slice(index, str.length)
+    },
+    isImage(type) {
+      return type.startsWith('image')
     },
     async upload(file) {
       const params = new FormData()

@@ -1,12 +1,13 @@
 <template>
   <v-app>
     <navigation />
+
     <v-content>
       <!-- 最低幅を保証する -->
       <nuxt style="min-width: 500px" />
     </v-content>
 
-    <scroll-buttons />
+    <scroll-buttons v-if="$route.name !== 'login'" />
 
     <notification-area />
   </v-app>
@@ -90,6 +91,7 @@ export default {
   background: white !important
 </style>
 <style lang="sass">
+// スクロールの設定をするためにunscopedなスタイルを書く
 html
   // 横スクロールを有効にする
   overflow-x: auto

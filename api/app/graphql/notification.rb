@@ -5,6 +5,7 @@ class Notification
   class << self
     def notify(mutation:, record:)
       send_plasma_notification(mutation: mutation, record: record)
+      Rails.logger.debug { "Notification published #{mutation}".green }
 
       slack_message = build_slack_message(mutation: mutation, record: record)
       SlackNotifierJob.perform_later(slack_message) if slack_message.present?

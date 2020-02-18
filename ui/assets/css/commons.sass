@@ -36,7 +36,19 @@
 .floating-area-100
   position: fixed
   z-index: 100
+  // フローティングエリアはクリックできないがその中の要素はクリックできるようにする
+  pointer-events: none
+  > *
+    > *
+      pointer-events: auto
+
 
 .floating-area-1000
   position: fixed
   z-index: 1000
+  // フローティングエリアはクリックできないがその中の要素はクリックできるようにする
+  pointer-events: none
+  > *
+    > *
+      pointer-events: auto
+

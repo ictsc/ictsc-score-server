@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app dense max-height="3em" color="primary">
+  <v-app-bar app dense color="primary">
     <navigation-link to="/">
       <img class="logo" src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
     </navigation-link>
