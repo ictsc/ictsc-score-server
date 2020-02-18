@@ -1,16 +1,12 @@
 <template>
-  <v-col align="center" class="floating-area-100 bottom pb-1">
-    <div>
-      <v-btn icon @click="scroll(0)">
-        <v-icon large>mdi-arrow-up-circle-outline</v-icon>
-      </v-btn>
-    </div>
+  <v-col align="center">
+    <v-btn fixed bottom icon class="white bottom-up" @click="scroll(0)">
+      <v-icon large>mdi-arrow-up-circle-outline</v-icon>
+    </v-btn>
 
-    <div>
-      <v-btn icon @click="scroll(-1)">
-        <v-icon large>mdi-arrow-down-circle-outline</v-icon>
-      </v-btn>
-    </div>
+    <v-btn fixed bottom icon class="white" @click="scroll(-1)">
+      <v-icon large>mdi-arrow-down-circle-outline</v-icon>
+    </v-btn>
   </v-col>
 </template>
 <script>
@@ -28,6 +24,6 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.bottom
-  bottom: 0
+.bottom-up
+  bottom: 52px
 </style>
