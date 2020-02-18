@@ -14,11 +14,12 @@ class AttachmentsController < ApplicationController
     end
 
     # filenameには間違えて問題コードを含んでしまうことが多いので代わりにtokenを返す
+    # 画像だけinlineにする
     send_data(
       attachment.data,
       filename: attachment.token + File.extname(attachment.filename),
       type: attachment.content_type,
-      disposition: 'inline',
+      disposition: attachment.content_type.start_with?('image') ? 'inline' : 'attachment',
       stream: 'true',
       buffer_size: '4096'
     )
@@ -34,7 +35,7 @@ class AttachmentsController < ApplicationController
     )
 
     if attachment.save
-      render json: attachment_path(attachment.token), status: :ok
+      render json: { url: attachment_path(attachment.token), type: attachment.content_type }, status: :ok
     else
       Rails.logger.error attachment.errors.full_messages
       render json: attachment.errors.messages, status: :bad_request
