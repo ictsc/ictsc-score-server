@@ -91,6 +91,7 @@ export default {
   background: white !important
 </style>
 <style lang="sass">
+// スクロールの設定をするためにunscopedなスタイルを書く
 html
   // 横スクロールを有効にする
   overflow-x: auto
