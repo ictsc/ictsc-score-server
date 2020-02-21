@@ -151,7 +151,7 @@ export default class Mutations extends BaseModel {
       solvedCriterion,
       candidates,
       corrects,
-      _silent
+      silent
     }
   }) {
     return this.sendMutation({
@@ -175,7 +175,7 @@ export default class Mutations extends BaseModel {
         solvedCriterion,
         candidates,
         corrects,
-        _silent
+        silent
       },
       fields: [orm.Problem, orm.ProblemBody],
       type: 'upsert'
@@ -237,7 +237,7 @@ export default class Mutations extends BaseModel {
       user,
       password,
       secretText,
-      _silent
+      silent
     }
   }) {
     return this.sendMutation({
@@ -255,7 +255,7 @@ export default class Mutations extends BaseModel {
         user,
         password,
         secretText,
-        _silent
+        silent
       },
       fields: [orm.ProblemEnvironment],
       type: 'upsert'
@@ -317,13 +317,13 @@ export default class Mutations extends BaseModel {
   static applyCategory({
     action,
     resolve,
-    params: { code, title, description, order, _silent }
+    params: { code, title, description, order, silent }
   }) {
     return this.sendMutation({
       action,
       resolve,
       mutation: 'applyCategory',
-      params: { code, title, description, order, _silent },
+      params: { code, title, description, order, silent },
       fields: [orm.Category],
       type: 'upsert'
     })
@@ -400,7 +400,7 @@ export default class Mutations extends BaseModel {
       password,
       organization,
       color,
-      _silent
+      silent
     }
   }) {
     return this.sendMutation({
@@ -416,7 +416,7 @@ export default class Mutations extends BaseModel {
         password,
         organization,
         color,
-        _silent
+        silent
       },
       fields: [orm.Team],
       type: 'upsert'

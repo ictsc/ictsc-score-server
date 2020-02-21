@@ -14,16 +14,16 @@ module Mutations
     argument :password,     String,                 required: false
 
     # 通知無効
-    argument :_silent,      Boolean,                required: false
+    argument :silent,       Boolean,                required: false
 
     # passwordを省略した場合は更新されない
-    def resolve(role:, beginner:, number:, secret_text:, name:, password:, organization:, color:, _silent: false)
+    def resolve(role:, beginner:, number:, secret_text:, name:, password:, organization:, color:, silent: false)
       Acl.permit!(mutation: self, args: {})
 
       team = Team.find_or_initialize_by(number: number)
 
       if team.update(role: role, beginner: beginner, secret_text: secret_text, name: name, password: password, organization: organization, color: color)
-        Notification.notify(mutation: self.graphql_name, record: team) unless _silent
+        Notification.notify(mutation: self.graphql_name, record: team) unless silent
         { team: team.readable(team: self.current_team!) }
       else
         add_errors(team)

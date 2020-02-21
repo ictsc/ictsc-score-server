@@ -271,7 +271,7 @@ export default {
 
       await orm.Mutations.applyTeam({
         resolve: () => (result = true),
-        params: { ...params, _silent: true }
+        params: { ...params, silent: true }
       })
 
       return result
@@ -281,7 +281,7 @@ export default {
 
       await orm.Mutations.applyCategory({
         resolve: () => (result = true),
-        params: { ...params, _silent: true }
+        params: { ...params, silent: true }
       })
 
       return result
@@ -291,7 +291,7 @@ export default {
 
       await orm.Mutations.applyProblem({
         resolve: () => (result = true),
-        params: { ...params, _silent: true }
+        params: { ...params, silent: true }
       })
 
       return result
@@ -301,7 +301,7 @@ export default {
 
       await orm.Mutations.applyProblemEnvironment({
         resolve: () => (result = true),
-        params: { ...params, _silent: true }
+        params: { ...params, silent: true }
       })
 
       return result

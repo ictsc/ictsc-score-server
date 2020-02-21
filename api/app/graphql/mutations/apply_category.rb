@@ -10,15 +10,15 @@ module Mutations
     argument :order,       Integer, required: true
 
     # 通知無効
-    argument :_silent,     Boolean, required: false
+    argument :silent,      Boolean, required: false
 
-    def resolve(code:, title:, description:, order:, _silent: false)
+    def resolve(code:, title:, description:, order:, silent: false)
       Acl.permit!(mutation: self, args: {})
 
       category = Category.find_or_initialize_by(code: code)
 
       if category.update(title: title, description: description, order: order)
-        Notification.notify(mutation: self.graphql_name, record: category) unless _silent
+        Notification.notify(mutation: self.graphql_name, record: category) unless silent
         { category: category.readable(team: self.current_team!) }
       else
         add_errors(category)

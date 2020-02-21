@@ -19,10 +19,10 @@ module Mutations
     argument :secret_text,  String,  required: true
 
     # 通知無効
-    argument :_silent,      Boolean, required: false
+    argument :silent,       Boolean, required: false
 
     # team_numberがnilなら共通として扱う
-    def resolve(problem_code:, team_number:, name:, service:, status:, host:, port:, user:, password:, secret_text:, _silent: false)
+    def resolve(problem_code:, team_number:, name:, service:, status:, host:, port:, user:, password:, secret_text:, silent: false)
       Acl.permit!(mutation: self, args: {})
 
       problem = Problem.find_by(code: problem_code)
@@ -34,7 +34,7 @@ module Mutations
       p_env = ProblemEnvironment.find_or_initialize_by(problem: problem, team: team, name: name, service: service)
 
       if p_env.update(status: status, host: host, port: port, user: user, password: password, secret_text: secret_text)
-        Notification.notify(mutation: self.graphql_name, record: p_env) unless _silent
+        Notification.notify(mutation: self.graphql_name, record: p_env) unless silent
         { problem_environment: p_env.readable(team: self.current_team!) }
       else
         add_errors(p_env)
