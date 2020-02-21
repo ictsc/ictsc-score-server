@@ -102,6 +102,7 @@
               :rules="perfectPointRules"
               label="満点"
               class="mb-4"
+              only-integer
             />
 
             <editable-slider
@@ -113,6 +114,7 @@
               :rules="solvedCriterionRules"
               suffix="%"
               label="突破基準"
+              only-integer
             />
 
             <label class="caption">解答方法</label>
@@ -253,14 +255,8 @@ export default {
     return {
       // mixinしたモジュールから必要な値がmixinされる
       requiredRules: [v => !!v || '必須'],
-      perfectPointRules: [
-        v => !['', null, undefined].includes(v) || '必須',
-        v => !Number.isNaN(parseInt(v)) || '数値',
-        v => parseInt(v) >= 0 || '0以上'
-      ],
+      perfectPointRules: [v => parseInt(v) >= 0 || '0以上'],
       solvedCriterionRules: [
-        v => !['', null, undefined].includes(v) || '必須',
-        v => !Number.isNaN(parseInt(v)) || '数値',
         v => parseInt(v) >= 50 || '50%以上',
         v => parseInt(v) <= 100 || '100%以下'
       ],

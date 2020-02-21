@@ -21,7 +21,7 @@
             <number-text-field
               v-model="configValue"
               :readonly="sending"
-              :rules="integerRules"
+              only-integer
             />
           </template>
           <template v-else-if="config.valueTypeIsString">
@@ -93,12 +93,8 @@ export default {
       showModal: this.value,
       valid: false,
       sending: false,
-
       storageKey,
-      configValue,
-      integerRules: [
-        v => (!['', null, undefined].includes(v) && !Number.isNaN(v)) || '必須'
-      ]
+      configValue
     }
   },
   computed: {

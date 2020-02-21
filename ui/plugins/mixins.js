@@ -27,6 +27,12 @@ Vue.mixin({
       'notifyError'
     ]),
 
+    isNullOrUndefined(v) {
+      return v === null || v === undefined
+    },
+    isBlank(v) {
+      return v === '' || v === null || v === undefined
+    },
     isSame(item1, item2) {
       return JSON.stringify(item1) === JSON.stringify(item2)
     },

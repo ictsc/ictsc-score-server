@@ -3,6 +3,7 @@
     v-model="internalValue"
     v-bind="$attrs"
     :type="type"
+    :rules="rules"
     flat
     maxlength="4"
     height="1em"
@@ -22,11 +23,24 @@ export default {
     type: {
       type: String,
       default: 'number'
+    },
+    onlyInteger: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      internalValue: this.value
+      internalValue: this.value,
+      integerRules: [
+        v => !this.isBlank(v) || '必須',
+        v => !Number.isNaN(parseInt(v)) || '整数'
+      ]
+    }
+  },
+  computed: {
+    rules() {
+      return this.onlyInteger ? this.integerRules : []
     }
   },
   watch: {
