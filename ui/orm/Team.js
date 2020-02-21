@@ -16,6 +16,19 @@ export default class Team extends BaseModel {
     }
   }
 
+  static mutationFields() {
+    return {
+      role: '',
+      name: '',
+      organization: '',
+      secretText: '',
+      number: 0,
+      color: '#FFFFFF',
+      beginner: false,
+      password: null
+    }
+  }
+
   get displayName() {
     return `No.${this.number} ${this.name}`
   }

@@ -12,7 +12,7 @@
           filename-prefix="teams"
           :fetch="fetchTeams"
           :apply="applyTeam"
-          :fields="teamFields"
+          :fields="$orm.Team.mutationFieldKeys()"
         />
         <export-import-buttons
           label="カテゴリ一覧"
@@ -184,16 +184,6 @@ export default {
       showDelete1: false,
       showDelete2: false,
 
-      teamFields: [
-        'role',
-        'number',
-        'name',
-        'beginner',
-        'password',
-        'secretText',
-        'organization',
-        'color'
-      ],
       categoryFields: ['code', 'title', 'order', 'description'],
       configFields: ['key', 'value'],
       problemFields: [

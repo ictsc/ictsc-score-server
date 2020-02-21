@@ -3,7 +3,7 @@
     v-model="internalValue"
     v-bind="$attrs"
     :type="type"
-    :rules="rules"
+    :rules="buildRules"
     flat
     maxlength="4"
     height="1em"
@@ -27,6 +27,10 @@ export default {
     onlyInteger: {
       type: Boolean,
       default: false
+    },
+    rules: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -39,8 +43,9 @@ export default {
     }
   },
   computed: {
-    rules() {
-      return this.onlyInteger ? this.integerRules : []
+    buildRules() {
+      const tmpRules = this.onlyInteger ? this.integerRules : []
+      return [...tmpRules, ...this.rules]
     }
   },
   watch: {
