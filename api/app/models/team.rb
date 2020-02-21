@@ -54,12 +54,12 @@ class Team < ApplicationRecord
 
   # greater than or equal roles
   def gte_roles
-    Team.roles.select {|_k, v| v >= self.role_before_type_cast }
+    Team.roles.select {|_k, v| v >= self.role_before_type_cast }.keys
   end
 
   # less than or equal roles
   def lte_roles
-    Team.roles.select {|_k, v| v <= self.role_before_type_cast }
+    Team.roles.select {|_k, v| v <= self.role_before_type_cast }.keys
   end
 
   class << self
