@@ -32,6 +32,14 @@
           class="mt-4"
         />
         <export-import-buttons
+          label="接続情報一覧"
+          filename-prefix="environments"
+          :fetch="fetchProblemEnvironments"
+          :apply="applyProblemEnvironment"
+          :fields="$orm.ProblemEnvironment.mutationFieldKeys()"
+          class="mt-4"
+        />
+        <export-import-buttons
           label="設定一覧"
           filename-prefix="configs"
           :fetch="fetchConfigs"
@@ -253,6 +261,15 @@ export default {
           .all()
       )
     },
+    async fetchProblemEnvironments() {
+      await orm.Queries.problemEnvironments()
+
+      return this.sortByOrder(
+        orm.ProblemEnvironment.query()
+          .with(['problem', 'team'])
+          .all()
+      )
+    },
     // item-select-buttonを通すと一部リアクティブじゃなくなる
     reloadProblem(id) {
       return orm.Problem.query()
@@ -283,6 +300,16 @@ export default {
       let result = false
 
       await orm.Mutations.applyProblem({
+        resolve: () => (result = true),
+        params: { ...params, _silent: true }
+      })
+
+      return result
+    },
+    async applyProblemEnvironment(params) {
+      let result = false
+
+      await orm.Mutations.applyProblemEnvironment({
         resolve: () => (result = true),
         params: { ...params, _silent: true }
       })
