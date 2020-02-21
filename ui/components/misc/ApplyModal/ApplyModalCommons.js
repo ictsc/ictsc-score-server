@@ -14,22 +14,27 @@ export default {
       internalValue: this.value,
       valid: false,
       sending: false,
-      opendAtFristCalled: false
+      openedAtFristCalled: false
     }
   },
   watch: {
-    internalValue(value) {
-      this.$emit('input', value)
-
-      if (value && !this.opendAtFristCalled && this.opendAtFirst) {
-        this.opendAtFristCalled = true
-        this.opendAtFirst()
+    internalValue: {
+      immediate: true,
+      handler(value) {
+        this.$emit('input', value)
+        if (value && !this.openedAtFristCalled && this.openedAtFirst) {
+          this.openedAtFristCalled = true
+          this.openedAtFirst()
+        }
       }
     },
-    value(value) {
-      this.internalValue = value
-      if (value === true) {
-        this.$nextTick(() => this.validate())
+    value: {
+      immediate: true,
+      handler(value) {
+        this.internalValue = value
+        if (value === true) {
+          this.validate()
+        }
       }
     }
   },
@@ -41,7 +46,8 @@ export default {
       this.internalValue = false
     },
     validate() {
-      this.$refs.form.validate()
+      // タイミングによってはエラーになるので遅延させる
+      this.$nextTick(() => this.$refs.form.validate())
     }
   }
 }
