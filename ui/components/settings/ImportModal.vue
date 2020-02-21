@@ -97,6 +97,10 @@ export default {
     fields: {
       type: Array,
       required: true
+    },
+    parallel: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -159,22 +163,27 @@ export default {
     close() {
       this.$emit('input', false)
     },
+    async applyItem(item) {
+      item.__applyStatus = 'applying'
+      item.__applyStatus = (await this.apply(item)) ? 'succeeded' : 'failed'
+    },
     async startApply() {
       this.sending = true
       this.selectedItems.forEach(item => (item.__applyStatus = 'pending'))
-      let failCount = 0
 
-      // 直列実行のためにfor-of構文を使う
-      for (const item of this.selectedItems) {
-        item.__applyStatus = 'applying'
-
-        if (await this.apply(item)) {
-          item.__applyStatus = 'succeeded'
-        } else {
-          item.__applyStatus = 'failed'
-          failCount += 1
+      if (this.parallel) {
+        await Promise.all(this.selectedItems.map(item => this.applyItem(item)))
+      } else {
+        // 直列実行のためにfor-of構文を使う
+        for (const item of this.selectedItems) {
+          await this.applyItem(item)
         }
       }
+
+      let failCount = 0
+      this.selectedItems.forEach(
+        item => (failCount += item.__applyStatus === 'failed' ? 1 : 0)
+      )
 
       if (failCount === 0) {
         this.notifySuccess({

@@ -28,6 +28,7 @@
           :fetch="fetchProblems"
           :apply="applyProblem"
           :fields="problemFields"
+          :parallel="false"
           class="mt-4"
         />
         <export-import-buttons
@@ -263,7 +264,7 @@ export default {
 
       await orm.Mutations.applyTeam({
         resolve: () => (result = true),
-        params: { ...params }
+        params: { ...params, _silent: true }
       })
 
       return result
@@ -273,7 +274,7 @@ export default {
 
       await orm.Mutations.applyCategory({
         resolve: () => (result = true),
-        params: { ...params }
+        params: { ...params, _silent: true }
       })
 
       return result
@@ -283,7 +284,7 @@ export default {
 
       await orm.Mutations.applyProblem({
         resolve: () => (result = true),
-        params: { ...params }
+        params: { ...params, _silent: true }
       })
 
       return result
