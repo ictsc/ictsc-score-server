@@ -12,11 +12,13 @@ export default class ProblemEnvironment extends BaseModel {
       problemId: this.string(),
       problem: this.belongsTo(orm.Problem, 'problemId'),
       name: this.string(),
+      service: this.string(),
       status: this.string(),
       host: this.string(),
+      port: this.number(),
       user: this.string(),
       password: this.string(),
-      note: this.string().nullable(),
+      secretText: this.string().nullable(),
       createdAt: this.string(),
       updatedAt: this.string()
     }

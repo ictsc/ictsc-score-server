@@ -7,15 +7,18 @@ RSpec.describe 'applyProblemEnvironment', type: :request do
     let(:problem) { create(:problem) }
     let(:team) { create(:team, :player) }
     let(:name) { 'great server' }
+    let(:service) { 'SSH' }
     let(:status) { 'status' }
     let(:host) { '192.168.0.1' }
+    let(:port) { 22 }
     let(:user) { 'ubuntu' }
     let(:password) { 'password' }
+    let(:secret_text) { 'secret text markdown' }
 
     let(:query_string) do
       <<~GQL
         applyProblemEnvironment(input: { problemCode: "#{problem.code}", teamNumber: #{team.number},
-            name: "#{name}", status: "#{status}", host: "#{host}", user: "#{user}", password: "#{password}" }) {
+            name: "#{name}", service: "#{service}", status: "#{status}", host: "#{host}", port: #{port}, user: "#{user}", password: "#{password}", secretText: "#{secret_text}" }) {
 
           problemEnvironment {
             host
