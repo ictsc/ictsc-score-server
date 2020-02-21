@@ -1,28 +1,51 @@
 <template>
   <div>
-    <expandable-button v-model="show" :togglable="isStaff">
+    <!-- 開くボタン -->
+    <expandable-button v-model="show" :togglable="isStaff && !isEmpty">
       接続情報
     </expandable-button>
+
+    <!-- ペンボタン -->
+    <pen-button v-if="isStaff" elevation="2" @click.stop="showModal = true" />
+
+    <!-- テーブル -->
     <v-expand-transition>
       <environment-table
         v-show="show"
         :environments="environments"
+        :problem="problem"
         class="mt-1"
       />
     </v-expand-transition>
+
+    <!-- 追加モーダル -->
+    <environment-modal
+      v-if="showModal"
+      v-model="showModal"
+      :problem="problem"
+      is-new
+    />
   </div>
 </template>
 <script>
-import ExpandableButton from '~/components/commons/ExpandableButton'
+import EnvironmentModal from '~/components/misc/EnvironmentModal'
 import EnvironmentTable from '~/components/problems/id/EnvironmentTable'
+import ExpandableButton from '~/components/commons/ExpandableButton'
+import PenButton from '~/components/commons/PenButton'
 
 export default {
   name: 'EnvironmentArea',
   components: {
+    EnvironmentModal,
+    EnvironmentTable,
     ExpandableButton,
-    EnvironmentTable
+    PenButton
   },
   props: {
+    problem: {
+      type: Object,
+      required: true
+    },
     environments: {
       type: Array,
       required: true
@@ -31,7 +54,13 @@ export default {
   data() {
     return {
       search: '',
-      show: true
+      show: true,
+      showModal: false
+    }
+  },
+  computed: {
+    isEmpty() {
+      return this.environments.length === 0
     }
   },
   created() {

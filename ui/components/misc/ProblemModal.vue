@@ -36,7 +36,7 @@
               :items="categories"
               :hint="categoryCode"
               persistent-hint
-              item-text="title"
+              item-text="displayTitle"
               item-value="code"
               auto-select-first
               editable
@@ -49,7 +49,7 @@
               :readonly="sending"
               :items="problemsOnlySameCategory"
               :self-id="isNew ? null : item.id"
-              title-param="title"
+              title-param="displayTitle"
               label="順序"
             />
 
@@ -60,7 +60,7 @@
               :items="previousProblemCandidates"
               :hint="previousProblemCode"
               persistent-hint
-              item-text="title"
+              item-text="displayTitle"
               item-value="code"
               auto-select-first
               editable
@@ -102,6 +102,7 @@
               :rules="perfectPointRules"
               label="満点"
               class="mb-4"
+              only-integer
             />
 
             <editable-slider
@@ -113,6 +114,7 @@
               :rules="solvedCriterionRules"
               suffix="%"
               label="突破基準"
+              only-integer
             />
 
             <label class="caption">解答方法</label>
@@ -199,6 +201,8 @@ import orm from '~/orm'
 import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
 import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
+
 import CodeTextField from '~/components/misc/ApplyModal/CodeTextField'
 import DateTimePicker from '~/components/commons/DateTimePicker'
 import EditableSlider from '~/components/commons/EditableSlider'
@@ -206,7 +210,6 @@ import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import NewCandidates from '~/components/misc/ProblemModal/NewCandidates'
 import NumberTextField from '~/components/commons/NumberTextField'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
-import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
 const fields = {
@@ -252,14 +255,8 @@ export default {
     return {
       // mixinしたモジュールから必要な値がmixinされる
       requiredRules: [v => !!v || '必須'],
-      perfectPointRules: [
-        v => !['', null, undefined].includes(v) || '必須',
-        v => !Number.isNaN(parseInt(v)) || '数値',
-        v => parseInt(v) >= 0 || '0以上'
-      ],
+      perfectPointRules: [v => parseInt(v) >= 0 || '0以上'],
       solvedCriterionRules: [
-        v => !['', null, undefined].includes(v) || '必須',
-        v => !Number.isNaN(parseInt(v)) || '数値',
         v => parseInt(v) >= 50 || '50%以上',
         v => parseInt(v) <= 100 || '100%以下'
       ],
@@ -374,14 +371,14 @@ export default {
     // -- END --
 
     unshiftDummy(items) {
-      items.unshift({ title: 'なし', code: null })
+      items.unshift({ displayTitle: 'なし', code: null })
       return items
     },
     rejectSelf(problems) {
       return this.isNew ? problems : problems.filter(v => v.id !== this.item.id)
     },
     // 最初に開いた時に実行される
-    opendAtFirst() {
+    openedAtFirst() {
       // カテゴリに属していない問題や問題に属していないカテゴリも取得する
       orm.Queries.problems()
       orm.Queries.categories()

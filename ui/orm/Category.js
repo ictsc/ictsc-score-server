@@ -15,4 +15,8 @@ export default class Category extends BaseModel {
       updatedAt: this.string()
     }
   }
+
+  get displayTitle() {
+    return $nuxt.isStaff ? `${this.code}. ${this.title}` : this.title
+  }
 }

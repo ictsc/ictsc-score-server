@@ -11,7 +11,7 @@ export default class Problem extends BaseModel {
       teamIsolate: this.boolean(),
       previousProblemId: this.string().nullable(),
       // ループして5段ネストしたクエリが発行されて2~3倍遅くなるが、無いとProblemModalがバグる
-      previousProblem: this.belongsTo(orm.Problem, 'previousProblemId'),
+      // previousProblem: this.belongsTo(orm.Problem, 'previousProblemId'),
       categoryId: this.string().nullable(),
       category: this.belongsTo(orm.Category, 'categoryId'),
       // Rangeの[begin: end)
@@ -31,6 +31,11 @@ export default class Problem extends BaseModel {
       issues: this.hasMany(orm.Issue, 'problemId'),
       solvedCount: this.number()
     }
+  }
+
+  // クエリビルダーのバグ?で再帰してクエリが激重になるのでbelongsToを使わない
+  get previousProblem() {
+    return this.previousProblemId && Problem.find(this.previousProblemId)
   }
 
   // ProblemBodyのフィールドに透過的にアクセスするためのゲッター

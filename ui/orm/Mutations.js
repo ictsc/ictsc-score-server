@@ -150,7 +150,8 @@ export default class Mutations extends BaseModel {
       perfectPoint,
       solvedCriterion,
       candidates,
-      corrects
+      corrects,
+      silent
     }
   }) {
     return this.sendMutation({
@@ -173,7 +174,8 @@ export default class Mutations extends BaseModel {
         perfectPoint,
         solvedCriterion,
         candidates,
-        corrects
+        corrects,
+        silent
       },
       fields: [orm.Problem, orm.ProblemBody],
       type: 'upsert'
@@ -221,6 +223,60 @@ export default class Mutations extends BaseModel {
     })
   }
 
+  static applyProblemEnvironment({
+    action,
+    resolve,
+    params: {
+      problemCode,
+      teamNumber,
+      name,
+      service,
+      status,
+      host,
+      port,
+      user,
+      password,
+      secretText,
+      silent
+    }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'applyProblemEnvironment',
+      params: {
+        problemCode,
+        teamNumber,
+        name,
+        service,
+        status,
+        host,
+        port,
+        user,
+        password,
+        secretText,
+        silent
+      },
+      fields: [orm.ProblemEnvironment],
+      type: 'upsert'
+    })
+  }
+
+  static deleteProblemEnvironment({
+    action,
+    resolve,
+    params: { problemEnvironmentId }
+  }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteProblemEnvironment',
+      params: { problemEnvironmentId },
+      fields: [orm.ProblemEnvironment],
+      type: 'delete'
+    })
+  }
+
   static startIssue({ action, resolve, params: { problemId, text } }) {
     return this.sendMutation({
       action,
@@ -261,13 +317,13 @@ export default class Mutations extends BaseModel {
   static applyCategory({
     action,
     resolve,
-    params: { code, title, description, order }
+    params: { code, title, description, order, silent }
   }) {
     return this.sendMutation({
       action,
       resolve,
       mutation: 'applyCategory',
-      params: { code, title, description, order },
+      params: { code, title, description, order, silent },
       fields: [orm.Category],
       type: 'upsert'
     })
@@ -343,7 +399,8 @@ export default class Mutations extends BaseModel {
       secretText,
       password,
       organization,
-      color
+      color,
+      silent
     }
   }) {
     return this.sendMutation({
@@ -358,7 +415,8 @@ export default class Mutations extends BaseModel {
         secretText,
         password,
         organization,
-        color
+        color,
+        silent
       },
       fields: [orm.Team],
       type: 'upsert'

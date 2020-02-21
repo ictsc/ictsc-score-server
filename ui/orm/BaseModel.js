@@ -26,6 +26,10 @@ export default class BaseModel extends Model {
     return this.getContext().loadSchema()
   }
 
+  static mutationFieldKeys() {
+    return Object.keys(this.mutationFields())
+  }
+
   // 自身を取得するためのクエリ文字列を構築
   static buildField({ isList }) {
     const name = isList ? this.entity : inflection.singularize(this.entity)

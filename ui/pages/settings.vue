@@ -12,7 +12,7 @@
           filename-prefix="teams"
           :fetch="fetchTeams"
           :apply="applyTeam"
-          :fields="teamFields"
+          :fields="$orm.Team.mutationFieldKeys()"
         />
         <export-import-buttons
           label="カテゴリ一覧"
@@ -28,6 +28,15 @@
           :fetch="fetchProblems"
           :apply="applyProblem"
           :fields="problemFields"
+          :parallel="false"
+          class="mt-4"
+        />
+        <export-import-buttons
+          label="接続情報一覧"
+          filename-prefix="environments"
+          :fetch="fetchProblemEnvironments"
+          :apply="applyProblemEnvironment"
+          :fields="$orm.ProblemEnvironment.mutationFieldKeys()"
           class="mt-4"
         />
         <export-import-buttons
@@ -175,16 +184,6 @@ export default {
       showDelete1: false,
       showDelete2: false,
 
-      teamFields: [
-        'role',
-        'number',
-        'name',
-        'beginner',
-        'password',
-        'secretText',
-        'organization',
-        'color'
-      ],
       categoryFields: ['code', 'title', 'order', 'description'],
       configFields: ['key', 'value'],
       problemFields: [
@@ -252,6 +251,15 @@ export default {
           .all()
       )
     },
+    async fetchProblemEnvironments() {
+      await orm.Queries.problemEnvironments()
+
+      return this.sortByOrder(
+        orm.ProblemEnvironment.query()
+          .with(['problem', 'team'])
+          .all()
+      )
+    },
     // item-select-buttonを通すと一部リアクティブじゃなくなる
     reloadProblem(id) {
       return orm.Problem.query()
@@ -263,7 +271,7 @@ export default {
 
       await orm.Mutations.applyTeam({
         resolve: () => (result = true),
-        params: { ...params }
+        params: { ...params, silent: true }
       })
 
       return result
@@ -273,7 +281,7 @@ export default {
 
       await orm.Mutations.applyCategory({
         resolve: () => (result = true),
-        params: { ...params }
+        params: { ...params, silent: true }
       })
 
       return result
@@ -283,7 +291,17 @@ export default {
 
       await orm.Mutations.applyProblem({
         resolve: () => (result = true),
-        params: { ...params }
+        params: { ...params, silent: true }
+      })
+
+      return result
+    },
+    async applyProblemEnvironment(params) {
+      let result = false
+
+      await orm.Mutations.applyProblemEnvironment({
+        resolve: () => (result = true),
+        params: { ...params, silent: true }
       })
 
       return result

@@ -50,7 +50,11 @@ const errorLink = onError(
     delete response.errors
 
     // errorsが空でない配列ときのみdataに入れる
-    if (Array.isArray(errors) && errors.length !== 0) {
+    if (
+      Array.isArray(errors) &&
+      errors.length !== 0 &&
+      typeof response.data === 'object'
+    ) {
       response.data.errors = errors
     }
   }

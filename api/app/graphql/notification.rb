@@ -61,7 +61,7 @@ class Notification
         # なので採点によってスコアボードは自動で更新されない
         { to: %i[staff audience], problem_id: record.problem_id }
       when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState'
-        { to: [:staff, record.team], problem_id: record.problem_id }
+        { to: [:staff, record.team || :player], problem_id: record.problem_id }
       when 'ApplyTeam'
         { to: record.gte_roles }
       when 'ConfirmingAnswer'

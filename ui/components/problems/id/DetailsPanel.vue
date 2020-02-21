@@ -39,7 +39,8 @@
 
     <!-- 環境 -->
     <environment-area
-      v-if="problem.environments.length !== 0"
+      v-if="isStaff || problem.environments.length !== 0"
+      :problem="problem"
       :environments="problem.environments"
       class="py-2"
     />

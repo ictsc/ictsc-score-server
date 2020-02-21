@@ -24,11 +24,15 @@ module Mutations
     argument :candidates,            [[String]],                    required: true
     argument :corrects,              [[String]],                    required: true
 
+    # 通知無効
+    argument :silent,                Boolean,                       required: false
+
     # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     def resolve(code:, category_code: nil, previous_problem_code: nil,
                 order:, team_isolate:, open_at_begin: nil, open_at_end: nil,
                 writer: nil, secret_text: '',
-                mode:, title:, text:, perfect_point:, solved_criterion:, candidates: nil, corrects: nil)
+                mode:, title:, text:, perfect_point:, solved_criterion:, candidates: nil, corrects: nil,
+                silent: false)
 
       Acl.permit!(mutation: self, args: {})
 
@@ -55,7 +59,7 @@ module Mutations
         # regrade_answersに失敗するとエラーが追加される
         add_errors(problem_body) if problem_body.errors.key?(:regrade_answers)
 
-        Notification.notify(mutation: self.graphql_name, record: problem)
+        Notification.notify(mutation: self.graphql_name, record: problem) unless silent
         { problem: problem.readable(team: self.current_team!), problem_body: problem_body.readable(team: self.current_team!) }
       else
         add_errors(problem, problem_body)

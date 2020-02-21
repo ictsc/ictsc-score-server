@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_16_081620) do
+ActiveRecord::Schema.define(version: 2020_02_20_112509) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -134,9 +134,11 @@ ActiveRecord::Schema.define(version: 2020_02_16_081620) do
     t.uuid "team_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "note", limit: 8192
+    t.string "secret_text", limit: 8192, null: false
     t.string "name", null: false
-    t.index ["problem_id", "team_id", "name"], name: "index_problem_environments_on_problem_id_and_team_id_and_name", unique: true
+    t.string "service", null: false
+    t.integer "port", null: false
+    t.index ["problem_id", "team_id", "name", "service"], name: "problem_environments_on_composit_keys", unique: true
     t.index ["problem_id"], name: "index_problem_environments_on_problem_id"
     t.index ["team_id"], name: "index_problem_environments_on_team_id"
   end

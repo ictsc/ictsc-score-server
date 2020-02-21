@@ -1,7 +1,18 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <page-title title="チーム一覧" />
+      <page-title title="チーム一覧">
+        <pen-button
+          v-if="isStaff"
+          elevation="2"
+          x-small
+          absolute
+          class="ml-2 mb-4"
+          @click.stop="showModal = true"
+        />
+      </page-title>
+
+      <team-modal v-model="showModal" is-new />
     </v-row>
 
     <v-divider class="mt-3 mb-4" />
@@ -37,20 +48,25 @@
 <script>
 import orm from '~/orm'
 import PageTitle from '~/components/commons/PageTitle'
+import PenButton from '~/components/commons/PenButton'
 import TeamCard from '~/components/teams/TeamCard'
+import TeamModal from '~/components/misc/TeamModal'
 
 export default {
   name: 'Teams',
   components: {
     PageTitle,
-    TeamCard
+    PenButton,
+    TeamCard,
+    TeamModal
   },
   fetch() {
     orm.Queries.teams()
   },
   data() {
     return {
-      search: ''
+      search: '',
+      showModal: false
     }
   },
   computed: {

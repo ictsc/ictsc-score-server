@@ -5,8 +5,8 @@
     max-width="70em"
     scrollable
   >
-    <template v-slot:activator="{}">
-      <slot name="activator" :on="open" />
+    <template v-slot:activator="{ on }">
+      <slot name="activator" :on="on" />
     </template>
 
     <v-card>
@@ -16,11 +16,73 @@
 
       <v-divider />
       <v-card-text>
-        <v-container py-0>
+        <v-container pb-0>
           <v-form ref="form" v-model="valid">
-            <div>
-              Comming soon!!
-            </div>
+            <!-- lock -->
+            <label class="caption">権限</label>
+            <v-overflow-btn
+              v-model="role"
+              :readonly="sending"
+              :items="roles"
+              :disabled="!isNew"
+              label="権限"
+              :rules="requiredRules"
+              return-object
+              auto-select-first
+              editable
+              dense
+              class="mt-0 pb-2"
+            />
+
+            <number-text-field
+              v-model="number"
+              :readonly="sending"
+              :disabled="!isNew"
+              :rules="isNew ? numberRules : []"
+              label="チーム番号"
+              only-integer
+              class="pt-4"
+            />
+
+            <v-text-field
+              v-model="name"
+              :readonly="sending"
+              :rules="nameRules"
+              label="チーム名"
+            />
+
+            <v-text-field
+              v-model="organization"
+              :readonly="sending"
+              label="組織"
+            />
+
+            <v-color-picker v-model="color" hide-mode-switch flat />
+
+            <v-switch
+              v-model="beginner"
+              :readonly="sending"
+              label="解答サポート"
+              color="primary"
+              class="mt-0"
+            />
+
+            <v-text-field
+              v-model="password"
+              :readonly="sending"
+              :rules="isNew ? requiredRules : []"
+              :placeholder="isNew ? '' : '空なら現状維持'"
+              label="パスワード"
+            />
+
+            <markdown-text-area
+              v-model="secretText"
+              :readonly="sending"
+              placeholder="Markdown"
+              label="運営用メモ"
+              class="pt-4"
+              allow-empty
+            />
           </v-form>
         </v-container>
       </v-card-text>
@@ -50,31 +112,33 @@
 <script>
 import orm from '~/orm'
 
+import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
 import ApplyModalFields from '~/components/misc/ApplyModal/ApplyModalFields'
 import ApplyModalCommons from '~/components/misc/ApplyModal/ApplyModalCommons'
-import ActionButtons from '~/components/misc/ApplyModal/ActionButtons'
+import ConflictWarning from '~/components/misc/ApplyModal/ConflictWarning'
 
-const fields = {
-  role: '',
-  name: '',
-  organization: '',
-  secretText: '',
-  number: 0,
-  color: null
-}
-
-const fieldKeys = Object.keys(fields)
+import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
+import NumberTextField from '~/components/commons/NumberTextField'
 
 export default {
   name: 'TeamModal',
   components: {
-    ActionButtons
+    ActionButtons,
+    ConflictWarning,
+    MarkdownTextArea,
+    NumberTextField
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
   data() {
+    const requiredRule = v => !!v || '必須'
+
     return {
       // mixinしたモジュールから必要な値がmixinされる
-      descriptionPlaceholder: '記述可能\n\n空も可'
+      sending: false,
+      roles: ['staff', 'audience', 'player'],
+      requiredRules: [requiredRule],
+      nameRules: [requiredRule, v => this.isUniqueName(v) || '重複'],
+      numberRules: [v => this.isUniqueNumber(v) || '重複']
     }
   },
   computed: {
@@ -85,7 +149,7 @@ export default {
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
-    ...fieldKeys.reduce((obj, field) => {
+    ...orm.Team.mutationFieldKeys().reduce((obj, field) => {
       obj[field] = function(value) {
         this.setStorage(field, value)
       }
@@ -101,22 +165,50 @@ export default {
       return 'number'
     },
     fields() {
-      return fields
+      return orm.Team.mutationFields()
     },
     fieldKeys() {
-      return fieldKeys
+      return orm.Team.mutationFieldKeys()
     },
     async fetchSelf() {
       await orm.Queries.team(this.item.id)
     },
     // -- END --
 
+    // 既に全チームがfetchされている必要がある
+    isUniqueName(name) {
+      const sameNameTeams = orm.Team.query()
+        .where('name', name)
+        .get()
+
+      switch (sameNameTeams.length) {
+        case 0:
+          return true
+        case 1:
+          return this.isNew ? false : sameNameTeams[0].number === this.number
+        default:
+          // そもそもユニーク制約かかっているので2以上はありえない
+          console.error('same name teams count is over 2', sameNameTeams)
+      }
+    },
+    isUniqueNumber(number) {
+      return (
+        orm.Team.query()
+          .where('number', number)
+          .get().length === 0
+      )
+    },
     async submit(force) {
       this.sending = true
 
       if (!this.isNew && (await this.checkConflict()) && !force) {
         this.sending = false
         return
+      }
+
+      // 空ならnullにして現状維持にする
+      if (this.password === '') {
+        this.password = null
       }
 
       await orm.Mutations.applyTeam({

@@ -15,7 +15,7 @@ class Team < ApplicationRecord
   validates :password,        presence: true, length: { maximum: ActiveModel::SecurePassword::MAX_PASSWORD_LENGTH_ALLOWED }, if: :will_save_change_to_password_digest?
   validates :password_digest, presence: true
   validates :organization,    allow_empty: true
-  validates :color,           allow_empty: true, color_code: true
+  validates :color,           presence: true, color_code: true
   validates :secret_text,     allow_empty: true, length: { maximum: 8192 }
 
   has_many :answers,               dependent: :destroy
@@ -24,7 +24,7 @@ class Team < ApplicationRecord
   has_many :first_correct_answers, dependent: :destroy
   has_many :issues,                dependent: :destroy
   has_many :notices,               dependent: :nullify, inverse_of: 'target_team', foreign_key: 'target_team_id'
-  has_many :problem_environments,  dependent: :destroy
+  has_many :environments,          dependent: :destroy, class_name: 'ProblemEnvironment'
 
   # 値が大きいほど大体権限が高い
   enum role: {
@@ -54,12 +54,12 @@ class Team < ApplicationRecord
 
   # greater than or equal roles
   def gte_roles
-    Team.roles.select {|_k, v| v >= self.role_before_type_cast }
+    Team.roles.select {|_k, v| v >= self.role_before_type_cast }.keys
   end
 
   # less than or equal roles
   def lte_roles
-    Team.roles.select {|_k, v| v <= self.role_before_type_cast }
+    Team.roles.select {|_k, v| v <= self.role_before_type_cast }.keys
   end
 
   class << self

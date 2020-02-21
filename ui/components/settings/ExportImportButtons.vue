@@ -24,6 +24,7 @@
       :label="label"
       :fields="fields"
       :apply="apply"
+      :parallel="parallel"
     />
   </div>
 </template>
@@ -56,6 +57,10 @@ export default {
     fields: {
       type: Array,
       required: true
+    },
+    parallel: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

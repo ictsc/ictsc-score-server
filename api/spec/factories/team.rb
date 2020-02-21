@@ -7,7 +7,7 @@ FactoryBot.define do
     # name { "team #{alphabets[number - 1]}" }
     password { name }
     beginner { false }
-    color { '' }
+    color { Random.rand(2).odd? ? '#FFFFFF' : Faker::Color.hex_color.upcase }
     organization { "Org. #{name}" }
     secret_text { Random.rand(3).zero? ? Array.new(Random.rand(1..2)) { Faker::Books::Dune.quote }.join("\n") : '' }
     sequence(:number) {|n| n }
@@ -30,7 +30,6 @@ FactoryBot.define do
       name { "team #{alphabets[number - 1]}" }
       role { :player }
       beginner { Random.rand(4).zero? } # 1/4ぐらいをbeginnerにする
-      color { Random.rand(2).odd? ? '' : Faker::Color.hex_color }
     end
 
     # association :answers # optional: nil

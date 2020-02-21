@@ -58,8 +58,8 @@
         <v-card-title>
           <span>内容確認</span>
         </v-card-title>
+        <v-divider />
 
-        <v-divider></v-divider>
         <v-card-text class="pa-1">
           <markdown :content="confirmContent" />
         </v-card-text>
@@ -81,7 +81,7 @@
           <li>複数の解答をまたがず1つの解答内に全ての内容を収めてください</li>
         </ul>
 
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-actions>
           <v-spacer />
           <v-btn left :loading="sending" color="success" @click="submit">
