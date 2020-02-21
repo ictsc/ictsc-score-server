@@ -36,7 +36,7 @@
               :items="categories"
               :hint="categoryCode"
               persistent-hint
-              item-text="title"
+              item-text="displayTitle"
               item-value="code"
               auto-select-first
               editable
@@ -49,7 +49,7 @@
               :readonly="sending"
               :items="problemsOnlySameCategory"
               :self-id="isNew ? null : item.id"
-              title-param="title"
+              title-param="displayTitle"
               label="順序"
             />
 
@@ -60,7 +60,7 @@
               :items="previousProblemCandidates"
               :hint="previousProblemCode"
               persistent-hint
-              item-text="title"
+              item-text="displayTitle"
               item-value="code"
               auto-select-first
               editable
@@ -371,14 +371,14 @@ export default {
     // -- END --
 
     unshiftDummy(items) {
-      items.unshift({ title: 'なし', code: null })
+      items.unshift({ displayTitle: 'なし', code: null })
       return items
     },
     rejectSelf(problems) {
       return this.isNew ? problems : problems.filter(v => v.id !== this.item.id)
     },
     // 最初に開いた時に実行される
-    opendAtFirst() {
+    openedAtFirst() {
       // カテゴリに属していない問題や問題に属していないカテゴリも取得する
       orm.Queries.problems()
       orm.Queries.categories()

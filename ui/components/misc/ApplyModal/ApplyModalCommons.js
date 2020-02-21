@@ -6,7 +6,7 @@ export default {
     // v-model
     value: {
       type: Boolean,
-      required: true
+      default: false
     }
   },
   data() {
