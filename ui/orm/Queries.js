@@ -31,8 +31,16 @@ export default class Queries {
     return orm.Problem.eagerFetch(id, ['body', 'category'])
   }
 
-  static problemEnvironments(id) {
-    return orm.Problem.eagerFetch(id, ['body', 'environments'])
+  static problemProblemEnvironments(id) {
+    return orm.Problem.eagerFetch(id, ['environments'])
+  }
+
+  static problemEnvironment(id) {
+    return orm.ProblemEnvironment.eagerFetch(id, [])
+  }
+
+  static problemEnvironments() {
+    return orm.ProblemEnvironment.eagerFetch({}, [])
   }
 
   static problemPenaltiesTeam(id) {
@@ -153,7 +161,7 @@ export default class Queries {
         break
       case 'ApplyProblemEnvironment':
         if (problem.test(path)) {
-          orm.Queries.problemEnvironments(problemId)
+          orm.Queries.problemProblemEnvironments(problemId)
         }
         break
       case 'ApplyScore':

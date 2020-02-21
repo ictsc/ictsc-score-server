@@ -22,6 +22,10 @@ module Types
       argument :id, ID, required: true
     end
 
+    field :problem_environment, Types::ProblemEnvironmentType, null: true do
+      argument :id, ID, required: true
+    end
+
     field :team, Types::TeamType, null: true do
       argument :id, ID, required: true
     end
@@ -57,6 +61,10 @@ module Types
 
     def problems
       Problem.readables(team: self.current_team!)
+    end
+
+    def problem_environment(id:)
+      ProblemEnvironment.readables(team: self.current_team!).find_by(id: id)
     end
 
     def problem_environments

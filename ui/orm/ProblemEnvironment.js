@@ -24,8 +24,43 @@ export default class ProblemEnvironment extends BaseModel {
     }
   }
 
+  static mutationFields() {
+    return {
+      problemCode: undefined,
+      teamNumber: undefined,
+      name: '',
+      service: 'SSH',
+      status: 'APPLIED',
+      host: '',
+      port: 22,
+      user: '',
+      password: '',
+      secretText: ''
+    }
+  }
+
+  get teamNumber() {
+    return this.team && this.team.number
+  }
+
+  get problemCode() {
+    return this.problem && this.problem.code
+  }
+
+  get isSSH() {
+    return /SSH/i.test(this.service)
+  }
+
+  get isVNC() {
+    return /VNC/i.test(this.service)
+  }
+
+  get isTelnet() {
+    return /Telnet/i.test(this.service)
+  }
+
   get sshCommand() {
-    return `ssh "${this.user}@${this.host}"`
+    return `ssh '${this.user}@${this.host}' -p ${this.port}`
   }
 
   get sshpassCommand() {
@@ -33,6 +68,10 @@ export default class ProblemEnvironment extends BaseModel {
   }
 
   get vncURL() {
-    return `${this.host}:5901`
+    return `${this.host}:${this.port}`
+  }
+
+  get telnetCommand() {
+    return `telnet ${this.host} ${this.port}`
   }
 }

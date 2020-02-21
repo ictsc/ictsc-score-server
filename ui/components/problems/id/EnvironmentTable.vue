@@ -26,6 +26,31 @@
       />
     </template>
 
+    <template v-slot:item.action="{ item }">
+      <environment-modal :item="item" :problem="problem">
+        <template v-slot:activator="{ on }">
+          <v-btn icon x-small @click="on">
+            <v-icon small>mdi-pen</v-icon>
+          </v-btn>
+        </template>
+      </environment-modal>
+
+      <countdown-delete-button
+        :item="item"
+        :submit="deleteEnvironment"
+        btn-class="ml-4"
+      >
+        <template v-slot:content>
+          <ul class="black--text">
+            <li>問題: {{ problem.displayTitle }}</li>
+            <li>チーム: {{ item.displayName || '共通' }}</li>
+            <li>種類: {{ item.service }}</li>
+            <li>名前: {{ item.name }}</li>
+          </ul>
+        </template>
+      </countdown-delete-button>
+    </template>
+
     <template v-slot:item.team.displayName="{ value }">
       <template v-if="!!value">
         {{ value }}
@@ -36,18 +61,10 @@
       </template>
     </template>
 
-    <template v-slot:item.team="{ value }">
-      <v-icon v-if="!value" small>mdi-check</v-icon>
-    </template>
-
-    <template v-slot:item.note="{ value }">
-      <markdown v-if="!!value" :content="value" />
-    </template>
-
-    <template v-slot:item.sshCommand="{ value }">
+    <template v-slot:item.password="{ value }">
       <v-btn
         v-clipboard:copy="value"
-        v-clipboard:success="sshCommandCopied"
+        v-clipboard:success="copied"
         v-clipboard:error="onError"
         icon
         small
@@ -57,12 +74,25 @@
       {{ value }}
     </template>
 
-    <template v-slot:item.sshpassCommand="{ value }">
-      <v-tooltip top content-class="pa-0 elevation-8 opacity-1">
+    <template v-slot:item.team="{ value }">
+      <v-icon v-if="!value" small>mdi-check</v-icon>
+    </template>
+
+    <template v-slot:item.secretText="{ value }">
+      <markdown v-if="!!value" :content="value" />
+    </template>
+
+    <template v-slot:item.misc="{ item }">
+      <v-tooltip
+        v-if="item.isSSH"
+        top
+        open-delay="500"
+        content-class="pa-0 elevation-8 opacity-1"
+      >
         <template v-slot:activator="{ on }">
           <v-btn
-            v-clipboard:copy="value"
-            v-clipboard:success="sshpassCommandCopied"
+            v-clipboard:copy="item.sshpassCommand"
+            v-clipboard:success="copied"
             v-clipboard:error="onError"
             icon
             small
@@ -70,6 +100,7 @@
           >
             <v-icon>mdi-clipboard-text-outline</v-icon>
           </v-btn>
+          sshpassコマンド
         </template>
 
         <v-card>
@@ -78,44 +109,54 @@
           </v-card-text>
         </v-card>
       </v-tooltip>
-    </template>
 
-    <template v-slot:item.vncURL="{ value }">
-      <v-btn
-        v-clipboard:copy="value"
-        v-clipboard:success="vncURLCommandCopied"
-        v-clipboard:error="onError"
-        icon
-        small
-      >
-        <v-icon>mdi-clipboard-text-outline</v-icon>
-      </v-btn>
-      {{ value }}
-    </template>
+      <template v-else-if="item.isVNC">
+        <v-btn
+          v-clipboard:copy="item.vncURL"
+          v-clipboard:success="copied"
+          v-clipboard:error="onError"
+          icon
+          small
+        >
+          <v-icon>mdi-clipboard-text-outline</v-icon>
+        </v-btn>
+        {{ item.vncURL }}
+      </template>
 
-    <template v-slot:item.password="{ value }">
-      <v-btn
-        v-clipboard:copy="value"
-        v-clipboard:success="passwordCopied"
-        v-clipboard:error="onError"
-        icon
-        small
-      >
-        <v-icon>mdi-clipboard-text-outline</v-icon>
-      </v-btn>
-      {{ value }}
+      <template v-else-if="item.isTelnet">
+        <v-btn
+          v-clipboard:copy="item.telnetCommand"
+          v-clipboard:success="copied"
+          v-clipboard:error="onError"
+          icon
+          small
+        >
+          <v-icon>mdi-clipboard-text-outline</v-icon>
+        </v-btn>
+        {{ item.telnetCommand }}
+      </template>
     </template>
   </v-data-table>
 </template>
 <script>
+import orm from '~/orm'
+
+import CountdownDeleteButton from '~/components/commons/CountdownDeleteButton'
+import EnvironmentModal from '~/components/misc/EnvironmentModal'
 import Markdown from '~/components/commons/Markdown'
 
 export default {
   name: 'EnvironmentTable',
   components: {
+    CountdownDeleteButton,
+    EnvironmentModal,
     Markdown
   },
   props: {
+    problem: {
+      type: Object,
+      required: true
+    },
     environments: {
       type: Array,
       required: true
@@ -132,46 +173,42 @@ export default {
       return this.isStaff ? ['team.number'] : []
     },
     headers() {
+      const commons = [
+        { text: '', value: 'misc' },
+        { text: '種類', value: 'service' },
+        { text: '名前', value: 'name' },
+        { text: 'ホスト', value: 'host' },
+        { text: 'ポート', value: 'port' },
+        { text: 'ユーザー', value: 'user' },
+        { text: 'パスワード', value: 'password' }
+      ]
+
       if (this.isStaff) {
         return [
-          { text: 'No.', value: 'team.number' },
+          { text: 'action', value: 'action', sortable: false },
           { text: 'チーム名', value: 'team.displayName' },
           { text: '状態', value: 'status' },
-          { text: '名前', value: 'name' },
-          { text: 'ホスト', value: 'host' },
-          { text: 'ユーザー', value: 'user' },
-          { text: 'パスワード', value: 'password' },
-          { text: 'sshpass', value: 'sshpassCommand' },
+          ...commons,
           { text: '更新時刻', value: 'updatedAtSimple' },
-          { text: 'メモ', value: 'note' }
+          { text: '運営用メモ', value: 'secretText' }
         ]
       } else {
-        return [
-          { text: '共通', value: 'team', align: 'center' },
-          { text: '名前', value: 'name' },
-          { text: 'SSHコマンド', value: 'sshCommand' },
-          { text: 'VNCアクセス先', value: 'vncURL' },
-          { text: 'パスワード', value: 'password' },
-          { text: 'sshpassコマンド', value: 'sshpassCommand' }
-        ]
+        return [{ text: '共通', value: 'team', align: 'center' }, ...commons]
       }
     }
   },
   methods: {
-    sshCommandCopied() {
-      this.notifyInfo({ message: 'sshのコマンドをコピーしました' })
-    },
-    sshpassCommandCopied() {
-      this.notifyInfo({ message: 'sshpassのコマンドをコピーしました' })
-    },
-    vncURLCommandCopied() {
-      this.notifyInfo({ message: 'VNCアクセス先をコピーしました' })
-    },
-    passwordCopied() {
-      this.notifyInfo({ message: 'パスワードをコピーしました' })
+    copied() {
+      this.notifyInfo({ message: 'コピーしました', timeout: 3000 })
     },
     onError(e) {
       this.notifyWarning({ message: 'コピーに失敗しました' })
+    },
+    async deleteEnvironment(item) {
+      await orm.Mutations.deleteProblemEnvironment({
+        action: '接続情報削除',
+        params: { problemEnvironmentId: item.id }
+      })
     }
   }
 }
