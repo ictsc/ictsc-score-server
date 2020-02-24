@@ -83,7 +83,7 @@
     </template>
 
     <template v-slot:item.secretText="{ value }">
-      <markdown v-if="!!value" :content="value" />
+      <markdown v-if="!!value" :content="value" dense />
     </template>
 
     <template v-slot:item.misc="{ item }">

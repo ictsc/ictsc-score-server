@@ -217,7 +217,10 @@ export default {
 
         switch (res.status) {
           case 200:
-            this.notifySuccess({ message: `アップロードしました` })
+            this.notifySuccess({
+              message:
+                'アップロードしました\nリンクを知る全ての人が参照できます'
+            })
             return res.data
           case 400:
           case 401:
