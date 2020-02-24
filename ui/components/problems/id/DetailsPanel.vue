@@ -1,9 +1,9 @@
 <template>
-  <v-col class="pa-0">
+  <div>
     <problem-modal v-if="isStaff" v-model="showModal" :item="problem" />
 
     <!-- 編集ボタン, タイトル -->
-    <v-container fluid py-0>
+    <v-container fluid class="py-0">
       <v-row align="center" justify="start">
         <pen-button
           v-if="isStaff"
@@ -52,7 +52,7 @@
       <!-- TODO: 長文対応どうするか -->
       <markdown :content="problem.text" />
     </v-sheet>
-  </v-col>
+  </div>
 </template>
 <script>
 import Markdown from '~/components/commons/Markdown'

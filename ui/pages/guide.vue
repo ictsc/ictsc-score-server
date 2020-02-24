@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-row justify="center" align="center">
       <page-title title="ガイド">
         <pen-button

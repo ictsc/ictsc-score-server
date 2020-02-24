@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <v-row justify="center" class="flex-nowrap">
-      <v-col cols="6" class="px-0 panel-width">
+      <v-col cols="6" class="pa-0 panel-width">
         <notice-panel />
       </v-col>
 
-      <v-col v-if="realtimeGrading" cols="6" class="px-0 panel-width">
+      <v-col v-if="realtimeGrading" cols="6" class="pa-0 panel-width">
         <scoreboard-panel />
       </v-col>
     </v-row>

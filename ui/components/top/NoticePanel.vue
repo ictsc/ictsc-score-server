@@ -1,36 +1,34 @@
 <template>
   <!-- TODO: 一時的にelevationを消して背景と同一化させる -->
-  <v-sheet elevation="0">
-    <v-container fluid>
-      <panel-label label="お知らせ">
-        <pen-button
-          v-if="isStaff"
-          elevation="2"
-          class="ml-2"
-          @click.stop="showModal = true"
-        />
-      </panel-label>
+  <v-sheet elevation="0" class="px-2">
+    <panel-label label="お知らせ">
+      <pen-button
+        v-if="isStaff"
+        elevation="2"
+        class="ml-2"
+        @click.stop="showModal = true"
+      />
+    </panel-label>
 
-      <!-- お知らせ一覧 -->
-      <template v-if="notices.length !== 0">
-        <notice-card
-          v-for="notice in notices"
-          :key="notice.id"
-          :notice="notice"
-          class="mb-3"
-        />
+    <!-- お知らせ一覧 -->
+    <template v-if="notices.length !== 0">
+      <notice-card
+        v-for="notice in notices"
+        :key="notice.id"
+        :notice="notice"
+        class="mb-3"
+      />
+    </template>
+
+    <!-- お知らせなし -->
+    <div v-else class="grey--text text-center title">
+      <template v-if="fetching">
+        読み込み中
       </template>
-
-      <!-- お知らせなし -->
-      <div v-else class="grey--text text-center title">
-        <template v-if="fetching">
-          読み込み中
-        </template>
-        <template v-else>
-          お知らせはありません
-        </template>
-      </div>
-    </v-container>
+      <template v-else>
+        お知らせはありません
+      </template>
+    </div>
 
     <notice-modal v-if="isStaff" v-model="showModal" />
   </v-sheet>
