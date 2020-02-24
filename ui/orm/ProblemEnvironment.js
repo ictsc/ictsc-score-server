@@ -47,31 +47,22 @@ export default class ProblemEnvironment extends BaseModel {
     return this.problem && this.problem.code
   }
 
+  get copyText() {
+    if (this.isSSH) {
+      const sshCommand = `ssh '${this.user}@${this.host}' -p ${this.port}`
+      return `sshpass -p "${this.password}" ${sshCommand}`
+    } else if (/Telnet/i.test(this.service)) {
+      return `telnet ${this.host} ${this.port}`
+    } else if (/VNC/i.test(this.service)) {
+      return `${this.host}:${this.port}`
+    } else {
+      // throw new Error(`unsupported service "${this.service}"`)
+      // コピー対象無し
+      return ''
+    }
+  }
+
   get isSSH() {
     return /SSH/i.test(this.service)
-  }
-
-  get isVNC() {
-    return /VNC/i.test(this.service)
-  }
-
-  get isTelnet() {
-    return /Telnet/i.test(this.service)
-  }
-
-  get sshCommand() {
-    return `ssh '${this.user}@${this.host}' -p ${this.port}`
-  }
-
-  get sshpassCommand() {
-    return `sshpass -p "${this.password}" ${this.sshCommand}`
-  }
-
-  get vncURL() {
-    return `${this.host}:${this.port}`
-  }
-
-  get telnetCommand() {
-    return `telnet ${this.host} ${this.port}`
   }
 }
