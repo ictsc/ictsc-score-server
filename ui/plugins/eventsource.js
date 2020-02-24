@@ -24,11 +24,15 @@ function subscribe(events, onMessage) {
     console.error(error)
     error.target.close()
 
-    $nuxt.notifyError({
-      message:
-        'Push通知と自動リロードが停止しました\nページをリロードしてください'
-    })
-    // net::ERR_INCOMPLETE_CHUNKED_ENCODING, net::ERR_EMPTY_RESPONSE
+    // firefoxではリロード時に通知が表示されてしまうため対処
+    setTimeout(() => {
+      $nuxt.$nextTick(() => {
+        $nuxt.notifyError({
+          message:
+            'Push通知と自動リロードが停止しました\nページをリロードしてください'
+        })
+      })
+    }, 1000)
   }
 
   return eventSource
