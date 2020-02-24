@@ -4,8 +4,10 @@
     :disabled="isNotLoggedIn && !always"
     nuxt
     text
+    tile
     height="100%"
     class="white--text"
+    :active-class="activeClass"
     @click="$emit('click')"
   >
     <slot />
@@ -22,6 +24,10 @@ export default {
     always: {
       type: Boolean,
       default: false
+    },
+    activeClass: {
+      type: String,
+      default: 'primary lighten-1'
     }
   }
 }
