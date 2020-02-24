@@ -1,7 +1,11 @@
 <template>
   <v-app-bar app dense color="primary">
-    <navigation-link to="/">
-      <img class="logo" src="~assets/img/ictsc-logo-white.svg" alt="ICTSC" />
+    <navigation-link to="/" active-class="">
+      <v-img
+        :src="require('~/assets/img/ictsc-logo-white.svg')"
+        width="8em"
+        alt="ICTSC"
+      />
     </navigation-link>
 
     <v-spacer />
@@ -70,9 +74,6 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.logo
-  height: 2rem
-
 ::v-deep
   .v-toolbar__content
     padding: 0px
