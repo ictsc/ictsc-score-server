@@ -104,7 +104,6 @@ export default {
       return orm.Session.query()
         .with(['team'])
         .all()
-        .filter(s => s.team)
       // 存在しないチームIDを持つレコードは表示しない
     },
     hasSessions() {
@@ -115,7 +114,10 @@ export default {
     },
     selectedRoles() {
       const collect = Object.entries(
-        this.$_.groupBy(this.selectedItems, session => session.team.role)
+        this.$_.groupBy(
+          this.selectedItems,
+          session => session.team && session.team.role
+        )
       )
       return collect.map(o => [o[0], o[1].length])
     }
