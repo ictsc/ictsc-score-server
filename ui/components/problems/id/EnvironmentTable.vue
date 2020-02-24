@@ -62,16 +62,20 @@
     </template>
 
     <template v-slot:item.password="{ value }">
-      <v-btn
-        v-clipboard:copy="value"
-        v-clipboard:success="copied"
-        v-clipboard:error="onError"
-        icon
-        small
-      >
-        <v-icon>mdi-clipboard-text-outline</v-icon>
-      </v-btn>
-      {{ value }}
+      <v-row align="center" class="flex-nowrap">
+        <v-btn
+          v-clipboard:copy="value"
+          v-clipboard:success="copied"
+          v-clipboard:error="onError"
+          :disabled="isMarkdown(value)"
+          icon
+          small
+        >
+          <v-icon>mdi-clipboard-text-outline</v-icon>
+        </v-btn>
+
+        <markdown v-if="!!value" :content="value" dense />
+      </v-row>
     </template>
 
     <template v-slot:item.team="{ value }">
@@ -203,6 +207,11 @@ export default {
     },
     onError(e) {
       this.notifyWarning({ message: 'コピーに失敗しました' })
+    },
+    isMarkdown(str) {
+      // 雑だけど無いよりまし
+      // [hoge](path)があればMarkdownとして判断する
+      return /\[.*\]\(.*\)/.test(str)
     },
     async deleteEnvironment(item) {
       await orm.Mutations.deleteProblemEnvironment({

@@ -106,10 +106,13 @@
               label="ユーザー名"
             />
 
-            <v-text-field
+            <markdown-text-area
               v-model="password"
               :readonly="sending"
+              placeholder="Markdown"
               label="パスワード"
+              allow-empty
+              class="pt-4"
             />
 
             <markdown-text-area
@@ -117,8 +120,8 @@
               :readonly="sending"
               placeholder="Markdown"
               label="運営用メモ"
-              class="pt-4"
               allow-empty
+              class="pt-4"
             />
           </v-form>
         </v-container>
