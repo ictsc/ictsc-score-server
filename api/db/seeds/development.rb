@@ -43,10 +43,11 @@ def create_teams
   print 'creating teams...'
 
   # staffはseeds.rbで作成
-  # 'team a' ~ 'team zz' を作成
+  # 'team a' ~ 'team zz', 'team99', 'audience' を作成
   # パスワードはチーム名同じ
   players = build_stubbed_list(:team, 70, :player)
-  audience = build_stubbed(:team, :audience, name: 'audience', number: 80)
+  players << build_stubbed(:team, :player, name: 'team99', number: 99)
+  audience = build_stubbed(:team, :audience, name: 'audience', number: 100)
 
   Team.import!([audience] + players)
   puts 'done'

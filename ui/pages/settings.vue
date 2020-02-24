@@ -113,9 +113,10 @@
       </v-col>
     </v-row>
 
+    <!-- セッション一覧 -->
     <v-row justify="center" no-gutters class="mt-8">
       <v-col class="fixed-width">
-        <label>セッション一覧</label>
+        <label>有効なセッション一覧</label>
         <session-table />
       </v-col>
     </v-row>

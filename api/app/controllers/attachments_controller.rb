@@ -13,13 +13,19 @@ class AttachmentsController < ApplicationController
       return
     end
 
-    # filenameには間違えて問題コードを含んでしまうことが多いので代わりにtokenを返す
-    # 画像だけinlineにする
+    # 一応秘密情報を含むので途中ではキャッシュさせない
+    # stale?の前に必要
+    # https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html
+    expires_in 2.days, public: false
+    return unless stale?(strong_etag: attachment.token_with_ext, last_modified: attachment.created_at)
+
     send_data(
       attachment.data,
-      filename: attachment.token + File.extname(attachment.filename),
-      type: attachment.content_type,
+      # filenameには間違えて問題コードを含んでしまうことが多いので代わりにtokenを返す
+      filename: attachment.token_with_ext,
+      # 画像だけinlineにする
       disposition: attachment.content_type.start_with?('image') ? 'inline' : 'attachment',
+      type: attachment.content_type,
       stream: 'true',
       buffer_size: '4096'
     )

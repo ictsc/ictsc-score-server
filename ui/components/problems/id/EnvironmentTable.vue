@@ -62,16 +62,20 @@
     </template>
 
     <template v-slot:item.password="{ value }">
-      <v-btn
-        v-clipboard:copy="value"
-        v-clipboard:success="copied"
-        v-clipboard:error="onError"
-        icon
-        small
-      >
-        <v-icon>mdi-clipboard-text-outline</v-icon>
-      </v-btn>
-      {{ value }}
+      <v-row align="center" class="flex-nowrap">
+        <v-btn
+          v-clipboard:copy="value"
+          v-clipboard:success="copied"
+          v-clipboard:error="onError"
+          :disabled="isMarkdown(value)"
+          icon
+          small
+        >
+          <v-icon>mdi-clipboard-text-outline</v-icon>
+        </v-btn>
+
+        <markdown v-if="!!value" :content="value" dense />
+      </v-row>
     </template>
 
     <template v-slot:item.team="{ value }">
@@ -79,7 +83,7 @@
     </template>
 
     <template v-slot:item.secretText="{ value }">
-      <markdown v-if="!!value" :content="value" />
+      <markdown v-if="!!value" :content="value" dense />
     </template>
 
     <template v-slot:item.misc="{ item }">
@@ -91,7 +95,7 @@
       >
         <template v-slot:activator="{ on }">
           <v-btn
-            v-clipboard:copy="item.sshpassCommand"
+            v-clipboard:copy="item.copyText"
             v-clipboard:success="copied"
             v-clipboard:error="onError"
             icon
@@ -110,9 +114,9 @@
         </v-card>
       </v-tooltip>
 
-      <template v-else-if="item.isVNC">
+      <template v-else>
         <v-btn
-          v-clipboard:copy="item.vncURL"
+          v-clipboard:copy="item.copyText"
           v-clipboard:success="copied"
           v-clipboard:error="onError"
           icon
@@ -120,20 +124,7 @@
         >
           <v-icon>mdi-clipboard-text-outline</v-icon>
         </v-btn>
-        {{ item.vncURL }}
-      </template>
-
-      <template v-else-if="item.isTelnet">
-        <v-btn
-          v-clipboard:copy="item.telnetCommand"
-          v-clipboard:success="copied"
-          v-clipboard:error="onError"
-          icon
-          small
-        >
-          <v-icon>mdi-clipboard-text-outline</v-icon>
-        </v-btn>
-        {{ item.telnetCommand }}
+        {{ item.copyText }}
       </template>
     </template>
   </v-data-table>
@@ -198,11 +189,19 @@ export default {
     }
   },
   methods: {
-    copied() {
-      this.notifyInfo({ message: 'コピーしました', timeout: 3000 })
+    copied(event) {
+      this.notifyInfo({
+        message: `コピーしました\n${event.text}`,
+        timeout: 3000
+      })
     },
     onError(e) {
       this.notifyWarning({ message: 'コピーに失敗しました' })
+    },
+    isMarkdown(str) {
+      // 雑だけど無いよりまし
+      // [hoge](path)があればMarkdownとして判断する
+      return /\[.*\]\(.*\)/.test(str)
     },
     async deleteEnvironment(item) {
       await orm.Mutations.deleteProblemEnvironment({

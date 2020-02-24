@@ -11,4 +11,8 @@ class Attachment < ApplicationRecord
   validates :team,         presence: true
 
   belongs_to :team
+
+  def token_with_ext
+    token + File.extname(filename)
+  end
 end

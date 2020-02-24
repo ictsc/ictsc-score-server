@@ -12,7 +12,7 @@ class ProblemEnvironment < ApplicationRecord
   validates :host,     presence: false
   validates :port,     presence: true, numericality: { only_integer: true }
   validates :user,     presence: false
-  validates :password, presence: false
+  validates :password,    allow_empty: true, length: { maximum: 8192 }
   validates :secret_text, allow_empty: true, length: { maximum: 8192 }
 
   belongs_to :team, optional: true

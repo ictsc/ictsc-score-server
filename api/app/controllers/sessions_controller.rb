@@ -11,7 +11,9 @@ class SessionsController < ApplicationController
     team = Team.login(name: login_params[:name], password: login_params[:password])
 
     if team
+      # protect session fixation attack
       reset_session
+
       # 以降のリクエストではこれからcurrent_teamをもとめる
       session[:team_id] = team.id
 

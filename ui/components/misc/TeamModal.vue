@@ -72,7 +72,10 @@
               :readonly="sending"
               :rules="isNew ? requiredRules : []"
               :placeholder="isNew ? '' : '空なら現状維持'"
+              :type="passwordVisible ? 'text' : 'password'"
+              :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
               label="パスワード"
+              @click:append="passwordVisible = !passwordVisible"
             />
 
             <markdown-text-area
@@ -136,6 +139,7 @@ export default {
       // mixinしたモジュールから必要な値がmixinされる
       sending: false,
       roles: ['staff', 'audience', 'player'],
+      passwordVisible: false,
       requiredRules: [requiredRule],
       nameRules: [requiredRule, v => this.isUniqueName(v) || '重複'],
       numberRules: [v => this.isUniqueNumber(v) || '重複']

@@ -12,11 +12,11 @@
 
       <v-text-field
         v-model="password"
-        label="パスワード"
-        required
         :rules="passwordRules"
         :type="passwordVisible ? 'text' : 'password'"
         :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+        label="パスワード"
+        required
         @click:append="passwordVisible = !passwordVisible"
       >
       </v-text-field>

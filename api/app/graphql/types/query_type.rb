@@ -7,6 +7,7 @@ module Types
     field :attachments,          [Types::AttachmentType],         null: false
     field :categories,           [Types::CategoryType],           null: false
     field :configs,              [Types::ConfigType],             null: false
+    field :penalties,            [Types::PenaltyType],            null: false
     field :problems,             [Types::ProblemType],            null: false
     field :problem_environments, [Types::ProblemEnvironmentType], null: false
     field :teams,                [Types::TeamType],               null: false
@@ -53,6 +54,10 @@ module Types
 
     def category(id:)
       Category.readables(team: self.current_team!).find_by(id: id)
+    end
+
+    def penalties
+      Penalty.readables(team: self.current_team!)
     end
 
     def problem(id:)
