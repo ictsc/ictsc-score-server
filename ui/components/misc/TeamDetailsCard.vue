@@ -9,7 +9,20 @@
         <v-avatar v-if="team.color" :color="team.color" size="1em" tile />
 
         <v-divider />
-        {{ team.name }}
+
+        <v-row align="center" class="flex-nowrap" no-gutters>
+          <v-btn
+            v-clipboard:copy="team.name"
+            v-clipboard:success="onCopySuccess"
+            v-clipboard:error="onCopyError"
+            icon
+            small
+          >
+            <v-icon>mdi-clipboard-text-outline</v-icon>
+          </v-btn>
+
+          <div class="pl-2">{{ team.name }}</div>
+        </v-row>
 
         <template v-if="team.organization">
           <v-divider />
@@ -32,6 +45,17 @@ export default {
     team: {
       type: Object,
       required: true
+    }
+  },
+  methods: {
+    onCopySuccess(event) {
+      this.notifyInfo({
+        message: `コピーしました\n${event.text}`,
+        timeout: 3000
+      })
+    },
+    onCopyError(e) {
+      this.notifyWarning({ message: 'コピーに失敗しました' })
     }
   }
 }
