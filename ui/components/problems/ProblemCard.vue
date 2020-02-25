@@ -7,8 +7,6 @@
       tile
       width="12em"
     >
-      <problem-modal v-if="isStaff" v-model="showModal" :item="problem" />
-
       <v-container height="6em">
         <v-row align="center" justify="center" style="height: 4em">
           <v-card-text class="py-0 black--text">
@@ -26,12 +24,17 @@
                   </div>
                 </v-col>
 
-                <pen-button
-                  v-if="isStaff && hover"
-                  right
-                  small
-                  @click.stop.prevent="showModal = true"
-                />
+                <problem-modal v-if="isStaff" :item="problem">
+                  <template v-slot:activator="{ on }">
+                    <pen-button
+                      v-if="hover"
+                      right
+                      small
+                      class="pa-0"
+                      v-on="on"
+                    />
+                  </template>
+                </problem-modal>
               </v-row>
             </template>
             <template v-else>
@@ -56,11 +59,6 @@ export default {
     problem: {
       type: Object,
       required: true
-    }
-  },
-  data() {
-    return {
-      showModal: false
     }
   },
   computed: {

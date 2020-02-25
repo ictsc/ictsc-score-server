@@ -1,18 +1,15 @@
 <template>
   <div>
-    <category-modal v-if="isStaff" v-model="showModal" :item="category" />
-
     <!-- タイトル -->
     <v-container my-0 py-1>
       <v-row align="center" justify="start">
         <div class="headline">{{ category.title }}</div>
 
-        <pen-button
-          v-if="isStaff"
-          elevation="2"
-          class="ml-2"
-          @click.stop="showModal = true"
-        />
+        <category-modal v-if="isStaff" :item="category">
+          <template v-slot:activator="{ on }">
+            <pen-button elevation="2" class="ml-2" v-on="on" />
+          </template>
+        </category-modal>
       </v-row>
     </v-container>
 
@@ -56,11 +53,6 @@ export default {
     category: {
       type: Object,
       required: true
-    }
-  },
-  data() {
-    return {
-      showModal: false
     }
   },
   computed: {
