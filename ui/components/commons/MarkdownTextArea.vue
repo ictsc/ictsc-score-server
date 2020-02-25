@@ -6,55 +6,54 @@
 * previewボタンでプレビュー可能
 -->
 <template>
-  <div>
-    <div
-      :class="classes"
-      @drop.prevent="uploadFiles($event.dataTransfer.files)"
-      @dragover.prevent="dragging = true"
-      @dragleave.prevent="dragging = false"
-    >
-      <div v-show="dragging" class="display-2 white--text overlay-text">
-        {{ uploading ? 'アップロード中' : 'ドロップ' }}
-      </div>
-
-      <v-textarea
-        ref="textarea"
-        v-model="internalValue"
-        v-bind="$attrs"
-        :rules="rules"
-        flat
-        auto-grow
-        dense
-        class="pt-1 pb-0"
-        v-on="$listeners"
-        @keyup.ctrl.enter.prevent="valid && $emit('submit')"
-      />
-
-      <v-row
-        align="center"
-        justify="end"
-        :class="{
-          'show-details': showDetails,
-          'mr-1': showDetails
-        }"
-      >
-        <span class="caption" :class="textCounterColor">
-          {{ textCounter }}
-        </span>
-
-        <v-btn
-          :disabled="previewDisabled"
-          fab
-          icon
-          x-small
-          color="primary"
-          @click="preview = true"
-        >
-          <v-icon>mdi-eye</v-icon>
-        </v-btn>
-      </v-row>
+  <div
+    :class="classes"
+    @drop.prevent="uploadFiles($event.dataTransfer.files)"
+    @dragover.prevent="dragging = true"
+    @dragleave.prevent="dragging = false"
+  >
+    <div v-show="dragging" class="display-2 white--text overlay-text">
+      {{ uploading ? 'アップロード中' : 'ドロップ' }}
     </div>
 
+    <v-textarea
+      ref="textarea"
+      v-model="internalValue"
+      v-bind="$attrs"
+      :rules="rules"
+      flat
+      auto-grow
+      dense
+      class="pt-1 pb-0"
+      v-on="$listeners"
+      @keyup.ctrl.enter.prevent="valid && $emit('submit')"
+    />
+
+    <v-row
+      align="center"
+      justify="end"
+      :class="{
+        'show-details': showDetails,
+        'mr-1': showDetails
+      }"
+    >
+      <span class="caption" :class="textCounterColor">
+        {{ textCounter }}
+      </span>
+
+      <v-btn
+        :disabled="previewDisabled"
+        fab
+        icon
+        x-small
+        color="primary"
+        @click="preview = true"
+      >
+        <v-icon>mdi-eye</v-icon>
+      </v-btn>
+    </v-row>
+
+    <!-- 確認モーダル -->
     <v-dialog v-model="preview" :max-width="previewWidth" scrollable>
       <v-card>
         <v-card-title>
