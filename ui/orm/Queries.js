@@ -39,8 +39,8 @@ export default class Queries {
     return orm.ProblemEnvironment.eagerFetch(id, [])
   }
 
-  static problemEnvironments() {
-    return orm.ProblemEnvironment.eagerFetch({}, [])
+  static problemEnvironmentsTeamProblem() {
+    return orm.ProblemEnvironment.eagerFetch({}, ['team', 'problem.body'])
   }
 
   static problemPenaltiesTeam(id) {
