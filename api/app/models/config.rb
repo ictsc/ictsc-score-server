@@ -163,6 +163,15 @@ class Config < ApplicationRecord
       Time.current - datetime <= Config.delete_time_limit_sec
     end
 
+    def guide_page_default_value
+      <<~STR
+        全てのテキストエリアでMarkdownが使えます。
+        ドラッグ&ドロップでファイルをアップロードできます。
+        テキストエリア右下にプレビューボタンがあります。
+
+      STR
+    end
+
     # 構造化された設定
     def to_h
       {
