@@ -253,7 +253,7 @@ export default {
       )
     },
     async fetchProblemEnvironments() {
-      await orm.Queries.problemEnvironments()
+      await orm.Queries.problemEnvironmentsTeamProblem()
 
       return this.sortByOrder(
         orm.ProblemEnvironment.query()

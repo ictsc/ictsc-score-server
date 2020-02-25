@@ -1,58 +1,65 @@
 <template>
-  <v-alert
-    v-model="visible"
-    :type="type"
-    dismissible
-    elevation="6"
-    class="ma-0 text-left"
-    width="30em"
+  <div
+    style="width: min-content"
+    @mouseenter="onMouse = true"
+    @mouseleave="onMouse = false"
   >
-    <div class="notification-message">{{ message }}</div>
-
-    <v-menu
-      v-if="!!details"
-      max-width="26em"
-      top
-      left
-      offset-y
-      open-delay="400"
-      open-on-hover
-      content-class="pa-0 opacity-1 elevation-12"
+    <v-alert
+      v-model="visible"
+      :type="type"
+      dismissible
+      elevation="6"
+      class="ma-0 text-left"
+      width="30em"
     >
-      <v-card :color="type">
-        <v-card-text class="white--text">
-          {{ details }}
-        </v-card-text>
-      </v-card>
+      <div class="notification-message">{{ message }}</div>
 
-      <template v-slot:activator="{ on }">
-        <v-row justify="end" no-gutters class="details-area">
-          <v-card
-            :color="type"
-            :ripple="false"
-            outlined
-            tile
-            class="pr-2 lighten-1"
-            v-on="on"
-          >
-            <v-icon dense>mdi-cursor-pointer</v-icon>
-            詳細
-          </v-card>
-        </v-row>
-      </template>
-    </v-menu>
+      <v-menu
+        v-if="!!details"
+        max-width="26em"
+        top
+        left
+        offset-y
+        open-delay="400"
+        open-on-hover
+        content-class="pa-0 opacity-1 elevation-12"
+      >
+        <v-card :color="type">
+          <v-card-text class="white--text">
+            {{ details }}
+          </v-card-text>
+        </v-card>
 
-    <v-progress-linear
-      :active="timeout !== 0"
-      :value="progressValue"
-      :color="progressColor"
-      background-opacity="0"
-      absolute
-      bottom
-      rounded
-    >
-    </v-progress-linear>
-  </v-alert>
+        <template v-slot:activator="{ on }">
+          <v-row justify="end" no-gutters class="details-area">
+            <v-card
+              :color="type"
+              :ripple="false"
+              outlined
+              tile
+              class="pr-2 lighten-1"
+              v-on="on"
+            >
+              <v-icon dense>mdi-cursor-pointer</v-icon>
+              詳細
+            </v-card>
+          </v-row>
+        </template>
+      </v-menu>
+
+      <v-progress-linear
+        v-show="onMouse === false"
+        :active="timeout !== 0"
+        :value="progressValue"
+        :color="progressColor"
+        background-opacity="0"
+        absolute
+        bottom
+        rounded
+      >
+      </v-progress-linear>
+    </v-alert>
+  </div>
 </template>
 <script>
 import { mapGetters, mapMutations } from 'vuex'
@@ -86,9 +93,10 @@ export default {
   data() {
     return {
       visible: true,
-      startAtMsec: Date.now(),
+      startAtMsec: 0,
       progressElapsedTime: 0,
-      activeTimeout: -1
+      activeTimeout: -1,
+      onMouse: false
     }
   },
   computed: {
@@ -116,20 +124,41 @@ export default {
       if (value === false) {
         this.removeNotification(this.uid)
       }
+    },
+    onMouse(value) {
+      if (value) {
+        this.stopTimeout()
+      } else {
+        this.startTimeout()
+      }
     }
   },
   created() {
-    if (this.timeout !== 0) {
-      this.activeTimeout = setTimeout(() => {
-        this.visible = false
-      }, this.timeout)
-    }
+    this.startTimeout()
   },
   beforeDestroy() {
-    clearTimeout(this.activeTimeout)
+    this.stopTimeout()
   },
   methods: {
-    ...mapMutations('notification', ['removeNotification'])
+    ...mapMutations('notification', ['removeNotification']),
+
+    resetTimeout() {
+      this.stopTimeout()
+      this.startTimeout()
+    },
+    startTimeout() {
+      if (this.timeout !== 0) {
+        this.startAtMsec = Date.now()
+
+        this.activeTimeout = setTimeout(() => {
+          this.visible = false
+        }, this.timeout)
+      }
+    },
+    stopTimeout() {
+      clearTimeout(this.activeTimeout)
+      this.activeTimeout = -1
+    }
   }
 }
 </script>

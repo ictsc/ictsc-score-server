@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_24_052015) do
+ActiveRecord::Schema.define(version: 2020_02_25_051338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_052015) do
     t.string "content_type", null: false
     t.integer "size", null: false
     t.index ["team_id"], name: "index_attachments_on_team_id"
+    t.index ["token"], name: "index_attachments_on_token", unique: true
   end
 
   create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
