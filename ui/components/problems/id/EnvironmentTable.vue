@@ -65,8 +65,8 @@
       <v-row align="center" class="flex-nowrap">
         <v-btn
           v-clipboard:copy="value"
-          v-clipboard:success="copied"
-          v-clipboard:error="onError"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyError"
           :disabled="!canCopyPassword(value)"
           icon
           small
@@ -96,8 +96,8 @@
         <template v-slot:activator="{ on }">
           <v-btn
             v-clipboard:copy="item.copyText"
-            v-clipboard:success="copied"
-            v-clipboard:error="onError"
+            v-clipboard:success="onCopySuccess"
+            v-clipboard:error="onCopyError"
             :disabled="item.isSSH && !canCopyPassword(item.password)"
             icon
             small
@@ -177,7 +177,7 @@ export default {
     }
   },
   methods: {
-    copied(event) {
+    onCopySuccess(event) {
       // 長すぎると通知が画面いっぱいになるので適当にカット
       let text = event.text.replace(/[\n\r]/g, ' ')
       text = this.stringTruncate(text, 100)
@@ -187,7 +187,7 @@ export default {
         timeout: 3000
       })
     },
-    onError(e) {
+    onCopyError(e) {
       this.notifyWarning({ message: 'コピーに失敗しました' })
     },
     isMarkdown(str) {
