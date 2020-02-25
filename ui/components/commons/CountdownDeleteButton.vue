@@ -74,6 +74,7 @@ export default {
       dialog: false,
       sending: false,
       count: 5,
+      resetTimer: -1,
       messages: [
         'やめて! 私のライフはもう0よ!',
         '死にたくないー',
@@ -88,10 +89,17 @@ export default {
       if (this.count === 0) {
         this.tooltip = false
         this.dialog = true
+        this.resetTimeout()
       } else {
-        this.count -= 1
         this.tooltip = true
+        this.count -= 1
+        this.resetTimeout()
+        this.resetTimer = setTimeout(() => this.close(), 3000)
       }
+    },
+    resetTimeout() {
+      clearTimeout(this.resetTimer)
+      this.resetTimer = -1
     },
     async callSubmit() {
       this.sending = true
@@ -99,9 +107,11 @@ export default {
       this.close()
     },
     close() {
+      this.tooltip = false
       this.dialog = false
       this.sending = false
-      this.count = 5
+      this.$nextTick(() => (this.count = 5))
+      this.resetTimeout()
     }
   }
 }
