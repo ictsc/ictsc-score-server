@@ -3,62 +3,43 @@
     <v-card
       :disabled="!problem.isReadable"
       :to="problemURL"
+      :color="color"
       append
       tile
-      width="12em"
+      width="17.6em"
     >
-      <v-container height="6em">
-        <v-row align="center" justify="center" style="height: 4em">
-          <v-card-text class="py-0 black--text">
-            <template v-if="problem.isReadable">
-              <div class="subtitle-1 text-truncate">
-                {{ elvis(problem, 'body.title') }}
-              </div>
-
-              <v-row no-gutters>
-                <v-col>
-                  <div v-if="isStaff">コード {{ problem.code }}</div>
-
-                  <div class="body-2">
-                    満点 {{ elvis(problem, 'body.perfectPoint') }}
-                  </div>
-                </v-col>
-
-                <problem-modal v-if="isStaff" :item="problem">
-                  <template v-slot:activator="{ on }">
-                    <pen-button
-                      v-if="hover"
-                      right
-                      small
-                      class="pa-0"
-                      v-on="on"
-                    />
-                  </template>
-                </problem-modal>
-              </v-row>
-            </template>
-            <template v-else>
-              <v-row justify="center" class="pa-0">
-                <v-icon>mdi-lock</v-icon>
-              </v-row>
-            </template>
-          </v-card-text>
-        </v-row>
-      </v-container>
+      <v-row align="center" no-gutters style="height: 7em">
+        <problem-card-staff
+          v-if="isNotPlayer"
+          :problem="problem"
+          :hover="hover"
+        />
+        <problem-card-player
+          v-if="isPlayer"
+          :problem="problem"
+          :hover="hover"
+          :color.sync="color"
+        />
+      </v-row>
     </v-card>
   </v-hover>
 </template>
 <script>
-import PenButton from '~/components/commons/PenButton'
-import ProblemModal from '~/components/misc/ProblemModal'
+import ProblemCardPlayer from '~/components/problems/ProblemCardPlayer'
+import ProblemCardStaff from '~/components/problems/ProblemCardStaff'
 
 export default {
   name: 'ProblemCard',
-  components: { PenButton, ProblemModal },
+  components: { ProblemCardPlayer, ProblemCardStaff },
   props: {
     problem: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      color: ''
     }
   },
   computed: {
