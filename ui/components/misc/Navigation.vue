@@ -65,6 +65,7 @@ export default {
     async tryLogout() {
       if (await this.logout()) {
         this.notifySuccess({ message: 'ログアウトしました' })
+        this.$router.push('/login')
       } else {
         this.notifyWarning({ message: 'ログインしていません' })
       }
