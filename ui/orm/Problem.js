@@ -35,7 +35,12 @@ export default class Problem extends BaseModel {
 
   // クエリビルダーのバグ?で再帰してクエリが激重になるのでbelongsToを使わない
   get previousProblem() {
-    return this.previousProblemId && Problem.find(this.previousProblemId)
+    return (
+      this.previousProblemId &&
+      Problem.query()
+        .with(['body'])
+        .find(this.previousProblemId)
+    )
   }
 
   // ProblemBodyのフィールドに透過的にアクセスするためのゲッター
@@ -74,6 +79,14 @@ export default class Problem extends BaseModel {
 
   get updatedAt() {
     return this.body.updatedAt
+  }
+
+  get previousProblemTitle() {
+    if (!this.previousProblem) {
+      return ''
+    }
+
+    return this.previousProblem.isReadable ? this.previousProblem.title : '???'
   }
 
   get previousProblemCode() {
