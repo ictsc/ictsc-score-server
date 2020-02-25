@@ -60,7 +60,7 @@ export default {
         this.notifySuccess({ message: 'ログインしました' })
         // locationを直接使うことで強制リロード
         // ストアもリセットされる
-        window.location = '/'
+        window.location = '/guide'
       } else {
         this.notifyWarning({
           message: 'チーム名かパスワードが正しくありません'
