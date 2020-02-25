@@ -20,6 +20,7 @@
       :config="configGuidePage"
     />
 
+    <markdown :content="fixedText" />
     <markdown :content="guidePage" />
   </v-container>
 </template>
@@ -30,6 +31,11 @@ import ConfigModal from '~/components/misc/ConfigModal'
 import Markdown from '~/components/commons/Markdown'
 import PageTitle from '~/components/commons/PageTitle'
 import PenButton from '~/components/commons/PenButton'
+
+const fixedText = `全てのテキストエリアでMarkdownが使えます。
+ドラッグ&ドロップでファイルをアップロードできます。
+テキストエリア右下にプレビューボタンがあります。
+`
 
 export default {
   name: 'Guide',
@@ -48,6 +54,9 @@ export default {
     ...mapGetters('contestInfo', ['guidePage']),
     configGuidePage() {
       return orm.Config.find('guide_page')
+    },
+    fixedText() {
+      return fixedText
     }
   },
   watch: {

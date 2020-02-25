@@ -101,8 +101,7 @@ export default {
       statusUpdating: false,
       text: this.$jsonStorage.get(storageKey),
       storageKey,
-      placeholder:
-        'Markdownで記述できます\n\n送信前の自動プレビューはありません\n\nCtrl-Enterでも送信可能です',
+      placeholder: 'Ctrl-Enterで送信可能です',
       valid: false
     }
   },
