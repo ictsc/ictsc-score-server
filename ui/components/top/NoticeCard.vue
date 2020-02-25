@@ -12,7 +12,7 @@
         <!-- ピン -->
         <pin-button
           v-if="isStaff"
-          class="mr-1"
+          class="mr-2"
           :value="notice.pinned"
           @click="pinned"
         />
@@ -33,37 +33,29 @@
         </div>
       </v-chip>
 
-      <!-- 投稿時刻, 削除ボタン -->
-      <v-row align="center" class="pb-1 px-3">
-        <div class="caption">{{ notice.createdAtShort }}</div>
-
-        <v-spacer />
-
-        <delete-button
-          v-if="isStaff"
-          :start-at-msec="Date.parse(notice.createdAt)"
-          :disabled="sending"
-          color="grey "
-          class="ml-2"
-          @click="destroy"
-        />
-      </v-row>
+      <!-- 投稿時刻 -->
+      <div class="pb-1 caption">{{ notice.createdAtShort }}</div>
 
       <!-- 本文 -->
       <markdown :content="notice.text" dense />
+
+      <!-- 削除ボタン -->
+      <v-row v-if="isStaff" justify="end" class="pb-0 pr-2">
+        <countdown-delete-button :item="notice" :submit="destroy" />
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
 <script>
 import orm from '~/orm'
+import CountdownDeleteButton from '~/components/commons/CountdownDeleteButton'
 import PinButton from '~/components/commons/PinButton'
-import DeleteButton from '~/components/commons/DeleteButton'
 import Markdown from '~/components/commons/Markdown'
 
 export default {
   name: 'NoticeCard',
   components: {
-    DeleteButton,
+    CountdownDeleteButton,
     Markdown,
     PinButton
   },

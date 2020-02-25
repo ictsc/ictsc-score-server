@@ -40,14 +40,12 @@
         :submit="deleteEnvironment"
         btn-class="ml-4"
       >
-        <template v-slot:content>
-          <ul class="black--text">
-            <li>問題: {{ problem.displayTitle }}</li>
-            <li>チーム: {{ item.displayName || '共通' }}</li>
-            <li>種類: {{ item.service }}</li>
-            <li>名前: {{ item.name }}</li>
-          </ul>
-        </template>
+        <ul class="black--text">
+          <li>問題: {{ problem.displayTitle }}</li>
+          <li>チーム: {{ item.displayName || '共通' }}</li>
+          <li>種類: {{ item.service }}</li>
+          <li>名前: {{ item.name }}</li>
+        </ul>
       </countdown-delete-button>
     </template>
 
