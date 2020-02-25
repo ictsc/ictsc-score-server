@@ -7,13 +7,16 @@ module Types
     field :attachments,          [Types::AttachmentType],         null: false
     field :categories,           [Types::CategoryType],           null: false
     field :configs,              [Types::ConfigType],             null: false
-    field :penalties,            [Types::PenaltyType],            null: false
     field :problems,             [Types::ProblemType],            null: false
     field :problem_environments, [Types::ProblemEnvironmentType], null: false
     field :teams,                [Types::TeamType],               null: false
     field :notices,              [Types::NoticeType],             null: false
     field :sessions,             [Types::SessionType],            null: false
     field :scoreboards,          [Types::ScoreboardType],         null: false
+
+    field :penalties,            [Types::PenaltyType],            null: false do
+      argument :after, Types::DateTime, required: false
+    end
 
     field :category, Types::CategoryType, null: true do
       argument :id, ID, required: true
@@ -56,8 +59,12 @@ module Types
       Category.readables(team: self.current_team!).find_by(id: id)
     end
 
-    def penalties
-      Penalty.readables(team: self.current_team!)
+    def penalties(after: nil)
+      rel = Penalty
+        .readables(team: self.current_team!)
+        .order(:created_at)
+
+      after ? rel.where(created_at: after..) : rel
     end
 
     def problem(id:)

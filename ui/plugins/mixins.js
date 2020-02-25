@@ -36,6 +36,9 @@ Vue.mixin({
     isSame(item1, item2) {
       return JSON.stringify(item1) === JSON.stringify(item2)
     },
+    compactObject(obj) {
+      return $nuxt.$_.pick(obj, value => value !== undefined && value !== null)
+    },
 
     stringSimplify(str) {
       return str.replace(/-|_/g, '').toLowerCase()

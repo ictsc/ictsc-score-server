@@ -1,22 +1,20 @@
 <template>
-  <v-sheet elevation="0">
-    <v-container fluid>
-      <template v-if="isNotPlayer">
-        <panel-label v-if="notBeginnerScoreboards.length !== 0" label="順位" />
-        <scoreboard-group :scoreboards="notBeginnerScoreboards" />
+  <v-sheet elevation="0" class="px-2">
+    <template v-if="isNotPlayer">
+      <panel-label v-if="notBeginnerScoreboards.length !== 0" label="順位" />
+      <scoreboard-group :scoreboards="notBeginnerScoreboards" />
 
-        <panel-label
-          v-if="beginnerScoreboards.length !== 0"
-          label="順位 - 解答サポート"
-          class="mt-12"
-        />
-        <scoreboard-group :scoreboards="beginnerScoreboards" />
-      </template>
-      <template v-else>
-        <panel-label label="順位" />
-        <scoreboard-group :scoreboards="scoreboards" />
-      </template>
-    </v-container>
+      <panel-label
+        v-if="beginnerScoreboards.length !== 0"
+        label="順位 - 解答サポート"
+        class="mt-12"
+      />
+      <scoreboard-group :scoreboards="beginnerScoreboards" />
+    </template>
+    <template v-else>
+      <panel-label label="順位" />
+      <scoreboard-group :scoreboards="scoreboards" />
+    </template>
   </v-sheet>
 </template>
 <script>

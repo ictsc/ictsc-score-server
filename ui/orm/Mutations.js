@@ -31,7 +31,6 @@ export default class Mutations extends BaseModel {
     `
   }
 
-  // try catchで囲めばキャッチできる
   // storeに対してcreate update delete処理をする
   // レスポンスは各モデルを想定
   static async sendMutationBase(mutation, params, fields, type) {
@@ -41,10 +40,9 @@ export default class Mutations extends BaseModel {
       variables: { input: params }
     })
 
-    // エラーなら終了
-    if (!!response.errors && response.errors.length !== 0) {
-      return response
-    }
+    // if (!response[mutation]) {
+    //   return response
+    // }
 
     const responseForEach = func => {
       Object.keys(response[mutation]).forEach(key => {
@@ -105,27 +103,26 @@ export default class Mutations extends BaseModel {
         type
       )
 
-      if (response.errors) {
-        if (action) {
-          $nuxt.notifyWarning({
-            message: `${action}に失敗しました`,
-            details: response.errors.map(e => e.message).join('\n')
-          })
-        }
-      } else {
-        if (action) {
-          $nuxt.notifySuccess({
-            message: `${action}に成功しました`
-          })
-        }
-
-        // resolveがあれば実行する
-        !!resolve && resolve(response)
+      if (action) {
+        $nuxt.notifySuccess({
+          message: `${action}に成功しました`
+        })
       }
+
+      // resolveがあれば実行する
+      !!resolve && resolve(response)
 
       return response
     } catch (error) {
-      // apollo client側でハンドル済みなため、ここでは通知しない
+      // GraphQLからエラーがって返来たらハンドリングする
+      console.info('[catch on sendMutation]', error.message)
+
+      if (action) {
+        $nuxt.notifyWarning({
+          message: `${action}に失敗しました`,
+          details: error.message
+        })
+      }
     }
   }
 

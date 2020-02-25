@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid column align-center justify-center fill-height>
+  <v-container justify-center fill-height>
     <v-form v-model="valid" @submit.prevent="submit">
       <v-text-field
         v-model="name"

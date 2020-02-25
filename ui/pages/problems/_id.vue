@@ -2,12 +2,12 @@
   <v-container fluid grid-list-md>
     <v-row v-if="problemIsReadable">
       <!-- 左の問題詳細パネル -->
-      <v-col cols="6">
+      <v-col cols="6" class="py-0">
         <details-panel :problem="problem" />
       </v-col>
 
       <!-- 右の質問・解答パネル -->
-      <v-col cols="6">
+      <v-col cols="6" class="py-0">
         <!-- チーム名&セレクタ -->
         <v-overflow-btn
           v-if="isNotPlayer"
