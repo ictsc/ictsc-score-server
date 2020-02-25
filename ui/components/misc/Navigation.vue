@@ -10,45 +10,18 @@
 
     <v-spacer />
 
-    <navigation-link to="/">
-      トップ
-    </navigation-link>
-
-    <navigation-link to="/guide">
-      ガイド
-    </navigation-link>
-
-    <navigation-link to="/teams">
-      チーム
-    </navigation-link>
-
-    <navigation-link to="/problems">
-      問題
-    </navigation-link>
-
-    <navigation-link to="/issues">
-      質問
-    </navigation-link>
-
-    <template v-if="isStaff || isAudience">
-      <navigation-link to="/answers">
-        解答
-      </navigation-link>
-      <navigation-link to="/summary">
-        状況
+    <template v-for="nav in navigations">
+      <navigation-link
+        v-if="nav.if !== undefined ? nav.if : true"
+        :key="nav.text || nav.icon"
+        :to="nav.to"
+        :always="nav.always !== undefined ? nav.always : false"
+        @click="nav.click ? nav.click() : () => {}"
+      >
+        {{ nav.text }}
+        <v-icon v-if="nav.icon">{{ nav.icon }}</v-icon>
       </navigation-link>
     </template>
-
-    <navigation-link v-if="isStaff" to="/settings">
-      <v-icon>mdi-settings-outline</v-icon>
-    </navigation-link>
-
-    <navigation-link v-if="isNotLoggedIn" to="/login" always>
-      ログイン
-    </navigation-link>
-    <navigation-link v-else to="/login" @click="tryLogout">
-      <v-icon>mdi-exit-run</v-icon>
-    </navigation-link>
   </v-app-bar>
 </template>
 <script>
@@ -59,6 +32,32 @@ export default {
   name: 'Navigation',
   components: {
     NavigationLink
+  },
+  computed: {
+    navigations() {
+      return [
+        { to: '/', text: 'トップ' },
+        { to: '/guide', text: 'ガイド' },
+        { to: '/teams', text: 'チーム' },
+        { to: '/problems', text: '問題' },
+        { to: '/issues', text: '質問' },
+        { to: '/answers', text: '解答', if: this.isNotPlayer },
+        { to: '/summary', text: '状況', if: false },
+        { to: '/settings', icon: 'mdi-settings-outline', if: this.isStaff },
+        {
+          to: '/login',
+          text: 'ログイン',
+          if: this.isNotLoggedIn,
+          always: true
+        },
+        {
+          to: '/login',
+          icon: 'mdi-exit-run',
+          if: this.isLoggedIn,
+          click: this.tryLogout
+        }
+      ]
+    }
   },
   methods: {
     ...mapActions('session', ['logout']),
