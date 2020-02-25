@@ -40,6 +40,8 @@ class AttachmentsController < ApplicationController
       team: current_team
     )
 
+    attachment.token = token if current_team.staff? && token.present?
+
     if attachment.save
       render json: { url: attachment_path(attachment.token), type: attachment.content_type }, status: :ok
     else
@@ -50,11 +52,19 @@ class AttachmentsController < ApplicationController
 
   private
 
-  def file
-    params.permit(:file)[:file]
+  def permit_params
+    params.permit(:file, :token)
   end
 
-  def validate_file
+  def file
+    permit_params[:file]
+  end
+
+  def token
+    permit_params[:token]
+  end
+
+  def validate_file # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     if file.blank?
       render json: '"file" field is required', status: :bad_request
     elsif !file.is_a?(ActionDispatch::Http::UploadedFile)
@@ -62,6 +72,9 @@ class AttachmentsController < ApplicationController
     elsif current_team.player? && 20.megabyte < file.size
       # サイズ制限(適当)
       render json: 'file size must be 20MB or less', status: :bad_request
+    elsif token.present? && !current_team.staff?
+      # tokenを指定できるのはstaffのみ
+      render json: 'only staff can specify a token.', status: :bad_request
     end
   end
 end
