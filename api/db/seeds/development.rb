@@ -15,14 +15,13 @@ def create_config
     { key: :competition_section4_start_at,  value_type: :date,    value: Time.zone.parse('2112-09-04 13:00:00') },
     { key: :competition_section4_end_at,    value_type: :date,    value: Time.zone.parse('2112-09-04 18:00:00') },
 
-    { key: :guide_page,                     value_type: :string,  value: Array.new(Random.rand(10..30)) { Faker::Books::Dune.quote }.join("\n") },
+    { key: :guide_page,                     value_type: :string,  value: Config.guide_page_default_value + Array.new(Random.rand(10..30)) { Faker::Books::Dune.quote }.join("\n") },
     { key: :grading_delay_sec,              value_type: :integer, value: 30 },
     { key: :reset_delay_sec,                value_type: :integer, value: 30 },
     { key: :hide_all_score,                 value_type: :boolean, value: false },
     { key: :realtime_grading,               value_type: :boolean, value: true },
     { key: :competition_stop,               value_type: :boolean, value: false },
     { key: :text_size_limit,                value_type: :integer, value: 8192 },
-    { key: :delete_time_limit_sec,          value_type: :integer, value: 60 },
     { key: :penalty_weight,                 value_type: :integer, value: -10 },
 
     { key: :all_problem_force_open_at,      value_type: :date,    value: Time.zone.parse('2112-09-03 11:00:00') },

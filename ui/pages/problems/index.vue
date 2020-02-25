@@ -2,50 +2,32 @@
   <v-container>
     <!-- 問題・カテゴリ追加ボタン -->
     <v-col v-if="isStaff" cols="auto" class="floating-area-100 top-right pa-0">
-      <v-btn
-        block
-        color="primary"
-        class="elevation-4 my-2"
-        @click="showProblemModal = true"
-      >
-        <v-row align="center" justify="start">
-          <v-icon>mdi-plus</v-icon>
-          <span class="text-left">
-            問題追加
-          </span>
-        </v-row>
-      </v-btn>
+      <problem-modal is-new>
+        <template v-slot:activator="{ on }">
+          <v-btn block color="primary" class="elevation-4 my-2" v-on="on">
+            <v-row align="center" justify="start">
+              <v-icon>mdi-plus</v-icon>
+              <span class="text-left">
+                問題追加
+              </span>
+            </v-row>
+          </v-btn>
+        </template>
+      </problem-modal>
 
-      <v-btn
-        block
-        color="primary"
-        class="elevation-4"
-        @click="showCategoryModal = true"
-      >
-        <v-row align="center" justify="start">
-          <v-icon>mdi-plus</v-icon>
-          <span class="text-left">
-            カテゴリ追加
-          </span>
-        </v-row>
-      </v-btn>
+      <category-modal is-new>
+        <template v-slot:activator="{ on }">
+          <v-btn block color="primary" class="elevation-4" v-on="on">
+            <v-row align="center" justify="start">
+              <v-icon>mdi-plus</v-icon>
+              <span class="text-left">
+                カテゴリ追加
+              </span>
+            </v-row>
+          </v-btn>
+        </template>
+      </category-modal>
     </v-col>
-
-    <!-- モーダル -->
-    <!-- エラー防止のためにモーダルをレンダリングしない -->
-    <template v-if="isStaff">
-      <!-- 開いた時にデータを再度fetchさせるため -->
-      <problem-modal
-        v-if="showProblemModal"
-        v-model="showProblemModal"
-        is-new
-      />
-      <category-modal
-        v-if="showCategoryModal"
-        v-model="showCategoryModal"
-        is-new
-      />
-    </template>
 
     <v-row justify="center">
       <page-title title="問題一覧" />
@@ -80,23 +62,36 @@ export default {
     Category,
     ProblemModal
   },
-  fetch() {
-    orm.Queries.categoriesProblems()
-  },
-  data() {
-    return {
-      showCategoryModal: false,
-      showProblemModal: false
-    }
-  },
   computed: {
     ...mapGetters('contestInfo', ['gradingDelaySec', 'realtimeGrading']),
     categories() {
+      const withArg = this.isPlayer
+        ? [
+            'problems',
+            'problems.body',
+            'problems.answers',
+            'problems.penalties'
+          ]
+        : ['problems.body', 'problems.category']
+
       return this.sortByOrder(
         orm.Category.query()
-          .with(['problems.body', 'problems.category'])
+          .with(withArg)
           .all()
       )
+    }
+  },
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler(value) {
+        // TODO: auto_reload 頑張れ
+
+        // 未ログインだとisPlayer判定がおかしくなるためcreatedではなくwatchで行う
+        if (value) {
+          orm.Queries.pageProblems()
+        }
+      }
     }
   }
 }

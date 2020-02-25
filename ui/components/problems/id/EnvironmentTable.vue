@@ -40,14 +40,12 @@
         :submit="deleteEnvironment"
         btn-class="ml-4"
       >
-        <template v-slot:content>
-          <ul class="black--text">
-            <li>問題: {{ problem.displayTitle }}</li>
-            <li>チーム: {{ item.displayName || '共通' }}</li>
-            <li>種類: {{ item.service }}</li>
-            <li>名前: {{ item.name }}</li>
-          </ul>
-        </template>
+        <ul class="black--text">
+          <li>問題: {{ problem.displayTitle }}</li>
+          <li>チーム: {{ item.displayName || '共通' }}</li>
+          <li>種類: {{ item.service }}</li>
+          <li>名前: {{ item.name }}</li>
+        </ul>
       </countdown-delete-button>
     </template>
 
@@ -65,8 +63,8 @@
       <v-row align="center" class="flex-nowrap">
         <v-btn
           v-clipboard:copy="value"
-          v-clipboard:success="copied"
-          v-clipboard:error="onError"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyError"
           :disabled="!canCopyPassword(value)"
           icon
           small
@@ -96,8 +94,8 @@
         <template v-slot:activator="{ on }">
           <v-btn
             v-clipboard:copy="item.copyText"
-            v-clipboard:success="copied"
-            v-clipboard:error="onError"
+            v-clipboard:success="onCopySuccess"
+            v-clipboard:error="onCopyError"
             :disabled="item.isSSH && !canCopyPassword(item.password)"
             icon
             small
@@ -177,7 +175,7 @@ export default {
     }
   },
   methods: {
-    copied(event) {
+    onCopySuccess(event) {
       // 長すぎると通知が画面いっぱいになるので適当にカット
       let text = event.text.replace(/[\n\r]/g, ' ')
       text = this.stringTruncate(text, 100)
@@ -187,7 +185,7 @@ export default {
         timeout: 3000
       })
     },
-    onError(e) {
+    onCopyError(e) {
       this.notifyWarning({ message: 'コピーに失敗しました' })
     },
     isMarkdown(str) {

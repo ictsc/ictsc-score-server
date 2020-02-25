@@ -22,7 +22,6 @@ export default {
       state.hideAllScore = contestInfo.hideAllScore
       state.realtimeGrading = contestInfo.realtimeGrading
       state.textSizeLimit = contestInfo.textSizeLimit
-      state.deleteTimeLimitSec = contestInfo.deleteTimeLimitSec
       state.guidePage = contestInfo.guidePage
     }
   },
@@ -37,7 +36,6 @@ export default {
             hideAllScore
             realtimeGrading
             textSizeLimit
-            deleteTimeLimitSec
             guidePage
           }
         }
@@ -65,19 +63,7 @@ export default {
     resetDelayString: (state, getters) =>
       $nuxt.timeSimpleStringJp(getters.resetDelaySec),
 
-    deleteTimeLimitSec: state => state.deleteTimeLimitSec,
-    deleteTimeLimitMsec: state => state.deleteTimeLimitSec * 1000,
-    deleteTimeLimitString: (state, getters) => {
-      return getters.deleteTimeLimitSec < 60
-        ? `${getters.deleteTimeLimitSec}秒`
-        : `${Math.floor(getters.deleteTimeLimitSec / 60)}分`
-    },
-
     competitionTime: state => state.competitionTime,
-    competitionTimeString: (state, getters) => {
-      return JSON.stringify(getters.competitionTime)
-    },
-
     hideAllScore: state => state.hideAllScore,
     realtimeGrading: state => state.realtimeGrading,
     textSizeLimit: state => state.textSizeLimit,

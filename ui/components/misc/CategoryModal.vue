@@ -5,8 +5,8 @@
     max-width="70em"
     scrollable
   >
-    <template v-slot:activator="{}">
-      <slot name="activator" :on="open" />
+    <template v-slot:activator="{ on }">
+      <slot name="activator" :on="on" />
     </template>
 
     <v-card>

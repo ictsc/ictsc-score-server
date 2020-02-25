@@ -13,8 +13,8 @@ class Acl
       return false if team.audience?
 
       case mutation.graphql_name
-      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers'
-        # staff only
+      when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers',
+        'DeleteAttachment', 'DeleteCategory', 'DeleteNotice', 'DeleteProblem', 'DeleteProblemEnvironment', 'DeleteProblemSupplement', 'DeleteSession'
         team.staff?
       when 'AddAnswer', 'AddPenalty'
         # player and opened and 解答とペナルティ最終提出から20s
@@ -29,18 +29,11 @@ class Acl
       when 'StartIssue'
         # player and opened
         team.player? && args.fetch(:problem).body.readable?(team: team)
-      when 'DeleteAttachment', 'DeleteCategory', 'DeleteProblem', 'DeleteProblemEnvironment', 'DeleteSession'
-        team.staff?
-      when 'DeleteNotice'
-        team.staff? && Config.before_delete_time_limit?(args.fetch(:notice).created_at)
-      when 'DeleteProblemSupplement'
-        team.staff? && Config.before_delete_time_limit?(args.fetch(:problem_supplement).created_at)
       when 'DeleteIssueComment'
         # owner and readable and 送信してから一定時間内以内
         issue_comment = args.fetch(:issue_comment)
         issue_comment.team_id == team.id &&
-          issue_comment.readable?(team: team) &&
-          Config.before_delete_time_limit?(issue_comment.created_at)
+          issue_comment.readable?(team: team)
       else
         raise UnhandledClass, mutation.graphql_name
       end

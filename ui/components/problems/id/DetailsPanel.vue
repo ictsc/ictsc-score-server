@@ -1,22 +1,20 @@
 <template>
   <div>
-    <problem-modal v-if="isStaff" v-model="showModal" :item="problem" />
-
     <!-- 編集ボタン, タイトル -->
     <v-container fluid class="py-0">
-      <v-row align="center" justify="start">
-        <pen-button
-          v-if="isStaff"
-          elevation="2"
-          class="mr-2"
-          @click.stop="showModal = true"
-        />
+      <v-row align="center" justify="start" class="flex-nowrap">
+        <problem-modal v-if="isStaff" :item="problem">
+          <template v-slot:activator="{ on }">
+            <pen-button elevation="2" class="mr-2" v-on="on" />
+          </template>
+        </problem-modal>
 
         <div class="grey--text text--darken-3 display-1">
           {{ problem.title }}
         </div>
       </v-row>
     </v-container>
+
     <v-divider class="primary" />
 
     <!-- 問題情報 -->
@@ -76,11 +74,6 @@ export default {
     problem: {
       type: Object,
       required: true
-    }
-  },
-  data() {
-    return {
-      showModal: false
     }
   }
 }

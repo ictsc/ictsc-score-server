@@ -32,13 +32,17 @@
       <v-card-title>
         <div>本当に削除しますか?</div>
       </v-card-title>
-      <v-divider />
 
-      <v-card-text class="pa-1">
-        <slot name="content" :item="item" />
-      </v-card-text>
+      <template v-if="!!$slots.default">
+        <v-divider />
 
-      <v-divider />
+        <v-card-text class="pa-1">
+          <slot :item="item" />
+        </v-card-text>
+
+        <v-divider />
+      </template>
+
       <v-card-actions>
         <v-btn left :loading="sending" color="error" @click="callSubmit">
           削除
