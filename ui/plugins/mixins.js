@@ -39,6 +39,15 @@ Vue.mixin({
     compactObject(obj) {
       return $nuxt.$_.pick(obj, value => value !== undefined && value !== null)
     },
+    stringTruncate(str, max) {
+      if (str.length <= max) {
+        return str
+      } else {
+        // 増加した文をちょっとだけ引く
+        // '...'' は実際に表示するときは1.5文字ぐらいの幅になる
+        return `${str.substring(0, max - 2)}...`
+      }
+    },
 
     stringSimplify(str) {
       return str.replace(/-|_/g, '').toLowerCase()

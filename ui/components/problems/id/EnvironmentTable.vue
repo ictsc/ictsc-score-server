@@ -67,14 +67,15 @@
           v-clipboard:copy="value"
           v-clipboard:success="copied"
           v-clipboard:error="onError"
-          :disabled="isMarkdown(value)"
+          :disabled="!canCopyPassword(value)"
           icon
           small
         >
           <v-icon>mdi-clipboard-text-outline</v-icon>
         </v-btn>
 
-        <markdown v-if="!!value" :content="value" dense />
+        <markdown v-if="isMarkdown(value)" :content="value" dense />
+        <div v-else class="text-truncate" style="width: 12em">{{ value }}</div>
       </v-row>
     </template>
 
@@ -83,12 +84,11 @@
     </template>
 
     <template v-slot:item.secretText="{ value }">
-      <markdown v-if="!!value" :content="value" dense />
+      <markdown :content="value" dense />
     </template>
 
-    <template v-slot:item.misc="{ item }">
+    <template v-slot:item.copy="{ item }">
       <v-tooltip
-        v-if="item.isSSH"
         top
         open-delay="500"
         content-class="pa-0 elevation-8 opacity-1"
@@ -98,34 +98,22 @@
             v-clipboard:copy="item.copyText"
             v-clipboard:success="copied"
             v-clipboard:error="onError"
+            :disabled="item.isSSH && !canCopyPassword(item.password)"
             icon
             small
             v-on="on"
           >
             <v-icon>mdi-clipboard-text-outline</v-icon>
           </v-btn>
-          sshpassコマンド
-        </template>
 
-        <v-card>
+          {{ item.isSSH ? 'sshpassコマンド' : item.copyText }}
+        </template>
+        <v-card v-if="item.isSSH">
           <v-card-text class="black--text">
             sshpassコマンドを使うとpassword入力の手間が省けます
           </v-card-text>
         </v-card>
       </v-tooltip>
-
-      <template v-else>
-        <v-btn
-          v-clipboard:copy="item.copyText"
-          v-clipboard:success="copied"
-          v-clipboard:error="onError"
-          icon
-          small
-        >
-          <v-icon>mdi-clipboard-text-outline</v-icon>
-        </v-btn>
-        {{ item.copyText }}
-      </template>
     </template>
   </v-data-table>
 </template>
@@ -165,7 +153,7 @@ export default {
     },
     headers() {
       const commons = [
-        { text: '', value: 'misc' },
+        { text: 'コピー', value: 'copy' },
         { text: '種類', value: 'service' },
         { text: '名前', value: 'name' },
         { text: 'ホスト', value: 'host' },
@@ -190,8 +178,12 @@ export default {
   },
   methods: {
     copied(event) {
+      // 長すぎると通知が画面いっぱいになるので適当にカット
+      let text = event.text.replace(/[\n\r]/g, ' ')
+      text = this.stringTruncate(text, 100)
+
       this.notifyInfo({
-        message: `コピーしました\n${event.text}`,
+        message: `コピーしました\n${text}`,
         timeout: 3000
       })
     },
@@ -199,9 +191,12 @@ export default {
       this.notifyWarning({ message: 'コピーに失敗しました' })
     },
     isMarkdown(str) {
-      // 雑だけど無いよりまし
+      // 無いよりまし
       // [hoge](path)があればMarkdownとして判断する
       return /\[.*\]\(.*\)/.test(str)
+    },
+    canCopyPassword(str) {
+      return str && !this.isMarkdown(str)
     },
     async deleteEnvironment(item) {
       await orm.Mutations.deleteProblemEnvironment({
