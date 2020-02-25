@@ -62,17 +62,36 @@ export default {
     Category,
     ProblemModal
   },
-  fetch() {
-    orm.Queries.categoriesProblems()
-  },
   computed: {
     ...mapGetters('contestInfo', ['gradingDelaySec', 'realtimeGrading']),
     categories() {
+      const withArg = this.isPlayer
+        ? [
+            'problems',
+            'problems.body',
+            'problems.answers',
+            'problems.penalties'
+          ]
+        : ['problems.body', 'problems.category']
+
       return this.sortByOrder(
         orm.Category.query()
-          .with(['problems.body', 'problems.category'])
+          .with(withArg)
           .all()
       )
+    }
+  },
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler(value) {
+        // TODO: auto_reload 頑張れ
+
+        // 未ログインだとisPlayer判定がおかしくなるためcreatedではなくwatchで行う
+        if (value) {
+          orm.Queries.pageProblems()
+        }
+      }
     }
   }
 }

@@ -2,6 +2,21 @@ import orm from '~/orm'
 
 // TODO: body, comments, teamは常時ロード対象にして省略したい
 export default class Queries {
+  static pageProblems() {
+    if ($nuxt.isNotLoggedIn) {
+      throw new Error("Don't call not logged-in timing")
+    }
+
+    // eagerFetchがネスト非対応なのでバラバラに発行
+    Queries.categories()
+
+    if ($nuxt.isPlayer) {
+      Queries.problemsAnswersPenalties()
+    } else {
+      Queries.problems()
+    }
+  }
+
   static category(id) {
     return orm.Category.eagerFetch(id, [])
   }
@@ -87,6 +102,10 @@ export default class Queries {
     return orm.Problem.eagerFetch({}, ['body', 'issues', 'issues.team'])
   }
 
+  static problemsAnswersPenalties() {
+    return orm.Problem.eagerFetch({}, ['body', 'answers', 'penalties'])
+  }
+
   static scoreboardsTeam() {
     // 順位変更があるとVuexにある古い値が表示されるので全削除
     orm.Scoreboard.deleteAll()
@@ -119,7 +138,7 @@ export default class Queries {
       case 'AddAnswer':
         if (answers.test(path)) {
           orm.Queries.problemsAnswersTeam()
-        } else if (problem.test(path)) {
+        } else if (problems.test(path) || problem.test(path)) {
           orm.Queries.problemAnswersTeam(problemId)
         }
         break
@@ -138,7 +157,7 @@ export default class Queries {
       case 'AddPenalty':
         if (top.test(path)) {
           orm.Queries.scoreboardsTeam()
-        } else if (problem.test(path)) {
+        } else if (problems.test(path) || problem.test(path)) {
           orm.Queries.problemPenaltiesTeam(problemId)
         }
         break
