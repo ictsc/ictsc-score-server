@@ -5,13 +5,24 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 
 const errorLink = onError(
   ({ operation, response, graphQLErrors, networkError, forward }) => {
+    // APIに疎通が無い, 200以外が返ってくるなど
+    if (networkError) {
+      console.info('[Network error]', networkError)
+
+      $nuxt.notifyError({
+        message: `APIから応答がありません\n運営に問い合わせてください\nコード ${networkError.statusCode}`
+      })
+
+      return
+    }
+
     // 正規のGraphQLエラー
     if (graphQLErrors) {
       graphQLErrors.forEach(error => {
-        console.warn('[GraphQL error]', error)
+        console.info('[GraphQL error]', error)
 
         // 未ログインなどを処理する
-        if (error.extensions) {
+        if (error.extensions && error.extensions.code) {
           switch (error.extensions.code) {
             case 'UNAUTHORIZED':
               $nuxt.$router.push('/login')
@@ -31,32 +42,7 @@ const errorLink = onError(
       })
     }
 
-    // APIに疎通が無い, 200以外が返ってくるなど
-    if (networkError) {
-      console.warn('[Network error]', networkError)
-
-      $nuxt.notifyError({
-        message: `APIから応答がありません\n運営に問い合わせてください\nコード ${networkError.statusCode}`
-      })
-    }
-
-    // errorsをnullにしないと例外が発生するのでdata入れて回避
-    // vuex-orm/plugin-graphqlが自動で発行するスキーマ取得はハンドルしない
-    if (operation.operationName === 'Introspection') {
-      return
-    }
-
-    const errors = response.errors
-    delete response.errors
-
-    // errorsが空でない配列ときのみdataに入れる
-    if (
-      Array.isArray(errors) &&
-      errors.length !== 0 &&
-      typeof response.data === 'object'
-    ) {
-      response.data.errors = errors
-    }
+    // response.errorsがあると、そのメッセージを持った例外を発生させる
   }
 )
 

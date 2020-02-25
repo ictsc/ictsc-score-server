@@ -43,13 +43,18 @@ export default {
         }
       `
 
-      const res = await dispatch(
-        'entities/simpleQuery',
-        { query, bypassCache: true },
-        { root: true }
-      )
+      try {
+        const res = await dispatch(
+          'entities/simpleQuery',
+          { query, bypassCache: true },
+          { root: true }
+        )
 
-      commit('setContestInfo', res.contestInfo)
+        commit('setContestInfo', res.contestInfo)
+      } catch (error) {
+        // セッションが無い、ネットワーク疎通がないなど
+        console.info(error)
+      }
     }
   },
   getters: {
