@@ -45,16 +45,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('time', ['currentTimeMsec']),
-    ...mapGetters('contestInfo', ['deleteTimeLimitMsec']),
-
     show() {
       return !this.expirable || this.progressValue > 0
     },
     progressValue() {
-      const diff = this.currentTimeMsec - this.startAtMsec
-      const value = 100 - Math.floor((100 * diff) / this.deleteTimeLimitMsec)
-      return value >= 0 ? value : 0
+      return 100
     }
   }
 }

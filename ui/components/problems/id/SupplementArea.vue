@@ -21,13 +21,11 @@
       storage-key="newProblemSupplement"
       title="補足追加"
       submit-label="追加"
-      :supplement="`追加後${deleteTimeLimitString}間は削除可能です`"
       @submit="addSupplement($event)"
     />
   </v-col>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import PenButton from '~/components/commons/PenButton'
 import ExpandableButton from '~/components/commons/ExpandableButton'
@@ -61,7 +59,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', ['deleteTimeLimitString']),
     sortedSupplements() {
       return this.sortByCreatedAt(this.supplements)
     }

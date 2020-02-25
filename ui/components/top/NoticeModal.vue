@@ -6,7 +6,6 @@
     title="お知らせ追加"
     submit-label="追加"
     label="テキスト"
-    :supplement="`追加後${deleteTimeLimitString}間は削除可能です`"
     :edited="edited"
     @input="$emit('input', $event)"
     @submit="addNotice($event)"
@@ -48,9 +47,9 @@
   </markdown-editor-modal>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import { JsonStroage } from '~/plugins/json-storage'
 import orm from '~/orm'
+
 import PinButton from '~/components/commons/PinButton'
 import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 
@@ -87,8 +86,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', ['deleteTimeLimitString']),
-
     teams() {
       const teams = this.sortByNumber(orm.Team.query().all())
       teams.unshift({ displayName: '全体', id: null })

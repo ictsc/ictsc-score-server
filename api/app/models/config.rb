@@ -155,14 +155,6 @@ class Config < ApplicationRecord
       }
     end
 
-    def delete_time_limit
-      delete_time_limit_sec.seconds
-    end
-
-    def before_delete_time_limit?(datetime)
-      Time.current - datetime <= Config.delete_time_limit_sec
-    end
-
     def guide_page_default_value
       <<~STR
         全てのテキストエリアでMarkdownが使えます。
@@ -187,7 +179,6 @@ class Config < ApplicationRecord
         hide_all_score: hide_all_score,
         realtime_grading: realtime_grading,
         text_size_limit: text_size_limit,
-        delete_time_limit_sec: delete_time_limit_sec,
         guide_page: guide_page,
         penalty_weight: penalty_weight
       }
@@ -211,7 +202,6 @@ class Config < ApplicationRecord
   record_accessor :hide_all_score
   record_accessor :realtime_grading # 有効解答を最終解答にするか最高得点にするかもこれで指定
   record_accessor :text_size_limit
-  record_accessor :delete_time_limit_sec
   record_accessor :guide_page
   record_accessor :penalty_weight
 
