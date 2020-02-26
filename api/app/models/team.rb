@@ -62,6 +62,10 @@ class Team < ApplicationRecord
     Team.roles.select {|_k, v| v <= self.role_before_type_cast }.keys
   end
 
+  def team99?
+    name == Team.special_team_name_team99
+  end
+
   class << self
     def special_team_name_staff
       'staff'
