@@ -7,7 +7,7 @@
         <v-overflow-btn
           v-model="problemCode"
           :items="problems"
-          item-text="title"
+          item-text="displayTitle"
           item-value="code"
           label="問題選択"
           auto-select-first
