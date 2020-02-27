@@ -15,7 +15,8 @@ class DaterangeValidator < ActiveModel::EachValidator
       record.errors.add(attribute, 'range end must be Date')
     end
 
-    unless value.begin <= value.end
+    # ARかPSQLのバグで beginよりendが低いとサイレントにemptyになる
+    unless value.exclude_end? ? value.begin < value.end : value.begin <= value.end
       record.errors.add(attribute, 'range begin must be lower or equal end')
     end
   end
