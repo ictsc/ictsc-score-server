@@ -10,6 +10,8 @@ module Types
     field :number,       Integer, null: false
     field :color,        String,  null: false
     field :secret_text,  String,  null: true
+    field :created_at,   Types::DateTime, null: false
+    field :updated_at,   Types::DateTime, null: false
     # channelはgraphqlでは渡さない
     # field :channel,      String,  null: true
 
