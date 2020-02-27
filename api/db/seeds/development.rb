@@ -96,9 +96,6 @@ def markdown_sample_text
     Short
     https://blog.icttoracon.net/2019/03/21/ictsc2018-f-18/
 
-    Long
-    https://blog.icttoracon.net/hogehogehogehoge-hogehogehogehoge-hogehogehogehoge-hogehogehogehoge-hogehogehogehoge-hogehogehogehoge-hogehogehogehoge-hogehogehogehoge
-
     ## Image
 
     ![hoge](https://pbs.twimg.com/profile_banners/3034263978/1519868555/1080x360)
@@ -117,8 +114,27 @@ def markdown_sample_text
     &nbsp;
     ee
 
+    ## for Style check
+
+    p code
+    `ssssssssssssssssssssssssssbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkkkkkkkkkkkkkkkkkkklllllllllllllllllllllllllllllllllll`
+
+    pre code
+    ```
+    ssssssssssssssssssssssssssbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbkkkkkkkkkkkkkkkkkkkkkkkkkkkkklllllllllllllllllllllllllllllllllll
+    ```
+
+    table
+    | Item | PricPricPricPricPricPricPricPricPricPricPricPricPricPricPricPricPricPricPriceeeeeeeeeeeeeeeeeeePrice |
+    |:------|:-------|
+    | bronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworddddbronzeswordbronzeswordbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworddddbronzeswordbronzesword | bronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworddddbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworddddbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworddddbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworbronzeswordbronzesworddddbronzeswordbronzeswordddd |
+
+    link
+    https://blog.icttoracon.net/hogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehoge
+
 
     ## Normal text
+
   MD
 end
 
