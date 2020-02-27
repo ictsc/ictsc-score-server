@@ -4,7 +4,7 @@
     <template v-if="problem.isReadable">
       <!-- タイトル -->
       <v-row no-gutters class="flex-nowrap">
-        <div style="height: 3.4em">
+        <div class="truncate-clamp2" style="height: 3.4em">
           {{ problem.title }}
         </div>
       </v-row>
