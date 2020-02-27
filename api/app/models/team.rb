@@ -90,7 +90,7 @@ class Team < ApplicationRecord
 
     # デバッグ用ショートハンド
     def number(number)
-      Team.find_by(number: number)
+      self.find_by(number: number)
     end
   end
 end
