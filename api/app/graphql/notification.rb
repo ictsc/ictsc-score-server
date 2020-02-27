@@ -60,7 +60,7 @@ class Notification
         # 遅延を考慮するとplayerに通知するのは手間なので一先ず無しで
         # なので採点によってスコアボードは自動で更新されない
         { to: %i[staff audience], problem_id: record.problem_id }
-      when 'ApplyProblemEnvironment', 'StartIssue', 'TransitionIssueState'
+      when 'ApplyProblemEnvironment', 'TransitionIssueState'
         { to: [:staff, record.team || :player], problem_id: record.problem_id }
       when 'ApplyTeam'
         { to: record.gte_roles }
@@ -120,16 +120,22 @@ class Notification
             problem_id: record.problem_id
           }
         ]
-      when 'AddIssueComment'
+      when 'AddIssueComment', 'StartIssue'
         for_staff = " - #{record.issue.team.name}"
         body = "#{record.issue.problem.body.title}#{record.from_staff ? nil : for_staff}\n#{record.text}"
 
-        {
-          to: record.from_staff ? record.issue.team : :staff,
-          problem_id: record.issue.problem_id,
-          title: record.from_staff ? '質問が投稿されました' : '質問に返答がありました',
-          body: body
-        }
+        [
+          {
+            to: record.from_staff ? record.issue.team : :staff,
+            problem_id: record.issue.problem_id,
+            title: record.from_staff ? '質問に返答がありました' : '質問が投稿されました',
+            body: body
+          },
+          {
+            to: record.from_staff ? :staff : record.issue.team,
+            problem_id: record.issue.problem_id
+          }
+        ]
       # when 'DeleteAttachment', 'DeleteCategory', 'DeleteProblem', 'DeleteProblemEnvironment', 'DeleteSession', 'DeleteNotice', 'DeleteProblemSupplement', 'DeleteIssueComment'
       else
         raise UnhandledClass, mutation.graphql_name
