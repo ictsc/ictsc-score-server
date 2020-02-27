@@ -1,5 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" :persistent="sending" max-width="20em" scrollable>
+  <v-dialog
+    v-model="dialog"
+    :persistent="sending"
+    max-width="20em"
+    scrollable
+    @click:outside="close"
+  >
     <template v-slot:activator="{}">
       <v-tooltip
         v-model="tooltip"
