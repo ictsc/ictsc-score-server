@@ -151,13 +151,13 @@ class Notification
 
       case mutation
       when 'AddAnswer'
-        <<-MSG
+        <<~MSG
           #{record.problem.writer}解答提出
           #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
         MSG
       when 'AddPenalty'
         # メンションしない
-        <<-MSG
+        <<~MSG
           リセット依頼が発生しました
           #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
         MSG
