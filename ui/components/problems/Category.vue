@@ -3,7 +3,12 @@
     <!-- タイトル -->
     <v-container my-0 py-1>
       <v-row align="center" justify="start">
-        <div class="headline">{{ category.title }}</div>
+        <div v-if="category.title" class="headline">
+          {{ category.title }}
+        </div>
+        <div v-else-if="isStaff">
+          カテゴリ名無し (参加者には非表示)
+        </div>
 
         <category-modal v-if="isStaff" :item="category">
           <template v-slot:activator="{ on }">

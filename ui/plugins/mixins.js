@@ -31,7 +31,12 @@ Vue.mixin({
       return v === null || v === undefined
     },
     isBlank(v) {
-      return v === '' || v === null || v === undefined
+      // isEmptyは被るので作らない
+      return (
+        v === null ||
+        v === undefined ||
+        (typeof v === 'string' && /^\s*$/.test(v))
+      )
     },
     isSame(item1, item2) {
       return JSON.stringify(item1) === JSON.stringify(item2)

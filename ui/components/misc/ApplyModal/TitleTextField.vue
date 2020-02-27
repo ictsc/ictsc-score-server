@@ -14,11 +14,15 @@ export default {
     readonly: {
       type: Boolean,
       required: true
+    },
+    allowEmpty: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      rules: [v => !!v || '必須']
+      rules: [v => this.allowEmpty || !this.isBlank(v) || '必須']
     }
   }
 }

@@ -18,7 +18,7 @@
       <v-card-text>
         <v-container py-0>
           <v-form ref="form" v-model="valid">
-            <title-text-field v-model="title" :readonly="sending" />
+            <title-text-field v-model="title" :readonly="sending" allow-empty />
 
             <code-text-field
               v-model="code"
