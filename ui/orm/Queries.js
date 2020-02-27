@@ -142,6 +142,13 @@ export default class Queries {
           orm.Queries.problemAnswersTeam(problemId)
         }
         break
+      case 'StartIssue':
+        if (issues.test(path)) {
+          orm.Queries.problemsIssuesTeam()
+        } else if (problem.test(path)) {
+          orm.Queries.problemIssuesTeam(problemId)
+        }
+        break
       case 'AddIssueComment':
         if (issues.test(path)) {
           orm.Queries.problemsIssuesTeam()
@@ -226,11 +233,6 @@ export default class Queries {
           problemAll.test(path)
         ) {
           orm.Queries.problemsAnswersTeam()
-        }
-        break
-      case 'StartIssue':
-        if (problem.test(path)) {
-          orm.Queries.problemIssuesTeam(problemId)
         }
         break
       case 'TransitionIssueState':
