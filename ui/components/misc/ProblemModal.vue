@@ -68,7 +68,7 @@
               class="mt-0 pb-3"
             />
 
-            <label class="caption">開放状況</label>
+            <label class="caption">依存問題: 開放状況</label>
             <v-switch
               v-model="teamIsolate"
               :readonly="sending"
