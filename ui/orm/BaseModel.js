@@ -13,6 +13,8 @@ export default class BaseModel extends Model {
     try {
       // bypass cache
       return await this.fetch(args, true)
+    } catch (err) {
+      console.error(err)
     } finally {
       this.eagerLoad = saveEagerLoad
     }

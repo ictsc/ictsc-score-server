@@ -25,7 +25,8 @@
         </v-btn>
 
         <div v-else class="pt-1 pb-2">
-          {{ penalties.length }}回 {{ latestPenaltyDelayFinishInSec }}
+          リセット回数{{ penalties.length }}回
+          {{ latestPenaltyDelayFinishInSec }}
         </div>
       </template>
 

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <label v-if="label" class="caption">{{ label }}</label>
     <v-row justify="center">
       <v-date-picker
         :value="date"
@@ -46,6 +47,10 @@ export default {
     readonly: {
       type: Boolean,
       default: false
+    },
+    label: {
+      type: String,
+      default: ''
     }
   },
   data() {

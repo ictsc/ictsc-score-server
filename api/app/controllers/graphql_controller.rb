@@ -77,6 +77,6 @@ class GraphqlController < ApplicationController
     }
 
     # errorsはGraphQLの仕様上 配列な必要がある
-    render json: { data: {}, errors: [error] }, status: :ok
+    render json: { errors: [error] }, status: :ok
   end
 end

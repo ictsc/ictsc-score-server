@@ -6,7 +6,7 @@
     :mobile-breakpoint="0"
     :search="!!search ? search : ''"
     :disable-sort="sessions.length <= 1"
-    sort-by="team.role"
+    sort-by="updatedAtSimple"
     sort-desc
     multi-sort
     show-select
@@ -92,8 +92,8 @@ export default {
       headers: [
         { text: '権限', value: 'team.role' },
         { text: 'チーム', value: 'team.displayName' },
-        { text: '最終アクセスIP', value: 'latestIp' },
         { text: '最終アクセス時刻', value: 'updatedAtSimple' },
+        { text: '最終アクセスIP', value: 'latestIp' },
         { text: 'ログイン時刻', value: 'createdAtSimple' },
         { text: 'セッションID', value: 'id' }
       ]

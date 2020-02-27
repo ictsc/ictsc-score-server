@@ -4,7 +4,6 @@
     :headers="headers"
     :mobile-breakpoint="0"
     item-key="key"
-    sort-by="key"
     hide-default-header
     hide-default-footer
     disable-pagination

@@ -138,22 +138,18 @@ class Notification
 
     # Slack通知用のメッセージを作る
     # Slack通知しない場合はnilを返す
-    def build_slack_message(mutation:, record:) # rubocop:disable Metrics/CyclomaticComplexity
+    def build_slack_message(mutation:, record:)
       # TODO: mentionの解決をここで行う?
       #       redisにリストを持っておいてhogehoge
       #       SlackのAPIにリクエスト送るならJobにしたい
 
       case mutation
       when 'AddAnswer'
-        mention = "<@#{record.problem.writer}> " if record.problem.writer.present?
-
         <<-MSG
-          #{mention}解答提出
+          #{record.problem.writer}解答提出
           #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
         MSG
       when 'AddPenalty'
-        # mention = "<@#{record.problem.writer}> " if record.problem.writer.present?
-
         # メンションしない
         <<-MSG
           リセット依頼が発生しました
@@ -164,10 +160,9 @@ class Notification
 
         issue = record.issue
         problem = issue.problem
-        mention = "<@#{problem.writer}> " if problem.writer.present?
 
         <<~MSG
-          #{mention}質問追加
+          #{problem.writer}質問追加
           #{build_team_and_problem_summary(team: issue.team, problem: problem)}
         MSG
       else

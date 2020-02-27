@@ -1,12 +1,14 @@
+<!-- とりま staff audience共用 -->
 <template>
   <v-card-text class="py-0 black--text">
     <div class="subtitle-1 text-truncate">
-      {{ elvis(problem, 'body.title') }}
+      {{ problem.title }}
     </div>
 
     <v-row no-gutters>
       <v-col>
-        <div>コード {{ problem.code }}</div>
+        <div v-if="isStaff">コード {{ problem.code }}</div>
+        <div v-if="isStaff">作問者 {{ problem.writer }}</div>
         <div class="body-2">満点 {{ elvis(problem, 'body.perfectPoint') }}</div>
       </v-col>
 

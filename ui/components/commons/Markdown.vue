@@ -27,6 +27,8 @@ export default {
 // 小要素にスタイルを適用するためdeep-selectを使っている
 .markdown
   ::v-deep
+    *
+      max-width: 100%
     a
       // URLは記号以外でも折り返すようにする
       word-wrap: break-word
@@ -38,6 +40,8 @@ export default {
     // テーブル表示をGitHub風にする
     table
       border-collapse: collapse
+      *
+        word-break: break-word
       th, td
         border: 1px solid #dfe2e5
         padding: 6px
@@ -47,23 +51,24 @@ export default {
     ul
       margin-bottom: 0.4em
 
+    code
+      color: #e04040
+      font-weight: 600
+      // なぜかコードの先頭に文字が入る
+      &:before, &:after
+        content: ""
     // `` でのみ影を消す
     &:not(pre)
       code
+        padding: 0 0.3em 0 0.3em
         box-shadow: none
-    code
-      color: #e05e88
-      font-weight: 600
-
     pre
       code
         color: #000
         margin-top: 0.4em
         margin-bottom: 0.4em
         padding: 0.4em
-        // なぜかコードの先頭に文字が入る
-        &:before, &:after
-          content: ""
+
     img
       max-width: 100%
       height: auto

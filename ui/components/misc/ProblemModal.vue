@@ -68,7 +68,7 @@
               class="mt-0 pb-3"
             />
 
-            <label class="caption">開放状況</label>
+            <label class="caption">依存問題: 開放状況</label>
             <v-switch
               v-model="teamIsolate"
               :readonly="sending"
@@ -78,22 +78,26 @@
             />
 
             <v-switch
-              v-model="enableOpenAt"
+              :input-value="showOpenAtPickers"
               :readonly="sending"
-              label="公開時間指定"
+              :label="`公開時間 ${showOpenAtPickers ? '制限' : '無制限'}`"
               color="primary"
               class="mt-0"
+              @change="showOpenAtPickersClicked"
             />
 
             <date-time-picker
-              v-if="enableOpenAt"
+              v-if="openAtBegin"
               v-model="openAtBegin"
               :readonly="sending"
+              label="開始時間"
             />
+
             <date-time-picker
-              v-if="enableOpenAt"
+              v-if="openAtEnd"
               v-model="openAtEnd"
               :readonly="sending"
+              label="終了時間"
             />
 
             <number-text-field
@@ -101,7 +105,7 @@
               :readonly="sending"
               :rules="perfectPointRules"
               label="満点"
-              class="mb-4"
+              class="mt-4 mb-4"
               only-integer
             />
 
@@ -260,8 +264,7 @@ export default {
         v => parseInt(v) >= 50 || '50%以上',
         v => parseInt(v) <= 100 || '100%以下'
       ],
-      secretTextPlaceholder,
-      enableOpenAt: !!this.openAtBegin || !!this.openAtEnd
+      secretTextPlaceholder
     }
   },
   computed: {
@@ -316,6 +319,9 @@ export default {
 
       // dividerで区切りを入れる
       return this.unshiftDummy(same.concat([{ divider: true }], diff))
+    },
+    showOpenAtPickers() {
+      return this.openAtBegin !== null && this.openAtEnd !== null
     }
   },
   watch: {
@@ -326,30 +332,7 @@ export default {
         this.setStorage(field, value)
       }
       return obj
-    }, {}),
-
-    // openAtだけ特殊
-    openAtBegin: {
-      immediate: true,
-      handler(value) {
-        this.setStorage('openAtBegin', value)
-        this.enableOpenAt = !!value || this.openAtEnd
-      }
-    },
-    openAtEnd: {
-      immediate: true,
-      handler(value) {
-        this.setStorage('openAtEnd', value)
-        this.enableOpenAt = !!value || this.openAtBegin
-      }
-    },
-
-    enableOpenAt(value) {
-      if (!value) {
-        this.openAtBegin = null
-        this.openAtEnd = null
-      }
-    }
+    }, {})
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -377,6 +360,11 @@ export default {
     rejectSelf(problems) {
       return this.isNew ? problems : problems.filter(v => v.id !== this.item.id)
     },
+    showOpenAtPickersClicked(value) {
+      const now = value ? $nuxt.formatDateTime($nuxt.$moment(0)) : null
+      this.openAtBegin = now
+      this.openAtEnd = now
+    },
     // 最初に開いた時に実行される
     openedAtFirst() {
       // カテゴリに属していない問題や問題に属していないカテゴリも取得する
@@ -386,7 +374,7 @@ export default {
     async submit(force) {
       this.sending = true
 
-      if (!this.isNew && (await this.checkConflict()) && !force) {
+      if (!this.isNew && this.conflicted && !force) {
         this.sending = false
         return
       }

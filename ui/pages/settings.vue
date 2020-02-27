@@ -68,7 +68,7 @@
         <item-select-button
           :fetch="fetchCategories"
           label="カテゴリ 追加・編集"
-          item-text="title"
+          item-text="displayTitle"
           class="mt-4"
         >
           <template v-slot="{ item, isNew }">
@@ -79,7 +79,7 @@
         <item-select-button
           :fetch="fetchProblems"
           label="問題 追加・編集"
-          item-text="title"
+          item-text="displayTitle"
           class="mt-4"
         >
           <template v-slot="{ item, isNew }">
@@ -95,7 +95,7 @@
           :fetch="fetchProblems"
           :prepend-new-item="false"
           label="再採点"
-          item-text="title"
+          item-text="displayTitle"
           class="mt-4"
         >
           <template v-slot="{ item }">

@@ -84,5 +84,10 @@ class Problem < ApplicationRecord
       where(open_at: nil)
         .or(where('open_at @> ?::timestamp', Time.current))
     end
+
+    # デバッグ用ショートハンド
+    def code(code)
+      self.find_by(code: code)
+    end
   end
 end

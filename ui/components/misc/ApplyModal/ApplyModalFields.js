@@ -148,10 +148,6 @@ export default {
       })
       this.conflictFields = []
       this.$refs.form.resetValidation()
-    },
-    async checkConflict() {
-      await this.fetchSelf()
-      return this.conflicted
     }
   }
 }

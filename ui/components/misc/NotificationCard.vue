@@ -110,7 +110,7 @@ export default {
         case 'warning':
           return 'amber accent-4'
         case 'error':
-          return 'red accent-1'
+          return 'error'
         default:
           throw new Error('unhandled notification type')
       }

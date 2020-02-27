@@ -51,9 +51,9 @@ export default class ProblemEnvironment extends BaseModel {
     if (this.isSSH) {
       const sshCommand = `ssh '${this.user}@${this.host}' -p ${this.port}`
       return `sshpass -p "${this.password}" ${sshCommand}`
-    } else if (/Telnet/i.test(this.service)) {
+    } else if (/^Telnet$/i.test(this.service)) {
       return `telnet ${this.host} ${this.port}`
-    } else if (/VNC/i.test(this.service)) {
+    } else if (/^VNC$/i.test(this.service)) {
       return `${this.host}:${this.port}`
     } else {
       // throw new Error(`unsupported service "${this.service}"`)
@@ -63,6 +63,6 @@ export default class ProblemEnvironment extends BaseModel {
   }
 
   get isSSH() {
-    return /SSH/i.test(this.service)
+    return /^SSH$/i.test(this.service)
   }
 }

@@ -77,6 +77,12 @@
       </v-row>
     </template>
 
+    <template v-slot:item.port="{ value }">
+      <template v-if="!!value">
+        {{ value }}
+      </template>
+    </template>
+
     <template v-slot:item.team="{ value }">
       <v-icon v-if="!value" small>mdi-check</v-icon>
     </template>

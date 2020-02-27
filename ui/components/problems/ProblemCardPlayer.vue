@@ -4,7 +4,7 @@
     <template v-if="problem.isReadable">
       <!-- タイトル -->
       <v-row no-gutters class="flex-nowrap">
-        <div style="height: 3.4em">
+        <div class="truncate-clamp2" style="height: 3.4em">
           {{ problem.title }}
         </div>
       </v-row>
@@ -41,11 +41,6 @@
         </v-col>
 
         <v-col class="pl-3 black--text">
-          <div v-if="problem.openAtBegin && problem.openAtEnd">
-            公開 {{ problem.openAtBegin }}<br />
-            終了 {{ problem.openAtEnd }}
-          </div>
-
           <v-row
             v-if="problem.previousProblemId"
             no-gutters
@@ -58,6 +53,11 @@
               の基準を突破
             </v-col>
           </v-row>
+
+          <div v-if="problem.openAtBegin && problem.openAtEnd">
+            公開 {{ problem.openAtBegin }}<br />
+            終了 {{ problem.openAtEnd }}
+          </div>
         </v-col>
       </v-row>
     </template>
