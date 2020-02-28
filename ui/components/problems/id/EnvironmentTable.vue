@@ -147,7 +147,7 @@ export default {
   },
   data() {
     return {
-      itemsPerPage: 10,
+      itemsPerPage: -1,
       search: undefined
     }
   },
@@ -177,6 +177,24 @@ export default {
         ]
       } else {
         return [{ text: '共通', value: 'team', align: 'center' }, ...commons]
+      }
+    }
+  },
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler(value) {
+        if (!value) {
+          return
+        }
+
+        // 未ログインだとisPlayer判定がおかしくなるためcreatedではなくwatchで行う
+        if (this.isPlayer) {
+          // プレイヤーなら最初から全表示
+          this.itemsPerPage = -1
+        } else {
+          this.itemsPerPage = 10
+        }
       }
     }
   },
