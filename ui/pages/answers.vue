@@ -5,10 +5,10 @@
         <page-title title="解答一覧" />
 
         <v-overflow-btn
-          v-model="problemCode"
+          v-model="problemDisplayTitle"
           :items="problems"
           item-text="displayTitle"
-          item-value="code"
+          item-value="displayTitle"
           label="問題選択"
           auto-select-first
           clearable
@@ -26,7 +26,7 @@
     <v-container>
       <div v-for="problem in problems" :key="problem.id">
         <div v-show="isDisplayProblem(problem)" class="mb-4">
-          <div class="title pl-2">{{ problem.code }} - {{ problem.title }}</div>
+          <div class="title pl-2">{{ problem.displayTitle }}</div>
 
           <v-row align="start" justify="start" class="mx-0">
             <template v-for="answer in filter(problem.answers)">
@@ -64,7 +64,7 @@ export default {
   mixins: [
     // 透過的にローカルストレージにアクセスできる
     JsonStroage.accessor('answer-list', 'displayToggle', []),
-    JsonStroage.accessor('answer-list', 'problemCode', undefined)
+    JsonStroage.accessor('answer-list', 'problemDisplayTitle', undefined)
   ],
   fetch() {
     orm.Queries.problemsAnswersTeam()
@@ -136,11 +136,11 @@ export default {
       }
     },
     isDisplayProblem(problem) {
-      if (!this.problemCode) {
+      if (!this.problemDisplayTitle) {
         return true
       }
 
-      return problem.code === this.problemCode
+      return problem.displayTitle === this.problemDisplayTitle
     }
   }
 }
