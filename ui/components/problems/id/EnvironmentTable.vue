@@ -4,8 +4,9 @@
     :items="environments"
     :search="!!search ? search : ''"
     :sort-by="sortBy"
-    :items-per-page.sync="itemsPerPage"
-    :hide-default-footer="environments.length <= itemsPerPage"
+    :items-per-page="itemsPerPage"
+    :footer-props="{ 'items-per-page-options': [10, 20, 30, -1] }"
+    :hide-default-footer="isPlayer"
     :disable-sort="environments.length <= 1"
     :mobile-breakpoint="0"
     dense
@@ -147,11 +148,13 @@ export default {
   },
   data() {
     return {
-      itemsPerPage: -1,
       search: undefined
     }
   },
   computed: {
+    itemsPerPage() {
+      return this.isPlayer ? -1 : 10
+    },
     sortBy() {
       return this.isStaff ? ['team.number'] : []
     },
@@ -177,24 +180,6 @@ export default {
         ]
       } else {
         return [{ text: '共通', value: 'team', align: 'center' }, ...commons]
-      }
-    }
-  },
-  watch: {
-    isLoggedIn: {
-      immediate: true,
-      handler(value) {
-        if (!value) {
-          return
-        }
-
-        // 未ログインだとisPlayer判定がおかしくなるためcreatedではなくwatchで行う
-        if (this.isPlayer) {
-          // プレイヤーなら最初から全表示
-          this.itemsPerPage = -1
-        } else {
-          this.itemsPerPage = 10
-        }
       }
     }
   },
