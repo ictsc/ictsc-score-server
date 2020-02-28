@@ -85,8 +85,6 @@ export default {
     isLoggedIn: {
       immediate: true,
       handler(value) {
-        // TODO: auto_reload 頑張れ
-
         // 未ログインだとisPlayer判定がおかしくなるためcreatedではなくwatchで行う
         if (value) {
           orm.Queries.pageProblems()
