@@ -8,8 +8,10 @@
     <v-row no-gutters>
       <v-col>
         <div v-if="isStaff">コード {{ problem.code }}</div>
-        <div v-if="isStaff">作問者 {{ problem.writer }}</div>
-        <div class="body-2">満点 {{ elvis(problem, 'body.perfectPoint') }}</div>
+        <div v-if="isStaff" class="text-truncate">
+          作問者 {{ problem.writer }}
+        </div>
+        <div class="body-2">満点 {{ problem.perfectPoint }}</div>
       </v-col>
 
       <problem-modal :item="problem">
