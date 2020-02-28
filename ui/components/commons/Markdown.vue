@@ -68,6 +68,8 @@ export default {
         margin-top: 0.4em
         margin-bottom: 0.4em
         padding: 0.4em
+        // Firefox用
+        word-break: break-word
 
     img
       max-width: 100%
