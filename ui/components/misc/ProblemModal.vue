@@ -223,7 +223,7 @@ const fields = {
   categoryCode: null,
   order: 0,
   previousProblemCode: null,
-  teamIsolate: false,
+  teamIsolate: true,
   openAtBegin: null,
   openAtEnd: null,
   perfectPoint: 0,
