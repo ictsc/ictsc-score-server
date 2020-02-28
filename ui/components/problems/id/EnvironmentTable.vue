@@ -102,7 +102,7 @@
             v-clipboard:copy="item.copyText"
             v-clipboard:success="onCopySuccess"
             v-clipboard:error="onCopyError"
-            :disabled="item.isSSH && !canCopyPassword(item.password)"
+            :disabled="disableCopyButton(item)"
             icon
             small
             v-on="on"
@@ -219,6 +219,13 @@ export default {
     },
     canCopyPassword(str) {
       return str && !this.isMarkdown(str)
+    },
+    disableCopyButton(item) {
+      if (item.copyText === '') {
+        return true
+      }
+
+      return item.isSSH && !this.canCopyPassword(item.password)
     },
     async deleteEnvironment(item) {
       await orm.Mutations.deleteProblemEnvironment({
