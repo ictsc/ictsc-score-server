@@ -161,7 +161,7 @@ class Notification
           リセット依頼が発生しました
           #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
         MSG
-      when 'AddIssueComment'
+      when 'AddIssueComment', 'StartIssue'
         return if record.from_staff
 
         issue = record.issue
