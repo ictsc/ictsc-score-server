@@ -25,6 +25,7 @@
         v-model="targetTeamId"
         :readonly="sending"
         :items="teams"
+        :rules="teamRuels"
         item-text="displayName"
         item-value="id"
         label="宛先"
@@ -53,10 +54,11 @@ import orm from '~/orm'
 import PinButton from '~/components/commons/PinButton'
 import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 
+// targetTeamIdのデフォルトはnull(全体)じゃなくてundefined(未指定)
 const defaultValues = {
   title: '',
   pinned: false,
-  targetTeamId: null
+  targetTeamId: undefined
 }
 
 export default {
@@ -82,7 +84,8 @@ export default {
   data() {
     return {
       sending: false,
-      titleRules: [v => !!v || '必須']
+      titleRules: [v => !!v || '必須'],
+      teamRuels: [v => v !== undefined || '必須']
     }
   },
   computed: {
