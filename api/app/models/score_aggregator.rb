@@ -14,7 +14,7 @@ class ScoreAggregator
     def aggregate_answers(answers:)
       # &:team にしないこと(実行時間5倍)
       teams_answers = answers.group_by(&:team_id)
-      teams_answers.transform_values {|team_answers| select_most_effective_answers(team_answers: team_answers) }
+      teams_answers.transform_values! {|team_answers| select_most_effective_answers(team_answers: team_answers) }
       # 解答が無いチーム対策
       teams_answers.default = [].freeze
       teams_answers
@@ -62,20 +62,21 @@ class ScoreAggregator
 
     # 各問題の解答から最優先のもののみ取り出す
     def select_most_effective_answers(team_answers:)
-      team_answers.each_with_object({}) do |answer, currents|
-        if currents[answer.id].nil? || higher_priority_answer?(current: currents[answer.id], new: answer)
-          currents[answer.id] = answer
+      team_answers.each_with_object({}) {|answer, currents|
+        if currents[answer.problem_id].nil? || higher_priority_answer?(current: currents[answer.problem_id], new: answer)
+          currents[answer.problem_id] = answer
         end
-      end
+      }
+        .values
     end
 
     def higher_priority_answer?(current:, new:)
       if Config.realtime_grading
         # 最高得点が優先
-        current[answer.id].score.point < new.score.point
+        current.score.point < new.score.point
       else
         # 最終解答が優先
-        current[answer.id].created_at < new.created_at
+        current.created_at < new.created_at
       end
     end
 
