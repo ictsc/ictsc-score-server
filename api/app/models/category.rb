@@ -7,4 +7,11 @@ class Category < ApplicationRecord
   validates :order,       presence: true
 
   has_many :problems, dependent: :nullify
+
+  class << self
+    # デバッグ用ショートハンド
+    def code(code)
+      self.find_by(code: code)
+    end
+  end
 end

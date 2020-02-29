@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 開くボタン -->
-    <expandable-button v-model="show" :togglable="isStaff && !isEmpty">
+    <expandable-button v-model="show" :togglable="!isEmpty">
       接続情報
     </expandable-button>
 
@@ -63,8 +63,13 @@ export default {
       return this.environments.length === 0
     }
   },
-  created() {
-    this.show = this.isPlayer
+  watch: {
+    isPlayer: {
+      immediate: true,
+      handler(value) {
+        this.show = value
+      }
+    }
   }
 }
 </script>

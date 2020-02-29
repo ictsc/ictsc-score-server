@@ -107,6 +107,9 @@ module Readable
       when 'ProblemBody', 'ProblemSupplement'
         where(problem: Problem.opened(team: team))
       when 'ProblemEnvironment'
+        # グローバル問題で共通の環境を作ることがあるため、audienceには完全非公開
+        return none if team.audience?
+
         # playerには展開が完了した問題環境しか見せない
         where(team: [team, nil], problem: Problem.opened(team: team)) # , status: 'APPLIED')
       when 'Team'

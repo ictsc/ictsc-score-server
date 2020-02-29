@@ -14,7 +14,7 @@ class ScoreAggregator
     def aggregate_answers(answers:)
       # &:team にしないこと(実行時間5倍)
       teams_answers = answers.group_by(&:team_id)
-      teams_answers.transform_values {|team_answers| select_most_effective_answers(team_answers: team_answers) }
+      teams_answers.transform_values! {|team_answers| select_most_effective_answers(team_answers: team_answers) }
       # 解答が無いチーム対策
       teams_answers.default = [].freeze
       teams_answers
@@ -55,6 +55,7 @@ class ScoreAggregator
         score: penalty_score + team_answers.sum {|answer| answer.score.point },
         rank: 0, # dummy
 
+        perfect_count: team_answers.count {|answer| answer.score.percent >= 100 },
         team: team, # ランク付与, シート出力, フィルタ, etc...
         team_answers: team_answers # シート出力
       }
@@ -62,32 +63,33 @@ class ScoreAggregator
 
     # 各問題の解答から最優先のもののみ取り出す
     def select_most_effective_answers(team_answers:)
-      team_answers.each_with_object({}) do |answer, currents|
-        if currents[answer.id].nil? || higher_priority_answer?(current: currents[answer.id], new: answer)
-          currents[answer.id] = answer
+      team_answers.each_with_object({}) {|answer, currents|
+        if currents[answer.problem_id].nil? || higher_priority_answer?(current: currents[answer.problem_id], new: answer)
+          currents[answer.problem_id] = answer
         end
-      end
+      }
+        .values
     end
 
     def higher_priority_answer?(current:, new:)
       if Config.realtime_grading
         # 最高得点が優先
-        current[answer.id].score.point < new.score.point
+        current.score.point < new.score.point
       else
         # 最終解答が優先
-        current[answer.id].created_at < new.created_at
+        current.created_at < new.created_at
       end
     end
 
     def assign_rank(records:)
       return [] if records.empty?
 
-      records.sort_by! {|e| -e[:score] }
+      records.sort_by! {|e| [-e[:score], -e[:perfect_count]] }
       records.first[:rank] = 1
 
       # 同点時の順位は 1 2 2 4
       records.each_cons(2).with_index(2) do |(previous_data, data), index|
-        data[:rank] = (previous_data[:score] == data[:score]) ? previous_data[:rank] : index
+        data[:rank] = (previous_data[:score] == data[:score] && previous_data[:perfect_count] == data[:perfect_count]) ? previous_data[:rank] : index
       end
 
       records
