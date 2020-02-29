@@ -55,6 +55,7 @@ class ScoreAggregator
         score: penalty_score + team_answers.sum {|answer| answer.score.point },
         rank: 0, # dummy
 
+        perfect_count: team_answers.count {|answer| answer.score.percent >= 100 },
         team: team, # ランク付与, シート出力, フィルタ, etc...
         team_answers: team_answers # シート出力
       }
@@ -83,12 +84,12 @@ class ScoreAggregator
     def assign_rank(records:)
       return [] if records.empty?
 
-      records.sort_by! {|e| -e[:score] }
+      records.sort_by! {|e| [-e[:score], -e[:perfect_count]] }
       records.first[:rank] = 1
 
       # 同点時の順位は 1 2 2 4
       records.each_cons(2).with_index(2) do |(previous_data, data), index|
-        data[:rank] = (previous_data[:score] == data[:score]) ? previous_data[:rank] : index
+        data[:rank] = (previous_data[:score] == data[:score] && previous_data[:perfect_count] == data[:perfect_count]) ? previous_data[:rank] : index
       end
 
       records
