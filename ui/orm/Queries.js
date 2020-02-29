@@ -78,7 +78,7 @@ export default class Queries {
   }
 
   static problemSupplements(id) {
-    return orm.Problem.eagerFetch(id[('body', 'supplements')])
+    return orm.Problem.eagerFetch(id, [('body', 'supplements')])
   }
 
   static problems() {
