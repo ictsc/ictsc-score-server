@@ -25,6 +25,7 @@
     "apollo-link-http": "^1.5.15",
     "event-source-polyfill": "^1.0.12",
     "graphql": "^14.4.2",
+    "html2canvas": "^1.0.0-rc.5",
     "inflection": "^1.12.0",
     "js-yaml": "^3.13.1",
     "markdown-it-abbr": "^1.0.4",

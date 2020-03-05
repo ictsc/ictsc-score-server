@@ -56,8 +56,8 @@ class ScoreAggregator
         rank: 0, # dummy
 
         perfect_count: team_answers.count {|answer| answer.score.percent >= 100 },
-        team: team, # ランク付与, シート出力, フィルタ, etc...
-        team_answers: team_answers # シート出力
+        team: team, # ランク付与, 得点表出力, フィルタ, etc...
+        answers: team_answers # 得点表出力
       }
     end
 

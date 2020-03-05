@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
+import html2canvas from 'html2canvas'
 
 // 各コンポーネントで多用するメソッドをmixinする
 // やりすぎ注意
@@ -94,6 +95,16 @@ Vue.mixin({
       link.href = window.URL.createObjectURL(blob)
       link.download = filename
       link.click()
+    },
+    captureById(id, filename) {
+      html2canvas(document.getElementById(id)).then(canvas => {
+        canvas.toBlob(blob => {
+          const link = document.createElement('a')
+          link.href = window.URL.createObjectURL(blob)
+          link.download = filename
+          link.click()
+        })
+      })
     },
 
     // sort
