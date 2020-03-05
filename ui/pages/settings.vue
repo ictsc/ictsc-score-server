@@ -191,6 +191,7 @@ export default {
         'code',
         'categoryCode',
         'title',
+        'genre',
         'writer',
         'order',
         'previousProblemCode',

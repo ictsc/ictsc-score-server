@@ -50,7 +50,9 @@ export default {
             { name: 'コード', value: this.problem.code },
             { name: '作問者', value: this.problem.writer }
           ],
-          [{ name: '種類', value: this.problem.modeJp }],
+          [{ name: '種類', value: this.problem.genre }],
+          [{ name: '解答方式', value: this.problem.modeJp }],
+          [{ name: '順序', value: this.problem.order }],
           [{ name: '最終更新', value: this.problem.updatedAtShort }]
         )
       }

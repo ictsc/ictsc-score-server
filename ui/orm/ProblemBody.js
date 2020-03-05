@@ -8,6 +8,7 @@ export default class ProblemBody extends BaseModel {
       id: this.string(),
       mode: this.string(),
       title: this.string(),
+      genre: this.string().nullable(),
       text: this.string(),
       perfectPoint: this.number(),
       solvedCriterion: this.number(),

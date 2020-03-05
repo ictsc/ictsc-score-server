@@ -6,6 +6,7 @@ FactoryBot.define do
   factory :problem_body do
     title { Faker::Book.title }
     text { Array.new(Random.rand(4..10)) { Faker::Books::Dune.quote }.join("\n") }
+    genre { Random.rand(3).zero? ? Faker::Books::Dune.quote : '' }
     perfect_point { Random.rand(10..1000) }
     solved_criterion { Random.rand(50..100) }
     problem { nil }
