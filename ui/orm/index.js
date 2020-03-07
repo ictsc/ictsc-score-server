@@ -4,32 +4,34 @@ import Mutations from '~/orm/Mutations'
 import Answer from '~/orm/Answer'
 import Category from '~/orm/Category'
 import Config from '~/orm/Config'
-import Notice from '~/orm/Notice'
 import Issue from '~/orm/Issue'
 import IssueComment from '~/orm/IssueComment'
+import Notice from '~/orm/Notice'
 import Penalty from '~/orm/Penalty'
 import Problem from '~/orm/Problem'
 import ProblemBody from '~/orm/ProblemBody'
-import ProblemSupplement from '~/orm/ProblemSupplement'
 import ProblemEnvironment from '~/orm/ProblemEnvironment'
+import ProblemSupplement from '~/orm/ProblemSupplement'
+import ReportCard from '~/orm/ReportCard'
 import Scoreboard from '~/orm/Scoreboard'
 import Session from '~/orm/Session'
 import Team from '~/orm/Team'
 
 export default {
-  Queries,
-  Mutations,
   Answer,
   Category,
   Config,
-  Notice,
   Issue,
   IssueComment,
+  Mutations,
+  Notice,
   Penalty,
   Problem,
   ProblemBody,
-  ProblemSupplement,
   ProblemEnvironment,
+  ProblemSupplement,
+  Queries,
+  ReportCard,
   Scoreboard,
   Session,
   Team

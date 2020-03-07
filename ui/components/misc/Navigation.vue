@@ -40,9 +40,9 @@ export default {
         { to: '/problems', text: '問題' },
         { to: '/issues', text: '質問' },
         { to: '/answers', text: '解答', if: this.isNotPlayer },
+        { to: '/summary', text: '状況', if: this.isNotPlayer },
         { to: '/guide', text: 'ガイド' },
         { to: '/teams', text: 'チーム' },
-        { to: '/summary', text: '状況', if: false },
         { to: '/settings', icon: 'mdi-settings-outline', if: this.isStaff },
         {
           to: '/login',

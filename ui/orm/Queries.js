@@ -37,6 +37,10 @@ export default class Queries {
     return orm.Notice.eagerFetch({}, ['targetTeam'])
   }
 
+  static reportCards() {
+    return orm.ReportCard.eagerFetch({}, [])
+  }
+
   static problemAnswersTeam(id) {
     return orm.Problem.eagerFetch(id, ['body', 'answers', 'answers.team'])
   }

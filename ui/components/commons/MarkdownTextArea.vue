@@ -4,6 +4,7 @@
 機能
 * ctrl-enterでsubmitイベントを発火(@submit)
 * previewボタンでプレビュー可能
+* D&Dでファイルアップロード
 -->
 <template>
   <div

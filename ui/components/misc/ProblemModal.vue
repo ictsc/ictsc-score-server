@@ -29,6 +29,13 @@
 
             <v-text-field v-model="writer" :readonly="sending" label="作問者" />
 
+            <v-text-field
+              v-model="genre"
+              :readonly="sending"
+              label="ジャンル"
+              placeholder="コンテナ, ルーティング, ウェブ, etc..."
+            />
+
             <label class="caption">カテゴリ</label>
             <v-overflow-btn
               v-model="categoryCode"
@@ -218,6 +225,7 @@ import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
 const fields = {
   title: '',
+  genre: '',
   code: '',
   writer: null,
   categoryCode: null,

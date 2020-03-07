@@ -53,6 +53,10 @@ export default class Problem extends BaseModel {
     return this.body.title
   }
 
+  get genre() {
+    return this.body.genre
+  }
+
   get text() {
     return this.body.text
   }

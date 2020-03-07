@@ -2,7 +2,7 @@ import orm from '~/orm'
 import BaseModel from '~/orm/BaseModel'
 
 export default class Scoreboard extends BaseModel {
-  static entity = 'scoreboard'
+  static entity = 'scoreboards'
   static primaryKey = 'teamId'
 
   // このモデルだけはキャシュが残ってると面倒だから取得後に全消しする

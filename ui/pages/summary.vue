@@ -5,15 +5,20 @@
         <page-title title="状況" />
       </v-col>
     </v-row>
+
+    <!-- 成績一覧テーブル -->
+    <report-card-table />
   </v-container>
 </template>
 <script>
 import PageTitle from '~/components/commons/PageTitle'
+import ReportCardTable from '~/components/summary/ReportCardTable'
 
 export default {
   name: 'Summary',
   components: {
-    PageTitle
+    PageTitle,
+    ReportCardTable
   }
 }
 </script>

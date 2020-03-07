@@ -13,6 +13,7 @@ module Types
     field :notices,              [Types::NoticeType],             null: false
     field :sessions,             [Types::SessionType],            null: false
     field :scoreboards,          [Types::ScoreboardType],         null: false
+    field :report_cards,         [Types::ReportCardType],         null: false
 
     field :penalties,            [Types::PenaltyType],            null: false do
       argument :after, Types::DateTime, required: false
@@ -103,6 +104,10 @@ module Types
 
     def scoreboards
       Scoreboard.readables(team: self.current_team!)
+    end
+
+    def report_cards
+      ReportCard.readables(team: self.current_team!)
     end
   end
 end
