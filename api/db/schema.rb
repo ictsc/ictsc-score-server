@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_02_020437) do
+ActiveRecord::Schema.define(version: 2020_03_16_132340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
   create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "code", null: false
     t.string "title", null: false
-    t.string "description", limit: 8192, null: false
+    t.string "description", null: false
     t.integer "order", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
   end
 
   create_table "issue_comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "text", limit: 8192, null: false
+    t.string "text", null: false
     t.boolean "from_staff", null: false
     t.uuid "issue_id", null: false
     t.datetime "created_at", null: false
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
 
   create_table "notices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
-    t.string "text", limit: 8192, null: false
+    t.string "text", null: false
     t.boolean "pinned", null: false
     t.uuid "target_team_id"
     t.datetime "created_at", null: false
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
     t.integer "mode", null: false
     t.string "title", null: false
     t.integer "perfect_point", null: false
-    t.string "text", limit: 8192, null: false
+    t.string "text", null: false
     t.json "candidates", null: false
     t.json "corrects", null: false
     t.uuid "problem_id"
@@ -131,12 +131,12 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
     t.string "status", null: false
     t.string "host", null: false
     t.string "user", null: false
-    t.string "password", limit: 8192, null: false
+    t.string "password", null: false
     t.uuid "problem_id", null: false
     t.uuid "team_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "secret_text", limit: 8192, null: false
+    t.string "secret_text", null: false
     t.string "name", null: false
     t.string "service", null: false
     t.integer "port", null: false
@@ -146,7 +146,7 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
   end
 
   create_table "problem_supplements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "text", limit: 8192, null: false
+    t.string "text", null: false
     t.uuid "problem_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -156,7 +156,7 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
   create_table "problems", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "code", null: false
     t.string "writer"
-    t.string "secret_text", limit: 8192, null: false
+    t.string "secret_text", null: false
     t.integer "order", null: false
     t.boolean "team_isolate", null: false
     t.tsrange "open_at"
@@ -190,7 +190,7 @@ ActiveRecord::Schema.define(version: 2020_03_02_020437) do
     t.datetime "updated_at", null: false
     t.boolean "beginner", null: false
     t.string "channel", null: false
-    t.string "secret_text", limit: 8192, null: false
+    t.string "secret_text", null: false
     t.index ["name"], name: "index_teams_on_name", unique: true
     t.index ["number"], name: "index_teams_on_number", unique: true
   end

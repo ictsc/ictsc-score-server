@@ -2,7 +2,7 @@
 
 class Config < ApplicationRecord
   validates :key,        presence: true, uniqueness: true
-  # 文字数制限なし. 空文字列とfalseは許可. nil不可
+  # 空文字列とfalseは許可. nil不可
   validates :value,      presence: false
   validates :value_type, presence: true
   validate :validate_value
