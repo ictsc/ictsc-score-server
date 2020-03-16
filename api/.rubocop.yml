@@ -124,3 +124,9 @@ Style/TernaryParentheses:
   Enabled: true
   # 多少複雑な条件演算子は括弧で囲む
   EnforcedStyle: 'require_parentheses_when_complex'
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
