@@ -38,10 +38,6 @@
         'mr-1': showDetails
       }"
     >
-      <span class="caption" :class="textCounterColor">
-        {{ textCounter }}
-      </span>
-
       <v-btn
         :disabled="previewDisabled"
         fab
@@ -76,7 +72,6 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import Markdown from '~/components/commons/Markdown'
 
 export default {
@@ -111,21 +106,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('contestInfo', ['textSizeLimit']),
     textCount() {
       return (this.internalValue || '').toString().length
-    },
-    textCounter() {
-      return this.textSizeLimit - this.textCount
-    },
-    textCounterColor() {
-      if (this.textCounter < 0) {
-        return 'error--text'
-      } else if (this.textCounter <= 50) {
-        return 'warning--text'
-      } else {
-        return 'grey--text text--ligthen-5'
-      }
     },
     valid() {
       if (this.value === undefined || this.value === null) {
@@ -136,7 +118,7 @@ export default {
         return true
       }
 
-      return this.textCount > 0 && this.textCount <= this.textSizeLimit
+      return this.textCount > 0
     },
     showDetails() {
       return !['', true].includes(this.$attrs['hide-details'])

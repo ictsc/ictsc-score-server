@@ -6,7 +6,6 @@ export default {
       resetDelaySec: 0,
       hideAllScore: false,
       realtimeGrading: false,
-      textSizeLimit: 0,
       deleteTimeLimitSec: 0,
       guidePage: ''
     }
@@ -21,7 +20,6 @@ export default {
       state.resetDelaySec = contestInfo.resetDelaySec
       state.hideAllScore = contestInfo.hideAllScore
       state.realtimeGrading = contestInfo.realtimeGrading
-      state.textSizeLimit = contestInfo.textSizeLimit
       state.guidePage = contestInfo.guidePage
     }
   },
@@ -35,7 +33,6 @@ export default {
             resetDelaySec
             hideAllScore
             realtimeGrading
-            textSizeLimit
             guidePage
           }
         }
@@ -66,7 +63,6 @@ export default {
     competitionTime: state => state.competitionTime,
     hideAllScore: state => state.hideAllScore,
     realtimeGrading: state => state.realtimeGrading,
-    textSizeLimit: state => state.textSizeLimit,
     guidePage: state => state.guidePage
   }
 }
