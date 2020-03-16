@@ -1,0 +1,48 @@
+# https://github.com/bibendi/dip
+# install `gem install dip`
+
+version: '3'
+
+compose:
+  files:
+    - docker-compose.yml
+
+interaction:
+  api-sh:
+    service: api
+    command: /bin/sh
+  sh:
+    service: api
+    command: /bin/sh
+
+  ui-sh:
+    service: api
+    command: /bin/sh
+
+  bundle:
+    service: api
+    command: bundle
+
+  rspec:
+    service: api
+    command: bundle exec rspec
+
+  rubocop:
+    service: api
+    command: bundle exec rubocop
+
+  rails:
+    service: api
+    command: bundle exec rails
+
+  c:
+    service: api
+    command: bundle exec rails console
+
+  yarn:
+    service: ui
+    command: yarn
+
+  eslint:
+    service: ui
+    command: yarn lint
