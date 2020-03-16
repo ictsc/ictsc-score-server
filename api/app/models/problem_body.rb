@@ -4,7 +4,7 @@ class ProblemBody < ApplicationRecord
   validates :mode,             presence: true
   validates :title,            presence: true
   validates :genre,            allow_empty: true
-  validates :text,             presence: true, length:       { maximum:      8192  }
+  validates :text,             presence: true
   validates :perfect_point,    presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0   }
   validates :solved_criterion, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 50, less_than_or_equal_to: 100 }
   validates :problem,          presence: true

@@ -2,7 +2,7 @@
 
 class Config < ApplicationRecord
   validates :key,        presence: true, uniqueness: true
-  # 文字数制限なし. 空文字列とfalseは許可. nil不可
+  # 空文字列とfalseは許可. nil不可
   validates :value,      presence: false
   validates :value_type, presence: true
   validate :validate_value
@@ -178,7 +178,6 @@ class Config < ApplicationRecord
         reset_delay_sec: reset_delay_sec,
         hide_all_score: hide_all_score,
         realtime_grading: realtime_grading,
-        text_size_limit: text_size_limit,
         guide_page: guide_page,
         penalty_weight: penalty_weight
       }
@@ -195,16 +194,6 @@ class Config < ApplicationRecord
   record_accessor :competition_section4_start_at
   record_accessor :competition_section4_end_at
 
-  record_accessor :competition_stop
-  record_accessor :all_problem_force_open_at
-  record_accessor :grading_delay_sec
-  record_accessor :reset_delay_sec
-  record_accessor :hide_all_score
-  record_accessor :realtime_grading # 有効解答を最終解答にするか最高得点にするかもこれで指定
-  record_accessor :text_size_limit
-  record_accessor :guide_page
-  record_accessor :penalty_weight
-
   # スコアボードの表示設定
   record_accessor :scoreboard_hide_at
   record_accessor :scoreboard_top
@@ -212,4 +201,13 @@ class Config < ApplicationRecord
   record_accessor :scoreboard_display_top_score
   record_accessor :scoreboard_display_above_team
   record_accessor :scoreboard_display_above_score
+
+  record_accessor :competition_stop
+  record_accessor :all_problem_force_open_at
+  record_accessor :grading_delay_sec
+  record_accessor :reset_delay_sec
+  record_accessor :hide_all_score
+  record_accessor :realtime_grading # 有効解答を最終解答にするか最高得点にするかもこれで指定
+  record_accessor :guide_page
+  record_accessor :penalty_weight
 end

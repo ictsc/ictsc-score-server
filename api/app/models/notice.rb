@@ -2,7 +2,7 @@
 
 class Notice < ApplicationRecord
   validates :title,       presence: true
-  validates :text,        presence: true, length: { maximum: 8192 }
+  validates :text,        presence: true
   validates :pinned,      boolean: true
   validates :target_team, presence: false
 
