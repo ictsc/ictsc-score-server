@@ -16,7 +16,7 @@ interaction:
     command: /bin/sh
 
   ui-sh:
-    service: api
+    service: ui
     command: /bin/sh
 
   bundle:
