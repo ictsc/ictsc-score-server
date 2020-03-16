@@ -134,20 +134,6 @@ GEM
       ast (~> 2.4.0)
     pg (1.2.2)
     promise.rb (0.7.4)
-    pry (0.12.2)
-      coderay (~> 1.1.0)
-      method_source (~> 0.9.0)
-    pry-byebug (3.8.0)
-      byebug (~> 11.0)
-      pry (~> 0.10)
-    pry-doc (1.0.0)
-      pry (~> 0.11)
-      yard (~> 0.9.11)
-    pry-rails (0.3.9)
-      pry (>= 0.10.4)
-    pry-stack_explorer (0.4.9.3)
-      binding_of_caller (>= 0.7)
-      pry (>= 0.9.11)
     puma (4.3.3)
       nio4r (~> 2.0)
     rack (2.2.2)
@@ -305,10 +291,6 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.2)
   oj
   pg (>= 0.18, < 2.0)
-  pry-byebug
-  pry-doc
-  pry-rails
-  pry-stack_explorer
   puma (~> 4.3)
   rails (~> 6.0.0)
   rails_best_practices
@@ -331,7 +313,7 @@ DEPENDENCIES
   tzinfo-data
 
 RUBY VERSION
-   ruby 2.6.5p114
+   ruby 2.7.0p0
 
 BUNDLED WITH
    2.1.4

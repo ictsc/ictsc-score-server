@@ -51,7 +51,6 @@ gem 'bugsnag'
 # プロダクションに必須ではないがあると便利
 gem 'factory_bot_rails'
 gem 'faker'
-gem 'pry-rails'
 
 group :development, :test do
   gem 'bullet' # N+1 problem
@@ -61,10 +60,6 @@ group :development, :test do
   gem 'rubocop-rspec', require: false
   # 参考程度に使う
   gem 'rails_best_practices', require: false
-
-  gem 'pry-byebug'
-  gem 'pry-doc'
-  gem 'pry-stack_explorer'
 end
 
 group :development do
