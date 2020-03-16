@@ -3,40 +3,29 @@ export default {
     return {
       competitionTime: [],
       gradingDelaySec: 0,
-      resetDelaySec: 0,
+      guidePage: '',
       hideAllScore: false,
       realtimeGrading: false,
-      deleteTimeLimitSec: 0,
-      guidePage: ''
+      resetDelaySec: 0
     }
   },
   mutations: {
-    // GraphQLでまとも手取得したContestInfoをstateに割り振る
     setContestInfo(state, contestInfo) {
       state.competitionTime = contestInfo.competitionTime.map(daterange =>
         daterange.map(date => new Date(date))
       )
+
       state.gradingDelaySec = contestInfo.gradingDelaySec
-      state.resetDelaySec = contestInfo.resetDelaySec
+      state.guidePage = contestInfo.guidePage
       state.hideAllScore = contestInfo.hideAllScore
       state.realtimeGrading = contestInfo.realtimeGrading
-      state.guidePage = contestInfo.guidePage
+      state.resetDelaySec = contestInfo.resetDelaySec
     }
   },
   actions: {
-    async fetchContestInfo({ commit, dispatch }) {
-      const query = `
-        query ContestInfo {
-          contestInfo {
-            competitionTime
-            gradingDelaySec
-            resetDelaySec
-            hideAllScore
-            realtimeGrading
-            guidePage
-          }
-        }
-      `
+    async fetchContestInfo({ state, commit, dispatch }) {
+      const keys = Object.keys(state)
+      const query = `query ContestInfo { contestInfo { ${keys} } }`
 
       try {
         const res = await dispatch(
@@ -53,16 +42,16 @@ export default {
     }
   },
   getters: {
-    gradingDelaySec: state => state.gradingDelaySec,
-    gradingDelayString: (state, getters) =>
-      $nuxt.timeSimpleStringJp(getters.gradingDelaySec),
-    resetDelaySec: state => state.resetDelaySec,
-    resetDelayString: (state, getters) =>
-      $nuxt.timeSimpleStringJp(getters.resetDelaySec),
-
     competitionTime: state => state.competitionTime,
+    gradingDelaySec: state => state.gradingDelaySec,
+    guidePage: state => state.guidePage,
     hideAllScore: state => state.hideAllScore,
     realtimeGrading: state => state.realtimeGrading,
-    guidePage: state => state.guidePage
+    resetDelaySec: state => state.resetDelaySec,
+
+    gradingDelayString: (state, getters) =>
+      $nuxt.timeSimpleStringJp(getters.gradingDelaySec),
+    resetDelayString: (state, getters) =>
+      $nuxt.timeSimpleStringJp(getters.resetDelaySec)
   }
 }
