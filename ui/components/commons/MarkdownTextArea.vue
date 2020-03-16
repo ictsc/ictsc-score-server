@@ -27,7 +27,7 @@
       dense
       class="pt-1 pb-0"
       v-on="$listeners"
-      @keyup.ctrl.enter.prevent="valid && $emit('submit')"
+      @keyup.ctrl.enter.prevent="isValid(value) && $emit('submit')"
     />
 
     <v-row
@@ -81,7 +81,6 @@ export default {
   },
   props: {
     // v-modelでvalueを受け取るには明示が必要
-    // 一応null,undefinedも可
     value: {
       type: String,
       default: ''
@@ -98,7 +97,7 @@ export default {
   data() {
     return {
       preview: false,
-      rules: [v => this.errorRule(v)],
+      rules: [v => this.isValid(v) || '必須'],
       // 文字列は初期状態をnullにしないと、''が来た時にwatchが発火しない
       internalValue: this.value,
       dragging: false,
@@ -108,17 +107,6 @@ export default {
   computed: {
     textCount() {
       return (this.internalValue || '').toString().length
-    },
-    valid() {
-      if (this.value === undefined || this.value === null) {
-        return false
-      }
-
-      if (this.allowEmpty && this.value === '') {
-        return true
-      }
-
-      return this.textCount > 0
     },
     showDetails() {
       return !['', true].includes(this.$attrs['hide-details'])
@@ -142,16 +130,16 @@ export default {
     }
   },
   methods: {
-    errorRule(v) {
-      if (v === undefined || v === null) {
-        return '必須'
+    isValid(value) {
+      if (value === undefined || value === null) {
+        return false
       }
 
-      if (v === '') {
-        return this.allowEmpty ? true : '必須'
+      if (this.allowEmpty && value === '') {
+        return true
       }
 
-      return this.valid || '文字数オーバー'
+      return this.textCount > 0
     },
     async uploadFiles(files) {
       this.uploading = true

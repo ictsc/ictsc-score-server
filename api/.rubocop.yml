@@ -42,7 +42,7 @@ Metrics/BlockLength:
     - 'app/models/concerns/readable.rb'
     - 'spec/**/*_spec.rb'
     - 'spec/factories/*.rb'
-Metrics/LineLength:
+Layout/LineLength:
   # 基本的に長い行の折返しはエディターで対処
   Enabled: false
 Metrics/ParameterLists:
@@ -58,6 +58,7 @@ Style/AsciiComments:
 
 ## インデント系
 Layout/MultilineMethodCallIndentation:
+  Enabled: true
   EnforcedStyle: 'indented'
 
 ## スペース系
@@ -75,6 +76,7 @@ Naming/HeredocDelimiterNaming:
 
 ## rspec系
 RSpec/HookArgument:
+  Enabled: true
   EnforcedStyle: 'each'
 
 RSpec/MultipleExpectations:
@@ -94,8 +96,10 @@ Bundler/OrderedGems:
 Style/Documentation:
   Enabled: false
 Style/BlockDelimiters:
+  Enabled: true
   EnforcedStyle: 'braces_for_chaining'
 Style/FormatString:
+  Enabled: true
   EnforcedStyle: 'percent'
 Style/GuardClause:
   # 過激
@@ -110,8 +114,13 @@ Style/RedundantSelf:
 # Style/RedundantReturn:
 #   Enabled: false
 Style/EmptyElse:
+  Enabled: true
   # elseが空のときのみ警告(nilを明示して欲しい)
   EnforcedStyle: 'empty'
+Style/MissingElse:
+  Enabled: true
+  EnforcedStyle: 'case'
 Style/TernaryParentheses:
+  Enabled: true
   # 多少複雑な条件演算子は括弧で囲む
   EnforcedStyle: 'require_parentheses_when_complex'

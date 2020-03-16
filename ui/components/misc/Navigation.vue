@@ -43,7 +43,7 @@ export default {
         { to: '/summary', text: '状況', if: this.isNotPlayer },
         { to: '/guide', text: 'ガイド' },
         { to: '/teams', text: 'チーム' },
-        { to: '/settings', icon: 'mdi-settings-outline', if: this.isStaff },
+        { to: '/settings', icon: 'mdi-cog-outline', if: this.isStaff },
         {
           to: '/login',
           text: 'ログイン',
