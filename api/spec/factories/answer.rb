@@ -15,6 +15,8 @@ FactoryBot.define do
         problem.body.candidates.map {|c| [c.sample] }
       when 'checkbox'
         problem.body.candidates.map {|c| c.sample(Random.rand(1..c.size)) }
+      else
+        raise UnhandledProblemBodyMode, problem.body.mode
       end
     end
 

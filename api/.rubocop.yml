@@ -117,6 +117,9 @@ Style/EmptyElse:
   Enabled: true
   # elseが空のときのみ警告(nilを明示して欲しい)
   EnforcedStyle: 'empty'
+Style/MissingElse:
+  Enabled: true
+  EnforcedStyle: 'case'
 Style/TernaryParentheses:
   Enabled: true
   # 多少複雑な条件演算子は括弧で囲む
