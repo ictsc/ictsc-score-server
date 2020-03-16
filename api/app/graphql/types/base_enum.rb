@@ -4,7 +4,7 @@ module Types
   class BaseEnum < GraphQL::Schema::Enum
     class << self
       def values_from(enum)
-        enum.keys.each {|key| self.value(key) }
+        enum.each_key {|key| self.value(key) }
       end
     end
   end
