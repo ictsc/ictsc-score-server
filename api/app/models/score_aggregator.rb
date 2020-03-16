@@ -13,11 +13,10 @@ class ScoreAggregator
     # return: [{ team_id: [Answer] }]
     def aggregate_answers(answers:)
       # &:team にしないこと(実行時間5倍)
-      teams_answers = answers.group_by(&:team_id)
-      teams_answers.transform_values! {|team_answers| select_most_effective_answers(team_answers: team_answers) }
-      # 解答が無いチーム対策
-      teams_answers.default = [].freeze
-      teams_answers
+      answers
+        .group_by(&:team_id)
+        .transform_values {|team_answers| select_most_effective_answers(team_answers: team_answers) }
+        .tap {|array| array.default = [].freeze } # 解答が無いチーム対策
     end
 
     # チーム毎のペナルティを計算する
