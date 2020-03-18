@@ -23,6 +23,10 @@ interaction:
     service: api
     command: bundle
 
+  be:
+    service: api
+    command: bundle exec
+
   rspec:
     service: api
     command: bundle exec rspec
