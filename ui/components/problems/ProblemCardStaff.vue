@@ -13,22 +13,12 @@
         </div>
         <div class="body-2">満点 {{ problem.perfectPoint }}</div>
       </v-col>
-
-      <problem-modal :item="problem">
-        <template v-slot:activator="{ on }">
-          <pen-button v-if="hover" right small class="pa-0" v-on="on" />
-        </template>
-      </problem-modal>
     </v-row>
   </v-card-text>
 </template>
 <script>
-import PenButton from '~/components/commons/PenButton'
-import ProblemModal from '~/components/misc/ProblemModal'
-
 export default {
   name: 'ProblemCardStaff',
-  components: { PenButton, ProblemModal },
   props: {
     hover: {
       type: Boolean,
