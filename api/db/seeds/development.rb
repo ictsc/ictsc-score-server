@@ -240,7 +240,10 @@ end
 
 def create_penalty(problems, players)
   print 'creating penalties...'
-  penalties = problems.take(10).each_with_object([]) {|problem, memo|
+  penalties = problems
+    .select {|problem| problem.body.resettable }
+    .take(10)
+    .each_with_object([]) {|problem, memo|
     (players[0..1] + players.sample(players.size / 2)).each do |team|
       memo.concat(build_stubbed_list(:penalty, Random.rand(1..5), problem: problem, team: team))
     end

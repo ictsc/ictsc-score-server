@@ -19,6 +19,7 @@ module Mutations
     argument :mode,                  Types::Enums::ProblemBodyMode, required: true
     argument :title,                 String,                        required: true
     argument :genre,                 String,                        required: true
+    argument :resettable,            Boolean,                       required: true
     argument :text,                  String,                        required: true
     argument :perfect_point,         Integer,                       required: true
     argument :solved_criterion,      Integer,                       required: true
@@ -32,7 +33,7 @@ module Mutations
     def resolve(code:, category_code: nil, previous_problem_code: nil,
                 order:, team_isolate:, open_at_begin: nil, open_at_end: nil,
                 writer:, secret_text:,
-                mode:, title:, genre:, text:, perfect_point:, solved_criterion:, candidates: nil, corrects: nil,
+                mode:, title:, genre:, resettable:, text:, perfect_point:, solved_criterion:, candidates: nil, corrects: nil,
                 silent: false)
 
       Acl.permit!(mutation: self, args: {})
@@ -51,7 +52,7 @@ module Mutations
       problem_body = problem.body || ProblemBody.new
 
       # attributes(params) → save と update(params) は等価ではない(トランザクション周り)
-      problem_body.attributes = { mode: mode, title: title, genre: genre, text: text, perfect_point: perfect_point, solved_criterion: solved_criterion, candidates: candidates, corrects: corrects }
+      problem_body.attributes = { mode: mode, title: title, genre: genre, resettable: resettable, text: text, perfect_point: perfect_point, solved_criterion: solved_criterion, candidates: candidates, corrects: corrects }
 
       open_at = open_at_begin...open_at_end if open_at_begin.present? && open_at_end.present?
 

@@ -29,6 +29,14 @@
 
             <v-text-field v-model="writer" :readonly="sending" label="作問者" />
 
+            <v-switch
+              v-model="resettable"
+              :readonly="sending"
+              :label="`リセット${resettable ? '可能' : '不可能'}`"
+              color="primary"
+              class="mt-0"
+            />
+
             <v-text-field
               v-model="genre"
               :readonly="sending"

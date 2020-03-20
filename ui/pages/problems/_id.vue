@@ -27,7 +27,7 @@
         />
 
         <penalty-counter
-          v-if="teamId && isNotAudience"
+          v-if="teamId && isNotAudience && problem.resettable"
           :problem-id="problem.id"
           :penalties="penalties"
           :waiting-submit-sec="waitingSubmitSec"
