@@ -22,7 +22,7 @@ class Acl
         return false if !team.player? || !problem.body.readable?(team: team)
 
         problem.latest_answer_created_at(team: team) <= Time.current - Config.grading_delay_sec.seconds &&
-          problem.latest_penalty_created_at(team: team) <= Time.current - Config.grading_delay_sec.seconds
+          problem.latest_penalty_created_at(team: team) <= Time.current - Config.reset_delay_sec.seconds
       when 'AddIssueComment', 'TransitionIssueState'
         # staff of issue owner
         team.staff? || args.fetch(:issue).readable?(team: team)
