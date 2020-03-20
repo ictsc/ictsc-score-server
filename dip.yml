@@ -31,7 +31,7 @@ interaction:
     service: api
     command: bundle exec rspec
 
-  rubocop:
+  cop:
     service: api
     command: bundle exec rubocop
 
@@ -47,6 +47,6 @@ interaction:
     service: ui
     command: yarn
 
-  eslint:
+  yl:
     service: ui
     command: yarn lint
