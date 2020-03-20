@@ -5,7 +5,7 @@
       <v-row align="center" justify="start" class="flex-nowrap">
         <problem-modal v-if="isStaff" :item="problem">
           <template v-slot:activator="{ on }">
-            <pen-button elevation="2" class="mr-2" v-on="on" />
+            <pen-button color="primary" elevation="2" class="mr-2" v-on="on" />
           </template>
         </problem-modal>
 

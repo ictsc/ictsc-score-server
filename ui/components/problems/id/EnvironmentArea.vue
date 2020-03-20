@@ -6,7 +6,12 @@
     </expandable-button>
 
     <!-- ペンボタン -->
-    <pen-button v-if="isStaff" elevation="2" @click.stop="showModal = true" />
+    <plus-button
+      v-if="isStaff"
+      color="primary"
+      elevation="2"
+      @click.stop="showModal = true"
+    />
 
     <!-- テーブル -->
     <v-expand-transition>
@@ -31,7 +36,7 @@
 import EnvironmentModal from '~/components/misc/EnvironmentModal'
 import EnvironmentTable from '~/components/problems/id/EnvironmentTable'
 import ExpandableButton from '~/components/commons/ExpandableButton'
-import PenButton from '~/components/commons/PenButton'
+import PlusButton from '~/components/commons/PlusButton'
 
 export default {
   name: 'EnvironmentArea',
@@ -39,7 +44,7 @@ export default {
     EnvironmentModal,
     EnvironmentTable,
     ExpandableButton,
-    PenButton
+    PlusButton
   },
   props: {
     problem: {

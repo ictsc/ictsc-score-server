@@ -5,7 +5,12 @@
         補足事項
       </expandable-button>
 
-      <pen-button v-if="isStaff" elevation="2" @click.stop="showModal = true" />
+      <plus-button
+        v-if="isStaff"
+        color="primary"
+        elevation="2"
+        @click.stop="showModal = true"
+      />
     </div>
 
     <template v-for="supplement in sortedSupplements">
@@ -27,7 +32,7 @@
 </template>
 <script>
 import orm from '~/orm'
-import PenButton from '~/components/commons/PenButton'
+import PlusButton from '~/components/commons/PlusButton'
 import ExpandableButton from '~/components/commons/ExpandableButton'
 import SupplementCard from '~/components/problems/id/SupplementCard'
 import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
@@ -35,7 +40,7 @@ import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 export default {
   name: 'SupplementArea',
   components: {
-    PenButton,
+    PlusButton,
     ExpandableButton,
     MarkdownEditorModal,
     SupplementCard
