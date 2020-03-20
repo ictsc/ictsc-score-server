@@ -33,6 +33,28 @@ export default class Problem extends BaseModel {
     }
   }
 
+  static mutationFields() {
+    return {
+      title: '',
+      genre: '',
+      code: '',
+      writer: '',
+      categoryCode: null,
+      order: 0,
+      previousProblemCode: null,
+      teamIsolate: true,
+      openAtBegin: null,
+      openAtEnd: null,
+      perfectPoint: 0,
+      solvedCriterion: 100,
+      secretText: '',
+      mode: 'textbox',
+      candidates: [],
+      corrects: [],
+      text: ''
+    }
+  }
+
   // クエリビルダーのバグ?で再帰してクエリが激重になるのでbelongsToを使わない
   get previousProblem() {
     return (
@@ -55,6 +77,10 @@ export default class Problem extends BaseModel {
 
   get genre() {
     return this.body.genre
+  }
+
+  get resettable() {
+    return this.body.resettable
   }
 
   get text() {

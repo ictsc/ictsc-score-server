@@ -223,28 +223,6 @@ import NumberTextField from '~/components/commons/NumberTextField'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
-const fields = {
-  title: '',
-  genre: '',
-  code: '',
-  writer: '',
-  categoryCode: null,
-  order: 0,
-  previousProblemCode: null,
-  teamIsolate: true,
-  openAtBegin: null,
-  openAtEnd: null,
-  perfectPoint: 0,
-  solvedCriterion: 100,
-  secretText: '',
-  mode: 'textbox',
-  candidates: [],
-  corrects: [],
-  text: ''
-}
-
-const fieldKeys = Object.keys(fields)
-
 const secretTextPlaceholder = `Markdownで記述可能
 採点基準などを記載`
 
@@ -335,7 +313,7 @@ export default {
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
-    ...fieldKeys.reduce((obj, field) => {
+    ...orm.Problem.mutationFieldKeys().reduce((obj, field) => {
       obj[field] = function(value) {
         this.setStorage(field, value)
       }
@@ -351,10 +329,10 @@ export default {
       return 'code'
     },
     fields() {
-      return fields
+      return orm.Problem.mutationFields()
     },
     fieldKeys() {
-      return fieldKeys
+      return orm.Problem.mutationFieldKeys()
     },
     async fetchSelf() {
       await orm.Queries.problemCategory(this.item.id)

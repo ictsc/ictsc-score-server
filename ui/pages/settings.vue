@@ -27,7 +27,7 @@
           filename-prefix="problems"
           :fetch="fetchProblems"
           :apply="applyProblem"
-          :fields="problemFields"
+          :fields="$orm.Problem.mutationFieldKeys()"
           :parallel="false"
           class="mt-4"
         />
@@ -186,26 +186,7 @@ export default {
       showDelete2: false,
 
       categoryFields: ['code', 'title', 'order', 'description'],
-      configFields: ['key', 'value'],
-      problemFields: [
-        'code',
-        'categoryCode',
-        'title',
-        'genre',
-        'writer',
-        'order',
-        'previousProblemCode',
-        'teamIsolate',
-        'openAtBegin',
-        'openAtEnd',
-        'perfectPoint',
-        'solvedCriterion',
-        'secretText',
-        'mode',
-        'candidates',
-        'corrects',
-        'text'
-      ]
+      configFields: ['key', 'value']
     }
   },
   computed: {
