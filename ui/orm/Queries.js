@@ -34,7 +34,7 @@ export default class Queries {
   }
 
   static noticesTeam() {
-    return orm.Notice.eagerFetch({}, ['targetTeam'])
+    return orm.Notice.eagerFetch({}, ['team'])
   }
 
   static reportCards() {

@@ -10,8 +10,8 @@ export default class Notice extends BaseModel {
       title: this.string(),
       text: this.string(),
       pinned: this.boolean(),
-      targetTeamId: this.string().nullable(),
-      targetTeam: this.belongsTo(orm.Team, 'targetTeamId'),
+      teamId: this.string().nullable(),
+      team: this.belongsTo(orm.Team, 'teamId'),
       createdAt: this.string()
     }
   }

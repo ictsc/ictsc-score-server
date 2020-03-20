@@ -425,13 +425,13 @@ export default class Mutations extends BaseModel {
   static addNotice({
     action,
     resolve,
-    params: { title, text, pinned, targetTeamId }
+    params: { title, text, pinned, teamId }
   }) {
     return this.sendMutation({
       action,
       resolve,
       mutation: 'addNotice',
-      params: { title, text, pinned, targetTeamId },
+      params: { title, text, pinned, teamId },
       fields: [orm.Notice],
       type: 'upsert'
     })

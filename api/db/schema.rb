@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_16_132340) do
+ActiveRecord::Schema.define(version: 2020_03_20_184404) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -96,10 +96,10 @@ ActiveRecord::Schema.define(version: 2020_03_16_132340) do
     t.string "title", null: false
     t.string "text", null: false
     t.boolean "pinned", null: false
-    t.uuid "target_team_id"
+    t.uuid "team_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["target_team_id"], name: "index_notices_on_target_team_id"
+    t.index ["team_id"], name: "index_notices_on_team_id"
   end
 
   create_table "penalties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
