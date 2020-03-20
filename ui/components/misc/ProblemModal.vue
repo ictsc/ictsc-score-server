@@ -227,7 +227,7 @@ const fields = {
   title: '',
   genre: '',
   code: '',
-  writer: null,
+  writer: '',
   categoryCode: null,
   order: 0,
   previousProblemCode: null,
@@ -391,11 +391,6 @@ export default {
       if (this.mode === 'textbox') {
         this.candidates = []
         this.corrects = []
-      }
-
-      // nullは可だが空は不可
-      if (this.writer === '') {
-        this.writer = null
       }
 
       await orm.Mutations.applyProblem({

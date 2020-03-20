@@ -2,7 +2,7 @@
 
 class Problem < ApplicationRecord
   validates :code,             presence: true, uniqueness: true
-  validates :writer,           disallow_empty: true
+  validates :writer,           allow_empty: true
   validates :secret_text,      allow_empty: true
   validates :body,             presence: false
   validates :open_at,          daterange: true, allow_nil: true

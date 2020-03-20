@@ -12,7 +12,7 @@ module Mutations
     argument :team_isolate,          Boolean,                       required: true
     argument :open_at_begin,         Types::DateTime,               required: false
     argument :open_at_end,           Types::DateTime,               required: false
-    argument :writer,                String,                        required: false
+    argument :writer,                String,                        required: true
     argument :secret_text,           String,                        required: true
 
     # body
@@ -31,7 +31,7 @@ module Mutations
     # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     def resolve(code:, category_code: nil, previous_problem_code: nil,
                 order:, team_isolate:, open_at_begin: nil, open_at_end: nil,
-                writer: nil, secret_text:,
+                writer:, secret_text:,
                 mode:, title:, genre:, text:, perfect_point:, solved_criterion:, candidates: nil, corrects: nil,
                 silent: false)
 
