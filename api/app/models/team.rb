@@ -23,7 +23,7 @@ class Team < ApplicationRecord
   has_many :attachments,           dependent: :nullify
   has_many :first_correct_answers, dependent: :destroy
   has_many :issues,                dependent: :destroy
-  has_many :notices,               dependent: :nullify, inverse_of: 'target_team', foreign_key: 'target_team_id'
+  has_many :notices,               dependent: :nullify
   has_many :environments,          dependent: :destroy, class_name: 'ProblemEnvironment'
 
   # 値が大きいほど大体権限が高い

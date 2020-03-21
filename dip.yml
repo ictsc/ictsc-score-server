@@ -16,18 +16,22 @@ interaction:
     command: /bin/sh
 
   ui-sh:
-    service: api
+    service: ui
     command: /bin/sh
 
   bundle:
     service: api
     command: bundle
 
+  be:
+    service: api
+    command: bundle exec
+
   rspec:
     service: api
     command: bundle exec rspec
 
-  rubocop:
+  cop:
     service: api
     command: bundle exec rubocop
 
@@ -43,6 +47,6 @@ interaction:
     service: ui
     command: yarn
 
-  eslint:
+  yl:
     service: ui
     command: yarn lint

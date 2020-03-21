@@ -38,13 +38,7 @@ services:
     tty: true
     volumes:
       - './ui:/usr/src/app'
-    # ビルドに失敗してもリトライ(restart: on-failure は使いづらい)
-    command: sh -c '
-      while :; do
-        yarn run dev;
-        sleep 1;
-      done
-      '
+    command: yarn run dev
 
   db:
     image: postgres:11.3-alpine

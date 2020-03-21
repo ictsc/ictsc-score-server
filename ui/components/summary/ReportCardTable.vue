@@ -56,9 +56,8 @@
       </v-data-table>
     </v-row>
 
-    <!-- TODO: writing-modeをサポートしてないためスタイルが崩れる -->
-    <v-btn v-if="isStaff" @click="capture">
-      スクショ(仮)
+    <v-btn v-if="isStaff" class="hide-on-print" @click="capture">
+      キャプチャ
     </v-btn>
   </div>
 </template>
@@ -127,7 +126,20 @@ export default {
       return `rgba(20, 230, 138, ${(Math.floor(percent / 20) * 20) / 100})`
     },
     capture() {
-      this.captureById('table', '成績表.png')
+      const hideNodes = document.querySelectorAll('.hide-on-print')
+      const vContent = document.querySelector('.v-content')
+      const paddingTop = vContent.style.paddingTop
+
+      vContent.style.paddingTop = ''
+      hideNodes.forEach(node => (node.style.display = 'none'))
+
+      window.print()
+
+      hideNodes.forEach(node => (node.style.display = ''))
+      vContent.style.paddingTop = paddingTop
+
+      // TODO: writing-modeをサポートしてないためスタイルが崩れる
+      // this.captureById('table', '成績表.png')
     }
   }
 }

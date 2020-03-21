@@ -22,7 +22,7 @@
 
       <!-- 宛先 -->
       <v-overflow-btn
-        v-model="targetTeamId"
+        v-model="teamId"
         :readonly="sending"
         :items="teams"
         :rules="teamRuels"
@@ -54,11 +54,11 @@ import orm from '~/orm'
 import PinButton from '~/components/commons/PinButton'
 import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 
-// targetTeamIdのデフォルトはnull(全体)じゃなくてundefined(未指定)
+// teamIdのデフォルトはnull(全体)じゃなくてundefined(未指定)
 const defaultValues = {
   title: '',
   pinned: false,
-  targetTeamId: undefined
+  teamId: undefined
 }
 
 export default {
@@ -121,7 +121,7 @@ export default {
           title: this.title,
           text,
           pinned: this.pinned,
-          targetTeamId: this.targetTeamId
+          teamId: this.teamId
         }
       })
 

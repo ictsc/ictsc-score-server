@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <navigation />
+    <navigation class="hide-on-print" />
 
     <v-content>
       <!-- 最低幅を保証する -->

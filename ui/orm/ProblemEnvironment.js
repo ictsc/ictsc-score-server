@@ -47,22 +47,33 @@ export default class ProblemEnvironment extends BaseModel {
     return this.problem && this.problem.code
   }
 
+  get sshCommand() {
+    return `ssh '${this.user}@${this.host}' -p ${this.port}`
+  }
+
   get copyText() {
-    if (this.isSSH) {
-      const sshCommand = `ssh '${this.user}@${this.host}' -p ${this.port}`
-      return `sshpass -p "${this.password}" ${sshCommand}`
+    if (/^SSH$/i.test(this.service)) {
+      return {
+        text: `sshpass -p "${this.password}" ${this.sshCommand}`,
+        display: 'sshpassコマンド',
+        tooltip: 'sshpassコマンドを使うとpassword入力の手間が省けます'
+      }
+    } else if (/^SSH\(公開鍵\)$/i.test(this.service)) {
+      return {
+        text: this.sshCommand,
+        display: 'sshコマンド'
+      }
     } else if (/^Telnet$/i.test(this.service)) {
-      return `telnet ${this.host} ${this.port}`
+      return { text: `telnet ${this.host} ${this.port}` }
     } else if (/^VNC$/i.test(this.service)) {
-      return `${this.host}:${this.port}`
+      return { text: `${this.host}:${this.port}` }
     } else {
-      // throw new Error(`unsupported service "${this.service}"`)
       // コピー対象無し
-      return ''
+      return { text: '' }
     }
   }
 
-  get isSSH() {
-    return /^SSH$/i.test(this.service)
+  static get supportedServices() {
+    return ['SSH', 'SSH(公開鍵)', 'Telnet', 'VNC']
   }
 }

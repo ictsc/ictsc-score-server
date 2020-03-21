@@ -58,7 +58,7 @@ export default {
     notices() {
       const sorted = this.sortByCreatedAt(
         orm.Notice.query()
-          .with('targetTeam')
+          .with('team')
           .all()
       ).reverse()
 

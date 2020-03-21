@@ -29,6 +29,14 @@
 
             <v-text-field v-model="writer" :readonly="sending" label="作問者" />
 
+            <v-switch
+              v-model="resettable"
+              :readonly="sending"
+              :label="`リセット${resettable ? '可能' : '不可能'}`"
+              color="primary"
+              class="mt-0"
+            />
+
             <v-text-field
               v-model="genre"
               :readonly="sending"
@@ -223,28 +231,6 @@ import NumberTextField from '~/components/commons/NumberTextField'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
-const fields = {
-  title: '',
-  genre: '',
-  code: '',
-  writer: null,
-  categoryCode: null,
-  order: 0,
-  previousProblemCode: null,
-  teamIsolate: true,
-  openAtBegin: null,
-  openAtEnd: null,
-  perfectPoint: 0,
-  solvedCriterion: 100,
-  secretText: '',
-  mode: 'textbox',
-  candidates: [],
-  corrects: [],
-  text: ''
-}
-
-const fieldKeys = Object.keys(fields)
-
 const secretTextPlaceholder = `Markdownで記述可能
 採点基準などを記載`
 
@@ -335,7 +321,7 @@ export default {
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
-    ...fieldKeys.reduce((obj, field) => {
+    ...orm.Problem.mutationFieldKeys().reduce((obj, field) => {
       obj[field] = function(value) {
         this.setStorage(field, value)
       }
@@ -351,10 +337,10 @@ export default {
       return 'code'
     },
     fields() {
-      return fields
+      return orm.Problem.mutationFields()
     },
     fieldKeys() {
-      return fieldKeys
+      return orm.Problem.mutationFieldKeys()
     },
     async fetchSelf() {
       await orm.Queries.problemCategory(this.item.id)
@@ -391,11 +377,6 @@ export default {
       if (this.mode === 'textbox') {
         this.candidates = []
         this.corrects = []
-      }
-
-      // nullは可だが空は不可
-      if (this.writer === '') {
-        this.writer = null
       }
 
       await orm.Mutations.applyProblem({

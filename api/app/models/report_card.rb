@@ -78,7 +78,7 @@ class ReportCard
       Matrix[*records.map {|record| record[:each_score] }]
         .column_vectors
         .map {|column| column.select(&:present?) }
-        .map {|column| column.sum / column.size }
+        .map {|column| column.size.zero? ? nil : (column.sum / column.size) }
     end
 
     def assign_default_value(record:)

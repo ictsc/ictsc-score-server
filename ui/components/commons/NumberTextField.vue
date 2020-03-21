@@ -8,6 +8,7 @@
     maxlength="4"
     height="1em"
     class="number-text-field"
+    v-on="$listeners"
     @focus="$emit('focus')"
   />
 </template>

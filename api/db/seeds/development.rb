@@ -240,7 +240,10 @@ end
 
 def create_penalty(problems, players)
   print 'creating penalties...'
-  penalties = problems.take(10).each_with_object([]) {|problem, memo|
+  penalties = problems
+    .select {|problem| problem.body.resettable }
+    .take(10)
+    .each_with_object([]) {|problem, memo|
     (players[0..1] + players.sample(players.size / 2)).each do |team|
       memo.concat(build_stubbed_list(:penalty, Random.rand(1..5), problem: problem, team: team))
     end
@@ -256,8 +259,8 @@ def create_notices(teams)
   print 'creating notices...'
 
   notices = build_stubbed_list(:notice, Random.rand(7..20))
-  notices += build_stubbed_list(:notice, 3, target_team: teams.first)
-  notices += teams.sample(teams.size / 3).map {|team| build_stubbed(:notice, target_team: team) }
+  notices += build_stubbed_list(:notice, 3, team: teams.first)
+  notices += teams.sample(teams.size / 3).map {|team| build_stubbed(:notice, team: team) }
   notices.shuffle!
 
   Notice.import!(notices)

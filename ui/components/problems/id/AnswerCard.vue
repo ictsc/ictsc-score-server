@@ -50,7 +50,7 @@
           class="always-active-color"
           @click="textboxAsMarkdown = !textboxAsMarkdown"
         >
-          <v-icon>mdi-markdown-outline</v-icon>
+          <v-icon>mdi-language-markdown-outline</v-icon>
         </v-btn>
       </v-row>
 

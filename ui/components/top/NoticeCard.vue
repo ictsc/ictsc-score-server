@@ -25,11 +25,11 @@
 
     <v-card-text class="px-3 py-2">
       <!-- 宛先 -->
-      <v-chip v-if="notice.targetTeam" small label class="mb-2">
+      <v-chip v-if="notice.team" small label class="mb-2">
         宛先
         <v-divider vertical class="mx-1" />
         <div class="text-truncate">
-          {{ notice.targetTeam.displayName }}
+          {{ notice.team.displayName }}
         </div>
       </v-chip>
 

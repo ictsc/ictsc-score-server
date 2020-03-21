@@ -6,6 +6,7 @@ module Types
     field :mode,             Types::Enums::ProblemBodyMode, null: false
     field :title,            String,                        null: false
     field :genre,            String,                        null: true
+    field :resettable,       Boolean,                       null: false
     field :text,             String,                        null: false
     field :perfect_point,    Integer,                       null: false
     field :solved_criterion, Integer,                       null: false

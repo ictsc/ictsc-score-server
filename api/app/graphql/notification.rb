@@ -74,7 +74,7 @@ class Notification
             # body: "#{record.title}\n#{record.text}"
           },
           {
-            to: record.target_team || %i[audience player],
+            to: record.team || %i[audience player],
             title: 'お知らせが追加されました',
             body: "#{record.title}\n#{record.text}"
           }

@@ -50,6 +50,7 @@
               :disabled="!isNew"
               :items="teams"
               :rules="teamUniqueRules"
+              label="対象"
               item-text="displayName"
               item-value="number"
               auto-select-first
@@ -66,14 +67,24 @@
               label="名前"
             />
 
-            <v-text-field
-              v-model="service"
-              :readonly="sending"
-              :disabled="!isNew"
-              :rules="uniqueRules"
-              placeholder="SSH, VNC, Telnet, etc..."
-              label="種類"
-            />
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="service"
+                  :readonly="sending"
+                  :disabled="!isNew"
+                  :rules="uniqueRules"
+                  placeholder="SSH, VNC, Telnet, etc..."
+                  label="種類"
+                  v-on="on"
+                />
+              </template>
+
+              <div>
+                以下の値を設定すると便利コピーが有効になります<br />
+                {{ supportedServices }}
+              </div>
+            </v-tooltip>
 
             <!-- 本戦用 一時的に固定 -->
             <v-text-field
@@ -92,13 +103,20 @@
               placehoder="ホスト名, IPアドレス, etc..."
             />
 
-            <number-text-field
-              v-model="port"
-              :readonly="sending"
-              label="ポート番号"
-              only-integer
-              class="pt-4"
-            />
+            <v-tooltip right>
+              <template v-slot:activator="{ on }">
+                <number-text-field
+                  v-model="port"
+                  :readonly="sending"
+                  label="ポート番号"
+                  only-integer
+                  class="pt-4"
+                  v-on="on"
+                />
+              </template>
+
+              <span>0で非表示</span>
+            </v-tooltip>
 
             <v-text-field
               v-model="user"
@@ -218,6 +236,9 @@ export default {
     },
     teamId() {
       return this.team && this.team.id
+    },
+    supportedServices() {
+      return orm.ProblemEnvironment.supportedServices.join(',  ')
     }
   },
   watch: {
