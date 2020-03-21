@@ -10,7 +10,7 @@
           min="-5"
           max="100"
           hide-details
-          @start="stepEnable = true"
+          @mousedown="stepEnable = true"
         >
           <template v-slot:prepend>
             <number-text-field
