@@ -31,13 +31,6 @@
       class="pt-2"
     />
 
-    <!-- 運営メモ -->
-    <v-sheet v-if="!!problem.secretText" class="pa-2 elevation-2">
-      <span class="pa-2 body-2">運営用メモ</span>
-      <v-divider class="pb-1" />
-      <markdown :content="problem.secretText" />
-    </v-sheet>
-
     <!-- 環境 -->
     <environment-area
       v-if="isStaff || problem.environments.length !== 0"
@@ -45,6 +38,13 @@
       :environments="problem.environments"
       class="py-2"
     />
+
+    <!-- 運営メモ -->
+    <v-sheet v-if="!!problem.secretText" class="pa-2 mb-2 elevation-2">
+      <span class="pa-2 body-2">運営用メモ</span>
+      <v-divider class="pb-1" />
+      <markdown :content="problem.secretText" />
+    </v-sheet>
 
     <!-- 本文 -->
     <v-sheet class="pa-2 elevation-2">
