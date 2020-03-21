@@ -56,9 +56,15 @@
       </v-data-table>
     </v-row>
 
-    <v-btn v-if="isStaff" class="hide-on-print" @click="capture">
-      キャプチャ
-    </v-btn>
+    <v-tooltip v-if="isStaff" bottom>
+      <template v-slot:activator="{ on }">
+        <v-btn class="hide-on-print" @click="capture" v-on="on">
+          キャプチャ
+        </v-btn>
+      </template>
+
+      <span>プリントダイアログでスケールとマージンを調整してください</span>
+    </v-tooltip>
   </div>
 </template>
 <script>
