@@ -99,6 +99,10 @@ export default {
       return this.problemTitleHeaders.map(header => `header.${header.value}`)
     },
     headers() {
+      if (this.problemTitleHeaders.length === 0) {
+        return []
+      }
+
       return [
         { text: 'チーム', value: 'teamName', divider: true },
         {
