@@ -1,16 +1,17 @@
 <template>
   <v-col align="start" class="pa-0">
     <div>
-      <expandable-button v-model="show" :togglable="supplements.length !== 0">
-        補足事項
-      </expandable-button>
-
       <plus-button
         v-if="isStaff"
         color="primary"
         elevation="2"
+        class="mr-1"
         @click.stop="showModal = true"
       />
+
+      <expandable-button v-model="show" :togglable="supplements.length !== 0">
+        補足事項
+      </expandable-button>
     </div>
 
     <template v-for="supplement in sortedSupplements">
