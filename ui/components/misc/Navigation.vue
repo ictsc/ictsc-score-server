@@ -10,17 +10,39 @@
 
     <v-spacer />
 
-    <template v-for="nav in navigations">
+    <template v-if="isWide">
       <navigation-link
-        v-if="nav.if !== undefined ? nav.if : true"
-        :key="nav.text || nav.icon"
+        v-for="nav in navigations"
+        :key="nav.key"
         :to="nav.to"
-        :always="nav.always !== undefined ? nav.always : false"
-        @click="nav.click ? nav.click() : () => {}"
+        :always="nav.always"
+        @click="nav.click"
       >
-        {{ nav.text }}
         <v-icon v-if="nav.icon">{{ nav.icon }}</v-icon>
+        <div v-else>{{ nav.text }}</div>
       </navigation-link>
+    </template>
+    <template v-else>
+      <v-menu open-on-hover offset-y>
+        <template v-slot:activator="{ on }">
+          <v-app-bar-nav-icon color="white" text tile class="pr-6" v-on="on" />
+        </template>
+
+        <v-list>
+          <v-list-item
+            v-for="nav in navigations"
+            :key="nav.key"
+            :to="nav.to"
+            :always="nav.always"
+            @click="nav.click"
+          >
+            <v-list-item-title>
+              <v-icon v-if="nav.icon">{{ nav.icon }}</v-icon>
+              <div v-else>{{ nav.text }}</div>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </template>
   </v-app-bar>
 </template>
@@ -33,8 +55,23 @@ export default {
   components: {
     NavigationLink
   },
+  data() {
+    return {
+      isWide: true
+    }
+  },
   computed: {
     navigations() {
+      return this.navigationsBase
+        .filter(nav => (nav.if !== undefined ? nav.if : true))
+        .map(nav => {
+          nav.key = nav.text || nav.icon
+          nav.always = nav.always !== undefined ? nav.always : false
+          nav.click = nav.click ? nav.click : () => {}
+          return nav
+        })
+    },
+    navigationsBase() {
       return [
         { to: '/', text: 'トップ' },
         { to: '/problems', text: '問題' },
@@ -59,6 +96,15 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.onResize()
+    window.addEventListener('resize', this.onResize, { passive: true })
+  },
+  beforeDestroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.onResize, { passive: true })
+    }
+  },
   methods: {
     ...mapActions('session', ['logout']),
 
@@ -69,6 +115,9 @@ export default {
       } else {
         this.notifyWarning({ message: 'ログインしていません' })
       }
+    },
+    onResize() {
+      this.isWide = window.innerWidth >= 770
     }
   }
 }
