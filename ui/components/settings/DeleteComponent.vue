@@ -8,7 +8,7 @@
         :label="label"
         :items="items"
         :item-value="itemValue"
-        item-text="title"
+        :item-text="itemText"
         auto-select-first
         editable
         dense
@@ -62,6 +62,10 @@ export default {
     },
     delete: {
       type: Function,
+      required: true
+    },
+    itemText: {
+      type: String,
       required: true
     },
     itemValue: {

@@ -424,6 +424,17 @@ export default class Mutations extends BaseModel {
     })
   }
 
+  static deleteTeam({ action, resolve, params: { number } }) {
+    return this.sendMutation({
+      action,
+      resolve,
+      mutation: 'deleteTeam',
+      params: { number },
+      fields: [orm.Team],
+      type: 'delete'
+    })
+  }
+
   static addNotice({
     action,
     resolve,
