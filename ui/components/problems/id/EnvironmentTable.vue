@@ -27,6 +27,7 @@
       />
     </template>
 
+    <!-- ボタン -->
     <template v-slot:item.action="{ item }">
       <environment-modal :item="item" :problem="problem">
         <template v-slot:activator="{ on }">
@@ -50,6 +51,7 @@
       </countdown-delete-button>
     </template>
 
+    <!-- チーム -->
     <template v-slot:item.team.displayName="{ value }">
       <template v-if="!!value">
         {{ value }}
@@ -60,13 +62,14 @@
       </template>
     </template>
 
+    <!-- パスワード -->
     <template v-slot:item.password="{ value }">
       <v-row align="center" class="flex-nowrap">
         <v-btn
           v-clipboard:copy="value"
           v-clipboard:success="onCopySuccess"
           v-clipboard:error="onCopyError"
-          :disabled="!canCopyPassword(value)"
+          :disabled="isMarkdown(value)"
           icon
           small
         >
@@ -78,20 +81,24 @@
       </v-row>
     </template>
 
+    <!-- ポート -->
     <template v-slot:item.port="{ value }">
       <template v-if="!!value">
         {{ value }}
       </template>
     </template>
 
+    <!-- チーム -->
     <template v-slot:item.team="{ value }">
       <v-icon v-if="!value" small>mdi-check</v-icon>
     </template>
 
+    <!-- 運営用メモ -->
     <template v-slot:item.secretText="{ value }">
       <markdown :content="value" dense />
     </template>
 
+    <!-- コピーボタン -->
     <template v-slot:item.copy="{ item }">
       <v-tooltip
         top
@@ -100,10 +107,10 @@
       >
         <template v-slot:activator="{ on }">
           <v-btn
-            v-clipboard:copy="item.copyText"
+            v-clipboard:copy="item.copyText.text"
             v-clipboard:success="onCopySuccess"
             v-clipboard:error="onCopyError"
-            :disabled="disableCopyButton(item)"
+            :disabled="!item.copyText.text"
             icon
             small
             v-on="on"
@@ -111,11 +118,14 @@
             <v-icon>mdi-clipboard-text-outline</v-icon>
           </v-btn>
 
-          {{ item.isSSH ? 'sshpassコマンド' : item.copyText }}
+          {{
+            item.copyText.display ? item.copyText.display : item.copyText.text
+          }}
         </template>
-        <v-card v-if="item.isSSH">
+
+        <v-card v-if="item.copyText.tooltip">
           <v-card-text class="black--text">
-            sshpassコマンドを使うとpassword入力の手間が省けます
+            {{ item.copyText.tooltip }}
           </v-card-text>
         </v-card>
       </v-tooltip>
@@ -160,7 +170,7 @@ export default {
     },
     headers() {
       const commons = [
-        { text: 'コピー', value: 'copy' },
+        { text: '便利コピー', value: 'copy' },
         { text: '種類', value: 'service' },
         { text: '名前', value: 'name' },
         { text: 'ホスト', value: 'host' },
@@ -197,21 +207,13 @@ export default {
     onCopyError(e) {
       this.notifyWarning({ message: 'コピーに失敗しました' })
     },
+
     isMarkdown(str) {
       // 無いよりまし
       // [hoge](path)があればMarkdownとして判断する
       return /\[.*\]\(.*\)/.test(str)
     },
-    canCopyPassword(str) {
-      return str && !this.isMarkdown(str)
-    },
-    disableCopyButton(item) {
-      if (item.copyText === '') {
-        return true
-      }
 
-      return item.isSSH && !this.canCopyPassword(item.password)
-    },
     async deleteEnvironment(item) {
       await orm.Mutations.deleteProblemEnvironment({
         action: '接続情報削除',
