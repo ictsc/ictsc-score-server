@@ -11,6 +11,7 @@
     @submit="addNotice($event)"
     @reset="reset"
   >
+    <!-- モーダル内容 -->
     <template v-slot:prepend>
       <!-- タイトル -->
       <v-text-field
@@ -44,6 +45,16 @@
         class="mb-4"
         @click="pinned = !pinned"
       />
+    </template>
+
+    <!-- 確認モーダル -->
+    <template v-slot:prepend-confirm>
+      <div class="pa-2">
+        <div>タイトル: {{ title }}</div>
+        <v-divider />
+        <div>対象: {{ team ? team.displayName : '全体' }}</div>
+        <v-divider />
+      </div>
     </template>
   </markdown-editor-modal>
 </template>
@@ -89,6 +100,9 @@ export default {
     }
   },
   computed: {
+    team() {
+      return this.teamId ? orm.Team.find(this.teamId) : null
+    },
     teams() {
       const teams = this.sortByNumber(orm.Team.query().all())
       teams.unshift({ displayName: '全体', id: null })
