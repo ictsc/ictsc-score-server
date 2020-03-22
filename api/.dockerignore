@@ -15,3 +15,4 @@ coverage/
 !.gitignore
 !.eslintignore
 !.yarnrc
+!.dockerignore
