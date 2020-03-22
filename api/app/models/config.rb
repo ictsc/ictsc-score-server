@@ -54,7 +54,14 @@ class Config < ApplicationRecord
 
     # 多くの場合、1リクエスト内で複数の設定を取得するため、一括取得しキャッシュする
     def find_by_key?(key)
-      all.find {|config| config.key == key.to_s }
+      if ActiveRecord::Base.logger.nil?
+        all.find {|config| config.key == key.to_s }
+      else
+        # クエリがログを汚すので抑える
+        ActiveRecord::Base.logger.silence do
+          all.find {|config| config.key == key.to_s }
+        end
+      end
     end
 
     def get(key)
