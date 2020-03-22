@@ -25,7 +25,16 @@
     <template v-else>
       <v-menu open-on-hover offset-y>
         <template v-slot:activator="{ on }">
-          <v-app-bar-nav-icon color="white" text tile class="pr-6" v-on="on" />
+          <!-- divで囲まないと余白が崩れる -->
+          <div>
+            <v-app-bar-nav-icon
+              :ripple="false"
+              color="white"
+              text
+              tile
+              v-on="on"
+            />
+          </div>
         </template>
 
         <v-list>
@@ -94,10 +103,21 @@ export default {
           click: this.tryLogout
         }
       ]
+    },
+    wideThreshold() {
+      // 未ログインかプレイヤーなら後者
+      return this.isStaff || this.isAudience ? 690 : 510
     }
   },
-  mounted() {
-    this.onResize()
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler(value) {
+        this.onResize()
+      }
+    }
+  },
+  beforeMount() {
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   beforeDestroy() {
@@ -117,7 +137,7 @@ export default {
       }
     },
     onResize() {
-      this.isWide = window.innerWidth >= 770
+      this.isWide = window.innerWidth >= this.wideThreshold
     }
   }
 }
