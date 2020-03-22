@@ -18,7 +18,7 @@
         >
           <!-- eslint-disable-next-line vue/valid-v-for -->
           <div :key="header.text" class="problem-title">
-            {{ problemGenres[i] }}<br />
+            {{ problemGenres[i] }}<br v-if="problemGenres[i]" />
             {{ header.text }}
           </div>
         </template>
