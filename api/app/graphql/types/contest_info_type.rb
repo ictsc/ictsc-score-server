@@ -9,7 +9,6 @@ module Types
     field :reset_delay_sec,       Integer,             null: false
     field :hide_all_score,        Boolean,             null: false
     field :realtime_grading,      Boolean,             null: false
-    field :text_size_limit,       Integer,             null: false
     field :guide_page,            String,              null: false
   end
 end
