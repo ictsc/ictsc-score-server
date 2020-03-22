@@ -132,9 +132,6 @@ export default {
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    storageKeyPrefix() {
-      return 'categoryModal'
-    },
     storageKeyUniqueField() {
       return 'code'
     },
@@ -143,9 +140,6 @@ export default {
     },
     fieldKeys() {
       return fieldKeys
-    },
-    async fetchSelf() {
-      await orm.Queries.category(this.item.id)
     },
     // -- END --
 

@@ -330,9 +330,6 @@ export default {
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    storageKeyPrefix() {
-      return 'problemModal'
-    },
     storageKeyUniqueField() {
       return 'code'
     },
@@ -341,9 +338,6 @@ export default {
     },
     fieldKeys() {
       return orm.Problem.mutationFieldKeys()
-    },
-    async fetchSelf() {
-      await orm.Queries.problemCategory(this.item.id)
     },
     // -- END --
 

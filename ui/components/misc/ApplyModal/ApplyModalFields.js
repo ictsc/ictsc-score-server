@@ -2,11 +2,9 @@
 // ローカルストレージ周りが複雑なためmixinに切り出した
 
 // mixinする側で実装するもの
-// storageKeyPrefix()
 // storageKeyUniqueField()
 // fields()
 // fieldKeys()
-// fetchSelf()
 // 各フィールドのwatch
 
 export default {
@@ -67,6 +65,9 @@ export default {
     }
   },
   methods: {
+    storageKeyPrefix() {
+      return this.$options.name
+    },
     storageKey(field) {
       const key = this.isNew ? 'new' : this.item[this.storageKeyUniqueField()]
       return `${this.storageKeyPrefix()}-${key}-${field}`

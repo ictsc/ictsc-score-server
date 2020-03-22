@@ -256,9 +256,6 @@ export default {
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    storageKeyPrefix() {
-      return 'environmentModal'
-    },
     storageKeyUniqueField() {
       return 'id'
     },
@@ -267,9 +264,6 @@ export default {
     },
     fieldKeys() {
       return orm.ProblemEnvironment.mutationFieldKeys()
-    },
-    async fetchSelf() {
-      await orm.Queries.problemEnvironment(this.item.id)
     },
     // -- END --
 
