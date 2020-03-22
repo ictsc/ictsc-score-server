@@ -94,7 +94,12 @@ export default class Queries {
   }
 
   static problemsAnswersTeam() {
-    return orm.Problem.eagerFetch({}, ['body', 'answers', 'answers.team'])
+    return orm.Problem.eagerFetch({}, [
+      'body',
+      'category',
+      'answers',
+      'answers.team'
+    ])
   }
 
   static problemsCategory() {

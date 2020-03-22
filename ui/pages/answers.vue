@@ -74,13 +74,24 @@ export default {
 
     problems() {
       const problems = orm.Problem.query()
-        .with(['body', 'answers', 'answers.team'])
+        .with(['body', 'category', 'answers', 'answers.team'])
         .all()
 
-      return this.$_.sortBy(problems, p => this.$elvis(p, 'body.title'))
+      return problems.sort((a, b) => this.compareOrder(a, b))
     }
   },
   methods: {
+    compareOrder(a, b) {
+      const aCO = this.$elvis(a, 'category.order')
+      const bCO = this.$elvis(b, 'category.order')
+
+      if (aCO < bCO) return -1
+      if (aCO > bCO) return 1
+      if (a.order < b.order) return -1
+      if (a.order > b.order) return 1
+      return 0
+    },
+
     // 各チームの最終解答のみの配列にする
     shrinkAnswers(answers) {
       // teamIdをキーとしたanswerの配列
