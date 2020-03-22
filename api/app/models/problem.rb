@@ -58,6 +58,10 @@ class Problem < ApplicationRecord
     end
   end
 
+  def solved_count
+    answers.delay_filter.includes(:score).where(scores: { solved: true }).pluck(:team_id).uniq.size
+  end
+
   class << self
     def opened(team:)
       return all if Config.all_problem_force_open_at <= Time.current
