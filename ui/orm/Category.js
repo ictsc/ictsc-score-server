@@ -16,6 +16,15 @@ export default class Category extends BaseModel {
     }
   }
 
+  static mutationFields() {
+    return {
+      code: '',
+      title: '',
+      description: '',
+      order: 0
+    }
+  }
+
   get displayTitle() {
     return $nuxt.isStaff ? `${this.code}. ${this.title}` : this.title
   }

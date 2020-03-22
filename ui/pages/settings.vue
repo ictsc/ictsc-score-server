@@ -19,7 +19,7 @@
           filename-prefix="categories"
           :fetch="fetchCategories"
           :apply="applyCategory"
-          :fields="categoryFields"
+          :fields="$orm.Category.mutationFieldKeys()"
           class="mt-4"
         />
         <export-import-buttons
@@ -184,8 +184,6 @@ export default {
     return {
       showDelete1: false,
       showDelete2: false,
-
-      categoryFields: ['code', 'title', 'order', 'description'],
       configFields: ['key', 'value']
     }
   },
