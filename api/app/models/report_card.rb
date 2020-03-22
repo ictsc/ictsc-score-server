@@ -49,10 +49,11 @@ class ReportCard
     private
 
     def sorted_problems
+      # カテゴリ未所属対応
       Problem
         .includes(:body, :category)
         .all
-        .sort_by {|pb| [pb.category.order, pb.order] }
+        .sort_by {|pb| [pb.category&.order || -1, pb.order] }
     end
 
     def build_max_record(problems:)
