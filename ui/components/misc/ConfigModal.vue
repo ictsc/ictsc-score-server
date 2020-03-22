@@ -13,7 +13,7 @@
     <v-card>
       <v-card-title>{{ config.key }}</v-card-title>
       <v-card-text class="px-4 pb-0">
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
           <template v-if="config.valueTypeIsBoolean">
             <v-switch v-model="configValue" :readonly="sending" inset />
           </template>
