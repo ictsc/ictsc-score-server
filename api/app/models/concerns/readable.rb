@@ -94,10 +94,6 @@ module Readable
 
         # joins(:answer).merge(Answer.delay_filter).where(answers: { team: team })
         where(answer: Answer.readable_records(team: team).delay_filter)
-      when 'FirstCorrectAnswer'
-        # TODO: update方式だと、遅延の影響で一時的に Problem#solved_countが減る
-        #       insert方式にして最新のみ使いようにしたほうがいい
-        delay_filter.where(team: team)
       when 'Issue'
         where(team: team, problem: Problem.opened(team: team))
       when 'IssueComment'
@@ -119,6 +115,9 @@ module Readable
         # プレイヤーと見学者は全体宛か、自チーム向けのみ
         # team == nil 全体お知らせ
         where(team: [nil, team.id])
+      when 'FirstCorrectAnswer'
+        # 使用予定なし
+        raise UnhandledClass, self
       when 'Scoreboard', 'Session'
         # このクラスはモデル本体に記載
         raise UnhandledClass, self

@@ -41,7 +41,8 @@ export default {
           name: '基準',
           value: this.problem.solvedCriterion + '%'
         })
-        list[0].push({ name: '突破チーム数', value: this.problem.solvedCount })
+        // 一覧取得が100ms程遅くなる
+        // list[0].push({ name: '突破チーム数', value: this.problem.solvedCount })
       }
 
       if (this.isStaff) {

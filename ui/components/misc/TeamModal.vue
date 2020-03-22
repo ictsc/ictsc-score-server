@@ -162,9 +162,6 @@ export default {
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    storageKeyPrefix() {
-      return 'teamModal'
-    },
     storageKeyUniqueField() {
       return 'number'
     },
@@ -173,9 +170,6 @@ export default {
     },
     fieldKeys() {
       return orm.Team.mutationFieldKeys()
-    },
-    async fetchSelf() {
-      await orm.Queries.team(this.item.id)
     },
     // -- END --
 

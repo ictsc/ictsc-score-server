@@ -83,15 +83,6 @@ import MarkdownTextArea from '~/components/commons/MarkdownTextArea'
 import OrderSlider from '~/components/misc/ApplyModal/OrderSlider'
 import TitleTextField from '~/components/misc/ApplyModal/TitleTextField'
 
-const fields = {
-  code: '',
-  title: '',
-  description: '',
-  order: 0
-}
-
-const fieldKeys = Object.keys(fields)
-
 export default {
   name: 'CategoryModal',
   components: {
@@ -123,7 +114,7 @@ export default {
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
-    ...fieldKeys.reduce((obj, field) => {
+    ...orm.Category.mutationFieldKeys().reduce((obj, field) => {
       obj[field] = function(value) {
         this.setStorage(field, value)
       }
@@ -132,20 +123,14 @@ export default {
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
-    storageKeyPrefix() {
-      return 'categoryModal'
-    },
     storageKeyUniqueField() {
       return 'code'
     },
     fields() {
-      return fields
+      return orm.Category.mutationFields()
     },
     fieldKeys() {
-      return fieldKeys
-    },
-    async fetchSelf() {
-      await orm.Queries.category(this.item.id)
+      return orm.Category.mutationFieldKeys()
     },
     // -- END --
 

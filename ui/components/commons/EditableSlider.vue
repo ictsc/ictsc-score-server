@@ -24,7 +24,7 @@
         :max="sliderMax"
         hide-details
         class="ml-4"
-        @start="stepEnable = true"
+        @mousedown="stepEnable = true"
         @input="$emit('input', $event)"
       />
       <slot name="bottom" />

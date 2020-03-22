@@ -14,7 +14,7 @@ class Acl
 
       case mutation.graphql_name
       when 'ApplyCategory', 'ApplyProblem', 'ApplyProblemEnvironment', 'ApplyScore', 'ApplyTeam', 'AddNotice', 'AddProblemSupplement', 'ConfirmingAnswer', 'PinNotice', 'UpdateConfig', 'RegradeAnswers',
-        'DeleteAttachment', 'DeleteCategory', 'DeleteNotice', 'DeleteProblem', 'DeleteProblemEnvironment', 'DeleteProblemSupplement', 'DeleteSession'
+        'DeleteAttachment', 'DeleteCategory', 'DeleteNotice', 'DeleteProblem', 'DeleteProblemEnvironment', 'DeleteProblemSupplement', 'DeleteSession', 'DeleteTeam'
         team.staff?
       when 'AddAnswer', 'AddPenalty'
         # player and opened and 解答とペナルティ最終提出から20s

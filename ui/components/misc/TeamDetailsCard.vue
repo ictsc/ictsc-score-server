@@ -10,8 +10,9 @@
 
         <v-divider />
 
-        <v-row align="center" class="flex-nowrap" no-gutters>
+        <v-row align="center" class="flex-nowrap pr-2" no-gutters>
           <v-btn
+            v-if="isStaff"
             v-clipboard:copy="team.name"
             v-clipboard:success="onCopySuccess"
             v-clipboard:error="onCopyError"
@@ -21,7 +22,7 @@
             <v-icon>mdi-clipboard-text-outline</v-icon>
           </v-btn>
 
-          <div class="pl-2">{{ team.name }}</div>
+          <div>{{ team.name }}</div>
         </v-row>
 
         <template v-if="team.organization">

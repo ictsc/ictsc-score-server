@@ -25,11 +25,11 @@ module Types
     field :answers,             [Types::AnswerType],             null: false
     field :penalties,           [Types::PenaltyType],            null: false
     field :issues,              [Types::IssueType],              null: false
-    field :solved_count,        Integer,                         null: false
-    # created_atとupdated_atは意味がないので見せない(bodyを見るべき)
 
-    # field :actual_point # そのチームの、現在の得点を計算して返す
-    #                     APIv1では全てのanswers.scoresを取得してUIが算出していたがロードが重い
+    # 全問題取得が100ms程遅くなるので注意
+    field :solved_count,        Integer,                         null: false
+
+    # created_atとupdated_atは意味がないので見せない(bodyを見るべき)
 
     def open_at_begin
       self.object.open_at&.begin
@@ -47,6 +47,5 @@ module Types
     has_many :penalties
     belongs_to :previous_problem
     belongs_to :category
-    has_one :solved_count, :first_correct_answers, &:size
   end
 end

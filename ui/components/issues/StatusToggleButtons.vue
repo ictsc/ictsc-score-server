@@ -1,15 +1,7 @@
 <template>
-  <v-btn-toggle :value="internalValue" multiple @change="emitChange($event)">
+  <v-btn-toggle :value="value" multiple @change="$emit('change', $event)">
     <v-btn
-      :value="noneValue()"
-      active-class="elevation-4"
-      @click.capture="selectAll"
-    >
-      全表示
-    </v-btn>
-
-    <v-btn
-      :value="red"
+      value="unsolved"
       active-class="error white--text elevation-4"
       :class="unsolvedClass"
     >
@@ -18,7 +10,7 @@
 
     <v-btn
       v-if="isStaff"
-      :value="yellow"
+      value="in_progress"
       active-class="warning white--text elevation-4"
       :class="inProgressClass"
     >
@@ -26,7 +18,7 @@
     </v-btn>
 
     <v-btn
-      :value="green"
+      value="solved"
       active-class="success white--text elevation-4"
       :class="solvedClass"
     >
@@ -45,23 +37,6 @@ export default {
     value: {
       type: Array,
       required: true
-    },
-    red: {
-      type: String,
-      required: true
-    },
-    yellow: {
-      type: String,
-      required: true
-    },
-    green: {
-      type: String,
-      required: true
-    }
-  },
-  data() {
-    return {
-      internalValue: this.convert(this.value)
     }
   },
   computed: {
@@ -73,28 +48,6 @@ export default {
     },
     solvedClass() {
       return this.value.includes('solved') ? '' : 'success--text'
-    }
-  },
-  methods: {
-    allValues() {
-      return [this.red, this.yellow, this.green]
-    },
-    noneValue() {
-      return 'none'
-    },
-    selectAll() {
-      this.emitChange(this.allValues())
-    },
-    convert(list) {
-      if (this.allValues().every(v => list.includes(v))) {
-        return [...this.allValues()]
-      } else {
-        return this.$_.uniq([this.noneValue(), ...list])
-      }
-    },
-    emitChange(list) {
-      this.internalValue = this.convert(list)
-      this.$emit('change', this.internalValue)
     }
   }
 }

@@ -1,17 +1,18 @@
 <template>
   <div>
-    <!-- 開くボタン -->
-    <expandable-button v-model="show" :togglable="!isEmpty">
-      接続情報
-    </expandable-button>
-
     <!-- ペンボタン -->
     <plus-button
       v-if="isStaff"
       color="primary"
       elevation="2"
+      class="mr-1"
       @click.stop="showModal = true"
     />
+
+    <!-- 開くボタン -->
+    <expandable-button v-model="show" :togglable="!isEmpty">
+      接続情報
+    </expandable-button>
 
     <!-- テーブル -->
     <v-expand-transition>

@@ -5,12 +5,7 @@
         <page-title title="質問一覧" />
 
         <!-- 状態選択ボタン -->
-        <status-toggle-buttons
-          v-model="displayStatuses"
-          red="unsolved"
-          yellow="in_progress"
-          green="solved"
-        />
+        <status-toggle-buttons v-model="displayStatuses" />
 
         <!-- 検索ボックス -->
         <v-text-field

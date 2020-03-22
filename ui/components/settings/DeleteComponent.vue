@@ -8,7 +8,7 @@
         :label="label"
         :items="items"
         :item-value="itemValue"
-        item-text="title"
+        :item-text="itemText"
         auto-select-first
         editable
         dense
@@ -27,9 +27,10 @@
       <v-icon>mdi-delete</v-icon>
     </v-btn>
 
-    <v-dialog v-model="showDialog" max-width="20em">
+    <v-dialog v-model="showDialog" max-width="22em">
       <v-card>
         <v-card-text class="title text-center pt-2">
+          関連データも全て削除されます<br />
           本当に削除しますか?
         </v-card-text>
 
@@ -62,6 +63,10 @@ export default {
     },
     delete: {
       type: Function,
+      required: true
+    },
+    itemText: {
+      type: String,
       required: true
     },
     itemValue: {

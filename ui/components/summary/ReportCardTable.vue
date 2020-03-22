@@ -18,7 +18,7 @@
         >
           <!-- eslint-disable-next-line vue/valid-v-for -->
           <div :key="header.text" class="problem-title">
-            {{ problemGenres[i] }}<br />
+            {{ problemGenres[i] }}<br v-if="problemGenres[i]" />
             {{ header.text }}
           </div>
         </template>
@@ -56,9 +56,15 @@
       </v-data-table>
     </v-row>
 
-    <v-btn v-if="isStaff" class="hide-on-print" @click="capture">
-      キャプチャ
-    </v-btn>
+    <v-tooltip v-if="isStaff" bottom>
+      <template v-slot:activator="{ on }">
+        <v-btn class="hide-on-print" @click="capture" v-on="on">
+          キャプチャ
+        </v-btn>
+      </template>
+
+      <span>プリントダイアログでスケールとマージンを調整してください</span>
+    </v-tooltip>
   </div>
 </template>
 <script>
@@ -99,6 +105,10 @@ export default {
       return this.problemTitleHeaders.map(header => `header.${header.value}`)
     },
     headers() {
+      if (this.problemTitleHeaders.length === 0) {
+        return []
+      }
+
       return [
         { text: 'チーム', value: 'teamName', divider: true },
         {

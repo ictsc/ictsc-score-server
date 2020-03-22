@@ -82,6 +82,9 @@ Markdownを書いて送信するモーダルのベースコンポーネント
         </v-card-title>
 
         <v-divider />
+
+        <slot name="prepend-confirm" />
+
         <v-card-text class="pa-1">
           <markdown :content="text" />
         </v-card-text>
