@@ -28,8 +28,9 @@ export default class Problem extends BaseModel {
       supplements: this.hasMany(orm.ProblemSupplement, 'problemId'),
       penalties: this.hasMany(orm.Penalty, 'problemId'),
       answers: this.hasMany(orm.Answer, 'problemId'),
-      issues: this.hasMany(orm.Issue, 'problemId'),
-      solvedCount: this.number()
+      issues: this.hasMany(orm.Issue, 'problemId')
+      // 一覧取得が100ms程遅くなる
+      // solvedCount: this.number()
     }
   }
 
