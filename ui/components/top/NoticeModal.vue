@@ -13,14 +13,6 @@
   >
     <!-- モーダル内容 -->
     <template v-slot:prepend>
-      <!-- タイトル -->
-      <v-text-field
-        v-model="title"
-        label="タイトル"
-        :readonly="sending"
-        :rules="titleRules"
-      />
-
       <!-- 宛先 -->
       <v-overflow-btn
         v-model="teamId"
@@ -34,6 +26,14 @@
         hide-defaults
         editable
         dense
+      />
+
+      <!-- タイトル -->
+      <v-text-field
+        v-model="title"
+        label="タイトル"
+        :readonly="sending"
+        :rules="titleRules"
         class="mb-2"
       />
 
