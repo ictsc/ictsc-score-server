@@ -6,7 +6,7 @@
     text
     tile
     height="100%"
-    class="white--text"
+    class="white--text px-0"
     :active-class="activeClass"
     @click="$emit('click')"
   >
