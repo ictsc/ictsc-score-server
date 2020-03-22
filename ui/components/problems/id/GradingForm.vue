@@ -2,27 +2,8 @@
   <v-col>
     <v-row justify="space-between">
       <template v-if="problem.modeIsTextbox">
-        <v-slider
-          v-model="slider"
-          :step="stepEnable ? 5 : undefined"
-          :readonly="sending"
-          track-color="grey lighten-2"
-          min="-5"
-          max="100"
-          hide-details
-          @mousedown="stepEnable = true"
-        >
+        <grading-slider v-model="percent" :sending="sending">
           <template v-slot:prepend>
-            <number-text-field
-              v-model="text"
-              :readonly="sending"
-              suffix="%"
-              hide-details
-              type="string"
-              single-line
-              @focus="stepEnable = false"
-            />
-
             <!-- 基準突破チェック + 説明ツールチップ -->
             <v-tooltip open-delay="300" bottom>
               <template v-slot:activator="{ on }">
@@ -38,7 +19,7 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  :disabled="!validPoint || !changed"
+                  :disabled="!wasChanged"
                   :loading="sending"
                   color="primary"
                   @click="applyScore"
@@ -54,7 +35,7 @@
               </span>
             </v-tooltip>
           </template>
-        </v-slider>
+        </grading-slider>
       </template>
     </v-row>
 
@@ -88,12 +69,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import orm from '~/orm'
-import NumberTextField from '~/components/commons/NumberTextField'
+import GradingSlider from '~/components/problems/id/GradingSlider'
 
 export default {
   name: 'GradingForm',
   components: {
-    NumberTextField
+    GradingSlider
   },
   props: {
     answer: {
@@ -105,67 +86,35 @@ export default {
       required: true
     }
   },
-
   data() {
     return {
-      previous: this.answer.hasPoint ? this.answer.percent : -5,
       sending: false,
-      stepEnable: false,
-      slider: this.answer.hasPoint ? this.answer.percent : -5,
-      text: this.answer.hasPoint ? String(this.answer.percent) : 'null'
+      percent: this.answer.hasPoint ? this.answer.percent : null,
+      previousPercent: this.answer.hasPoint ? this.answer.percent : null
     }
   },
-
   computed: {
     ...mapGetters('contestInfo', ['realtimeGrading', 'hideAllScore']),
-    validPoint() {
-      return this.text === 'null' || this.validPointNumberText(this.text)
-    },
-    changed() {
-      return this.previous !== this.slider
+
+    wasChanged() {
+      return this.previousPercent !== this.percent
     },
     solvedIconColor() {
-      return this.problem.solvedCriterion <= this.slider
+      return this.problem.solvedCriterion <= this.percent
         ? 'primary'
         : 'grey lighten-2'
     }
   },
-  watch: {
-    slider(value) {
-      this.text = value === -5 ? 'null' : String(value)
-    },
-    text(value) {
-      if (value === 'null') {
-        this.slider = -5
-      } else if (this.validPointNumberText(value)) {
-        this.slider = parseInt(value)
-      } else {
-        // 例え無効な値でもsliderを-5にすると挙動がおかしくなる
-      }
-    }
-  },
   methods: {
-    validPointNumberText(text) {
-      const value = parseInt(text)
-
-      if (isNaN(value)) {
-        return false
-      } else if (value >= 0 && value <= 100) {
-        return true
-      } else {
-        return false
-      }
-    },
     async applyScore() {
       this.sending = true
 
-      const percent = this.text === 'null' ? null : parseInt(this.text)
       await orm.Mutations.applyScore({
         action: '採点',
         resolve: () => {
-          this.previous = this.slider
+          this.previousPercent = this.percent
         },
-        params: { answerId: this.answer.id, percent }
+        params: { answerId: this.answer.id, percent: this.percent }
       })
 
       this.sending = false
