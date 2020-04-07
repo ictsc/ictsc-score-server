@@ -145,33 +145,33 @@ export default {
   components: {
     NarrowTextField,
     IconButton,
-    ItemField
+    ItemField,
   },
   props: {
     mode: {
       type: String,
-      required: true
+      required: true,
     },
     readonly: {
       type: Boolean,
-      required: true
+      required: true,
     },
     // candidates.sync
     candidates: {
       type: Array,
-      required: true
+      required: true,
     },
     // candidates.sync
     corrects: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       newCandidate: '',
       newItems: [],
-      errorMessages: []
+      errorMessages: [],
     }
   },
   watch: {
@@ -180,7 +180,7 @@ export default {
     },
     corrects() {
       this.validate()
-    }
+    },
   },
   created() {
     this.validate()
@@ -375,13 +375,13 @@ export default {
     refreshCorrects() {
       // 一旦空にして無理やり再描画
       const tmp = this.deepCopy(this.corrects)
-      this.updateCorrects(this.corrects.map(e => []))
+      this.updateCorrects(this.corrects.map((e) => []))
       this.$nextTick(() => this.updateCorrects(tmp))
     },
 
     // 基本的な配列操作の関数郡
     deepCopy(array2d) {
-      return array2d.map(o => Array.from(o))
+      return array2d.map((o) => Array.from(o))
     },
     swapByIndex(array, index1, index2) {
       const tmp = array[index1]
@@ -397,8 +397,8 @@ export default {
     },
     isUnique(array) {
       return array.length === this.$_.uniq(array).length
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

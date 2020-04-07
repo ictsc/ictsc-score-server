@@ -37,7 +37,7 @@ export default class BaseModel extends Model {
     const name = isList ? this.entity : inflection.singularize(this.entity)
     const fields = this.fields()
     const fieldsText = Object.keys(fields)
-      .filter(field => field !== '$isPersisted' && !fields[field].foreignKey)
+      .filter((field) => field !== '$isPersisted' && !fields[field].foreignKey)
       .join(' ')
 
     return `${name} { ${fieldsText} }`

@@ -11,12 +11,12 @@ export default {
   props: {
     latestUpdatedAt: {
       type: String,
-      required: true
+      required: true,
     },
     conflictFields: {
       type: Array,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

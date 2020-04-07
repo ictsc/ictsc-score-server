@@ -31,13 +31,13 @@ export default {
   name: 'StatusToggleButtons',
   model: {
     prop: 'value',
-    event: 'change'
+    event: 'change',
   },
   props: {
     value: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     unsolvedClass() {
@@ -48,7 +48,7 @@ export default {
     },
     solvedClass() {
       return this.value.includes('solved') ? '' : 'success--text'
-    }
-  }
+    },
+  },
 }
 </script>

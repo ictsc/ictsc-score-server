@@ -42,23 +42,23 @@ export default {
     // v-model
     value: {
       type: String,
-      default: null
+      default: null,
     },
     readonly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     label: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
       date: null,
       time: null,
       text: null,
-      rules: [v => this.isValidDateTime(v) || '不正なフォーマット(ISO 8601)']
+      rules: [(v) => this.isValidDateTime(v) || '不正なフォーマット(ISO 8601)'],
     }
   },
   watch: {
@@ -67,8 +67,8 @@ export default {
       handler(newValue) {
         // 上流から流れてきたデータはフォーマットしない
         this.valueToDate(newValue)
-      }
-    }
+      },
+    },
   },
   methods: {
     // 上流からの変更を反映する
@@ -111,7 +111,7 @@ export default {
     isValidDateString(string) {
       const year = this.$moment(string).format('YYYY')
       return year && year.length <= 4
-    }
-  }
+    },
+  },
 }
 </script>

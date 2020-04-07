@@ -11,7 +11,7 @@ export default class Session extends BaseModel {
       team: this.belongsTo(orm.Team, 'teamId'),
       latestIp: this.string().nullable(),
       createdAt: this.string().nullable(),
-      updatedAt: this.string().nullable()
+      updatedAt: this.string().nullable(),
     }
   }
 }

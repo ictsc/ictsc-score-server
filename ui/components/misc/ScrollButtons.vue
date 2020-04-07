@@ -19,8 +19,8 @@ export default {
       }
 
       this.$vuetify.goTo(number, { duration: 150 })
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

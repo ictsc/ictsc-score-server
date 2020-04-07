@@ -45,37 +45,37 @@ export default {
     EnvironmentModal,
     EnvironmentTable,
     ExpandableButton,
-    PlusButton
+    PlusButton,
   },
   props: {
     problem: {
       type: Object,
-      required: true
+      required: true,
     },
     environments: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       search: '',
       show: true,
-      showModal: false
+      showModal: false,
     }
   },
   computed: {
     isEmpty() {
       return this.environments.length === 0
-    }
+    },
   },
   watch: {
     isPlayer: {
       immediate: true,
       handler(value) {
         this.show = value
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>

@@ -77,7 +77,7 @@
         </v-btn>
 
         <markdown v-if="isMarkdown(value)" :content="value" dense />
-        <div v-else class="text-truncate" style="width: 12em">{{ value }}</div>
+        <div v-else class="text-truncate" style="width: 12em;">{{ value }}</div>
       </v-row>
     </template>
 
@@ -144,21 +144,21 @@ export default {
   components: {
     CountdownDeleteButton,
     EnvironmentModal,
-    Markdown
+    Markdown,
   },
   props: {
     problem: {
       type: Object,
-      required: true
+      required: true,
     },
     environments: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      search: undefined
+      search: undefined,
     }
   },
   computed: {
@@ -176,7 +176,7 @@ export default {
         { text: 'ホスト', value: 'host' },
         { text: 'ポート', value: 'port' },
         { text: 'ユーザー', value: 'user' },
-        { text: 'パスワード', value: 'password' }
+        { text: 'パスワード', value: 'password' },
       ]
 
       if (this.isStaff) {
@@ -186,12 +186,12 @@ export default {
           { text: '状態', value: 'status' },
           ...commons,
           { text: '更新時刻', value: 'updatedAtSimple' },
-          { text: '運営用メモ', value: 'secretText' }
+          { text: '運営用メモ', value: 'secretText' },
         ]
       } else {
         return [{ text: '共通', value: 'team', align: 'center' }, ...commons]
       }
-    }
+    },
   },
   methods: {
     onCopySuccess(event) {
@@ -201,7 +201,7 @@ export default {
 
       this.notifyInfo({
         message: `コピーしました\n${text}`,
-        timeout: 3000
+        timeout: 3000,
       })
     },
     onCopyError(e) {
@@ -217,9 +217,9 @@ export default {
     async deleteEnvironment(item) {
       await orm.Mutations.deleteProblemEnvironment({
         action: '接続情報削除',
-        params: { problemEnvironmentId: item.id }
+        params: { problemEnvironmentId: item.id },
       })
-    }
-  }
+    },
+  },
 }
 </script>

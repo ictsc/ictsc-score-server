@@ -21,14 +21,14 @@ import NotificationCard from '~/components/misc/NotificationCard'
 export default {
   name: 'NotificationArea',
   components: {
-    NotificationCard
+    NotificationCard,
   },
   computed: {
     ...mapGetters('notification', ['notifications']),
     reverseNotifications() {
       return this.notifications.slice().reverse()
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

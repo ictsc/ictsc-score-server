@@ -19,16 +19,16 @@ export default {
   props: {
     to: {
       type: String,
-      required: true
+      required: true,
     },
     always: {
       type: Boolean,
-      default: false
+      default: false,
     },
     activeClass: {
       type: String,
-      default: 'primary lighten-1'
-    }
-  }
+      default: 'primary lighten-1',
+    },
+  },
 }
 </script>

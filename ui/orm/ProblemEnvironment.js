@@ -20,7 +20,7 @@ export default class ProblemEnvironment extends BaseModel {
       password: this.string(),
       secretText: this.string().nullable(),
       createdAt: this.string(),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 
@@ -35,7 +35,7 @@ export default class ProblemEnvironment extends BaseModel {
       port: 22,
       user: '',
       password: '',
-      secretText: ''
+      secretText: '',
     }
   }
 
@@ -56,12 +56,12 @@ export default class ProblemEnvironment extends BaseModel {
       return {
         text: `sshpass -p "${this.password}" ${this.sshCommand}`,
         display: 'sshpassコマンド',
-        tooltip: 'sshpassコマンドを使うとpassword入力の手間が省けます'
+        tooltip: 'sshpassコマンドを使うとpassword入力の手間が省けます',
       }
     } else if (/^SSH\(公開鍵\)$/i.test(this.service)) {
       return {
         text: this.sshCommand,
-        display: 'sshコマンド'
+        display: 'sshコマンド',
       }
     } else if (/^Telnet$/i.test(this.service)) {
       return { text: `telnet ${this.host} ${this.port}` }

@@ -30,7 +30,7 @@ import DeleteComponent from '~/components/settings/DeleteComponent'
 export default {
   name: 'DeleteComponentArea',
   components: {
-    DeleteComponent
+    DeleteComponent,
   },
   methods: {
     async fetchTeams() {
@@ -39,11 +39,7 @@ export default {
     },
     async fetchProblems() {
       await orm.Queries.problems()
-      return this.sortByOrder(
-        orm.Problem.query()
-          .with('body')
-          .all()
-      )
+      return this.sortByOrder(orm.Problem.query().with('body').all())
     },
     async fetchCategories() {
       await orm.Queries.categories()
@@ -54,7 +50,7 @@ export default {
       await orm.Mutations.deleteTeam({
         action: 'チーム削除',
         resolve: () => (result = true),
-        params: { number }
+        params: { number },
       })
 
       return result
@@ -64,7 +60,7 @@ export default {
       await orm.Mutations.deleteCategory({
         action: 'カテゴリ削除',
         resolve: () => (result = true),
-        params: { code }
+        params: { code },
       })
 
       return result
@@ -74,11 +70,11 @@ export default {
       await orm.Mutations.deleteProblem({
         action: '問題削除',
         resolve: () => (result = true),
-        params: { code }
+        params: { code },
       })
 
       return result
-    }
-  }
+    },
+  },
 }
 </script>

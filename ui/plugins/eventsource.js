@@ -12,7 +12,7 @@ function subscribe(events, onMessage) {
   const url = `${EndPoint}/?eventType=${events.join(',')}`
   const eventSource = new EventSource(url, { withCredentials: true })
 
-  eventSource.onmessage = e => {
+  eventSource.onmessage = (e) => {
     onMessage(JSON.parse(e.data).data)
   }
 
@@ -20,7 +20,7 @@ function subscribe(events, onMessage) {
   //   console.log('eventsource connected')
   // }
 
-  eventSource.onerror = error => {
+  eventSource.onerror = (error) => {
     console.error(error)
     error.target.close()
 
@@ -30,7 +30,7 @@ function subscribe(events, onMessage) {
         $nuxt.notifyWarning({
           timeout: 0,
           message:
-            'Push通知と自動更新が停止しました\nページをリロードしてください'
+            'Push通知と自動更新が停止しました\nページをリロードしてください',
         })
       })
     }, 1000)

@@ -46,24 +46,24 @@ export default {
     NoticeCard,
     NoticeModal,
     PanelLabel,
-    PenButton
+    PenButton,
   },
   data() {
     return {
       showModal: false,
-      fetching: false
+      fetching: false,
     }
   },
   computed: {
     notices() {
       const sorted = this.sortByCreatedAt(
-        orm.Notice.query()
-          .with('team')
-          .all()
+        orm.Notice.query().with('team').all()
       ).reverse()
 
-      return sorted.filter(o => o.pinned).concat(sorted.filter(o => !o.pinned))
-    }
+      return sorted
+        .filter((o) => o.pinned)
+        .concat(sorted.filter((o) => !o.pinned))
+    },
   },
   // なぜかfetch()だと呼ばれない
   async created() {
@@ -73,6 +73,6 @@ export default {
     } finally {
       this.fetching = false
     }
-  }
+  },
 }
 </script>

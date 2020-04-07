@@ -16,8 +16,8 @@ Vue.mixin({
       'isNotLoggedIn',
       'isNotStaff',
       'isNotAudience',
-      'isNotPlayer'
-    ])
+      'isNotPlayer',
+    ]),
   },
   methods: {
     ...mapMutations('notification', [
@@ -25,7 +25,7 @@ Vue.mixin({
       'notifySuccess',
       'notifyInfo',
       'notifyWarning',
-      'notifyError'
+      'notifyError',
     ]),
 
     isNullOrUndefined(v) {
@@ -43,7 +43,10 @@ Vue.mixin({
       return JSON.stringify(item1) === JSON.stringify(item2)
     },
     compactObject(obj) {
-      return $nuxt.$_.pick(obj, value => value !== undefined && value !== null)
+      return $nuxt.$_.pick(
+        obj,
+        (value) => value !== undefined && value !== null
+      )
     },
     stringTruncate(str, max) {
       if (str.length <= max) {
@@ -97,8 +100,8 @@ Vue.mixin({
       link.click()
     },
     captureById(id, filename) {
-      html2canvas(document.getElementById(id)).then(canvas => {
-        canvas.toBlob(blob => {
+      html2canvas(document.getElementById(id)).then((canvas) => {
+        canvas.toBlob((blob) => {
           const link = document.createElement('a')
           link.href = window.URL.createObjectURL(blob)
           link.download = filename
@@ -119,10 +122,10 @@ Vue.mixin({
     },
     // 古い順
     sortByCreatedAt(list) {
-      return this.$_.sortBy(list, e => Date.parse(e.createdAt))
+      return this.$_.sortBy(list, (e) => Date.parse(e.createdAt))
     },
     sortByUpdatedAt(list) {
-      return this.$_.sortBy(list, e => Date.parse(e.updatedAt))
+      return this.$_.sortBy(list, (e) => Date.parse(e.updatedAt))
     },
 
     // filter
@@ -132,7 +135,7 @@ Vue.mixin({
         return null
       }
 
-      return this.$_.min(records, record => new Date(record.createdAt))
+      return this.$_.min(records, (record) => new Date(record.createdAt))
     },
     findNewer(records) {
       // maxはrecordsが[]の場合-Inifnityになる
@@ -140,7 +143,7 @@ Vue.mixin({
         return null
       }
 
-      return this.$_.max(records, record => new Date(record.createdAt))
-    }
-  }
+      return this.$_.max(records, (record) => new Date(record.createdAt))
+    },
+  },
 })

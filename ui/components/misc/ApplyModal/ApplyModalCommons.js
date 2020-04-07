@@ -6,15 +6,15 @@ export default {
     // v-model
     value: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       internalValue: this.value,
       valid: false,
       sending: false,
-      openedAtFristCalled: false
+      openedAtFristCalled: false,
     }
   },
   watch: {
@@ -26,15 +26,15 @@ export default {
           this.openedAtFristCalled = true
           this.openedAtFirst()
         }
-      }
+      },
     },
     value: {
       immediate: true,
       handler(newValue) {
         this.internalValue = newValue
         this.validate()
-      }
-    }
+      },
+    },
   },
   methods: {
     open() {
@@ -48,6 +48,6 @@ export default {
       if (this.value === true) {
         this.$nextTick(() => this.$refs.form.validate())
       }
-    }
-  }
+    },
+  },
 }

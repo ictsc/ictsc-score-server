@@ -37,24 +37,24 @@ import NumberTextField from '~/components/commons/NumberTextField'
 export default {
   name: 'GradingSlider',
   components: {
-    NumberTextField
+    NumberTextField,
   },
   props: {
     // v-model
     value: {
       required: true,
-      validator: prop => typeof prop === 'number' || prop === null
+      validator: (prop) => typeof prop === 'number' || prop === null,
     },
     sending: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       stepEnable: false,
       slider: null,
-      text: null
+      text: null,
     }
   },
   watch: {
@@ -62,8 +62,8 @@ export default {
       immediate: true,
       handler(newValue) {
         this.downstream(newValue)
-      }
-    }
+      },
+    },
   },
   methods: {
     downstream(newValue) {
@@ -88,7 +88,7 @@ export default {
       } else {
         this.$emit('input', num)
       }
-    }
-  }
+    },
+  },
 }
 </script>

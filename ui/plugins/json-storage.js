@@ -20,14 +20,14 @@ export class JsonStroage {
     return {
       data() {
         return {
-          [key]: storage.get()
+          [key]: storage.get(),
         }
       },
       watch: {
         [key](value) {
           storage.set(value)
-        }
-      }
+        },
+      },
     }
   }
 

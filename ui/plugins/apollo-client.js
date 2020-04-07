@@ -10,7 +10,7 @@ const errorLink = onError(
       console.info('[Network error]', networkError)
 
       $nuxt.notifyError({
-        message: `APIから応答がありません\n運営に問い合わせてください\nコード ${networkError.statusCode}`
+        message: `APIから応答がありません\n運営に問い合わせてください\nコード ${networkError.statusCode}`,
       })
 
       return
@@ -18,7 +18,7 @@ const errorLink = onError(
 
     // 正規のGraphQLエラー
     if (graphQLErrors) {
-      graphQLErrors.forEach(error => {
+      graphQLErrors.forEach((error) => {
         console.info('[GraphQL error]', error)
 
         // 未ログインなどを処理する
@@ -29,13 +29,13 @@ const errorLink = onError(
               break
             case 'UNEXPECTED_ERROR':
               $nuxt.notifyError({
-                message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`
+                message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
               })
               break
             default:
               // 実装漏れ
               $nuxt.notifyError({
-                message: `想定外のエラーコードです\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`
+                message: `想定外のエラーコードです\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
               })
           }
         }
@@ -51,12 +51,12 @@ const httpLink = createHttpLink({ uri: '/api/graphql' })
 export default new ApolloClient({
   defaultOptions: {
     watchQuery: {
-      errorPolicy: 'all'
+      errorPolicy: 'all',
       // vuex-orm/plugin-graphql側で制御されているので効かない
       // fetch時にキャッシュしない
       // fetchPolicy: 'no-cache',
-    }
+    },
   },
   link: errorLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 })

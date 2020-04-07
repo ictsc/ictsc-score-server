@@ -33,20 +33,20 @@ export default {
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
     itemText: {
       type: String,
-      required: true
+      required: true,
     },
     fetch: {
       type: Function,
-      required: true
+      required: true,
     },
     prependNewItem: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
@@ -54,7 +54,7 @@ export default {
       internalValue: undefined,
       item: undefined,
       items: [],
-      newItemTextValue: '新規作成'
+      newItemTextValue: '新規作成',
     }
   },
   methods: {
@@ -77,7 +77,7 @@ export default {
       // 同じものを再選択した場合にモーダルが再度開くようにする
       this.item = undefined
       this.$nextTick(() => (this.item = this.internalValue))
-    }
-  }
+    },
+  },
 }
 </script>

@@ -44,30 +44,30 @@ export default {
     PlusButton,
     ExpandableButton,
     MarkdownEditorModal,
-    SupplementCard
+    SupplementCard,
   },
   props: {
     // 補足追加に必要
     // staff以外ではundefinedになる
     problemCode: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     supplements: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       showModal: false,
-      show: true
+      show: true,
     }
   },
   computed: {
     sortedSupplements() {
       return this.sortByCreatedAt(this.supplements)
-    }
+    },
   },
   methods: {
     async addSupplement(text) {
@@ -76,10 +76,10 @@ export default {
         resolve: () => this.$refs.modal.succeeded(),
         params: {
           problemCode: this.problemCode,
-          text
-        }
+          text,
+        },
       })
-    }
-  }
+    },
+  },
 }
 </script>

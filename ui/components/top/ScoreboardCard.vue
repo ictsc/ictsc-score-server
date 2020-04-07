@@ -46,13 +46,13 @@ import TeamDetailsCard from '~/components/misc/TeamDetailsCard'
 export default {
   name: 'ScoreboardCard',
   components: {
-    TeamDetailsCard
+    TeamDetailsCard,
   },
   props: {
     scoreboard: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

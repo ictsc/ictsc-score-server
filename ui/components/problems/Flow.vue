@@ -35,11 +35,11 @@ import FlowItem from '~/components/problems/FlowItem'
 export default {
   name: 'Flow',
   components: {
-    FlowItem
+    FlowItem,
   },
   computed: {
-    ...mapGetters('contestInfo', ['gradingDelayString'])
-  }
+    ...mapGetters('contestInfo', ['gradingDelayString']),
+  },
 }
 </script>
 

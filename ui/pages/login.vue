@@ -47,8 +47,8 @@ export default {
       loading: false,
 
       // 鬱陶しいのでメッセージは出さない
-      nameRules: [v => !!v || ''],
-      passwordRules: [v => !!v || '']
+      nameRules: [(v) => !!v || ''],
+      passwordRules: [(v) => !!v || ''],
     }
   },
   methods: {
@@ -63,17 +63,17 @@ export default {
         window.location = '/guide'
       } else {
         this.notifyWarning({
-          message: 'チーム名かパスワードが正しくありません'
+          message: 'チーム名かパスワードが正しくありません',
         })
       }
 
       this.loading = false
-    }
+    },
   },
   head() {
     return {
-      title: 'ログイン'
+      title: 'ログイン',
     }
-  }
+  },
 }
 </script>

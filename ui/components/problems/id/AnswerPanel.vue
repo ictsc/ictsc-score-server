@@ -23,26 +23,26 @@ export default {
   name: 'AnswerPanel',
   components: {
     AnswerCard,
-    AnswerForm
+    AnswerForm,
   },
   props: {
     answers: {
       type: Array,
-      required: true
+      required: true,
     },
     problem: {
       type: Object,
-      required: true
+      required: true,
     },
     waitingSubmitSec: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     sortedAnswers() {
       return this.sortByCreatedAt(this.answers).reverse()
-    }
-  }
+    },
+  },
 }
 </script>

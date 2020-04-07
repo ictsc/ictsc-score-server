@@ -19,35 +19,35 @@ export default {
     // v-model
     value: {
       type: [Number, String],
-      default: 0
+      default: 0,
     },
     type: {
       type: String,
-      default: 'number'
+      default: 'number',
     },
     onlyInteger: {
       type: Boolean,
-      default: false
+      default: false,
     },
     rules: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
       internalValue: this.value,
       integerRules: [
-        v => !this.isBlank(v) || '必須',
-        v => !Number.isNaN(parseInt(v)) || '整数'
-      ]
+        (v) => !this.isBlank(v) || '必須',
+        (v) => !Number.isNaN(parseInt(v)) || '整数',
+      ],
     }
   },
   computed: {
     buildRules() {
       const tmpRules = this.onlyInteger ? this.integerRules : []
       return [...tmpRules, ...this.rules]
-    }
+    },
   },
   watch: {
     internalValue(value) {
@@ -63,8 +63,8 @@ export default {
     },
     value(value) {
       this.internalValue = value
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

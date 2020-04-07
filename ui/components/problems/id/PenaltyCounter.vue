@@ -75,21 +75,21 @@ export default {
   props: {
     problemId: {
       type: String,
-      required: true
+      required: true,
     },
     penalties: {
       type: Array,
-      required: true
+      required: true,
     },
     waitingSubmitSec: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       confirming: false,
-      sending: false
+      sending: false,
     }
   },
   computed: {
@@ -100,7 +100,7 @@ export default {
       return latestPenalty && latestPenalty.delayFinishInSec > 0
         ? latestPenalty.delayTickDuration
         : ''
-    }
+    },
   },
   methods: {
     async submit() {
@@ -111,11 +111,11 @@ export default {
         params: { problemId: this.problemId },
         resolve: () => {
           this.confirming = false
-        }
+        },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

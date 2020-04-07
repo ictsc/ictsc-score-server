@@ -58,7 +58,7 @@ export default {
     PageTitle,
     PenButton,
     TeamCard,
-    TeamModal
+    TeamModal,
   },
   fetch() {
     orm.Queries.teams()
@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       search: '',
-      showModal: false
+      showModal: false,
     }
   },
   computed: {
@@ -74,7 +74,7 @@ export default {
       return this.sortByNumber(
         this.isStaff ? orm.Team.all() : orm.Team.playersWithoutTeam99
       )
-    }
+    },
   },
   methods: {
     isDisplay(team) {
@@ -84,10 +84,10 @@ export default {
 
       const simpleSearch = this.stringSimplify(this.search)
 
-      return [team.displayName, team.organization].some(str =>
+      return [team.displayName, team.organization].some((str) =>
         this.stringSimplify(str).includes(simpleSearch)
       )
-    }
-  }
+    },
+  },
 }
 </script>

@@ -9,7 +9,7 @@ export default class IssueComment extends BaseModel {
       fromStaff: this.boolean(),
       text: this.string().nullable(),
       issueId: this.string(),
-      createdAt: this.string()
+      createdAt: this.string(),
     }
   }
 

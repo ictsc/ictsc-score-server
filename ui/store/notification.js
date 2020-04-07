@@ -19,7 +19,7 @@ export default {
   state() {
     return {
       list: [],
-      latestId: 0
+      latestId: 0,
     }
   },
   mutations: {
@@ -44,15 +44,15 @@ export default {
       addNotification(state, { id, message, details, timeout, type: 'error' })
     },
     removeNotification(state, id) {
-      const index = state.list.findIndex(n => n.id === id)
+      const index = state.list.findIndex((n) => n.id === id)
       if (index === -1) {
         throw new Error(`notification id(${id}) is not found`)
       }
 
       state.list.splice(index, 1)
-    }
+    },
   },
   getters: {
-    notifications: state => state.list
-  }
+    notifications: (state) => state.list,
+  },
 }

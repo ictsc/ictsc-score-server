@@ -59,12 +59,12 @@ export default {
   components: {
     AnswerCard,
     DisplayToggleButtons,
-    PageTitle
+    PageTitle,
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる
     JsonStroage.accessor('answer-list', 'displayToggle', []),
-    JsonStroage.accessor('answer-list', 'problemDisplayTitle', undefined)
+    JsonStroage.accessor('answer-list', 'problemDisplayTitle', undefined),
   ],
   fetch() {
     orm.Queries.problemsAnswersTeam()
@@ -78,7 +78,7 @@ export default {
         .all()
 
       return problems.sort((a, b) => this.compareOrder(a, b))
-    }
+    },
   },
   methods: {
     compareOrder(a, b) {
@@ -95,27 +95,27 @@ export default {
     // 各チームの最終解答のみの配列にする
     shrinkAnswers(answers) {
       // teamIdをキーとしたanswerの配列
-      const teamsAnswers = this.$_.groupBy(answers, answer => answer.teamId)
+      const teamsAnswers = this.$_.groupBy(answers, (answer) => answer.teamId)
 
       // TODO: 本戦では未採点の最も古い解答を出すべき
 
       // そのチームの複数解答を最も新しい解答1つに上書き
       if (this.realtimeGrading) {
         // 未採点の最も古い解答 or 最高得点
-        return Object.keys(teamsAnswers).map(teamId => {
+        return Object.keys(teamsAnswers).map((teamId) => {
           const unscoredAnswers = teamsAnswers[teamId].filter(
-            answer => !answer.hasPoint
+            (answer) => !answer.hasPoint
           )
 
           if (unscoredAnswers.length === 0) {
-            return this.$_.max(teamsAnswers[teamId], answer => answer.percent)
+            return this.$_.max(teamsAnswers[teamId], (answer) => answer.percent)
           } else {
             return this.findOlder(unscoredAnswers)
           }
         })
       } else {
         // 最新の解答
-        return Object.keys(teamsAnswers).map(teamId =>
+        return Object.keys(teamsAnswers).map((teamId) =>
           this.findNewer(teamsAnswers[teamId])
         )
       }
@@ -126,7 +126,7 @@ export default {
       return result
     },
     sortByTeamNumber(answers) {
-      return this.$_.sortBy(answers, a => a.team.number)
+      return this.$_.sortBy(answers, (a) => a.team.number)
     },
     filter(answers) {
       return this.sortByTeamNumber(this.filterAnswers(answers))
@@ -152,7 +152,7 @@ export default {
       }
 
       return problem.displayTitle === this.problemDisplayTitle
-    }
-  }
+    },
+  },
 }
 </script>

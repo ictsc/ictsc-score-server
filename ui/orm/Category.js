@@ -12,7 +12,7 @@ export default class Category extends BaseModel {
       description: this.string(),
       order: this.number(),
       problems: this.hasMany(orm.Problem, 'categoryId'),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 
@@ -21,7 +21,7 @@ export default class Category extends BaseModel {
       code: '',
       title: '',
       description: '',
-      order: 0
+      order: 0,
     }
   }
 

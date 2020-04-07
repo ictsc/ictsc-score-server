@@ -27,20 +27,20 @@ export default {
     // v-modelでバインドされ、親での変更を検知できる
     value: {
       type: Array,
-      required: true
+      required: true,
     },
     candidatesGroups: {
       type: Array,
-      required: true
+      required: true,
     },
     readonly: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      internalValue: this.value
+      internalValue: this.value,
     }
   },
   watch: {
@@ -49,7 +49,7 @@ export default {
     },
     value() {
       this.internalValue = this.value
-    }
-  }
+    },
+  },
 }
 </script>

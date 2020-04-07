@@ -12,7 +12,7 @@ export default class Penalty extends BaseModel {
       teamId: this.string(),
       team: this.belongsTo(orm.Team, 'teamId'),
       createdAt: this.string(),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 

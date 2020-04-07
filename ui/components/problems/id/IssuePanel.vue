@@ -31,7 +31,7 @@
         v-for="comment in comments"
         :key="comment.id"
         :comment="comment"
-        class=" mt-1"
+        class="mt-1"
       />
     </div>
 
@@ -81,17 +81,17 @@ export default {
   name: 'IssuePanel',
   components: {
     MarkdownTextArea,
-    IssueCommentCard
+    IssueCommentCard,
   },
   props: {
     problem: {
       type: Object,
-      required: true
+      required: true,
     },
     teamId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     const storageKey = `issueComment-${this.problem.id}`
@@ -102,7 +102,7 @@ export default {
       text: this.$jsonStorage.get(storageKey),
       storageKey,
       placeholder: 'Ctrl-Enterで送信可能です',
-      valid: false
+      valid: false,
     }
   },
   computed: {
@@ -135,7 +135,7 @@ export default {
       if (this.isPlayer) {
         return this.problem.issues[0]
       } else {
-        return this.problem.issues.find(issue => issue.teamId === this.teamId)
+        return this.problem.issues.find((issue) => issue.teamId === this.teamId)
       }
     },
     comments() {
@@ -150,12 +150,12 @@ export default {
     },
     submitButtonColor() {
       return this.isStaff && this.team.beginner ? 'pink lighten-3' : 'success'
-    }
+    },
   },
   watch: {
     text(value) {
       this.$jsonStorage.set(this.storageKey, value)
-    }
+    },
   },
   methods: {
     async sendComment() {
@@ -167,14 +167,14 @@ export default {
         await orm.Mutations.addIssueComment({
           action,
           resolve,
-          params: { issueId: this.issue.id, text: this.text }
+          params: { issueId: this.issue.id, text: this.text },
         })
       } else {
         // playerが質問する際、issueが無ければstartIssueでissueを作る
         await orm.Mutations.startIssue({
           action,
           resolve,
-          params: { problemId: this.problem.id, text: this.text }
+          params: { problemId: this.problem.id, text: this.text },
         })
       }
 
@@ -185,11 +185,11 @@ export default {
 
       await orm.Mutations.transitionIssueState({
         action: '状態遷移',
-        params: { issueId: this.issue.id, currentStatus: this.issue.status }
+        params: { issueId: this.issue.id, currentStatus: this.issue.status },
       })
 
       this.statusUpdating = false
-    }
-  }
+    },
+  },
 }
 </script>

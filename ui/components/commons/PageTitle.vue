@@ -13,13 +13,13 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   head() {
     return {
-      title: this.title
+      title: this.title,
     }
-  }
+  },
 }
 </script>

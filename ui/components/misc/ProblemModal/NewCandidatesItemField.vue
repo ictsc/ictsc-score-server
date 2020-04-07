@@ -34,17 +34,17 @@ export default {
   name: 'NewCandidatesItemField',
   components: {
     NarrowTextField,
-    IconButton
+    IconButton,
   },
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     readonly: {
       type: Boolean,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

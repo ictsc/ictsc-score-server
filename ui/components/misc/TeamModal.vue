@@ -129,11 +129,11 @@ export default {
     ActionButtons,
     ConflictWarning,
     MarkdownTextArea,
-    NumberTextField
+    NumberTextField,
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
   data() {
-    const requiredRule = v => !!v || '必須'
+    const requiredRule = (v) => !!v || '必須'
 
     return {
       // mixinしたモジュールから必要な値がmixinされる
@@ -141,24 +141,24 @@ export default {
       roles: ['staff', 'audience', 'player'],
       passwordVisible: false,
       requiredRules: [requiredRule],
-      nameRules: [requiredRule, v => this.isUniqueName(v) || '重複'],
-      numberRules: [v => this.isUniqueNumber(v) || '重複']
+      nameRules: [requiredRule, (v) => this.isUniqueName(v) || '重複'],
+      numberRules: [(v) => this.isUniqueNumber(v) || '重複'],
     }
   },
   computed: {
     modalTitle() {
       return this.isNew ? 'チーム追加' : 'チーム編集'
-    }
+    },
   },
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
     ...orm.Team.mutationFieldKeys().reduce((obj, field) => {
-      obj[field] = function(value) {
+      obj[field] = function (value) {
         this.setStorage(field, value)
       }
       return obj
-    }, {})
+    }, {}),
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -175,9 +175,7 @@ export default {
 
     // 既に全チームがfetchされている必要がある
     isUniqueName(name) {
-      const sameNameTeams = orm.Team.query()
-        .where('name', name)
-        .get()
+      const sameNameTeams = orm.Team.query().where('name', name).get()
 
       switch (sameNameTeams.length) {
         case 0:
@@ -190,11 +188,7 @@ export default {
       }
     },
     isUniqueNumber(number) {
-      return (
-        orm.Team.query()
-          .where('number', number)
-          .get().length === 0
-      )
+      return orm.Team.query().where('number', number).get().length === 0
     },
     async submit(force) {
       this.sending = true
@@ -216,11 +210,11 @@ export default {
           this.close()
         },
         // 無駄なパラメータを渡しても問題ない
-        params: { ...this }
+        params: { ...this },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

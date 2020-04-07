@@ -24,12 +24,12 @@ export default {
   props: {
     answer: {
       type: Object,
-      required: true
+      required: true,
     },
     problem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     answerURL() {
@@ -47,7 +47,7 @@ export default {
       } else {
         return 'error lighten-1'
       }
-    }
-  }
+    },
+  },
 }
 </script>

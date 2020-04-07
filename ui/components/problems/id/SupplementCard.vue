@@ -24,21 +24,21 @@ export default {
   name: 'SupplementCard',
   components: {
     CountdownDeleteButton,
-    Markdown
+    Markdown,
   },
   props: {
     supplement: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     async destroy() {
       await orm.Mutations.deleteProblemSupplement({
         action: '補足削除',
-        params: { problemSupplementId: this.supplement.id }
+        params: { problemSupplementId: this.supplement.id },
       })
-    }
-  }
+    },
+  },
 }
 </script>

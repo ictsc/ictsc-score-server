@@ -32,24 +32,24 @@ export default {
   props: {
     isNew: {
       type: Boolean,
-      default: false
+      default: false,
     },
     conflicted: {
       type: Boolean,
-      required: true
+      required: true,
     },
     edited: {
       type: Boolean,
-      required: true
+      required: true,
     },
     sending: {
       type: Boolean,
-      required: true
+      required: true,
     },
     valid: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     submitText() {
@@ -58,7 +58,7 @@ export default {
       }
 
       return this.conflicted ? '強制更新' : '更新'
-    }
-  }
+    },
+  },
 }
 </script>

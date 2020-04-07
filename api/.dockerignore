@@ -1,7 +1,6 @@
 tmp/
 log/
 logs/
-node_modules/
 jspm_packages/
 dist/
 coverage/

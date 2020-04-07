@@ -37,46 +37,46 @@ import NumberTextField from '~/components/commons/NumberTextField'
 export default {
   name: 'EditableSlider',
   components: {
-    NumberTextField
+    NumberTextField,
   },
   props: {
     // v-model
     value: {
       type: Number,
-      required: true
+      required: true,
     },
     readonly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     label: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     suffix: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     rules: {
       type: Array,
-      default: undefined
+      default: undefined,
     },
     step: {
       type: Number,
-      required: true
+      required: true,
     },
     max: {
       type: Number,
-      required: true
+      required: true,
     },
     min: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   data() {
     return {
-      stepEnable: false
+      stepEnable: false,
     }
   },
   computed: {
@@ -93,7 +93,7 @@ export default {
       }
 
       return this.stepEnable ? this.min : this.value
-    }
+    },
   },
   watch: {
     value(value) {
@@ -101,8 +101,8 @@ export default {
         // 外部の入力でvalueを変更する場合、無効にする必要がある
         this.stepEnable = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

@@ -20,16 +20,16 @@ export default {
   name: 'Index',
   components: {
     ScoreboardPanel,
-    NoticePanel
+    NoticePanel,
   },
   computed: {
-    ...mapGetters('contestInfo', ['realtimeGrading'])
+    ...mapGetters('contestInfo', ['realtimeGrading']),
   },
   head() {
     return {
-      title: 'トップ'
+      title: 'トップ',
     }
-  }
+  },
 }
 </script>
 <style scoped lang="sass">

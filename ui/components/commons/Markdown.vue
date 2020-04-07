@@ -10,17 +10,17 @@ export default {
   props: {
     color: {
       type: String,
-      default: 'transparent'
+      default: 'transparent',
     },
     content: {
       type: String,
-      required: true
+      required: true,
     },
     dense: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

@@ -55,24 +55,24 @@ export default {
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
     fetch: {
       type: Function,
-      required: true
+      required: true,
     },
     delete: {
       type: Function,
-      required: true
+      required: true,
     },
     itemText: {
       type: String,
-      required: true
+      required: true,
     },
     itemValue: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -80,7 +80,7 @@ export default {
       selectedValue: null,
       fetching: false,
       sending: false,
-      items: []
+      items: [],
     }
   },
   methods: {
@@ -103,7 +103,7 @@ export default {
       }
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

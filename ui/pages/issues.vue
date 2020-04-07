@@ -61,17 +61,17 @@ export default {
   components: {
     PageTitle,
     StatusToggleButtons,
-    IssueCard
+    IssueCard,
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる
     JsonStroage.accessor('issue-list', 'displayStatuses', [
       'unsolved',
       'in_progress',
-      'solved'
+      'solved',
     ]),
     JsonStroage.accessor('issue-list', 'issueSearch', ''),
-    JsonStroage.accessor('issue-list', 'sortMode', true)
+    JsonStroage.accessor('issue-list', 'sortMode', true),
   ],
   fetch() {
     orm.Queries.problemsIssuesTeam()
@@ -79,17 +79,17 @@ export default {
   computed: {
     // computedを分ければ軽くなるはず?
     allIssues() {
-      return orm.Issue.query()
-        .with(['comments', 'problem.body', 'team'])
-        .all()
+      return orm.Issue.query().with(['comments', 'problem.body', 'team']).all()
     },
     statusFilteredIssues() {
-      return this.allIssues.filter(i => this.displayStatuses.includes(i.status))
+      return this.allIssues.filter((i) =>
+        this.displayStatuses.includes(i.status)
+      )
     },
     // 検索は一瞬で終わるが、描画が遅い
     issues() {
       const issues = this.statusFilteredIssues
-      return this.$_.sortBy(issues, i => this.issueSortValue(i))
+      return this.$_.sortBy(issues, (i) => this.issueSortValue(i))
     },
     searchFieldPlaceholder() {
       return this.isStaff ? '問題名 コード 作問者 チーム名' : '問題名'
@@ -99,12 +99,12 @@ export default {
         return []
       }
 
-      return this.issueSearch.split(' ').map(s => this.stringSimplify(s))
-    }
+      return this.issueSearch.split(' ').map((s) => this.stringSimplify(s))
+    },
   },
   methods: {
     issueFilter(issue) {
-      return this.searchParams.every(param =>
+      return this.searchParams.every((param) =>
         this.issueSummary(issue).includes(param)
       )
     },
@@ -121,12 +121,12 @@ export default {
         this.$elvis(issue, 'team.numberStr'),
         this.$elvis(issue, 'problem.code'),
         this.$elvis(issue, 'problem.writer'),
-        this.$elvis(issue, 'problem.title')
+        this.$elvis(issue, 'problem.title'),
       ]
-        .filter(e => e !== null && e !== undefined)
-        .map(s => this.stringSimplify(s))
+        .filter((e) => e !== null && e !== undefined)
+        .map((s) => this.stringSimplify(s))
         .join(' ')
-    }
-  }
+    },
+  },
 }
 </script>

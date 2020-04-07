@@ -97,22 +97,22 @@ export default {
     ExpandableCard,
     GradingForm,
     Markdown,
-    RawText
+    RawText,
   },
   props: {
     answer: {
       type: Object,
-      required: true
+      required: true,
     },
     problem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       opened: null,
-      textboxAsMarkdown: true
+      textboxAsMarkdown: true,
     }
   },
   computed: {
@@ -120,11 +120,11 @@ export default {
 
     textboxContent() {
       return this.answer.bodies[0][0]
-    }
+    },
   },
   created() {
     // dateではcomputed(isStaff)が使えない
     this.opened = this.isStaff && !this.answer.hasPoint
-  }
+  },
 }
 </script>

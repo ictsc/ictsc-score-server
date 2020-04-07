@@ -31,52 +31,54 @@ import EditableSlider from '~/components/commons/EditableSlider'
 export default {
   name: 'OrderSlider',
   components: {
-    EditableSlider
+    EditableSlider,
   },
   props: {
     // v-model
     value: {
       type: Number,
-      required: true
+      required: true,
     },
     readonly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     items: {
       type: Array,
-      required: true
+      required: true,
     },
     titleParam: {
       type: String,
-      required: true
+      required: true,
     },
     selfId: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
-      rules: [v => !Number.isNaN(parseInt(v)) || '必須']
+      rules: [(v) => !Number.isNaN(parseInt(v)) || '必須'],
     }
   },
   computed: {
     prevItem() {
       const index = this.$_.findLastIndex(
         this.items,
-        v => v.order < this.value && this.selfId !== v.id
+        (v) => v.order < this.value && this.selfId !== v.id
       )
       return this.items[index]
     },
     sameItem() {
       return this.items.find(
-        v => v.order === this.value && this.selfId !== v.id
+        (v) => v.order === this.value && this.selfId !== v.id
       )
     },
     nextItem() {
-      return this.items.find(v => this.value < v.order && this.selfId !== v.id)
-    }
+      return this.items.find(
+        (v) => this.value < v.order && this.selfId !== v.id
+      )
+    },
   },
   methods: {
     ItemToString(item) {
@@ -85,7 +87,7 @@ export default {
       }
 
       return `(${item.order}) ${this.$elvis(item, this.titleParam)}`
-    }
-  }
+    },
+  },
 }
 </script>

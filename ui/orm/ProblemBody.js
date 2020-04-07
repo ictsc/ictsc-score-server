@@ -18,7 +18,7 @@ export default class ProblemBody extends BaseModel {
       candidates: this.attr(),
       corrects: this.attr().nullable(),
       createdAt: this.string(),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 }
