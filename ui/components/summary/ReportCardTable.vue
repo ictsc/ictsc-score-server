@@ -53,18 +53,22 @@
             {{ value }}
           </div>
         </template>
+
+        <template v-slot:footer>
+          <v-tooltip v-if="isStaff" bottom content-class="hide-on-print">
+            <template v-slot:activator="{ on }">
+              <v-btn class="mt-4 hide-on-print" @click="capture" v-on="on">
+                キャプチャ
+              </v-btn>
+            </template>
+
+            <span>
+              プリントダイアログでスケールとマージンを調整してください
+            </span>
+          </v-tooltip>
+        </template>
       </v-data-table>
     </v-row>
-
-    <v-tooltip v-if="isStaff" bottom>
-      <template v-slot:activator="{ on }">
-        <v-btn class="hide-on-print" @click="capture" v-on="on">
-          キャプチャ
-        </v-btn>
-      </template>
-
-      <span>プリントダイアログでスケールとマージンを調整してください</span>
-    </v-tooltip>
   </div>
 </template>
 <script>
