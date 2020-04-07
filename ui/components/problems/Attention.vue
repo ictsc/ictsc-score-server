@@ -32,12 +32,12 @@ export default {
     ...mapGetters('contestInfo', [
       'gradingDelaySec',
       'gradingDelayString',
-      'realtimeGrading'
+      'realtimeGrading',
     ]),
 
     aboutGradingDelayTitle() {
       return `運営が採点 (最速${this.gradingDelayString})`
-    }
-  }
+    },
+  },
 }
 </script>

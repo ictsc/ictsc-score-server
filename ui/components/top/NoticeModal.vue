@@ -69,34 +69,34 @@ import MarkdownEditorModal from '~/components/commons/MarkdownEditorModal'
 const defaultValues = {
   title: '',
   pinned: false,
-  teamId: undefined
+  teamId: undefined,
 }
 
 export default {
   name: 'NoticeModal',
   components: {
     MarkdownEditorModal,
-    PinButton
+    PinButton,
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる
     // newNotice-titleなどのストレージにthis.titleでアクセスする
     ...Object.entries(defaultValues).map(([k, v]) =>
       JsonStroage.accessor('newNotice', k, v)
-    )
+    ),
   ],
   props: {
     // v-model
     value: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       sending: false,
-      titleRules: [v => !!v || '必須'],
-      teamRuels: [v => v !== undefined || '必須']
+      titleRules: [(v) => !!v || '必須'],
+      teamRuels: [(v) => v !== undefined || '必須'],
     }
   },
   computed: {
@@ -110,7 +110,7 @@ export default {
     },
     edited() {
       return Object.entries(defaultValues).some(([k, v]) => this[k] !== v)
-    }
+    },
   },
   watch: {
     value(value) {
@@ -118,7 +118,7 @@ export default {
       if (value) {
         orm.Queries.teams()
       }
-    }
+    },
   },
   methods: {
     reset() {
@@ -135,12 +135,12 @@ export default {
           title: this.title,
           text,
           pinned: this.pinned,
-          teamId: this.teamId
-        }
+          teamId: this.teamId,
+        },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

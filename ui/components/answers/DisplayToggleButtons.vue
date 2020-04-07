@@ -23,17 +23,17 @@ export default {
   name: 'DisplayToggleButtons',
   model: {
     prop: 'value',
-    event: 'change'
+    event: 'change',
   },
   props: {
     value: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      internalValue: this.value
+      internalValue: this.value,
     }
   },
   computed: {
@@ -42,7 +42,7 @@ export default {
     },
     onlyConfirmingClass() {
       return this.internalValue.includes('onlyConfirming') ? '' : 'info--text'
-    }
+    },
   },
   watch: {
     value(value) {
@@ -50,7 +50,7 @@ export default {
     },
     internalValue(value) {
       this.$emit('change', value)
-    }
-  }
+    },
+  },
 }
 </script>

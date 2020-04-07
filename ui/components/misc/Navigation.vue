@@ -62,18 +62,18 @@ import NavigationLink from '~/components/misc/NavigationLink'
 export default {
   name: 'Navigation',
   components: {
-    NavigationLink
+    NavigationLink,
   },
   data() {
     return {
-      isWide: true
+      isWide: true,
     }
   },
   computed: {
     navigations() {
       return this.navigationsBase
-        .filter(nav => (nav.if !== undefined ? nav.if : true))
-        .map(nav => {
+        .filter((nav) => (nav.if !== undefined ? nav.if : true))
+        .map((nav) => {
           nav.key = nav.text || nav.icon
           nav.always = nav.always !== undefined ? nav.always : false
           nav.click = nav.click ? nav.click : () => {}
@@ -94,28 +94,28 @@ export default {
           to: '/login',
           text: 'ログイン',
           if: this.isNotLoggedIn,
-          always: true
+          always: true,
         },
         {
           to: '/login',
           icon: 'mdi-exit-run',
           if: this.isLoggedIn,
-          click: this.tryLogout
-        }
+          click: this.tryLogout,
+        },
       ]
     },
     wideThreshold() {
       // 未ログインかプレイヤーなら後者
       return this.isStaff || this.isAudience ? 690 : 510
-    }
+    },
   },
   watch: {
     isLoggedIn: {
       immediate: true,
       handler(value) {
         this.onResize()
-      }
-    }
+      },
+    },
   },
   beforeMount() {
     window.addEventListener('resize', this.onResize, { passive: true })
@@ -138,8 +138,8 @@ export default {
     },
     onResize() {
       this.isWide = window.innerWidth >= this.wideThreshold
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

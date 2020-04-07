@@ -37,18 +37,18 @@ export default {
     ConfigModal,
     Markdown,
     PageTitle,
-    PenButton
+    PenButton,
   },
   data() {
     return {
-      showModal: false
+      showModal: false,
     }
   },
   computed: {
     ...mapGetters('contestInfo', ['guidePage']),
     configGuidePage() {
       return orm.Config.find('guide_page')
-    }
+    },
   },
   watch: {
     isStaff: {
@@ -57,8 +57,8 @@ export default {
         if (value) {
           orm.Queries.configs()
         }
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>

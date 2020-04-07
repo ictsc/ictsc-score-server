@@ -20,13 +20,13 @@ import Markdown from '~/components/commons/Markdown'
 export default {
   name: 'IssueCommentCard',
   components: {
-    Markdown
+    Markdown,
   },
   props: {
     comment: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

@@ -84,31 +84,31 @@ export default {
     // v-model
     value: {
       type: Boolean,
-      required: true
+      required: true,
     },
     label: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     apply: {
       type: Function,
-      required: true
+      required: true,
     },
     fields: {
       type: Array,
-      required: true
+      required: true,
     },
     parallel: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       sending: false,
       file: null,
       items: [],
-      selectedItems: []
+      selectedItems: [],
     }
   },
   computed: {
@@ -117,14 +117,14 @@ export default {
         text: '',
         value: '__applyStatus',
         align: 'center',
-        width: '5em'
+        width: '5em',
       }
-      const headers = this.fields.map(o => ({ text: o, value: o }))
+      const headers = this.fields.map((o) => ({ text: o, value: o }))
       return [applyHeader, ...headers]
     },
     valid() {
       return this.selectedItems.length !== 0
-    }
+    },
   },
   watch: {
     file(value) {
@@ -137,7 +137,7 @@ export default {
         this.items = []
         this.selectedItems = []
       }
-    }
+    },
   },
   methods: {
     importYAML(text) {
@@ -152,7 +152,7 @@ export default {
     },
     loadFile(file) {
       const reader = new FileReader()
-      reader.onload = e => this.importYAML(e.target.result)
+      reader.onload = (e) => this.importYAML(e.target.result)
       reader.readAsText(file)
     },
     reset() {
@@ -169,10 +169,12 @@ export default {
     },
     async startApply() {
       this.sending = true
-      this.selectedItems.forEach(item => (item.__applyStatus = 'pending'))
+      this.selectedItems.forEach((item) => (item.__applyStatus = 'pending'))
 
       if (this.parallel) {
-        await Promise.all(this.selectedItems.map(item => this.applyItem(item)))
+        await Promise.all(
+          this.selectedItems.map((item) => this.applyItem(item))
+        )
       } else {
         // 直列実行のためにfor-of構文を使う
         for (const item of this.selectedItems) {
@@ -182,22 +184,22 @@ export default {
 
       let failCount = 0
       this.selectedItems.forEach(
-        item => (failCount += item.__applyStatus === 'failed' ? 1 : 0)
+        (item) => (failCount += item.__applyStatus === 'failed' ? 1 : 0)
       )
 
       if (failCount === 0) {
         this.notifySuccess({
-          message: `全${this.selectedItems.length}件成功しました`
+          message: `全${this.selectedItems.length}件成功しました`,
         })
       } else {
         this.notifyWarning({
-          message: `${failCount}/${this.selectedItems.length}件失敗しました`
+          message: `${failCount}/${this.selectedItems.length}件失敗しました`,
         })
       }
 
       this.selectedItems = []
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

@@ -8,7 +8,7 @@
       tile
       width="17.6em"
     >
-      <v-row align="center" no-gutters style="height: 7em">
+      <v-row align="center" no-gutters style="height: 7em;">
         <problem-card-staff
           v-if="isNotPlayer"
           :problem="problem"
@@ -34,12 +34,12 @@ export default {
   props: {
     problem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      color: ''
+      color: '',
     }
   },
   computed: {
@@ -49,7 +49,7 @@ export default {
       } else {
         return `${this.problem.id}#answers`
       }
-    }
-  }
+    },
+  },
 }
 </script>

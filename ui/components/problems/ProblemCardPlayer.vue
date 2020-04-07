@@ -4,7 +4,7 @@
     <template v-if="problem.isReadable">
       <!-- タイトル -->
       <v-row no-gutters class="flex-nowrap">
-        <div class="truncate-clamp2" style="height: 3.4em">
+        <div class="truncate-clamp2" style="height: 3.4em;">
           {{ problem.title }}
         </div>
       </v-row>
@@ -69,26 +69,26 @@ export default {
   props: {
     hover: {
       type: Boolean,
-      default: false
+      default: false,
     },
     problem: {
       type: Object,
-      required: true
+      required: true,
     },
     color: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     scoredAnswers() {
-      return this.problem.answers.filter(answer => answer.hasPoint)
+      return this.problem.answers.filter((answer) => answer.hasPoint)
     },
     unscoredAnswers() {
-      return this.problem.answers.filter(answer => !answer.hasPoint)
+      return this.problem.answers.filter((answer) => !answer.hasPoint)
     },
     maxScoreAnswer() {
-      const answer = this.$_.max(this.scoredAnswers, answer => answer.percent)
+      const answer = this.$_.max(this.scoredAnswers, (answer) => answer.percent)
       return answer === -Infinity ? null : answer
     },
     // 0以上の値が返る
@@ -148,12 +148,12 @@ export default {
       } else {
         return '解答・リセット可能'
       }
-    }
+    },
   },
   methods: {
     changeColor(color) {
       this.$emit('update:color', color)
-    }
-  }
+    },
+  },
 }
 </script>

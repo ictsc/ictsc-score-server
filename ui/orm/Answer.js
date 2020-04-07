@@ -17,7 +17,7 @@ export default class Answer extends BaseModel {
       point: this.number().nullable(),
       percent: this.number().nullable(),
       solved: this.boolean().nullable(),
-      createdAt: this.string()
+      createdAt: this.string(),
     }
   }
 

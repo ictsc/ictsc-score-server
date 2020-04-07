@@ -15,7 +15,7 @@ export default class Issue extends BaseModel {
       problem: this.belongsTo(orm.Problem, 'problemId'),
       teamId: this.string(),
       team: this.belongsTo(orm.Team, 'teamId'),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 
@@ -59,11 +59,11 @@ export default class Issue extends BaseModel {
   }
 
   get ourComments() {
-    return this.comments.filter(c => c.isOurComment)
+    return this.comments.filter((c) => c.isOurComment)
   }
 
   get theirsComments() {
-    return this.comments.filter(c => !c.isOurComment)
+    return this.comments.filter((c) => !c.isOurComment)
   }
 
   get latestReplyAt() {

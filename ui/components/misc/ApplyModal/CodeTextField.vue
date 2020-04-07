@@ -15,20 +15,20 @@ export default {
   props: {
     readonly: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isNew: {
       type: Boolean,
-      required: true
+      required: true,
     },
     items: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      rules: [v => !!v || '必須', v => this.codeUniqueRule(v) || '既存']
+      rules: [(v) => !!v || '必須', (v) => this.codeUniqueRule(v) || '既存'],
     }
   },
   methods: {
@@ -37,8 +37,8 @@ export default {
         return true
       }
 
-      return !this.items.some(o => o.code === code)
-    }
-  }
+      return !this.items.some((o) => o.code === code)
+    },
+  },
 }
 </script>

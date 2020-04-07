@@ -8,7 +8,7 @@ export default class ProblemSupplement extends BaseModel {
       id: this.string(),
       text: this.string(),
       problemId: this.string(),
-      createdAt: this.string()
+      createdAt: this.string(),
     }
   }
 }

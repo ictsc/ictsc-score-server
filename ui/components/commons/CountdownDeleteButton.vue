@@ -67,16 +67,16 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true
+      required: true,
     },
     submit: {
       type: Function,
-      required: true
+      required: true,
     },
     btnClass: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
@@ -90,8 +90,8 @@ export default {
         '死にたくないー',
         '助けてー',
         'やめてー',
-        'きゃー'
-      ]
+        'きゃー',
+      ],
     }
   },
   methods: {
@@ -122,7 +122,7 @@ export default {
       this.sending = false
       this.$nextTick(() => (this.count = 5))
       this.resetTimeout()
-    }
-  }
+    },
+  },
 }
 </script>

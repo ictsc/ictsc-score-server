@@ -15,13 +15,13 @@ import ScoreboardCard from '~/components/top/ScoreboardCard'
 export default {
   name: 'ScoreboardGroup',
   components: {
-    ScoreboardCard
+    ScoreboardCard,
   },
   props: {
     scoreboards: {
       type: Array,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

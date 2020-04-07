@@ -56,7 +56,7 @@
             v-on="on"
           >
             <template v-slot:prepend>
-              <div class="py-1" style="width: 3.2em">
+              <div class="py-1" style="width: 3.2em;">
                 {{ answer.confirming ? '対応中' : '未対応' }}
               </div>
             </template>
@@ -74,23 +74,23 @@ import GradingSlider from '~/components/problems/id/GradingSlider'
 export default {
   name: 'GradingForm',
   components: {
-    GradingSlider
+    GradingSlider,
   },
   props: {
     answer: {
       type: Object,
-      required: true
+      required: true,
     },
     problem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       sending: false,
       percent: this.answer.hasPoint ? this.answer.percent : null,
-      previousPercent: this.answer.hasPoint ? this.answer.percent : null
+      previousPercent: this.answer.hasPoint ? this.answer.percent : null,
     }
   },
   computed: {
@@ -103,7 +103,7 @@ export default {
       return this.problem.solvedCriterion <= this.percent
         ? 'primary'
         : 'grey lighten-2'
-    }
+    },
   },
   methods: {
     async applyScore() {
@@ -114,7 +114,7 @@ export default {
         resolve: () => {
           this.previousPercent = this.percent
         },
-        params: { answerId: this.answer.id, percent: this.percent }
+        params: { answerId: this.answer.id, percent: this.percent },
       })
 
       this.sending = false
@@ -125,12 +125,12 @@ export default {
       await orm.Mutations.confirmingAnswer({
         action: '対応状況の遷移',
         resolve: () => {},
-        params: { answerId: this.answer.id, confirming }
+        params: { answerId: this.answer.id, confirming },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

@@ -193,28 +193,28 @@ export default {
     ActionButtons,
     ConflictWarning,
     MarkdownTextArea,
-    NumberTextField
+    NumberTextField,
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
   props: {
     problem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
-    const requiredRule = v => !!v || '必須'
+    const requiredRule = (v) => !!v || '必須'
     return {
       // mixinしたモジュールから必要な値がmixinされる
       requiredRules: [requiredRule],
       uniqueRules: [
         requiredRule,
-        _v => !this.isNew || this.isUnique() || '重複'
+        (_v) => !this.isNew || this.isUnique() || '重複',
       ],
       teamUniqueRules: [
-        v => v !== undefined || '必須',
-        _v => !this.isNew || this.isUnique() || '重複'
-      ]
+        (v) => v !== undefined || '必須',
+        (_v) => !this.isNew || this.isUnique() || '重複',
+      ],
     }
   },
   computed: {
@@ -225,34 +225,30 @@ export default {
       return this.unshiftDummy(this.sortByNumber(orm.Team.all()))
     },
     problems() {
-      return this.sortByOrder(
-        orm.Problem.query()
-          .with('body')
-          .all()
-      )
+      return this.sortByOrder(orm.Problem.query().with('body').all())
     },
     team() {
-      return orm.Team.all().find(t => t.number === this.teamNumber)
+      return orm.Team.all().find((t) => t.number === this.teamNumber)
     },
     teamId() {
       return this.team && this.team.id
     },
     supportedServices() {
       return orm.ProblemEnvironment.supportedServices.join(',  ')
-    }
+    },
   },
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
     ...orm.ProblemEnvironment.mutationFieldKeys().reduce((obj, field) => {
-      obj[field] = function(value) {
+      obj[field] = function (value) {
         this.setStorage(field, value)
 
         // composit unique keyのためにバリデーションを再発動させる必要がある
         this.validate()
       }
       return obj
-    }, {})
+    }, {}),
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -270,7 +266,7 @@ export default {
     isUnique() {
       return (
         orm.ProblemEnvironment.all().filter(
-          pe =>
+          (pe) =>
             pe.problemId === this.problem.id &&
             pe.teamId === this.teamId &&
             pe.name === this.name &&
@@ -304,11 +300,11 @@ export default {
           this.reset()
           this.close()
         },
-        params
+        params,
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

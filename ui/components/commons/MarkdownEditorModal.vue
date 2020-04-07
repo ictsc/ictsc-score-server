@@ -123,58 +123,58 @@ export default {
   name: 'MarkdownEditorModal',
   components: {
     Markdown,
-    MarkdownTextArea
+    MarkdownTextArea,
   },
   props: {
     // v-model
     // モーダルのopen/close
     value: {
       type: Boolean,
-      required: true
+      required: true,
     },
     // LocalStroageのkey
     storageKey: {
       type: String,
-      required: true
+      required: true,
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     label: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     submitLabel: {
       type: String,
-      required: true
+      required: true,
     },
     autofocus: {
       type: Boolean,
-      default: false
+      default: false,
     },
     // 送信モーダルで補足メッセージを表示可能
     supplement: {
       type: String,
-      default: ''
+      default: '',
     },
     maxWidth: {
       type: String,
-      default: '50em'
+      default: '50em',
     },
     // prependやappendの要素が編集されたかどうか
     // trueならリセットボタンが有効になる
     edited: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       valid: false,
       confirming: false,
       sending: false,
-      text: this.$jsonStorage.get(this.storageKey)
+      text: this.$jsonStorage.get(this.storageKey),
     }
   },
   computed: {
@@ -183,12 +183,12 @@ export default {
     },
     resetable() {
       return this.edited || this.text !== ''
-    }
+    },
   },
   watch: {
     text(value) {
       this.$jsonStorage.set(this.storageKey, value)
-    }
+    },
   },
   methods: {
     confirm() {
@@ -215,7 +215,7 @@ export default {
     succeeded() {
       this.reset()
       this.close()
-    }
-  }
+    },
+  },
 }
 </script>

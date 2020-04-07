@@ -6,13 +6,13 @@ export default {
       guidePage: '',
       hideAllScore: false,
       realtimeGrading: false,
-      resetDelaySec: 0
+      resetDelaySec: 0,
     }
   },
   mutations: {
     setContestInfo(state, contestInfo) {
-      state.competitionTime = contestInfo.competitionTime.map(daterange =>
-        daterange.map(date => new Date(date))
+      state.competitionTime = contestInfo.competitionTime.map((daterange) =>
+        daterange.map((date) => new Date(date))
       )
 
       state.gradingDelaySec = contestInfo.gradingDelaySec
@@ -20,7 +20,7 @@ export default {
       state.hideAllScore = contestInfo.hideAllScore
       state.realtimeGrading = contestInfo.realtimeGrading
       state.resetDelaySec = contestInfo.resetDelaySec
-    }
+    },
   },
   actions: {
     async fetchContestInfo({ state, commit, dispatch }) {
@@ -39,19 +39,19 @@ export default {
         // セッションが無い、ネットワーク疎通がないなど
         console.info(error)
       }
-    }
+    },
   },
   getters: {
-    competitionTime: state => state.competitionTime,
-    gradingDelaySec: state => state.gradingDelaySec,
-    guidePage: state => state.guidePage,
-    hideAllScore: state => state.hideAllScore,
-    realtimeGrading: state => state.realtimeGrading,
-    resetDelaySec: state => state.resetDelaySec,
+    competitionTime: (state) => state.competitionTime,
+    gradingDelaySec: (state) => state.gradingDelaySec,
+    guidePage: (state) => state.guidePage,
+    hideAllScore: (state) => state.hideAllScore,
+    realtimeGrading: (state) => state.realtimeGrading,
+    resetDelaySec: (state) => state.resetDelaySec,
 
     gradingDelayString: (state, getters) =>
       $nuxt.timeSimpleStringJp(getters.gradingDelaySec),
     resetDelayString: (state, getters) =>
-      $nuxt.timeSimpleStringJp(getters.resetDelaySec)
-  }
+      $nuxt.timeSimpleStringJp(getters.resetDelaySec),
+  },
 }

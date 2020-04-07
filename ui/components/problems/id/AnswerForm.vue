@@ -123,17 +123,17 @@ export default {
     AnswerFormCheckbox,
     AnswerFormRadioButton,
     Markdown,
-    MarkdownTextArea
+    MarkdownTextArea,
   },
   props: {
     problem: {
       type: Object,
-      required: true
+      required: true,
     },
     waitingSubmitSec: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -141,14 +141,14 @@ export default {
       valid: false,
       sending: false,
       answerBodies: this.getStorage(),
-      answerPlaceholder
+      answerPlaceholder,
     }
   },
   computed: {
     ...mapGetters('contestInfo', [
       'gradingDelaySec',
       'gradingDelayString',
-      'realtimeGrading'
+      'realtimeGrading',
     ]),
     ...mapGetters('time', ['currentTimeMsec']),
 
@@ -163,18 +163,18 @@ export default {
           .map(
             (candidates, index) =>
               `### 選択肢${index + 1}\n` +
-              candidates.map(c => `* ${c}\n`).join('\n')
+              candidates.map((c) => `* ${c}\n`).join('\n')
           )
           .join('\n')
       } else {
         throw new Error(`unsupported problem mode ${this.problem.mode}`)
       }
-    }
+    },
   },
   watch: {
     answerBodies(value) {
       this.setStorage(value)
-    }
+    },
   },
   methods: {
     storageKey() {
@@ -194,7 +194,7 @@ export default {
         this.problem.modeIsRadioButton ||
         this.problem.modeIsCheckbox
       ) {
-        this.setStorage((this.problem.candidates || [[]]).map(o => []))
+        this.setStorage((this.problem.candidates || [[]]).map((o) => []))
       } else {
         throw new Error(`unsupported problem mode ${this.problem.mode}`)
       }
@@ -211,18 +211,18 @@ export default {
         action: '解答提出',
         resolve: () => {
           this.confirming = false
-          this.answerBodies = this.answerBodies.map(o => [])
+          this.answerBodies = this.answerBodies.map((o) => [])
           // answerBodiesを空にしたらバリデーションをリセットしないと真っ赤になる
           this.$refs.form.resetValidation()
         },
         params: {
           problemId: this.problem.id,
-          bodies: this.answerBodies
-        }
+          bodies: this.answerBodies,
+        },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

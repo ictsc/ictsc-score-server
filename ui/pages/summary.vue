@@ -18,7 +18,7 @@ export default {
   name: 'Summary',
   components: {
     PageTitle,
-    ReportCardTable
-  }
+    ReportCardTable,
+  },
 }
 </script>

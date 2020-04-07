@@ -77,7 +77,7 @@ export default class Queries {
       'supplements',
       'answers',
       'issues',
-      'penalties'
+      'penalties',
     ])
   }
 
@@ -98,7 +98,7 @@ export default class Queries {
       'body',
       'category',
       'answers',
-      'answers.team'
+      'answers.team',
     ])
   }
 

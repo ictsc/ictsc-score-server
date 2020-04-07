@@ -73,13 +73,13 @@ import Markdown from '~/components/commons/Markdown'
 export default {
   name: 'IssueCard',
   components: {
-    Markdown
+    Markdown,
   },
   props: {
     issue: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     statusColor() {
@@ -115,8 +115,8 @@ export default {
       } else {
         return `${base}=${this.issue.teamId}`
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

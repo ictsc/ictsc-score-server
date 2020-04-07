@@ -8,8 +8,8 @@ export default {
   props: {
     opened: {
       type: Boolean,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

@@ -34,5 +34,5 @@ export default {
   ReportCard,
   Scoreboard,
   Session,
-  Team
+  Team,
 }

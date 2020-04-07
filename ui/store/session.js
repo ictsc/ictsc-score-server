@@ -4,14 +4,14 @@ function buildState(response) {
   return {
     channels: response.data.channels,
     teamId: response.data.id,
-    role: response.data.role
+    role: response.data.role,
   }
 }
 
 export const state = () => ({
   channels: null,
   teamId: null,
-  role: null
+  role: null,
 })
 
 export const mutations = {
@@ -24,7 +24,7 @@ export const mutations = {
     state.channels = null
     state.teamId = null
     state.role = null
-  }
+  },
 }
 
 export const actions = {
@@ -68,18 +68,18 @@ export const actions = {
       default:
         throw new Error(res)
     }
-  }
+  },
 }
 
 export const getters = {
-  currentTeamId: state => state.teamId,
-  subscribeChannels: state => state.channels,
-  isLoggedIn: state => state.role !== null && state.role !== undefined,
-  isStaff: state => state.role === 'staff',
-  isAudience: state => state.role === 'audience',
-  isPlayer: state => state.role === 'player',
+  currentTeamId: (state) => state.teamId,
+  subscribeChannels: (state) => state.channels,
+  isLoggedIn: (state) => state.role !== null && state.role !== undefined,
+  isStaff: (state) => state.role === 'staff',
+  isAudience: (state) => state.role === 'audience',
+  isPlayer: (state) => state.role === 'player',
   isNotLoggedIn: (state, getters) => !getters.isLoggedIn,
   isNotStaff: (state, getters) => getters.isLoggedIn && !getters.isStaff,
   isNotAudience: (state, getters) => getters.isLoggedIn && !getters.isAudience,
-  isNotPlayer: (state, getters) => getters.isLoggedIn && !getters.isPlayer
+  isNotPlayer: (state, getters) => getters.isLoggedIn && !getters.isPlayer,
 }

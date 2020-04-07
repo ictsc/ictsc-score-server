@@ -10,8 +10,8 @@ export default {
   props: {
     value: {
       type: Boolean,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

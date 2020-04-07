@@ -80,7 +80,7 @@ export default {
     AnswerPanel,
     DetailsPanel,
     IssuePanel,
-    PenaltyCounter
+    PenaltyCounter,
   },
   fetch({ params }) {
     orm.Queries.problemMisc(params.id)
@@ -90,7 +90,7 @@ export default {
       selectedTeamId: null,
       currentTab: null,
       teamFetching: false,
-      teamFetched: false
+      teamFetched: false,
     }
   },
   computed: {
@@ -131,7 +131,7 @@ export default {
           'issues.comments',
           'penalties',
           'previousProblem',
-          'supplements'
+          'supplements',
         ])
         .find(this.problemId)
     },
@@ -139,10 +139,10 @@ export default {
       return this.problem && this.problem.isReadable
     },
     answers() {
-      return this.problem.answers.filter(o => o.teamId === this.teamId)
+      return this.problem.answers.filter((o) => o.teamId === this.teamId)
     },
     penalties() {
-      return this.problem.penalties.filter(o => o.teamId === this.teamId)
+      return this.problem.penalties.filter((o) => o.teamId === this.teamId)
     },
     teams() {
       return this.sortByNumber(orm.Team.players)
@@ -155,9 +155,9 @@ export default {
       return this.$_.max([
         0,
         this.$elvis(latestAnswer, 'delayFinishInSec'),
-        this.$elvis(latestPenalty, 'delayFinishInSec')
+        this.$elvis(latestPenalty, 'delayFinishInSec'),
       ])
-    }
+    },
   },
   watch: {
     selectedTeamId(value) {
@@ -165,14 +165,14 @@ export default {
         .replace({
           name: this.$route.name,
           params: this.$route.params,
-          hash: `#${this.tabMode}${this.hashTailTeamId()}`
+          hash: `#${this.tabMode}${this.hashTailTeamId()}`,
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.name !== 'NavigationDuplicated') {
             console.error(err)
           }
         })
-    }
+    },
   },
   mounted() {
     // dataではisPlayerが使えないためここでセット
@@ -198,12 +198,12 @@ export default {
       await orm.Queries.teams()
       this.teamFetching = false
       this.teamFetched = true
-    }
+    },
   },
   head() {
     return {
-      title: this.$elvis(this.problem, 'body.title')
+      title: this.$elvis(this.problem, 'body.title'),
     }
-  }
+  },
 }
 </script>

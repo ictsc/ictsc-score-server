@@ -11,7 +11,7 @@ export default class Scoreboard extends BaseModel {
       teamId: this.string().nullable(),
       team: this.belongsTo(orm.Team, 'teamId'),
       rank: this.number().nullable(),
-      score: this.number().nullable()
+      score: this.number().nullable(),
     }
   }
 

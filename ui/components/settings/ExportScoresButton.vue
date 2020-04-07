@@ -19,7 +19,7 @@ export default {
   name: 'ExportImportButtons',
   data() {
     return {
-      loading: false
+      loading: false,
     }
   },
   methods: {
@@ -27,7 +27,7 @@ export default {
       await orm.Queries.reportCards()
 
       const list = orm.ReportCard.all()
-      list.forEach(report => delete report.$id)
+      list.forEach((report) => delete report.$id)
       return list
     },
     async click() {
@@ -40,7 +40,7 @@ export default {
       )
 
       this.loading = false
-    }
-  }
+    },
+  },
 }
 </script>

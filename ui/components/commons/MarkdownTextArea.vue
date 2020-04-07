@@ -35,7 +35,7 @@
       justify="end"
       :class="{
         'show-details': showDetails,
-        'mr-1': showDetails
+        'mr-1': showDetails,
       }"
     >
       <v-btn
@@ -77,31 +77,31 @@ import Markdown from '~/components/commons/Markdown'
 export default {
   name: 'MarkdownTextArea',
   components: {
-    Markdown
+    Markdown,
   },
   props: {
     // v-modelでvalueを受け取るには明示が必要
     value: {
       type: String,
-      default: ''
+      default: '',
     },
     allowEmpty: {
       type: Boolean,
-      default: false
+      default: false,
     },
     previewWidth: {
       type: String,
-      default: '70em'
-    }
+      default: '70em',
+    },
   },
   data() {
     return {
       preview: false,
-      rules: [v => this.isValid(v) || '必須'],
+      rules: [(v) => this.isValid(v) || '必須'],
       // 文字列は初期状態をnullにしないと、''が来た時にwatchが発火しない
       internalValue: this.value,
       dragging: false,
-      uploading: false
+      uploading: false,
     }
   },
   computed: {
@@ -119,7 +119,7 @@ export default {
     },
     classes() {
       return this.dragging ? 'grey lighten-1' : ''
-    }
+    },
   },
   watch: {
     internalValue() {
@@ -127,7 +127,7 @@ export default {
     },
     value() {
       this.internalValue = this.value
-    }
+    },
   },
   methods: {
     isValid(value) {
@@ -182,14 +182,14 @@ export default {
 
       try {
         const res = await this.$axios.post('attachments', params, {
-          headers: { 'content-type': 'multipart/form-data' }
+          headers: { 'content-type': 'multipart/form-data' },
         })
 
         switch (res.status) {
           case 200:
             this.notifySuccess({
               message:
-                'アップロードしました\nリンクを知る全ての人が参照できます'
+                'アップロードしました\nリンクを知る全ての人が参照できます',
             })
             return res.data
           case 400:
@@ -200,19 +200,19 @@ export default {
           default:
             console.error(res)
             this.notifyError({
-              message: `想定外のエラーによりアップロードに失敗しました`
+              message: `想定外のエラーによりアップロードに失敗しました`,
             })
         }
       } catch (e) {
         console.error(e)
         this.notifyError({
-          message: `想定外のエラーによりアップロードに失敗しました`
+          message: `想定外のエラーによりアップロードに失敗しました`,
         })
       }
 
       return null
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

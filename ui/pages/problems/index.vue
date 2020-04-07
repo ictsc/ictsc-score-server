@@ -60,7 +60,7 @@ export default {
     CategoryModal,
     PageTitle,
     Category,
-    ProblemModal
+    ProblemModal,
   },
   computed: {
     ...mapGetters('contestInfo', ['gradingDelaySec', 'realtimeGrading']),
@@ -70,16 +70,12 @@ export default {
             'problems',
             'problems.body',
             'problems.answers',
-            'problems.penalties'
+            'problems.penalties',
           ]
         : ['problems.body', 'problems.category']
 
-      return this.sortByOrder(
-        orm.Category.query()
-          .with(withArg)
-          .all()
-      )
-    }
+      return this.sortByOrder(orm.Category.query().with(withArg).all())
+    },
   },
   watch: {
     isLoggedIn: {
@@ -89,9 +85,9 @@ export default {
         if (value) {
           orm.Queries.pageProblems()
         }
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

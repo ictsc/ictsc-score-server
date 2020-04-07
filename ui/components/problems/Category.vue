@@ -52,18 +52,18 @@ export default {
     CategoryModal,
     Markdown,
     PenButton,
-    ProblemCard
+    ProblemCard,
   },
   props: {
     category: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     problems() {
       return this.sortByOrder(this.category.problems)
-    }
-  }
+    },
+  },
 }
 </script>

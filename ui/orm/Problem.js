@@ -28,7 +28,7 @@ export default class Problem extends BaseModel {
       supplements: this.hasMany(orm.ProblemSupplement, 'problemId'),
       penalties: this.hasMany(orm.Penalty, 'problemId'),
       answers: this.hasMany(orm.Answer, 'problemId'),
-      issues: this.hasMany(orm.Issue, 'problemId')
+      issues: this.hasMany(orm.Issue, 'problemId'),
       // 一覧取得が100ms程遅くなる
       // solvedCount: this.number()
     }
@@ -53,7 +53,7 @@ export default class Problem extends BaseModel {
       mode: 'textbox',
       candidates: [],
       corrects: [],
-      text: ''
+      text: '',
     }
   }
 
@@ -61,9 +61,7 @@ export default class Problem extends BaseModel {
   get previousProblem() {
     return (
       this.previousProblemId &&
-      Problem.query()
-        .with(['body'])
-        .find(this.previousProblemId)
+      Problem.query().with(['body']).find(this.previousProblemId)
     )
   }
 

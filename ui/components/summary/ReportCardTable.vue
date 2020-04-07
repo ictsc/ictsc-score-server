@@ -81,28 +81,28 @@ export default {
         return []
       }
 
-      return this.reportCards.find(e => e.teamName === '満点').problemTitles
+      return this.reportCards.find((e) => e.teamName === '満点').problemTitles
     },
     problemGenres() {
       if (this.reportCards.length === 0) {
         return []
       }
 
-      return this.reportCards.find(e => e.teamName === '満点').problemGenres
+      return this.reportCards.find((e) => e.teamName === '満点').problemGenres
     },
     problemTitleHeaders() {
       return this.problemTitles.map((title, index) => ({
         text: title,
         value: `eachScore[${index}]`,
         divider: true,
-        class: 'pa-2'
+        class: 'pa-2',
       }))
     },
     problemTitleItemValues() {
-      return this.problemTitleHeaders.map(header => `item.${header.value}`)
+      return this.problemTitleHeaders.map((header) => `item.${header.value}`)
     },
     problemTitleHeaderValues() {
-      return this.problemTitleHeaders.map(header => `header.${header.value}`)
+      return this.problemTitleHeaders.map((header) => `header.${header.value}`)
     },
     headers() {
       if (this.problemTitleHeaders.length === 0) {
@@ -115,17 +115,17 @@ export default {
           text: '順位',
           value: 'rank',
           divider: true,
-          class: 'text-center text-no-wrap'
+          class: 'text-center text-no-wrap',
         },
         {
           text: '得点',
           value: 'score',
           divider: true,
-          class: 'text-center text-no-wrap'
+          class: 'text-center text-no-wrap',
         },
-        ...this.problemTitleHeaders
+        ...this.problemTitleHeaders,
       ]
-    }
+    },
   },
   beforeCreate() {
     orm.Queries.reportCards()
@@ -141,17 +141,17 @@ export default {
       const paddingTop = vContent.style.paddingTop
 
       vContent.style.paddingTop = ''
-      hideNodes.forEach(node => (node.style.display = 'none'))
+      hideNodes.forEach((node) => (node.style.display = 'none'))
 
       window.print()
 
-      hideNodes.forEach(node => (node.style.display = ''))
+      hideNodes.forEach((node) => (node.style.display = ''))
       vContent.style.paddingTop = paddingTop
 
       // TODO: writing-modeをサポートしてないためスタイルが崩れる
       // this.captureById('table', '成績表.png')
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

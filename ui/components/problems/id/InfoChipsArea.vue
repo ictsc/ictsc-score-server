@@ -27,8 +27,8 @@ export default {
   props: {
     problem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     ...mapGetters('contestInfo', ['realtimeGrading']),
@@ -39,7 +39,7 @@ export default {
       if (this.isStaff || this.realtimeGrading) {
         list[0].push({
           name: '基準',
-          value: this.problem.solvedCriterion + '%'
+          value: this.problem.solvedCriterion + '%',
         })
         // 一覧取得が100ms程遅くなる
         // list[0].push({ name: '突破チーム数', value: this.problem.solvedCount })
@@ -49,7 +49,7 @@ export default {
         list.push(
           [
             { name: 'コード', value: this.problem.code },
-            { name: '作問者', value: this.problem.writer }
+            { name: '作問者', value: this.problem.writer },
           ],
           [{ name: '種類', value: this.problem.genre || '未設定' }],
           [{ name: '解答方式', value: this.problem.modeJp }],
@@ -59,7 +59,7 @@ export default {
       }
 
       return list
-    }
-  }
+    },
+  },
 }
 </script>

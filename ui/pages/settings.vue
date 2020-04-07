@@ -178,13 +178,13 @@ export default {
     ProblemModal,
     RegradeAnswersModal,
     SessionTable,
-    TeamModal
+    TeamModal,
   },
   data() {
     return {
       showDelete1: false,
       showDelete2: false,
-      configFields: ['key', 'value']
+      configFields: ['key', 'value'],
     }
   },
   computed: {
@@ -196,7 +196,7 @@ export default {
       } else {
         return ''
       }
-    }
+    },
   },
   watch: {
     showDelete1(value) {
@@ -208,7 +208,7 @@ export default {
       if (value === false) {
         this.showDelete1 = false
       }
-    }
+    },
   },
   methods: {
     async fetchTeams() {
@@ -227,18 +227,14 @@ export default {
     async fetchProblems() {
       await orm.Queries.problemsCategory()
       return this.sortByOrder(
-        orm.Problem.query()
-          .with(['body', 'category', 'previousProblem'])
-          .all()
+        orm.Problem.query().with(['body', 'category', 'previousProblem']).all()
       )
     },
     async fetchProblemEnvironments() {
       await orm.Queries.problemEnvironmentsTeamProblem()
 
       return this.sortByOrder(
-        orm.ProblemEnvironment.query()
-          .with(['problem', 'team'])
-          .all()
+        orm.ProblemEnvironment.query().with(['problem', 'team']).all()
       )
     },
     // item-select-buttonを通すと一部リアクティブじゃなくなる
@@ -252,7 +248,7 @@ export default {
 
       await orm.Mutations.applyTeam({
         resolve: () => (result = true),
-        params: { ...params, silent: true }
+        params: { ...params, silent: true },
       })
 
       return result
@@ -262,7 +258,7 @@ export default {
 
       await orm.Mutations.applyCategory({
         resolve: () => (result = true),
-        params: { ...params, silent: true }
+        params: { ...params, silent: true },
       })
 
       return result
@@ -272,7 +268,7 @@ export default {
 
       await orm.Mutations.applyProblem({
         resolve: () => (result = true),
-        params: { ...params, silent: true }
+        params: { ...params, silent: true },
       })
 
       return result
@@ -282,7 +278,7 @@ export default {
 
       await orm.Mutations.applyProblemEnvironment({
         resolve: () => (result = true),
-        params: { ...params, silent: true }
+        params: { ...params, silent: true },
       })
 
       return result
@@ -292,12 +288,12 @@ export default {
 
       await orm.Mutations.updateConfig({
         resolve: () => (result = true),
-        params: { ...params }
+        params: { ...params },
       })
 
       return result
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

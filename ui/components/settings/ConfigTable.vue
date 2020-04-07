@@ -22,7 +22,7 @@
     </template>
 
     <template v-slot:item.value="{ item }">
-      <div class="text-truncate" style="width: 14em">
+      <div class="text-truncate" style="width: 14em;">
         {{ item.displayValue }}
       </div>
     </template>
@@ -35,24 +35,24 @@ import ConfigModal from '~/components/misc/ConfigModal'
 export default {
   name: 'ConfigTable',
   components: {
-    ConfigModal
+    ConfigModal,
   },
   data() {
     return {
       headers: [
         { text: 'action', value: 'action', sortable: false },
         { text: '名前', value: 'key' },
-        { text: '値', value: 'value' }
-      ]
+        { text: '値', value: 'value' },
+      ],
     }
   },
   computed: {
     configs() {
       return orm.Config.all()
-    }
+    },
   },
   beforeCreate() {
     orm.Queries.configs()
-  }
+  },
 }
 </script>

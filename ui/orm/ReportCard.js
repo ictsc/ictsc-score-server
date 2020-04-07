@@ -13,7 +13,7 @@ export default class ReportCard extends BaseModel {
       eachScore: this.attr(),
       eachPercent: this.attr(),
       problemTitles: this.attr(),
-      problemGenres: this.attr()
+      problemGenres: this.attr(),
     }
   }
 }

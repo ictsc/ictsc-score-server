@@ -8,7 +8,7 @@ export default class Config extends BaseModel {
     return {
       key: this.string(),
       value: this.string(),
-      valueType: this.string()
+      valueType: this.string(),
     }
   }
 

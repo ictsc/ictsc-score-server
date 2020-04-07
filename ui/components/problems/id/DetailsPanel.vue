@@ -11,7 +11,7 @@
 
         <div
           class="grey--text text--darken-3 display-1 truncate-clamp3"
-          style="overflow-wrap: break-word"
+          style="overflow-wrap: break-word;"
         >
           {{ problem.title }}
         </div>
@@ -71,13 +71,13 @@ export default {
     EnvironmentArea,
     ProblemModal,
     InfoChipsArea,
-    SupplementArea
+    SupplementArea,
   },
   props: {
     problem: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

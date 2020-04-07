@@ -26,25 +26,23 @@ export default {
   name: 'ScoreboardPanel',
   components: {
     ScoreboardGroup,
-    PanelLabel
+    PanelLabel,
   },
   data() {
     return {
-      fetching: false
+      fetching: false,
     }
   },
   computed: {
     scoreboards() {
-      return orm.Scoreboard.query()
-        .with('team')
-        .all()
+      return orm.Scoreboard.query().with('team').all()
     },
     beginnerScoreboards() {
-      return this.scoreboards.filter(sb => sb.team.beginner)
+      return this.scoreboards.filter((sb) => sb.team.beginner)
     },
     notBeginnerScoreboards() {
-      return this.scoreboards.filter(sb => !sb.team.beginner)
-    }
+      return this.scoreboards.filter((sb) => !sb.team.beginner)
+    },
   },
   // なぜかfetch()だと呼ばれない
   async created() {
@@ -54,6 +52,6 @@ export default {
     } finally {
       this.fetching = false
     }
-  }
+  },
 }
 </script>

@@ -95,15 +95,13 @@ export default {
         { text: '最終アクセス時刻', value: 'updatedAtSimple' },
         { text: '最終アクセスIP', value: 'latestIp' },
         { text: 'ログイン時刻', value: 'createdAtSimple' },
-        { text: 'セッションID', value: 'id' }
-      ]
+        { text: 'セッションID', value: 'id' },
+      ],
     }
   },
   computed: {
     sessions() {
-      return orm.Session.query()
-        .with(['team'])
-        .all()
+      return orm.Session.query().with(['team']).all()
       // 存在しないチームIDを持つレコードは表示しない
     },
     hasSessions() {
@@ -116,11 +114,11 @@ export default {
       const collect = Object.entries(
         this.$_.groupBy(
           this.selectedItems,
-          session => session.team && session.team.role
+          (session) => session.team && session.team.role
         )
       )
-      return collect.map(o => [o[0], o[1].length])
-    }
+      return collect.map((o) => [o[0], o[1].length])
+    },
   },
   mounted() {
     this.fetch()
@@ -142,7 +140,7 @@ export default {
           resolve: () => {
             ++succeededCount
           },
-          params: { sessionId: session.id }
+          params: { sessionId: session.id },
         })
       }
 
@@ -150,11 +148,11 @@ export default {
 
       if (succeededCount === this.selectedItems.length) {
         this.notifySuccess({
-          message: `${succeededCount}セッション切断しました`
+          message: `${succeededCount}セッション切断しました`,
         })
       } else {
         this.notifyWarning({
-          message: `${succeededCount}/${this.selectedItems.length}セッション切断しました`
+          message: `${succeededCount}/${this.selectedItems.length}セッション切断しました`,
         })
       }
 
@@ -163,7 +161,7 @@ export default {
     },
     close() {
       this.showDialog = false
-    }
-  }
+    },
+  },
 }
 </script>

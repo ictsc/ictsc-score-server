@@ -45,19 +45,19 @@ export default {
   props: {
     team: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     onCopySuccess(event) {
       this.notifyInfo({
         message: `コピーしました\n${event.text}`,
-        timeout: 3000
+        timeout: 3000,
       })
     },
     onCopyError(e) {
       this.notifyWarning({ message: 'コピーに失敗しました' })
-    }
-  }
+    },
+  },
 }
 </script>

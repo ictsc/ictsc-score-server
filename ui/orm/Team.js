@@ -14,7 +14,7 @@ export default class Team extends BaseModel {
       color: this.string(),
       secretText: this.string().nullable(),
       createdAt: this.string(),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 
@@ -27,7 +27,7 @@ export default class Team extends BaseModel {
       number: 0,
       color: '#FFFFFF',
       beginner: false,
-      password: null
+      password: null,
     }
   }
 
@@ -52,11 +52,11 @@ export default class Team extends BaseModel {
   }
 
   static get players() {
-    return Team.all().filter(t => t.isPlayer)
+    return Team.all().filter((t) => t.isPlayer)
   }
 
   // team99は毎回使われるテストユーザー
   static get playersWithoutTeam99() {
-    return Team.all().filter(t => t.isPlayer && t.name !== 'team99')
+    return Team.all().filter((t) => t.isPlayer && t.name !== 'team99')
   }
 }

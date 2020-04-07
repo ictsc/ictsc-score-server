@@ -20,37 +20,37 @@ import UpDownArrow from '~/components/commons/UpDownArrow'
 export default {
   name: 'ExpandableButton',
   components: {
-    UpDownArrow
+    UpDownArrow,
   },
   model: {
     prop: 'opened',
-    event: 'click'
+    event: 'click',
   },
   props: {
     // v-model
     opened: {
       type: Boolean,
-      required: false
+      required: false,
     },
     // 矢印が消え、クリックイベントも停止する
     togglable: {
       type: Boolean,
-      default: true
+      default: true,
     },
     // trueなら最大化する
     maximum: {
       type: Boolean,
-      default: false
+      default: false,
     },
     // 展開時に最大化する
     maximumOpen: {
       type: Boolean,
-      default: false
+      default: false,
     },
     color: {
       type: String,
-      default: 'white'
-    }
+      default: 'white',
+    },
   },
   computed: {
     volume() {
@@ -59,14 +59,14 @@ export default {
       } else {
         return ''
       }
-    }
+    },
   },
   methods: {
     click() {
       if (this.togglable) {
         this.$emit('click', !this.opened)
       }
-    }
-  }
+    },
+  },
 }
 </script>

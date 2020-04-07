@@ -20,7 +20,7 @@ export default class Mutations extends BaseModel {
     const fieldsString =
       typeof fields === 'string'
         ? fields
-        : fields.map(field => this.buildMutationField(field)).join('\n')
+        : fields.map((field) => this.buildMutationField(field)).join('\n')
 
     return `
       mutation operator($input: ${inflection.camelize(mutation)}Input!) {
@@ -37,15 +37,15 @@ export default class Mutations extends BaseModel {
     const query = this.buildMutation(mutation, fields)
     const response = await this.store().dispatch('entities/simpleMutation', {
       query,
-      variables: { input: params }
+      variables: { input: params },
     })
 
     // if (!response[mutation]) {
     //   return response
     // }
 
-    const responseForEach = func => {
-      Object.keys(response[mutation]).forEach(key => {
+    const responseForEach = (func) => {
+      Object.keys(response[mutation]).forEach((key) => {
         const value = response[mutation][key]
         console.info('response value', key, value)
 
@@ -59,7 +59,7 @@ export default class Mutations extends BaseModel {
 
         // レスポンスから取得したモデルとレコードを関数に渡す
         if (Array.isArray(value)) {
-          value.forEach(v => func(model, value))
+          value.forEach((v) => func(model, value))
         } else {
           func(model, value)
         }
@@ -93,7 +93,7 @@ export default class Mutations extends BaseModel {
     type,
     subject,
     resolve,
-    action
+    action,
   }) {
     try {
       const response = await this.sendMutationBase(
@@ -105,7 +105,7 @@ export default class Mutations extends BaseModel {
 
       if (action) {
         $nuxt.notifySuccess({
-          message: `${action}に成功しました`
+          message: `${action}に成功しました`,
         })
       }
 
@@ -120,7 +120,7 @@ export default class Mutations extends BaseModel {
       if (action) {
         $nuxt.notifyWarning({
           message: `${action}に失敗しました`,
-          details: error.message
+          details: error.message,
         })
       }
     }
@@ -150,8 +150,8 @@ export default class Mutations extends BaseModel {
       solvedCriterion,
       candidates,
       corrects,
-      silent
-    }
+      silent,
+    },
   }) {
     return this.sendMutation({
       action,
@@ -176,10 +176,10 @@ export default class Mutations extends BaseModel {
         solvedCriterion,
         candidates,
         corrects,
-        silent
+        silent,
       },
       fields: [orm.Problem, orm.ProblemBody],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -190,14 +190,14 @@ export default class Mutations extends BaseModel {
       mutation: 'deleteProblem',
       params: { code },
       fields: [orm.Problem, orm.ProblemBody],
-      type: 'delete'
+      type: 'delete',
     })
   }
 
   static addProblemSupplement({
     action,
     resolve,
-    params: { problemCode, text }
+    params: { problemCode, text },
   }) {
     return this.sendMutation({
       action,
@@ -205,14 +205,14 @@ export default class Mutations extends BaseModel {
       mutation: 'addProblemSupplement',
       params: { problemCode, text },
       fields: [orm.ProblemSupplement],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
   static deleteProblemSupplement({
     action,
     resolve,
-    params: { problemSupplementId }
+    params: { problemSupplementId },
   }) {
     return this.sendMutation({
       action,
@@ -220,7 +220,7 @@ export default class Mutations extends BaseModel {
       mutation: 'deleteProblemSupplement',
       params: { problemSupplementId },
       fields: [orm.ProblemSupplement],
-      type: 'delete'
+      type: 'delete',
     })
   }
 
@@ -238,8 +238,8 @@ export default class Mutations extends BaseModel {
       user,
       password,
       secretText,
-      silent
-    }
+      silent,
+    },
   }) {
     return this.sendMutation({
       action,
@@ -256,17 +256,17 @@ export default class Mutations extends BaseModel {
         user,
         password,
         secretText,
-        silent
+        silent,
       },
       fields: [orm.ProblemEnvironment],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
   static deleteProblemEnvironment({
     action,
     resolve,
-    params: { problemEnvironmentId }
+    params: { problemEnvironmentId },
   }) {
     return this.sendMutation({
       action,
@@ -274,7 +274,7 @@ export default class Mutations extends BaseModel {
       mutation: 'deleteProblemEnvironment',
       params: { problemEnvironmentId },
       fields: [orm.ProblemEnvironment],
-      type: 'delete'
+      type: 'delete',
     })
   }
 
@@ -285,14 +285,14 @@ export default class Mutations extends BaseModel {
       mutation: 'startIssue',
       params: { problemId, text },
       fields: [orm.Issue, orm.IssueComment],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
   static transitionIssueState({
     action,
     resolve,
-    params: { issueId, currentStatus }
+    params: { issueId, currentStatus },
   }) {
     return this.sendMutation({
       action,
@@ -300,7 +300,7 @@ export default class Mutations extends BaseModel {
       mutation: 'transitionIssueState',
       params: { issueId, currentStatus },
       fields: [orm.Issue],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -311,14 +311,14 @@ export default class Mutations extends BaseModel {
       mutation: 'addIssueComment',
       params: { issueId, text },
       fields: [orm.Issue, orm.IssueComment],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
   static applyCategory({
     action,
     resolve,
-    params: { code, title, description, order, silent }
+    params: { code, title, description, order, silent },
   }) {
     return this.sendMutation({
       action,
@@ -326,7 +326,7 @@ export default class Mutations extends BaseModel {
       mutation: 'applyCategory',
       params: { code, title, description, order, silent },
       fields: [orm.Category],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -337,7 +337,7 @@ export default class Mutations extends BaseModel {
       mutation: 'deleteCategory',
       params: { code },
       fields: [orm.Category],
-      type: 'delete'
+      type: 'delete',
     })
   }
 
@@ -348,7 +348,7 @@ export default class Mutations extends BaseModel {
       mutation: 'addAnswer',
       params: { problemId, bodies },
       fields: [orm.Answer],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -359,14 +359,14 @@ export default class Mutations extends BaseModel {
       mutation: 'applyScore',
       params: { answerId, percent },
       fields: [orm.Answer],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
   static confirmingAnswer({
     action,
     resolve,
-    params: { answerId, confirming }
+    params: { answerId, confirming },
   }) {
     return this.sendMutation({
       action,
@@ -374,7 +374,7 @@ export default class Mutations extends BaseModel {
       mutation: 'confirmingAnswer',
       params: { answerId, confirming },
       fields: [orm.Answer],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -385,7 +385,7 @@ export default class Mutations extends BaseModel {
       mutation: 'regradeAnswers',
       params: { problemId },
       fields: [[orm.Answer], 'total', 'succeeded', 'failed'],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -401,8 +401,8 @@ export default class Mutations extends BaseModel {
       password,
       organization,
       color,
-      silent
-    }
+      silent,
+    },
   }) {
     return this.sendMutation({
       action,
@@ -417,10 +417,10 @@ export default class Mutations extends BaseModel {
         password,
         organization,
         color,
-        silent
+        silent,
       },
       fields: [orm.Team],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -431,14 +431,14 @@ export default class Mutations extends BaseModel {
       mutation: 'deleteTeam',
       params: { number },
       fields: [orm.Team],
-      type: 'delete'
+      type: 'delete',
     })
   }
 
   static addNotice({
     action,
     resolve,
-    params: { title, text, pinned, teamId }
+    params: { title, text, pinned, teamId },
   }) {
     return this.sendMutation({
       action,
@@ -446,7 +446,7 @@ export default class Mutations extends BaseModel {
       mutation: 'addNotice',
       params: { title, text, pinned, teamId },
       fields: [orm.Notice],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -457,7 +457,7 @@ export default class Mutations extends BaseModel {
       mutation: 'addPenalty',
       params: { problemId },
       fields: [orm.Penalty],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -468,7 +468,7 @@ export default class Mutations extends BaseModel {
       mutation: 'deleteNotice',
       params: { noticeId },
       fields: [orm.Notice],
-      type: 'delete'
+      type: 'delete',
     })
   }
 
@@ -479,7 +479,7 @@ export default class Mutations extends BaseModel {
       mutation: 'pinNotice',
       params: { noticeId, pinned },
       fields: [orm.Notice],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -490,7 +490,7 @@ export default class Mutations extends BaseModel {
       mutation: 'updateConfig',
       params: { key, value },
       fields: [orm.Config],
-      type: 'upsert'
+      type: 'upsert',
     })
   }
 
@@ -501,7 +501,7 @@ export default class Mutations extends BaseModel {
       mutation: 'deleteSession',
       params: { sessionId },
       fields: [orm.Session],
-      type: 'delete'
+      type: 'delete',
     })
   }
 }

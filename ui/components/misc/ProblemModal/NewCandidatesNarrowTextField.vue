@@ -10,7 +10,7 @@
 </template>
 <script>
 export default {
-  name: 'NewCandidatesNarrowTextField'
+  name: 'NewCandidatesNarrowTextField',
 }
 </script>
 <style scoped lang="sass">

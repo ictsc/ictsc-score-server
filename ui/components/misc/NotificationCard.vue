@@ -1,6 +1,6 @@
 <template>
   <div
-    style="width: min-content"
+    style="width: min-content;"
     @mouseenter="onMouse = true"
     @mouseleave="onMouse = false"
   >
@@ -71,24 +71,24 @@ export default {
     // idだと被る
     uid: {
       type: Number,
-      required: true
+      required: true,
     },
     timeout: {
       type: Number,
-      required: true
+      required: true,
     },
     type: {
       type: String,
-      required: true
+      required: true,
     },
     message: {
       type: String,
-      required: true
+      required: true,
     },
     details: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -96,7 +96,7 @@ export default {
       startAtMsec: 0,
       progressElapsedTime: 0,
       activeTimeout: -1,
-      onMouse: false
+      onMouse: false,
     }
   },
   computed: {
@@ -117,7 +117,7 @@ export default {
     },
     progressValue() {
       return (100 * (this.currentTimeMsec - this.startAtMsec)) / this.timeout
-    }
+    },
   },
   watch: {
     visible(value) {
@@ -131,7 +131,7 @@ export default {
       } else {
         this.startTimeout()
       }
-    }
+    },
   },
   created() {
     this.startTimeout()
@@ -158,8 +158,8 @@ export default {
     stopTimeout() {
       clearTimeout(this.activeTimeout)
       this.activeTimeout = -1
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

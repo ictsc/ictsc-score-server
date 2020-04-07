@@ -91,7 +91,7 @@ export default {
     MarkdownTextArea,
     OrderSlider,
     ConflictWarning,
-    TitleTextField
+    TitleTextField,
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
   fetch() {
@@ -100,7 +100,7 @@ export default {
   data() {
     return {
       // mixinしたモジュールから必要な値がmixinされる
-      descriptionPlaceholder: '記述可能\n\n空も可'
+      descriptionPlaceholder: '記述可能\n\n空も可',
     }
   },
   computed: {
@@ -109,17 +109,17 @@ export default {
     },
     categories() {
       return this.sortByOrder(orm.Category.query().all())
-    }
+    },
   },
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
     ...orm.Category.mutationFieldKeys().reduce((obj, field) => {
-      obj[field] = function(value) {
+      obj[field] = function (value) {
         this.setStorage(field, value)
       }
       return obj
-    }, {})
+    }, {}),
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -149,11 +149,11 @@ export default {
           this.close()
         },
         // 無駄なパラメータを渡しても問題ない
-        params: { ...this }
+        params: { ...this },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

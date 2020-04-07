@@ -53,12 +53,12 @@ export default {
     // v-model
     value: {
       type: Boolean,
-      required: true
+      required: true,
     },
     problem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -66,7 +66,7 @@ export default {
       sending: false,
       total: 0,
       succeeded: 0,
-      failed: 0
+      failed: 0,
     }
   },
   watch: {
@@ -75,7 +75,7 @@ export default {
     },
     value(value) {
       this.internalValue = value
-    }
+    },
   },
   methods: {
     async submit() {
@@ -83,7 +83,7 @@ export default {
 
       const response = await orm.Mutations.regradeAnswers({
         action: '採点再実行',
-        params: { problemId: this.problem.id }
+        params: { problemId: this.problem.id },
       })
 
       this.sending = false
@@ -98,7 +98,7 @@ export default {
     },
     close() {
       this.internalValue = false
-    }
-  }
+    },
+  },
 }
 </script>

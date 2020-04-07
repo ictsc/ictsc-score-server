@@ -68,19 +68,19 @@ export default {
   components: {
     DateTimePicker,
     MarkdownTextArea,
-    NumberTextField
+    NumberTextField,
   },
   props: {
     // v-model
     // モーダルのopen/close
     value: {
       type: Boolean,
-      default: false
+      default: false,
     },
     config: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     const storageKey = `config-${this.config.key}`
@@ -94,7 +94,7 @@ export default {
       valid: false,
       sending: false,
       storageKey,
-      configValue
+      configValue,
     }
   },
   computed: {
@@ -115,7 +115,7 @@ export default {
       } else {
         return this.configValue !== this.config.parsedValue
       }
-    }
+    },
   },
   watch: {
     value(value) {
@@ -126,7 +126,7 @@ export default {
     },
     configValue(value) {
       this.$jsonStorage.set(this.storageKey, value)
-    }
+    },
   },
   methods: {
     ...mapActions('contestInfo', ['fetchContestInfo']),
@@ -157,12 +157,12 @@ export default {
         },
         params: {
           key: this.config.key,
-          value: JSON.stringify(this.configValue)
-        }
+          value: JSON.stringify(this.configValue),
+        },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

@@ -13,17 +13,17 @@ export default {
   props: {
     readonly: {
       type: Boolean,
-      required: true
+      required: true,
     },
     allowEmpty: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      rules: [v => this.allowEmpty || !this.isBlank(v) || '必須']
+      rules: [(v) => this.allowEmpty || !this.isBlank(v) || '必須'],
     }
-  }
+  },
 }
 </script>

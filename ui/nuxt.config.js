@@ -2,7 +2,7 @@ export default {
   // ---- Nuxt標準の設定 ----
   mode: 'spa',
   server: {
-    host: '0.0.0.0'
+    host: '0.0.0.0',
   },
   head: {
     title: 'スコアサーバー',
@@ -13,10 +13,10 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: 'ICTSC スコアサーバー'
-      }
+        content: 'ICTSC スコアサーバー',
+      },
     ],
-    link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
+    link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
   },
   css: ['~/assets/css/commons.sass'],
   build: {
@@ -24,7 +24,7 @@ export default {
     extend(config, { isDev, isClient }) {
       // Vue dev toolが使えなくなる
       // config.devtool = 'eval-source-map'
-    }
+    },
   },
   loading: false,
   plugins: [
@@ -37,7 +37,7 @@ export default {
     '~/plugins/push',
     '~/plugins/vue-clipboard',
     '~/plugins/vue-underscore',
-    '~/plugins/vuex-orm'
+    '~/plugins/vuex-orm',
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/markdownit', '@nuxtjs/proxy'],
   buildModules: ['@nuxtjs/moment', '@nuxtjs/vuetify'],
@@ -46,7 +46,7 @@ export default {
   axios: {
     // Docs: https://axios.nuxtjs.org/options
     prefix: '/api',
-    proxy: true
+    proxy: true,
   },
   markdownit: {
     // Docs: https://github.com/markdown-it/markdown-it
@@ -64,26 +64,26 @@ export default {
       // 補足を最下部に生成
       'markdown-it-footnote',
       // サニタイズ
-      'markdown-it-sanitizer'
-    ]
+      'markdown-it-sanitizer',
+    ],
   },
   moment: {
-    locales: ['es-us', 'ja']
+    locales: ['es-us', 'ja'],
   },
   proxy: {
     // 開発時のyarn run devなど、jsでリクエストを受けている場合に使う
     // 本番環境では前段のLBでリクエストを振り分ける
     '/api': 'http://api:3000',
-    '/push': 'http://push:8080'
+    '/push': 'http://push:8080',
   },
   vuetify: {
     // customVariables: ['~/assets/css/variables.sass'],
     theme: {
       themes: {
         light: {
-          primary: '#e40046'
-        }
-      }
-    }
-  }
+          primary: '#e40046',
+        },
+      },
+    },
+  },
 }

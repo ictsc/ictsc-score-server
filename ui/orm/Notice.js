@@ -12,7 +12,7 @@ export default class Notice extends BaseModel {
       pinned: this.boolean(),
       teamId: this.string().nullable(),
       team: this.belongsTo(orm.Team, 'teamId'),
-      createdAt: this.string()
+      createdAt: this.string(),
     }
   }
 }

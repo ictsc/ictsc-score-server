@@ -246,19 +246,19 @@ export default {
     NumberTextField,
     OrderSlider,
     ConflictWarning,
-    TitleTextField
+    TitleTextField,
   },
   mixins: [ApplyModalCommons, ApplyModalFields],
   data() {
     return {
       // mixinしたモジュールから必要な値がmixinされる
-      requiredRules: [v => !!v || '必須'],
-      perfectPointRules: [v => parseInt(v) >= 0 || '0以上'],
+      requiredRules: [(v) => !!v || '必須'],
+      perfectPointRules: [(v) => parseInt(v) >= 0 || '0以上'],
       solvedCriterionRules: [
-        v => parseInt(v) >= 50 || '50%以上',
-        v => parseInt(v) <= 100 || '100%以下'
+        (v) => parseInt(v) >= 50 || '50%以上',
+        (v) => parseInt(v) <= 100 || '100%以下',
       ],
-      secretTextPlaceholder
+      secretTextPlaceholder,
     }
   },
   computed: {
@@ -269,18 +269,14 @@ export default {
       return this.unshiftDummy(this.sortByOrder(orm.Category.all()))
     },
     problems() {
-      return this.sortByOrder(
-        orm.Problem.query()
-          .with('body')
-          .all()
-      )
+      return this.sortByOrder(orm.Problem.query().with('body').all())
     },
     selectedCategory() {
       if (!this.categoryCode) {
         return null
       }
 
-      return this.categories.find(o => o.code === this.categoryCode)
+      return this.categories.find((o) => o.code === this.categoryCode)
     },
     hasCategory() {
       return this.selectedCategory && this.selectedCategory.code !== null
@@ -291,7 +287,7 @@ export default {
       }
 
       return this.problems.filter(
-        o => o.categoryId === this.selectedCategory.id
+        (o) => o.categoryId === this.selectedCategory.id
       )
     },
     // 同一カテゴリを上に持ってくる
@@ -308,7 +304,7 @@ export default {
 
       // 他のカテゴリの自分以外
       const diff = otherProblems.filter(
-        v => v.categoryId !== this.selectedCategory.id
+        (v) => v.categoryId !== this.selectedCategory.id
       )
 
       // dividerで区切りを入れる
@@ -316,17 +312,17 @@ export default {
     },
     showOpenAtPickers() {
       return this.openAtBegin !== null && this.openAtEnd !== null
-    }
+    },
   },
   watch: {
     // ApplyModalFieldsに必要
     // 各フィールドの変更をトラッキング
     ...orm.Problem.mutationFieldKeys().reduce((obj, field) => {
-      obj[field] = function(value) {
+      obj[field] = function (value) {
         this.setStorage(field, value)
       }
       return obj
-    }, {})
+    }, {}),
   },
   methods: {
     // -- ApplyModalFieldsに必要なメソッド郡 --
@@ -346,7 +342,9 @@ export default {
       return items
     },
     rejectSelf(problems) {
-      return this.isNew ? problems : problems.filter(v => v.id !== this.item.id)
+      return this.isNew
+        ? problems
+        : problems.filter((v) => v.id !== this.item.id)
     },
     showOpenAtPickersClicked(value) {
       const now = value ? $nuxt.formatDateTime($nuxt.$moment(0)) : null
@@ -380,11 +378,11 @@ export default {
           this.close()
         },
         // 無駄なパラメータを渡しても問題ない
-        params: { ...this }
+        params: { ...this },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

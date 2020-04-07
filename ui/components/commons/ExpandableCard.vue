@@ -21,21 +21,21 @@ import UpDownArrow from '~/components/commons/UpDownArrow'
 export default {
   name: 'ExpandableCard',
   components: {
-    UpDownArrow
+    UpDownArrow,
   },
   model: {
     prop: 'opened',
-    event: 'click'
+    event: 'click',
   },
   props: {
     opened: {
       type: Boolean,
-      required: true
+      required: true,
     },
     color: {
       type: String,
-      default: 'white'
-    }
-  }
+      default: 'white',
+    },
+  },
 }
 </script>

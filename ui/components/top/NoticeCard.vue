@@ -57,17 +57,17 @@ export default {
   components: {
     CountdownDeleteButton,
     Markdown,
-    PinButton
+    PinButton,
   },
   props: {
     notice: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      sending: false
+      sending: false,
     }
   },
   methods: {
@@ -76,7 +76,7 @@ export default {
 
       await orm.Mutations.pinNotice({
         action: 'お知らせのピン変更',
-        params: { noticeId: this.notice.id, pinned: !this.notice.pinned }
+        params: { noticeId: this.notice.id, pinned: !this.notice.pinned },
       })
 
       this.sending = false
@@ -87,11 +87,11 @@ export default {
 
       await orm.Mutations.deleteNotice({
         action: 'お知らせ削除',
-        params: { noticeId: this.notice.id }
+        params: { noticeId: this.notice.id },
       })
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

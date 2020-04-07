@@ -4,7 +4,7 @@
 
     <v-content>
       <!-- 最低幅を保証する -->
-      <nuxt style="min-width: 500px" />
+      <nuxt style="min-width: 500px;" />
     </v-content>
 
     <notification-area />
@@ -19,15 +19,15 @@ import NotificationArea from '~/components/misc/NotificationArea'
 export default {
   components: {
     Navigation,
-    NotificationArea
+    NotificationArea,
   },
   computed: {
-    ...mapGetters('session', ['subscribeChannels'])
+    ...mapGetters('session', ['subscribeChannels']),
   },
   watch: {
     subscribeChannels(events) {
       this.$eventSource.subscribe(events, this.eventSourceOnMessage)
-    }
+    },
   },
   created() {
     this.startInterval()
@@ -70,15 +70,15 @@ export default {
             body: data.body,
             tag: data.uuid,
             icon: '/favicon.png',
-            timeout
+            timeout,
           })
         } else {
           const message = data.title + '\n' + data.body
           this.notifyInfo({ message, timeout })
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">

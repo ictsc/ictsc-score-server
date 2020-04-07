@@ -11,22 +11,22 @@ export default {
   props: {
     item: {
       type: Object,
-      default: null
+      default: null,
     },
     isNew: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       ...this.loadFields(),
-      conflictFields: []
+      conflictFields: [],
     }
   },
   computed: {
     edited() {
-      return this.fieldKeys().some(key => {
+      return this.fieldKeys().some((key) => {
         // リアクティブにするために無理やり関連付け
         // eslint-disable-next-line no-unused-expressions
         this[key]
@@ -36,13 +36,13 @@ export default {
     conflicted() {
       // 別セッションで行った変更とコンフリクトしたか
       return !this.isNew && this.conflictFields.length !== 0
-    }
+    },
   },
   watch: {
     item(value) {
       const conflictFields = []
 
-      this.fieldKeys().forEach(key => {
+      this.fieldKeys().forEach((key) => {
         if (!this.storageHasKey(key)) {
           // keyが無いなら変更されてないので最新版を取り込む
           // VuexORMのバグか仕様でnullがundefinedになることがあるでのnullに揃える
@@ -62,7 +62,7 @@ export default {
       })
 
       this.conflictFields = conflictFields
-    }
+    },
   },
   methods: {
     storageKeyPrefix() {
@@ -149,6 +149,6 @@ export default {
       })
       this.conflictFields = []
       this.$refs.form.resetValidation()
-    }
-  }
+    },
+  },
 }

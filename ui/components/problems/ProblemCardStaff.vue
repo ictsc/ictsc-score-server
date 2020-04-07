@@ -22,12 +22,12 @@ export default {
   props: {
     hover: {
       type: Boolean,
-      default: false
+      default: false,
     },
     problem: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

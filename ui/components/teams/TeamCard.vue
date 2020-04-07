@@ -59,29 +59,29 @@ export default {
   components: {
     PenButton,
     TeamDetailsCard,
-    TeamModal
+    TeamModal,
   },
   props: {
     team: {
       type: Object,
-      required: true
+      required: true,
     },
     showNumber: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
       showMenu: false,
-      showModal: false
+      showModal: false,
     }
   },
   computed: {
     closeDelay() {
       // v-menuが閉じると何故かdialogも閉じるので適当に600分閉じないようにする
       return this.showModal ? 36000000 : 0
-    }
+    },
   },
   watch: {
     showModal(value) {
@@ -89,7 +89,7 @@ export default {
       if (!value) {
         this.showMenu = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
