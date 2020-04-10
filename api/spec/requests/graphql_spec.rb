@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # ログイン状態で/grpahqlにアクセスした場合の挙動のスペック
-RSpec.describe 'Graphql', type: :request do
+RSpec.describe 'GraphQL', type: :request do
   shared_examples 'succeed in sending GraphQL query' do
     it 'succeed in sending GraphQL query' do
       post(sessions_url, params: { name: current_team.name, password: current_team.password }, as: :json)

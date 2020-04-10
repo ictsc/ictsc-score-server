@@ -45,7 +45,6 @@ def create_teams
   # 'team a' ~ 'team zz', 'team99', 'audience' を作成
   # パスワードはチーム名同じ
   players = build_stubbed_list(:team, 70, :player)
-  players << build_stubbed(:team, :player, name: 'team99', number: 99)
   audience = build_stubbed(:team, :audience, name: 'audience', number: 100)
 
   Team.import!([audience] + players)
