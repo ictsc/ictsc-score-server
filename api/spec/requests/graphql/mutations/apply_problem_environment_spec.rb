@@ -2,39 +2,28 @@
 
 require 'rails_helper'
 
-RSpec.describe 'applyProblemEnvironment', type: :request do
+RSpec.describe Mutations::ApplyProblemEnvironment, type: :request do
   context_as_staff do
     let(:problem) { create(:problem) }
     let(:team) { create(:team, :player) }
-    let(:name) { 'great server' }
-    let(:service) { 'SSH' }
-    let(:status) { 'status' }
-    let(:host) { '192.168.0.1' }
-    let(:port) { 22 }
-    let(:user) { 'ubuntu' }
-    let(:password) { 'password' }
-    let(:secret_text) { 'secret text markdown' }
-
-    let(:query_string) do
-      <<~GQL
-        applyProblemEnvironment(input: { problemCode: "#{problem.code}", teamNumber: #{team.number},
-            name: "#{name}", service: "#{service}", status: "#{status}", host: "#{host}", port: #{port}, user: "#{user}", password: "#{password}", secretText: "#{secret_text}" }) {
-
-          problemEnvironment {
-            host
-            user
-            password
-            status
-            name
-            team { number }
-            problem { code }
-          }
-        }
-      GQL
+    let(:env) { build(:problem_environment, team: team, problem: problem) }
+    let(:input) do
+      {
+        problemCode: env.problem.code,
+        teamNumber: env.team.number,
+        name: env.name,
+        service: env.service,
+        status: env.status,
+        host: env.host,
+        port: env.port,
+        user: env.user,
+        password: env.password,
+        secretText: env.secret_text
+      }
     end
 
     it 'send problem env' do
-      post_mutation query_string
+      post_mutation(input: input)
       expect(response).to have_http_status(:ok)
       expect(response_json).not_to have_gq_errors
 

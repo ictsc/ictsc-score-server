@@ -22,7 +22,7 @@ module Types
       # end
       #
       def has_many(field, column = field, &block) # rubocop:disable Naming/PredicateName
-        model = model_by_query_name
+        model = self.model_by_query_name
 
         class_eval do
           if block
@@ -48,7 +48,7 @@ module Types
       # end
       #
       def belongs_to(field, &block)
-        foreign_column = model_by_query_name.reflections[field.to_s]
+        foreign_column = self.model_by_query_name.reflections[field.to_s]
         foreign_key = foreign_column.foreign_key
         foreign_model = foreign_column.klass
 
@@ -63,6 +63,28 @@ module Types
             end
           end
         end
+      end
+
+      def get_type_class(type)
+        if type.non_null? || type.list?
+          self.get_type_class(type.of_type)
+        else
+          type
+        end
+      end
+
+      # scalarやenumなど値としてそのまま使えるキーを返す
+      def non_composite_field_names
+        self.fields.map {|name, field|
+          type = self.get_type_class(field.type)
+          type.kind.composite? ? nil : name
+        }
+          .compact
+      end
+
+      # フィールド一覧をクエリとして使える形式で返す
+      def to_fields_query
+        self.non_composite_field_names.join(' ')
       end
     end
   end
