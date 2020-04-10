@@ -72,7 +72,7 @@ end
 group :test do
   gem 'brakeman', require: false
   gem 'bundler-audit', require: false
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record', require: 'database_cleaner/active_record'
   gem 'rspec-rails'
   gem 'rspec_junit_formatter'
   gem 'json_matchers'
