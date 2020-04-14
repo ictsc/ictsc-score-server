@@ -31,6 +31,10 @@ interaction:
     service: api
     command: bundle exec rspec
 
+  document:
+    service: api
+    command: bundle exec rspec --format=documentation
+
   cop:
     service: api
     command: bundle exec rubocop
