@@ -2,12 +2,12 @@
 
 module Mutations
   class StartIssue < BaseMutation
-    field :issue, Types::IssueType, null: true
+    field :issue,         Types::IssueType,        null: true
     field :issue_comment, Types::IssueCommentType, null: true
 
     # 質問を開始する問題IDと最初のコメントを引数にとる
-    argument :problem_id, ID, required: true
-    argument :text, String, required: true
+    argument :problem_id, ID,     required: true
+    argument :text,       String, required: true
 
     def resolve(problem_id:, text:)
       problem = Problem.find_by(id: problem_id)
@@ -15,14 +15,15 @@ module Mutations
 
       Acl.permit!(mutation: self, args: { problem: problem })
 
-      issue = Issue.new(status: 'unsolved', problem: problem, team: Context.current_team!)
-      issue_comment = IssueComment.new(text: text, from_staff: Context.current_team!.staff?)
+      issue = Issue.new(status: 'unsolved', problem: problem, team: self.current_team!)
+      issue_comment = IssueComment.new(text: text, from_staff: self.current_team!.staff?)
 
       # issueも同時にsaveされる
       if issue_comment.update(issue: issue)
-        { issue: issue.readable, issue_comment: issue_comment.readable }
+        # issueじゃなくてissue_commentを渡す
+        Notification.notify(mutation: self.graphql_name, record: issue_comment)
+        { issue: issue.readable(team: self.current_team!), issue_comment: issue_comment.readable(team: self.current_team!) }
       else
-        add_errors(issue)
         add_errors(issue, issue_comment)
       end
     end

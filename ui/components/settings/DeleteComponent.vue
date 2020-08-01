@@ -1,76 +1,78 @@
 <template>
-  <div>
-    <v-row align="center">
-      <v-select
+  <v-row align="center" no-gutters class="flex-nowrap">
+    <v-col cols="10">
+      <v-overflow-btn
         v-model="selectedValue"
         :loading="fetching"
         :readonly="sending"
+        :label="label"
         :items="items"
-        :rules="requiredRules"
+        :item-value="itemValue"
+        :item-text="itemText"
+        auto-select-first
+        editable
+        dense
         clearable
         hide-defaults
-        item-text="title"
-        :item-value="itemValue"
-        :label="label"
         @focus="fetchItems"
       />
-      <v-btn
-        :disabled="!selectedValue || fetching"
-        class="ml-8"
-        @click.stop="showDialog = true"
-      >
-        削除
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-    </v-row>
+    </v-col>
 
-    <v-dialog v-model="showDialog" max-width="20em">
+    <v-btn
+      :disabled="!selectedValue || fetching"
+      class="ml-2"
+      @click.stop="showDialog = true"
+    >
+      削除
+      <v-icon>mdi-delete</v-icon>
+    </v-btn>
+
+    <v-dialog v-model="showDialog" max-width="22em">
       <v-card>
-        <v-card-text class="title">
+        <v-card-text class="title text-center pt-2">
+          関連データも全て削除されます<br />
           本当に削除しますか?
         </v-card-text>
 
         <v-card-actions>
-          <div class="flex-grow-1"></div>
-
-          <v-btn
-            color="error"
-            :loading="sending"
-            class="mr-4"
-            @click="deleteStart"
-          >
+          <v-btn color="error" :loading="sending" @click="deleteStart">
             削除
           </v-btn>
 
-          <v-btn :disabled="sending" @click="showDialog = false">
+          <v-spacer />
+
+          <v-btn left :disabled="sending" @click="showDialog = false">
             キャンセル
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-row>
 </template>
 <script>
 export default {
   name: 'DeleteComponent',
-
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
     fetch: {
       type: Function,
-      required: true
+      required: true,
     },
     delete: {
       type: Function,
-      required: true
+      required: true,
+    },
+    itemText: {
+      type: String,
+      required: true,
     },
     itemValue: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -78,7 +80,7 @@ export default {
       selectedValue: null,
       fetching: false,
       sending: false,
-      items: []
+      items: [],
     }
   },
   methods: {
@@ -101,7 +103,7 @@ export default {
       }
 
       this.sending = false
-    }
-  }
+    },
+  },
 }
 </script>

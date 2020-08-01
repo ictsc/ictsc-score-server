@@ -1,38 +1,48 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
+  # UI側でcodeを見てエラーハンドリングする
+  ERRORS = {
+    unauthorized: {
+      code: 'UNAUTHORIZED',
+      message: 'require login'
+    },
+    unexpected_error: {
+      code: 'UNEXPECTED_ERROR',
+      message: 'unexpected error caused'
+    }
+  }.freeze
+
+  # GraphQLのエンドポイントは常に200を返す
+  # このルールを変える場合はUI側のエラーハンドルを再設計が必要
   def execute
-    variables = ensure_hash(params[:variables])
-    query = params[:query]
-    operation_name = params[:operationName]
-
-    Rails.logger.debug 'GraphQL query log'.green
-    Rails.logger.debug({ variables: variables, query: query, operation_name: operation_name }.pretty_inspect)
-
-    if current_team.nil?
-      # TODO: GraphQL化?
-      head :unauthorized
+    # GraphQLとして正しいエラーレスポンスを返すためrequire_loginは使わない
+    # schema取得も弾かれる
+    unless logged_in?
+      render_error :unauthorized
       return
     end
 
+    variables = ensure_hash(params[:variables])
+    query = params[:query]
+    operation_name = params[:operationName]
     context = { current_team: current_team }
 
-    # 下記のcontextはただのHashだが、Query内から見えるcontextはGraphQL::Query::Context
-    Context.context = context
+    # GraphQL::ExecutionErrorを継承した例外はexecute内で補足され、レスポンスのerrorsに入る
+    render json: ApiSchema.execute(query, variables: variables, context: context, operation_name: operation_name), status: :ok
 
-    # GraphQL::ExecutionErrorを継承した例外は補足される. それ以外は500
-    render json: ApiSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
+    # GraphQLとして正常なエラーを返すために大体の例外をキャッチする
   rescue StandardError => e
-    raise e unless Rails.env.development?
+    # デバッグ用にログとBugsnagに出力
+    Rails.logger.error e.message
+    Rails.logger.error e.backtrace.join("\n")
+    Bugsnag.notify(e)
 
-    handle_error_in_development e
+    # GraphQLの仕様に従ったエラーを返す
+    render_error :unexpected_error
   end
 
   private
-
-  def current_team
-    @current_team ||= Team.find_by(id: session[:team_id])
-  end
 
   # Handle form data, JSON body, or a blank value
   def ensure_hash(ambiguous_param)
@@ -52,16 +62,21 @@ class GraphqlController < ApplicationController
     end
   end
 
-  def handle_error_in_development(error)
-    logger.error error.message
-    logger.error error.backtrace.join("\n")
+  def render_error(key)
+    error = {
+      message: ERRORS.fetch(key)[:message],
+      locations: [],
+      path: [],
 
-    render json: { data: {}, error: { message: error.message, backtrace: error.backtrace } }, status: 500
-  end
+      # Apollo流エラーハンドリング
+      extensions: {
+        code: ERRORS.fetch(key)[:code],
+        # GraphQLのレスポンスのキーはcamelCase
+        requestId: request.request_id
+      }
+    }
 
-  def render_error(message, code)
-    error = { message: message }
-    error[:extensions] = { code: code } if code.present?
-    render json: { data: {}, error: error }, status: :ok
+    # errorsはGraphQLの仕様上 配列な必要がある
+    render json: { errors: [error] }, status: :ok
   end
 end

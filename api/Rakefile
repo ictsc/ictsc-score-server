@@ -13,8 +13,14 @@ GraphQL::RakeTask::DEFAULT_OPTIONS.update(idl_outfile: 'tmp/schema.graphql', jso
 GraphQL::RakeTask.new(schema_name: 'ApiSchema')
 
 namespace :db do
-  # 1つのPR内のマイグレーションファイルを1ファイルにまとめたときなどに使う
+  # マイグレーションのロールバックに失敗した時などに使う
   if Rails.env.development?
+    task recreate: :environment do
+      Rake::Task['db:drop'].invoke
+      Rake::Task['db:create'].invoke
+      Rake::Task['db:schema:load'].invoke
+    end
+
     task remigrate: :environment do
       Rake::Task['db:drop'].invoke
       Rake::Task['db:create'].invoke

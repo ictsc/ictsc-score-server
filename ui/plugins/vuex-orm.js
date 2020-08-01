@@ -1,10 +1,10 @@
 import VuexORM, { Database } from '@vuex-orm/core'
 import VuexORMGraphQLPlugin, {
   DefaultAdapter,
-  ConnectionMode
+  ConnectionMode,
 } from '@vuex-orm/plugin-graphql'
 import orm from '~/orm'
-import apolloClient from '~/apollo/client'
+import apolloClient from '~/plugins/apollo-client'
 
 class CustomAdapter extends DefaultAdapter {
   getConnectionMode() {
@@ -13,17 +13,22 @@ class CustomAdapter extends DefaultAdapter {
 }
 
 const database = new Database()
-Object.values(orm).forEach(model => database.register(model))
+Object.values(orm)
+  .filter((model) => !!model.entity)
+  .forEach((model) => database.register(model))
 
 const options = {
   adapter: new CustomAdapter(),
   apolloClient,
   database,
-  debug: process.env.NODE_ENV !== 'production'
+  debug: process.env.NODE_ENV !== 'production',
 }
 
 VuexORM.use(VuexORMGraphQLPlugin, options)
 
-export default ({ store }) => {
+export default ({ store }, inject) => {
   VuexORM.install(database)(store)
+
+  // 主にデバッグ用
+  inject('orm', orm)
 }

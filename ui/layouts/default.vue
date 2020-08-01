@@ -1,20 +1,33 @@
 <template>
   <v-app>
-    <navigation />
-    <nuxt class="mt-10" style="min-width: 500px" />
+    <navigation class="hide-on-print" />
+
+    <v-content>
+      <!-- 最低幅を保証する -->
+      <nuxt style="min-width: 500px;" />
+    </v-content>
+
     <notification-area />
   </v-app>
 </template>
-
 <script>
-import { mapActions } from 'vuex'
-import Navigation from '~/components/organisms/Navigation'
-import NotificationArea from '~/components/organisms/NotificationArea'
+import { mapActions, mapGetters } from 'vuex'
+import orm from '~/orm'
+import Navigation from '~/components/misc/Navigation'
+import NotificationArea from '~/components/misc/NotificationArea'
 
 export default {
   components: {
     Navigation,
-    NotificationArea
+    NotificationArea,
+  },
+  computed: {
+    ...mapGetters('session', ['subscribeChannels']),
+  },
+  watch: {
+    subscribeChannels(events) {
+      this.$eventSource.subscribe(events, this.eventSourceOnMessage)
+    },
   },
   created() {
     this.startInterval()
@@ -23,13 +36,15 @@ export default {
       // setTimeout(() => this.$nuxt.$loading.finish(), 500)
 
       if (await this.fetchCurrentSession()) {
-        // TODO: エラーハンドリング
         await this.fetchContestInfo()
         // this.$nuxt.$loading.finish()
       } else {
         this.$router.push('/login')
       }
     })
+
+    // 既にブロックされてたら尋ねない
+    this.$push.Permission.request()
   },
   beforeDestroy() {
     this.stopInterval()
@@ -37,8 +52,33 @@ export default {
   methods: {
     ...mapActions('time', ['startInterval', 'stopInterval']),
     ...mapActions('session', ['fetchCurrentSession']),
-    ...mapActions('contestInfo', ['fetchContestInfo'])
-  }
+    ...mapActions('contestInfo', ['fetchContestInfo']),
+
+    eventSourceOnMessage(data) {
+      const timeout = 12000
+
+      // URL判定して必要ならリロード
+      orm.Queries.reloadRecords(this.$route.path, data.mutation, data.problemId)
+
+      if (data.title) {
+        if (this.$push.Permission.has()) {
+          // TODO: linkはserviceWorker.jsがないとダメっぽい?
+          //       focusはonClickでやればできる
+
+          // tagは知通表示中なら重複を防げる
+          this.$push.create(data.title, {
+            body: data.body,
+            tag: data.uuid,
+            icon: '/favicon.png',
+            timeout,
+          })
+        } else {
+          const message = data.title + '\n' + data.body
+          this.notifyInfo({ message, timeout })
+        }
+      }
+    },
+  },
 }
 </script>
 <style scoped lang="sass">
@@ -47,7 +87,10 @@ export default {
   background: white !important
 </style>
 <style lang="sass">
-// 横スクロールを有効にする
+// スクロールの設定をするためにunscopedなスタイルを書く
 html
+  // 横スクロールを有効にする
   overflow-x: auto
+  // 縦スクロールを必要に応じて表示する
+  // overflow-y: auto
 </style>

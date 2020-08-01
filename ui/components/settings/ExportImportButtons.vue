@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-1">
+  <div>
     <label>{{ label }}</label>
 
     <v-row class="ma-0">
@@ -24,6 +24,7 @@
       :label="label"
       :fields="fields"
       :apply="apply"
+      :parallel="parallel"
     />
   </div>
 </template>
@@ -34,38 +35,50 @@ import ImportModal from '~/components/settings/ImportModal'
 export default {
   name: 'ListExportImportButtons',
   components: {
-    ImportModal
+    ImportModal,
   },
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
+    },
+    filenamePrefix: {
+      type: String,
+      required: true,
     },
     apply: {
       type: Function,
-      required: true
+      required: true,
     },
     fetch: {
       type: Function,
-      required: true
+      required: true,
     },
     fields: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
+    parallel: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
       showModal: false,
-      loading: false
+      loading: false,
     }
   },
   methods: {
     async exportYAML() {
       const items = await this.fetch()
-      const filtered = items.map(o => this.filterField(o))
+      const filtered = items.map((o) => this.filterField(o))
       const yaml = YAML.safeDump(filtered)
-      this.download('text/yaml', `${this.label}.yml`, yaml)
+      this.download(
+        'text/x-yaml',
+        `${this.filenamePrefix} ${this.currentDateTimeString()}.yml`,
+        yaml
+      )
     },
     filterField(item) {
       return this.fields.reduce((obj, key) => {
@@ -73,7 +86,7 @@ export default {
         obj[key] = item[key] === undefined ? null : item[key]
         return obj
       }, {})
-    }
-  }
+    },
+  },
 }
 </script>

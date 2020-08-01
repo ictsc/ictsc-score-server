@@ -2,9 +2,10 @@
 
 class Score < ApplicationRecord
   # nil or 得点率
-  validates :point,  presence: false, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
-  validates :solved, boolean: true
-  validates :answer, presence: true, uniqueness: true
+  validates :point,   presence: false, allow_nil: true
+  validates :percent, presence: false, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+  validates :solved,  boolean: true
+  validates :answer,  presence: true, uniqueness: true
 
   belongs_to :answer
   has_one :team, through: :answer

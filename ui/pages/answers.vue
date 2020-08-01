@@ -1,39 +1,40 @@
 <template>
   <v-container>
-    <!-- TODO: 仮実装 -->
-    <v-layout column align-center>
-      <page-title title="解答一覧" />
+    <v-row justify="center">
+      <v-col cols="auto" align="center" class="pt-0">
+        <page-title title="解答一覧" />
 
-      <v-switch
-        v-model="showAll"
-        :label="showAll ? '全表示' : '未採点のみ'"
-        hide-details
-      />
+        <v-overflow-btn
+          v-model="problemDisplayTitle"
+          :items="problems"
+          item-text="displayTitle"
+          item-value="displayTitle"
+          label="問題選択"
+          auto-select-first
+          clearable
+          editable
+          dense
+          hide-details
+          class="mt-0"
+        />
 
-      <v-select
-        v-model="problemCode"
-        :items="problems"
-        clearable
-        hide-details
-        item-text="title"
-        item-value="code"
-        label="問題名"
-        class="pb-3"
-      />
-    </v-layout>
+        <display-toggle-buttons v-model="displayToggle" class="mt-4" />
+      </v-col>
+    </v-row>
 
     <!-- 一覧 -->
     <v-container>
-      <v-layout v-for="problem in problems" :key="problem.id">
+      <div v-for="problem in problems" :key="problem.id">
         <div v-show="isDisplayProblem(problem)" class="mb-4">
-          <div class="title">{{ problem.code }} {{ problem.body.title }}</div>
+          <div class="title pl-2">{{ problem.displayTitle }}</div>
 
-          <v-row class="mx-0" justify="start" align="start">
+          <v-row align="start" justify="start" class="mx-0">
             <template v-for="answer in filter(problem.answers)">
-              <answer-list-card
+              <answer-card
                 v-show="isDisplayAnswer(answer)"
                 :key="answer.id"
                 :answer="answer"
+                :problem="problem"
                 class="ma-1"
               />
             </template>
@@ -41,51 +42,83 @@
             <v-spacer />
           </v-row>
         </div>
-      </v-layout>
+      </div>
     </v-container>
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
-import PageTitle from '~/components/atoms/PageTitle'
-import AnswerListCard from '~/components/molecules/AnswerListCard'
-
-// TODO: code, writer, title, statusで検索
+import PageTitle from '~/components/commons/PageTitle'
+import AnswerCard from '~/components/answers/AnswerCard'
+import DisplayToggleButtons from '~/components/answers/DisplayToggleButtons'
 
 export default {
   name: 'Answers',
   components: {
-    AnswerListCard,
-    PageTitle
+    AnswerCard,
+    DisplayToggleButtons,
+    PageTitle,
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる
-    JsonStroage.accessor('answer-list', 'showAll', true),
-    JsonStroage.accessor('answer-list', 'problemCode', undefined)
+    JsonStroage.accessor('answer-list', 'displayToggle', []),
+    JsonStroage.accessor('answer-list', 'problemDisplayTitle', undefined),
   ],
+  fetch() {
+    orm.Queries.problemsAnswersTeam()
+  },
   computed: {
+    ...mapGetters('contestInfo', ['realtimeGrading']),
+
     problems() {
       const problems = orm.Problem.query()
-        .with(['body', 'answers.team', 'answers.score', 'answers.problem.body'])
+        .with(['body', 'category', 'answers', 'answers.team'])
         .all()
 
-      return this.$_.sortBy(problems, p => this.$elvis(p, 'body.title'))
-    }
-  },
-  fetch() {
-    orm.Problem.eagerFetch({}, ['answers', 'team'])
-    orm.Team.eagerFetch({}, [])
+      return problems.sort((a, b) => this.compareOrder(a, b))
+    },
   },
   methods: {
+    compareOrder(a, b) {
+      const aCO = this.$elvis(a, 'category.order')
+      const bCO = this.$elvis(b, 'category.order')
+
+      if (aCO < bCO) return -1
+      if (aCO > bCO) return 1
+      if (a.order < b.order) return -1
+      if (a.order > b.order) return 1
+      return 0
+    },
+
     // 各チームの最終解答のみの配列にする
     shrinkAnswers(answers) {
-      const teamsAnswers = this.$_.groupBy(answers, answer => answer.teamId)
+      // teamIdをキーとしたanswerの配列
+      const teamsAnswers = this.$_.groupBy(answers, (answer) => answer.teamId)
+
+      // TODO: 本戦では未採点の最も古い解答を出すべき
 
       // そのチームの複数解答を最も新しい解答1つに上書き
-      return Object.keys(teamsAnswers).map(teamId =>
-        this.findLatestAnswer(teamsAnswers[teamId])
-      )
+      if (this.realtimeGrading) {
+        // 未採点の最も古い解答 or 最高得点
+        return Object.keys(teamsAnswers).map((teamId) => {
+          const unscoredAnswers = teamsAnswers[teamId].filter(
+            (answer) => !answer.hasPoint
+          )
+
+          if (unscoredAnswers.length === 0) {
+            return this.$_.max(teamsAnswers[teamId], (answer) => answer.percent)
+          } else {
+            return this.findOlder(unscoredAnswers)
+          }
+        })
+      } else {
+        // 最新の解答
+        return Object.keys(teamsAnswers).map((teamId) =>
+          this.findNewer(teamsAnswers[teamId])
+        )
+      }
     },
     filterAnswers(answers) {
       const result = this.shrinkAnswers(answers)
@@ -93,21 +126,33 @@ export default {
       return result
     },
     sortByTeamNumber(answers) {
-      return this.$_.sortBy(answers, a => a.team.number)
+      return this.$_.sortBy(answers, (a) => a.team.number)
     },
     filter(answers) {
       return this.sortByTeamNumber(this.filterAnswers(answers))
     },
     isDisplayAnswer(answer) {
-      return this.showAll || !answer.hasPoint
+      if (this.displayToggle.includes('onlyHasNotPoint')) {
+        if (answer.hasPoint) {
+          return false
+        } else {
+          return this.displayToggle.includes('onlyConfirming')
+            ? answer.confirming
+            : true
+        }
+      } else {
+        return this.displayToggle.includes('onlyConfirming')
+          ? answer.confirming
+          : true
+      }
     },
     isDisplayProblem(problem) {
-      if (!this.problemCode) {
+      if (!this.problemDisplayTitle) {
         return true
       }
 
-      return problem.code === this.problemCode
-    }
-  }
+      return problem.displayTitle === this.problemDisplayTitle
+    },
+  },
 }
 </script>

@@ -1,4 +1,4 @@
-FROM ruby:2.6.3-alpine3.9
+FROM ruby:2.7.0-alpine3.11
 
 LABEL maintainer "ICTSC"
 
@@ -14,13 +14,14 @@ WORKDIR /usr/src/app
 # throw errors if Gemfile has been modified since Gemfile.lock
 # RUN bundle config --global frozen 1
 
+# gitはbundler-auditに必要
 RUN apk update \
  && apk add --no-cache --virtual .build-dep build-base postgresql-dev \
- && apk add --no-cache less tzdata postgresql-client \
+ && apk add --no-cache git less tzdata postgresql-client \
  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
  && echo "Asia/Tokyo" > /etc/timezone \
- && apk del tzdata
-
+ && apk del tzdata \
+ && rm -rf /var/cache/apk/*
 
 RUN gem install bundler
 
@@ -31,7 +32,7 @@ ADD Gemfile.lock /usr/src/app
 RUN bundle install --jobs=4
 
 # build --squashでサイズ減少
-RUN apk del .build-dep
-RUN rm -rf /var/cache/apk/*
+# CIが面倒くさいので消さない
+# RUN apk del .build-dep
 
 COPY . /usr/src/app

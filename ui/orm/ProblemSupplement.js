@@ -8,37 +8,7 @@ export default class ProblemSupplement extends BaseModel {
       id: this.string(),
       text: this.string(),
       problemId: this.string(),
-      createdAt: this.string()
+      createdAt: this.string(),
     }
-  }
-
-  static addProblemSupplement({
-    action,
-    resolve,
-    params: { problemCode, text }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'addProblemSupplement',
-      params: { problemCode, text },
-      fields: [ProblemSupplement],
-      type: 'upsert'
-    })
-  }
-
-  static deleteProblemSupplement({
-    action,
-    resolve,
-    params: { problemSupplementId }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'deleteProblemSupplement',
-      params: { problemSupplementId },
-      fields: [ProblemSupplement],
-      type: 'delete'
-    })
   }
 }

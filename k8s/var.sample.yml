@@ -1,0 +1,2 @@
+users:
+  - { name: 'ictsc', uid: '1011', password: 'PUT_YOUR_PASSWORD_HERE' }

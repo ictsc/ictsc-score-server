@@ -1,48 +1,58 @@
 // Vuexを通して通知を描画する
 // timeoutが0なら永続
 // mutationsは他のmutationsを呼び出せないため外部で関数化する必要がある
-function addNotification(state, { message, timeout, type }) {
+function addNotification(state, { message, details, timeout, type }) {
+  // long, short, default, eternalとかの文字表現にして長さを統一したほうがいい
   if (timeout === undefined) {
     // デフォルトは7s
     timeout = 7000
   }
 
-  state.list.push({ message, timeout, type, id: state.latestId++ })
+  if (details === undefined) {
+    details = ''
+  }
+
+  state.list.push({ message, details, timeout, type, id: state.latestId++ })
 }
 
 export default {
   state() {
     return {
       list: [],
-      latestId: 0
+      latestId: 0,
     }
   },
   mutations: {
-    addNotification(state, { id, message, timeout, type }) {
-      addNotification(state, { id, message, timeout, type })
+    addNotification(state, { id, message, details, timeout, type }) {
+      addNotification(state, { id, message, details, timeout, type })
     },
-    notifySuccess(state, { id, message, timeout }) {
-      addNotification(state, { id, message, timeout, type: 'success' })
+    notifySuccess(state, { id, message, details, timeout }) {
+      addNotification(state, { id, message, details, timeout, type: 'success' })
     },
-    notifyInfo(state, { id, message, timeout }) {
-      addNotification(state, { id, message, timeout, type: 'info' })
+    notifyInfo(state, { id, message, details, timeout }) {
+      addNotification(state, { id, message, details, timeout, type: 'info' })
     },
-    notifyWarning(state, { id, message, timeout }) {
-      addNotification(state, { id, message, timeout, type: 'warning' })
+    notifyWarning(state, { id, message, details, timeout }) {
+      addNotification(state, { id, message, details, timeout, type: 'warning' })
     },
-    notifyError(state, { id, message, timeout }) {
-      addNotification(state, { id, message, timeout, type: 'error' })
+    notifyError(state, { id, message, details, timeout }) {
+      if (timeout === undefined) {
+        // 無指定なら無限にする
+        timeout = 0
+      }
+
+      addNotification(state, { id, message, details, timeout, type: 'error' })
     },
     removeNotification(state, id) {
-      const index = state.list.findIndex(n => n.id === id)
+      const index = state.list.findIndex((n) => n.id === id)
       if (index === -1) {
         throw new Error(`notification id(${id}) is not found`)
       }
 
       state.list.splice(index, 1)
-    }
+    },
   },
   getters: {
-    notifications: state => state.list
-  }
+    notifications: (state) => state.list,
+  },
 }

@@ -1,90 +1,54 @@
 # frozen_string_literal: true
 
+# 仕様概要
+#   staffとaudienceは常に全てのレコードの全ての情報が見れる
+#   player
+#     team.beginnerの値が同じレコードのみ見える
+#     scoreboard_hide_atを超えると自身のscoreのみ見えるようになる(rankは見えなくなる)
+#     その他の表示は設定依存
+
 class Scoreboard
-  delegate :map, to: :teams_scores
-
-  # TODO: コピペ
-  # servie-objectにしたほうが良さそう
-
-  def initialize(user:)
-    # [{1st_team, score}, {2nd_team, score}, {3rd_team, score}, ...]
-    @teams_scores = collect_teams_scores(user)
-
-    # [{1st_team, score, rank}, {2nd_team, score, rank}, {3rd_team, score, rank}, ...]
-    rank!
-  end
-
-  def find_by_team(team)
-    teams_scores.find {|data| data[:team] == team }
-  end
-
-  def count_same_rank(rank)
-    teams_scores.count {|data| data[:rank] == rank }
-  end
-
-  private
-
-  # for delegate
-  attr_reader :teams_scores
-
-  # { [team, problem_id] => [score, ...], ...}
-  def collect_teams_scores(user)
-    Score
-      .readables(user: user, action: 'scoreboard')
-      .preload(:answer, :team)
-      .joins(:answer)
-      .select('answers.problem_id', 'answers.team_id', :point, 'answers.created_at', :answer_id)
-      .group_by(&:team)
-      .map {|team, team_scores| { team: team, score: aggregate_team_score(team_scores) } }
-  end
-
-  # 各問題の最新の解答のスコアを集計する
-  def aggregate_team_score(team_scores)
-    team_scores
-      .group_by(&:problem_id)
-      .lazy
-      .map {|_problem_id, scores| scores.max_by {|s| s.answer.created_at } }
-      .sum(&:point)
-  end
-
-  def rank!
-    return if teams_scores.empty?
-
-    teams_scores.sort_by! {|e| -e[:score] }
-    teams_scores.first[:rank] = 1
-
-    # 同点時の順位は 1 2 2 4
-    teams_scores.each_cons(2).with_index(2) do |(previous_data, data), index|
-      data[:rank] = (previous_data[:score] == data[:score]) ? previous_data[:rank] : index
-    end
-  end
-
   class << self
-    def aggregate(current_user:)
-      # [{1st_team, score, rank}, {2nd_team, score, rank}, {3rd_team, score, rank}, ...]
-      scores = Scoreboard.new(user: current_user)
+    def readables(team:) # rubocop:disable Metrics/CyclomaticComplexity
+      return [] if team.player? && (Config.hide_all_score || !Config.competition?)
 
-      # when team has nothing score, this value is nil
-      my_team_rank = scores.find_by_team(current_user.team)&.fetch(:rank) unless current_user.staff? # rubocop:disable Rails/DynamicFindBy
+      answers = ScoreAggregator.effective_answers(team: team)
+      teams = team.team99? ? Team.player : Team.player_without_team99
+      records = ScoreAggregator.aggregate(teams: teams, answers: answers, penalties: Penalty.all)
 
-      scores.map {|score|
-        display_mode = select_display_mode(current_user, scores, score, my_team_rank)
-        next unless display_mode
+      return records if team.staff? || team.audience?
 
-        build_score_info(score, display_mode)
-      }
-        .compact
+      filter_records_for_player(team: team, records: records)
     end
 
     private
 
-    def select_display_mode(current_user, scores, score, my_team_rank)
-      if current_user.staff? || score[:team] == current_user.team
+    def filter_records_for_player(team:, records:)
+      team_record = records.find {|record| team.id == record[:team_id] }
+
+      # team.beginnerの値が同じレコードのみ見える
+      records = records.select {|record| team.beginner == record[:team].beginner }
+
+      # 自身のレコードのみ見せる
+      records = [team_record] if Config.scoreboard_hide_at <= DateTime.current
+
+      records.map {|record|
+        display_mode = select_display_mode(team_record: team_record, record: record, records: records)
+        next unless display_mode
+
+        filter_record(record: record, display_mode: display_mode)
+      }
+        .compact
+    end
+
+    def select_display_mode(team_record:, record:, records:)
+      if record[:team_id] == team_record[:team_id]
         :all
-      elsif score[:rank] <= Config.scoreboard_top
+      elsif record[:rank] <= Config.scoreboard_top
         :top
-      elsif (score[:rank] + scores.count_same_rank(score[:rank])) == my_team_rank
+      elsif team_record[:rank] == (record[:rank] + count_same_rank(rank: record[:rank], records: records))
         # 1ランク上のチーム全て
+        # e.g. 1 2 2 4 のとき 4 == 2 + count_same_rank(2)
         :above
       else
         # 表示しない
@@ -92,18 +56,17 @@ class Scoreboard
       end
     end
 
-    def build_score_info(score, display_mode)
-      score_info = { rank: score[:rank] }
+    def count_same_rank(rank:, records:)
+      records.count {|record| rank == record[:rank] }
+    end
 
-      if Config.scoreboard_display[display_mode][:team]
-        score_info[:team] = score[:team].as_json(only: %i[id name organization])
-      end
+    def filter_record(record:, display_mode:)
+      keys = []
+      keys << :rank if DateTime.current < Config.scoreboard_hide_at
+      keys << :team_id if Config.scoreboard_display[display_mode][:team]
+      keys << :score if Config.scoreboard_display[display_mode][:score]
 
-      if Config.scoreboard_display[display_mode][:score]
-        score_info[:score] = score[:score]
-      end
-
-      score_info
+      record.slice(*keys)
     end
   end
 end

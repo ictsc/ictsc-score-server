@@ -1,19 +1,12 @@
 <template>
   <v-container>
-    <v-layout column align-center>
-      <page-title title="質問一覧" />
+    <v-row justify="center">
+      <v-col cols="auto" align="center" class="pt-0">
+        <page-title title="質問一覧" />
 
-      <v-flex class="mb-4">
         <!-- 状態選択ボタン -->
-        <issue-status-select-buttons
-          v-model="displayStatuses"
-          red="unsolved"
-          yellow="in_progress"
-          green="solved"
-        />
-      </v-flex>
+        <status-toggle-buttons v-model="displayStatuses" />
 
-      <v-flex class="mb-4">
         <!-- 検索ボックス -->
         <v-text-field
           v-model="issueSearch"
@@ -25,57 +18,78 @@
           hide-details
           class="mb-2"
         />
-      </v-flex>
 
-      <!-- 質問一覧 -->
-      <v-flex>
-        <issue-list-card
-          v-for="issue in issues"
-          :key="issue.id"
-          :issue="issue"
-          class="mb-2"
+        <v-switch
+          v-model="sortMode"
+          hide-details
+          label="最新返答順"
+          class="mt-0"
         />
-      </v-flex>
-    </v-layout>
+
+        <!-- 補足 -->
+        <div class="mt-4">
+          質問は各問題ページから行ってください
+        </div>
+      </v-col>
+    </v-row>
+
+    <!-- 質問一覧 -->
+    <v-row justify="center">
+      <v-col align="center" cols="auto">
+        <template v-for="issue in issues">
+          <!-- v-forで絞らず、v-showで表示切り替えするとインタラクションが良い -->
+          <issue-card
+            v-show="issueFilter(issue)"
+            :key="issue.id"
+            :issue="issue"
+            class="mb-2"
+          />
+        </template>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
 import orm from '~/orm'
 import { JsonStroage } from '~/plugins/json-storage'
-import PageTitle from '~/components/atoms/PageTitle'
-import IssueStatusSelectButtons from '~/components/molecules/IssueStatusSelectButtons'
-import IssueListCard from '~/components/molecules/IssueListCard'
+import PageTitle from '~/components/commons/PageTitle'
+import StatusToggleButtons from '~/components/issues/StatusToggleButtons'
+import IssueCard from '~/components/issues/IssueCard'
 
 export default {
   name: 'Issues',
   components: {
     PageTitle,
-    IssueStatusSelectButtons,
-    IssueListCard
+    StatusToggleButtons,
+    IssueCard,
   },
   mixins: [
     // 透過的にローカルストレージにアクセスできる
     JsonStroage.accessor('issue-list', 'displayStatuses', [
       'unsolved',
       'in_progress',
-      'solved'
+      'solved',
     ]),
-    JsonStroage.accessor('issue-list', 'issueSearch', '')
+    JsonStroage.accessor('issue-list', 'issueSearch', ''),
+    JsonStroage.accessor('issue-list', 'sortMode', true),
   ],
+  fetch() {
+    orm.Queries.problemsIssuesTeam()
+  },
   computed: {
     // computedを分ければ軽くなるはず?
     allIssues() {
-      return orm.Issue.query()
-        .with(['comments', 'problem.body', 'team'])
-        .all()
+      return orm.Issue.query().with(['comments', 'problem.body', 'team']).all()
     },
     statusFilteredIssues() {
-      return this.allIssues.filter(i => this.displayStatuses.includes(i.status))
+      return this.allIssues.filter((i) =>
+        this.displayStatuses.includes(i.status)
+      )
     },
     // 検索は一瞬で終わるが、描画が遅い
     issues() {
-      const issues = this.statusFilteredIssues.filter(i => this.issueFilter(i))
-      return this.$_.sortBy(issues, i => this.$elvis(i, 'problem.body.title'))
+      const issues = this.statusFilteredIssues
+      return this.$_.sortBy(issues, (i) => this.issueSortValue(i))
     },
     searchFieldPlaceholder() {
       return this.isStaff ? '問題名 コード 作問者 チーム名' : '問題名'
@@ -85,17 +99,21 @@ export default {
         return []
       }
 
-      return this.issueSearch.split(' ').map(s => this.stringSimplify(s))
-    }
-  },
-  fetch() {
-    orm.Problem.eagerFetch({}, ['issues'])
+      return this.issueSearch.split(' ').map((s) => this.stringSimplify(s))
+    },
   },
   methods: {
     issueFilter(issue) {
-      return this.searchParams.every(param =>
+      return this.searchParams.every((param) =>
         this.issueSummary(issue).includes(param)
       )
+    },
+    issueSortValue(issue) {
+      if (this.sortMode) {
+        return -Date.parse(issue.latestReplyAt)
+      } else {
+        return `${issue.statusNum} - ${this.$elvis(issue, 'problem.title')}`
+      }
     },
     issueSummary(issue) {
       return [
@@ -103,15 +121,12 @@ export default {
         this.$elvis(issue, 'team.numberStr'),
         this.$elvis(issue, 'problem.code'),
         this.$elvis(issue, 'problem.writer'),
-        this.$elvis(issue, 'problem.body.title')
+        this.$elvis(issue, 'problem.title'),
       ]
-        .filter(e => e !== null && e !== undefined)
-        .map(s => this.stringSimplify(s))
+        .filter((e) => e !== null && e !== undefined)
+        .map((s) => this.stringSimplify(s))
         .join(' ')
     },
-    stringSimplify(str) {
-      return str.replace(/-|_/g, '').toLowerCase()
-    }
-  }
+  },
 }
 </script>

@@ -2,9 +2,9 @@
 
 class Notice < ApplicationRecord
   validates :title,       presence: true
-  validates :text,        presence: true, length: { maximum: 8192 }
+  validates :text,        presence: true
   validates :pinned,      boolean: true
-  validates :target_team, presence: false
+  validates :team,        presence: false
 
-  belongs_to :target_team, class_name: 'Team', optional: true
+  belongs_to :team, optional: true
 end

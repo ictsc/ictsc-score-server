@@ -3,12 +3,13 @@
 source 'https://rubygems.org'
 git_source(:github) {|repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.3'
+ruby '2.7.0'
 
-gem 'rails', '~> 5.2.3'
+gem 'rails', '~> 6.0.0'
 gem 'pg', '>= 0.18', '< 2.0'
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 4.3'
 gem 'colorize'
+gem 'oj'
 
 gem 'graphql'
 gem 'graphql-batch', require: 'graphql/batch'
@@ -23,7 +24,9 @@ gem 'redis-rails'
 # gem 'sinatra', require: false
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
+# gem 'jbuilder', '~> 2.7'
+# Use Active Storage variant
+# gem 'image_processing', '~> 1.2'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
@@ -35,7 +38,7 @@ gem 'activerecord-import'
 # gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', '>= 1.4.2', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
@@ -43,6 +46,9 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'tzinfo-data'
 
 gem 'slack-notifier'
+gem 'bugsnag'
+
+# プロダクションに必須ではないがあると便利
 gem 'factory_bot_rails'
 gem 'faker'
 
@@ -54,11 +60,6 @@ group :development, :test do
   gem 'rubocop-rspec', require: false
   # 参考程度に使う
   gem 'rails_best_practices', require: false
-
-  gem 'pry-rails'
-  gem 'pry-byebug'
-  gem 'pry-doc'
-  gem 'pry-stack_explorer'
 end
 
 group :development do
@@ -74,7 +75,8 @@ group :test do
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'rspec_junit_formatter'
-  gem 'spring-commands-rspec'
   gem 'json_matchers'
+  gem 'shoulda-matchers'
+  gem 'spring-commands-rspec'
   gem 'simplecov', require: false
 end

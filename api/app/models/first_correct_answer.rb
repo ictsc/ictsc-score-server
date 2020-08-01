@@ -19,8 +19,7 @@ class FirstCorrectAnswer < ApplicationRecord
 
   class << self
     def delay_filter
-      joins(:answer).merge(Answer.delay_filter)
-      # where(answer: Answer.delay_filter) # TODO: これでも良いかもしれない
+      where(answer: Answer.delay_filter)
     end
   end
 end

@@ -4,14 +4,13 @@ FactoryBot.define do
   gen_cand = proc { Array.new(Random.rand(2..7)) { Faker::Coffee.blend_name }.uniq }
 
   factory :problem_body do
-    mode { 'textbox' }
     title { Faker::Book.title }
     text { Array.new(Random.rand(4..10)) { Faker::Books::Dune.quote }.join("\n") }
+    genre { Random.rand(3).zero? ? Faker::Books::Dune.quote : '' }
+    resettable { !Random.rand(5).zero? }
     perfect_point { Random.rand(10..1000) }
     solved_criterion { Random.rand(50..100) }
     problem { nil }
-    candidates { [] }
-    corrects { [] }
 
     transient do
       candidates_count { Random.rand(1..5) }
@@ -19,6 +18,8 @@ FactoryBot.define do
 
     trait :textbox do
       mode { 'textbox' }
+      candidates { [] }
+      corrects { [] }
     end
 
     trait :radio_button do
@@ -30,7 +31,7 @@ FactoryBot.define do
     trait :checkbox do
       mode { 'checkbox' }
       candidates { Array.new(candidates_count) { gen_cand.call } }
-      corrects { candidates.map {|c| c.sample(Random.rand(1..c.size)) } }
+      corrects { candidates.map {|c| c.sample(Random.rand(0..c.size)) } }
     end
   end
 end

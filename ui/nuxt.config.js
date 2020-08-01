@@ -2,7 +2,7 @@ export default {
   // ---- Nuxt標準の設定 ----
   mode: 'spa',
   server: {
-    host: '0.0.0.0'
+    host: '0.0.0.0',
   },
   head: {
     title: 'スコアサーバー',
@@ -13,52 +13,46 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: 'ICTSC スコアサーバー'
-      }
+        content: 'ICTSC スコアサーバー',
+      },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
   },
+  css: ['~/assets/css/commons.sass'],
   build: {
     // Extend webpack config
     extend(config, { isDev, isClient }) {
       // Vue dev toolが使えなくなる
       // config.devtool = 'eval-source-map'
-    }
+    },
   },
-  // Customize the progress-bar color
-  // TODO: Vuetifyのプログレスバーとかに任せれば良い気がする
   loading: false,
   plugins: [
     '~/plugins/axios',
     '~/plugins/elvis',
+    '~/plugins/eventsource',
     '~/plugins/json-storage',
     '~/plugins/mixins',
+    '~/plugins/moment-update-locale',
+    '~/plugins/push',
+    '~/plugins/vue-clipboard',
     '~/plugins/vue-underscore',
-    '~/plugins/vuex-orm'
+    '~/plugins/vuex-orm',
   ],
-  modules: [
-    '@nuxtjs/universal-storage',
-    '@nuxtjs/vuetify',
-    // 各コンポーネントでSASSの変数を手軽に共有する TODO: 廃止予定
-    '@nuxtjs/style-resources',
-    '@nuxtjs/axios',
-    '@nuxtjs/markdownit',
-    '@nuxtjs/moment',
-    '@nuxtjs/proxy'
-    // TODO: lint通らないと動作確認すらできない
-    // '@nuxtjs/eslint-module',
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/markdownit', '@nuxtjs/proxy'],
+  buildModules: ['@nuxtjs/moment', '@nuxtjs/vuetify'],
 
   // ---- Nuxtモジュールの設定 ----
   axios: {
     // Docs: https://axios.nuxtjs.org/options
     prefix: '/api',
-    proxy: true
+    proxy: true,
   },
   markdownit: {
     // Docs: https://github.com/markdown-it/markdown-it
     preset: 'default',
     linkify: true,
+    // スペース2つだけでなく、通常の改行でも開業するようになる
     breaks: true,
     // $mdを使えるようにする
     injected: true,
@@ -71,42 +65,25 @@ export default {
       'markdown-it-footnote',
       // サニタイズ
       'markdown-it-sanitizer',
-      // TeX
-      '@iktakahiro/markdown-it-katex'
-    ]
+    ],
   },
   moment: {
-    locales: ['es-us', 'ja']
+    locales: ['es-us', 'ja'],
   },
   proxy: {
-    // TODO: 環境変数から取れるようにする?(本番構成決めてから)
-    '/api': 'http://api:3000'
-  },
-  storage: {
-    vuex: {
-      namespace: 'storage'
-    },
-    cookie: {
-      prefix: '',
-      options: {
-        path: '/'
-      }
-    }
-    // localStorage: { prefix: '' },
-    // ignoreExceptions: false,
-  },
-  // TODO: 廃止予定
-  styleResources: {
-    sass: ['~/assets/css/variables.sass']
+    // 開発時のyarn run devなど、jsでリクエストを受けている場合に使う
+    // 本番環境では前段のLBでリクエストを振り分ける
+    '/api': 'http://api:3000',
+    '/push': 'http://push:8080',
   },
   vuetify: {
-    customVariables: ['~/assets/css/variables.sass'],
+    // customVariables: ['~/assets/css/variables.sass'],
     theme: {
       themes: {
         light: {
-          primary: '#ed1848'
-        }
-      }
-    }
-  }
+          primary: '#e40046',
+        },
+      },
+    },
+  },
 }

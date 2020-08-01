@@ -9,19 +9,31 @@ module Types
     field :problem,    Types::ProblemType, null: false
     field :team_id,    ID,                 null: false
     field :team,       Types::TeamType,    null: false
-    field :score,      Types::ScoreType,   null: true
     field :created_at, Types::DateTime,    null: false
+    # Scoreに透過的にアクセスする
+    field :point,      Integer,            null: true
+    field :percent,    Integer,            null: true
+    field :solved,     Boolean,            null: true
 
-    def problem
-      RecordLoader.for(Problem).load(self.object.problem_id)
+    belongs_to :problem
+    belongs_to :team
+
+    has_one :point, :score do |score|
+      next nil if score.nil?
+
+      score.point
     end
 
-    def team
-      RecordLoader.for(Team).load(self.object.team_id)
+    has_one :percent, :score do |score|
+      next nil if score.nil?
+
+      score.percent
     end
 
-    def score
-      AssociationLoader.for(Answer, __method__).load(self.object)
+    has_one :solved, :score do |score|
+      next nil if score.nil?
+
+      score.solved
     end
   end
 end

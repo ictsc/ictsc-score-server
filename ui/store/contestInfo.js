@@ -3,81 +3,55 @@ export default {
     return {
       competitionTime: [],
       gradingDelaySec: 0,
+      guidePage: '',
       hideAllScore: false,
       realtimeGrading: false,
-      textSizeLimit: 0,
-      deleteTimeLimitSec: 0,
-      guidePage: ''
+      resetDelaySec: 0,
     }
   },
   mutations: {
-    // GraphQLでまとも手取得したContestInfoをstateに割り振る
     setContestInfo(state, contestInfo) {
-      state.competitionTime = contestInfo.competitionTime.map(daterange =>
-        daterange.map(date => new Date(date))
+      state.competitionTime = contestInfo.competitionTime.map((daterange) =>
+        daterange.map((date) => new Date(date))
       )
+
       state.gradingDelaySec = contestInfo.gradingDelaySec
+      state.guidePage = contestInfo.guidePage
       state.hideAllScore = contestInfo.hideAllScore
       state.realtimeGrading = contestInfo.realtimeGrading
-      state.textSizeLimit = contestInfo.textSizeLimit
-      state.deleteTimeLimitSec = contestInfo.deleteTimeLimitSec
-      state.guidePage = contestInfo.guidePage
-    }
+      state.resetDelaySec = contestInfo.resetDelaySec
+    },
   },
   actions: {
-    async fetchContestInfo({ commit, dispatch }) {
-      const query = `
-        query ContestInfo {
-          contestInfo {
-            competitionTime
-            gradingDelaySec
-            hideAllScore
-            realtimeGrading
-            textSizeLimit
-            deleteTimeLimitSec
-            guidePage
-          }
-        }
-      `
+    async fetchContestInfo({ state, commit, dispatch }) {
+      const keys = Object.keys(state)
+      const query = `query ContestInfo { contestInfo { ${keys} } }`
 
-      // TODO: エラー処理
-      const res = await dispatch(
-        'entities/simpleQuery',
-        { query, bypassCache: true },
-        { root: true }
-      )
+      try {
+        const res = await dispatch(
+          'entities/simpleQuery',
+          { query, bypassCache: true },
+          { root: true }
+        )
 
-      commit('setContestInfo', res.contestInfo)
-    }
+        commit('setContestInfo', res.contestInfo)
+      } catch (error) {
+        // セッションが無い、ネットワーク疎通がないなど
+        console.info(error)
+      }
+    },
   },
   getters: {
-    gradingDelayString: (state, getters) => {
-      return getters.gradingDelaySec < 60
-        ? getters.gradingDelaySecString
-        : getters.gradingDelayMinString
-    },
-    gradingDelaySec: state => state.gradingDelaySec,
-    gradingDelaySecString: (state, getters) => `${getters.gradingDelaySec}秒`,
-    gradingDelayMin: (state, getters) =>
-      Math.floor(getters.gradingDelaySec / 60),
-    gradingDelayMinString: (state, getters) => `${getters.gradingDelayMin}分`,
+    competitionTime: (state) => state.competitionTime,
+    gradingDelaySec: (state) => state.gradingDelaySec,
+    guidePage: (state) => state.guidePage,
+    hideAllScore: (state) => state.hideAllScore,
+    realtimeGrading: (state) => state.realtimeGrading,
+    resetDelaySec: (state) => state.resetDelaySec,
 
-    deleteTimeLimitSec: state => state.deleteTimeLimitSec,
-    deleteTimeLimitMsec: state => state.deleteTimeLimitSec * 1000,
-    deleteTimeLimitString: (state, getters) => {
-      return getters.deleteTimeLimitSec < 60
-        ? `${getters.deleteTimeLimitSec}秒`
-        : `${Math.floor(getters.deleteTimeLimitSec / 60)}分`
-    },
-
-    competitionTime: state => state.competitionTime,
-    competitionTimeString: (state, getters) => {
-      return JSON.stringify(getters.competitionTime)
-    },
-
-    hideAllScore: state => state.hideAllScore,
-    realtimeGrading: state => state.realtimeGrading,
-    textSizeLimit: state => state.textSizeLimit,
-    guidePage: state => state.guidePage
-  }
+    gradingDelayString: (state, getters) =>
+      $nuxt.timeSimpleStringJp(getters.gradingDelaySec),
+    resetDelayString: (state, getters) =>
+      $nuxt.timeSimpleStringJp(getters.resetDelaySec),
+  },
 }

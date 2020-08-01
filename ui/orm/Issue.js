@@ -15,34 +15,21 @@ export default class Issue extends BaseModel {
       problem: this.belongsTo(orm.Problem, 'problemId'),
       teamId: this.string(),
       team: this.belongsTo(orm.Team, 'teamId'),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 
-  static startIssue({ action, resolve, params: { problemId, text } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'startIssue',
-      params: { problemId, text },
-      fields: [Issue, orm.IssueComment],
-      type: 'upsert'
-    })
-  }
-
-  static transitionIssueState({
-    action,
-    resolve,
-    params: { issueId, currentStatus }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'transitionIssueState',
-      params: { issueId, currentStatus },
-      fields: [Issue],
-      type: 'upsert'
-    })
+  get statusNum() {
+    switch (this.status) {
+      case 'unsolved':
+        return 0
+      case 'in_progress':
+        return 1
+      case 'solved':
+        return 2
+      default:
+        throw new Error(`unsupported status ${this.status}`)
+    }
   }
 
   get statusJp() {
@@ -69,5 +56,23 @@ export default class Issue extends BaseModel {
       default:
         throw new Error(`unsupported status ${this.status}`)
     }
+  }
+
+  get ourComments() {
+    return this.comments.filter((c) => c.isOurComment)
+  }
+
+  get theirsComments() {
+    return this.comments.filter((c) => !c.isOurComment)
+  }
+
+  get latestReplyAt() {
+    const comment = $nuxt.findNewer(this.theirsComments)
+    return comment ? comment.createdAt : null
+  }
+
+  get latestReplyAtDisplay() {
+    const comment = $nuxt.findNewer(this.theirsComments)
+    return comment ? comment.createdAtShort : 'なし'
   }
 }

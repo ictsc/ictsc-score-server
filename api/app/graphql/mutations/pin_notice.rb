@@ -4,8 +4,8 @@ module Mutations
   class PinNotice < BaseMutation
     field :notice, Types::NoticeType, null: true
 
-    argument :notice_id, ID, required: true
-    argument :pinned, Boolean, required: true
+    argument :notice_id, ID,      required: true
+    argument :pinned,    Boolean, required: true
 
     def resolve(notice_id:, pinned:)
       Acl.permit!(mutation: self, args: {})
@@ -14,7 +14,8 @@ module Mutations
       raise RecordNotExists.new(Notice, id: notice_id) if notice.nil?
 
       if notice.update(pinned: pinned)
-        { notice: notice.readable }
+        Notification.notify(mutation: self.graphql_name, record: notice)
+        { notice: notice.readable(team: self.current_team!) }
       else
         add_errors(notice)
       end

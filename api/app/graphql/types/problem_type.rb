@@ -22,13 +22,14 @@ module Types
     # staffは全チームの環境を見える, playerは自チームのみ
     field :environments,        [Types::ProblemEnvironmentType], null: false
     field :supplements,         [Types::ProblemSupplementType],  null: false
-    field :answers,             [Types::AnswerType],             null: true
+    field :answers,             [Types::AnswerType],             null: false
+    field :penalties,           [Types::PenaltyType],            null: false
     field :issues,              [Types::IssueType],              null: false
-    field :solved_count,        Integer,                         null: false
-    # created_atとupdated_atは意味がないので見せない(bodyを見るべき)
 
-    # field :actual_point # そのチームの、現在の得点を計算して返す
-    #                     APIv1では全てのanswers.scoresを取得してUIが算出していたがロードが重い
+    # 全問題取得が100ms程遅くなるので注意
+    field :solved_count,        Integer,                         null: false
+
+    # created_atとupdated_atは意味がないので見せない(bodyを見るべき)
 
     def open_at_begin
       self.object.open_at&.begin
@@ -38,36 +39,13 @@ module Types
       self.object.open_at&.end
     end
 
-    def body
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def environments
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def supplements
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def answers
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def issues
-      AssociationLoader.for(Problem, __method__).load(self.object)
-    end
-
-    def previous_problem
-      RecordLoader.for(Problem).load(self.object[__method__.to_s.foreign_key])
-    end
-
-    def category
-      RecordLoader.for(Category).load(self.object[__method__.to_s.foreign_key])
-    end
-
-    def solved_count
-      AssociationLoader.for(Problem, :first_correct_answers).load(self.object).then(&:size)
-    end
+    has_one  :body
+    has_many :environments
+    has_many :supplements
+    has_many :answers
+    has_many :issues
+    has_many :penalties
+    belongs_to :previous_problem
+    belongs_to :category
   end
 end

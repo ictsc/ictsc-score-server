@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid column align-center justify-center fill-height>
+  <v-container justify-center fill-height>
     <v-form v-model="valid" @submit.prevent="submit">
       <v-text-field
         v-model="name"
@@ -12,11 +12,11 @@
 
       <v-text-field
         v-model="password"
-        label="パスワード"
-        required
         :rules="passwordRules"
         :type="passwordVisible ? 'text' : 'password'"
         :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+        label="パスワード"
+        required
         @click:append="passwordVisible = !passwordVisible"
       >
       </v-text-field>
@@ -33,17 +33,11 @@
     </v-form>
   </v-container>
 </template>
-
 <script>
 import { mapActions } from 'vuex'
 
 export default {
   name: 'LoginPage',
-  head() {
-    return {
-      title: 'ログイン'
-    }
-  },
   data() {
     return {
       valid: false,
@@ -53,8 +47,8 @@ export default {
       loading: false,
 
       // 鬱陶しいのでメッセージは出さない
-      nameRules: [v => !!v || ''],
-      passwordRules: [v => !!v || '']
+      nameRules: [(v) => !!v || ''],
+      passwordRules: [(v) => !!v || ''],
     }
   },
   methods: {
@@ -65,16 +59,21 @@ export default {
       if (await this.login({ name: this.name, password: this.password })) {
         this.notifySuccess({ message: 'ログインしました' })
         // locationを直接使うことで強制リロード
-        window.location = '/problems'
+        // ストアもリセットされる
+        window.location = '/guide'
       } else {
         this.notifyWarning({
-          message: 'チーム名かパスワードが正しくありません'
+          message: 'チーム名かパスワードが正しくありません',
         })
       }
 
       this.loading = false
+    },
+  },
+  head() {
+    return {
+      title: 'ログイン',
     }
-  }
+  },
 }
 </script>
-<style scoped lang="sass"></style>

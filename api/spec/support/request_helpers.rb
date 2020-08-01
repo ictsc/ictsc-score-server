@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RequestHelpers
-  def json_response
+  def response_json
     JSON.parse(response.body)
   end
 

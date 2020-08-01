@@ -4,8 +4,8 @@ module Mutations
   class AddAnswer < BaseMutation
     field :answer, Types::AnswerType, null: true
 
-    argument :problem_id, ID, required: true
-    argument :bodies, [[String]], required: true
+    argument :problem_id, ID,         required: true
+    argument :bodies,     [[String]], required: true
 
     def resolve(problem_id:, bodies:)
       problem = Problem.find_by(id: problem_id)
@@ -16,11 +16,13 @@ module Mutations
 
       answer = Answer.new
 
-      if answer.update(args.merge(bodies: bodies, confirming: false, team: Context.current_team!))
+      if answer.update(args.merge(bodies: bodies, confirming: false, team: self.current_team!))
         # TODO: answer.gradeをジョブで実行する -> after create hook
-        answer.grade
-        SlackNotifierJob.perform_later(mutation: self.class.name.demodulize, obj: answer)
-        { answer: answer.readable }
+        answer.grade(percent: nil)
+        Notification.notify(mutation: self.graphql_name, record: answer)
+
+        # gradeでcacheにscoreが残るためreloadして消す
+        { answer: answer.reload.readable(team: self.current_team!) }
       else
         add_errors(answer)
       end

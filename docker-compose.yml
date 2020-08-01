@@ -14,14 +14,18 @@ services:
     tty: true
     volumes:
       - './api:/usr/src/app'
-    command: sh -c '
+    environment:
+      # ruby2.7のワーニングを一時的に無効化する
+      - RUBYOPT=-W:no-deprecated -W:no-experimental
+    command: sh -ec '
       if [ -f "tmp/pids/server.pid" ]; then
         rm tmp/pids/server.pid;
       fi
 
-      dockerize -wait tcp://redis:6379 -timeout 100s
-      dockerize -wait tcp://db:5432 -timeout 100s
-      bundle exec rails server -b 0.0.0.0
+      dockerize -wait tcp://redis:6379 -timeout 100s;
+      dockerize -wait tcp://db:5432 -timeout 100s;
+      bundle exec rake db:prepare;
+      bundle exec rails server -b 0.0.0.0;
       '
 
   ui:
@@ -30,20 +34,17 @@ services:
     build:
       context: ui/
     ports: ['127.0.0.1:8901:3000']
+    stdin_open: true
     tty: true
     volumes:
       - './ui:/usr/src/app'
-    # ビルドに失敗してもリトライ(restart: on-failure は使いづらい)
-    command: sh -c '
-      while :; do
-        yarn run dev;
-        sleep 1;
-      done
-      '
+    command: yarn run dev
 
   db:
     image: postgres:11.3-alpine
     env_file: .env
+    stdin_open: true
+    tty: true
     ports: ['127.0.0.1:8902:5432']
     command: ['postgres', '-c', 'max_connections=$POSTGRES_MAX_CONNECTIONS', '-c', 'shared_buffers=$POSTGRES_SHARED_BUFFERS', '-c', 'work_mem=$POSTGRES_WORK_MEM']
 
@@ -59,3 +60,10 @@ services:
     volumes:
       - './:/usr/src/app'
     command: yamllint -c /usr/src/app/.yamllint /usr/src/app
+
+  push:
+    image: openfresh/plasma:0.2.2
+    env_file: .env
+    depends_on:
+      - redis
+    ports: ['127.0.0.1:8904:8080']

@@ -1,4 +1,3 @@
-import orm from '~/orm'
 import BaseModel from '~/orm/BaseModel'
 
 export default class IssueComment extends BaseModel {
@@ -10,23 +9,19 @@ export default class IssueComment extends BaseModel {
       fromStaff: this.boolean(),
       text: this.string().nullable(),
       issueId: this.string(),
-      issue: this.belongsTo(orm.Issue, 'issueId'),
-      createdAt: this.string()
+      createdAt: this.string(),
     }
   }
 
-  static addIssueComment({ action, resolve, params: { issueId, text } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'addIssueComment',
-      params: { issueId, text },
-      fields: [orm.Issue, IssueComment],
-      type: 'upsert'
-    })
+  get isOurComment() {
+    if ($nuxt.isPlayer) {
+      return !this.fromStaff
+    } else {
+      return this.fromStaff
+    }
   }
 
-  isOurComment(isPlayer) {
-    return (!this.fromStaff && isPlayer) || (this.fromStaff && !isPlayer)
+  get color() {
+    return this.isOurComment ? 'grey lighten-2' : 'white'
   }
 }

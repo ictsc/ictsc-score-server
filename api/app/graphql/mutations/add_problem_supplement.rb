@@ -5,7 +5,7 @@ module Mutations
     field :problem_supplement, Types::ProblemSupplementType, null: true
 
     argument :problem_code, String, required: true
-    argument :text, String, required: true
+    argument :text,         String, required: true
 
     def resolve(problem_code:, text:)
       Acl.permit!(mutation: self, args: {})
@@ -15,7 +15,8 @@ module Mutations
       problem_supplement = ProblemSupplement.new
 
       if problem_supplement.update(text: text, problem: problem)
-        { problem_supplement: problem_supplement.readable }
+        Notification.notify(mutation: self.graphql_name, record: problem_supplement)
+        { problem_supplement: problem_supplement.readable(team: self.current_team!) }
       else
         add_errors(problem_supplement)
       end

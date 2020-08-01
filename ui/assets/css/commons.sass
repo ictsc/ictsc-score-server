@@ -1,0 +1,54 @@
+.truncate-clamp2
+  overflow: hidden
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 2
+
+.truncate-clamp3
+  overflow: hidden
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 3
+
+.height-full
+  height: 100%
+
+.opacity-1
+  opacity: 1 !important
+
+.disable-click-effect
+  &:before
+    background: none !important
+
+.always-active-color
+  &::before
+    opacity: 0.12 !important
+
+.no-right-radius
+  border-top-right-radius: 0 !important
+  border-bottom-right-radius: 0 !important
+
+.overlay-text
+  position: absolute
+  left: 50%
+  transform: translateX(-50%)
+
+.floating-area-100
+  position: fixed
+  z-index: 100
+  // フローティングエリアはクリックできないがその中の要素はクリックできるようにする
+  pointer-events: none
+  > *
+    > *
+      pointer-events: auto
+
+
+.floating-area-1000
+  position: fixed
+  z-index: 1000
+  // フローティングエリアはクリックできないがその中の要素はクリックできるようにする
+  pointer-events: none
+  > *
+    > *
+      pointer-events: auto
+

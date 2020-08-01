@@ -13,22 +13,11 @@ module Types
     field :updated_at, Types::DateTime,           null: false
 
     def status
-      # staff以外には対応中を見せない
-      return 'unsolved' if !Context.current_team!.staff? && self.object.in_progress?
-
-      self.object.status
+      self.object.response_status(team: self.current_team!)
     end
 
-    def problem
-      RecordLoader.for(Problem).load(self.object.problem_id)
-    end
-
-    def team
-      RecordLoader.for(Team).load(self.object.team_id)
-    end
-
-    def comments
-      AssociationLoader.for(Issue, __method__).load(self.object)
-    end
+    belongs_to :problem
+    belongs_to :team
+    has_many :comments
   end
 end

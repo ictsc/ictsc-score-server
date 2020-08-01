@@ -1,0 +1,17 @@
+tmp/
+log/
+logs/
+jspm_packages/
+dist/
+coverage/
+.*
+!.env.sample
+!.rspec
+!.rubocop
+!.ruby-version
+!.yamllint
+!.eslintrc.js
+!.gitignore
+!.eslintignore
+!.yarnrc
+!.dockerignore

@@ -1,4 +1,4 @@
-// ローカル外レージはそのまま使うと、意図しない型返還を起こすため全てJSONでやりとりする
+// ローカルストレージはそのまま使うと意図しない型変換を起こすため、全てJSONでやりとりする
 export class JsonStroage {
   constructor(key, defaultValue) {
     this.key = key
@@ -20,37 +20,42 @@ export class JsonStroage {
     return {
       data() {
         return {
-          [key]: storage.get()
+          [key]: storage.get(),
         }
       },
       watch: {
         [key](value) {
           storage.set(value)
-        }
-      }
+        },
+      },
     }
   }
 
+  static hasKey(key) {
+    // 該当するキーが無いとnullが返ってくる
+    return localStorage.getItem(key) !== null
+  }
+
   static get(key, defaultValue) {
-    // getLocalStorage内でJSON.parseされる
-    // eslint-disable-next-line no-undef
-    const value = $nuxt.$storage.getLocalStorage(key)
-    return (value === null || value === undefined) && defaultValue !== undefined
-      ? defaultValue
-      : value
+    if (!this.hasKey(key)) {
+      return defaultValue
+    }
+
+    return JSON.parse(localStorage.getItem(key))
   }
 
   static set(key, value) {
     // JSONにundefinedは存在しないため、該当keyを削除する
-    // ストレージがない場合getの戻り地はundefinedになる
     if (value === undefined) {
-      // eslint-disable-next-line no-undef
-      $nuxt.$storage.removeLocalStorage(key)
+      this.remove(key)
       return
     }
 
-    // eslint-disable-next-line no-undef
-    $nuxt.$storage.setLocalStorage(key, JSON.stringify(value))
+    localStorage.setItem(key, JSON.stringify(value))
+  }
+
+  static remove(key) {
+    localStorage.removeItem(key)
   }
 }
 

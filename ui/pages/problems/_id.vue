@@ -1,27 +1,61 @@
 <template>
-  <!-- TODO: ここでreadable判定してもいいかも → Loadingしたい -->
   <v-container fluid grid-list-md>
-    <v-row>
+    <v-row v-if="problemIsReadable">
       <!-- 左の問題詳細パネル -->
-      <v-col :cols="showRigthPanel ? 6 : undefined">
-        <problem-details-panel v-if="problemIsReadable" :problem="problem" />
+      <v-col cols="6" class="py-0">
+        <details-panel :problem="problem" />
       </v-col>
 
       <!-- 右の質問・解答パネル -->
-      <v-col v-if="showRigthPanel" cols="6">
-        <v-tabs v-model="tabMode" grow active-class="always-active-color">
+      <v-col cols="6" class="py-0">
+        <!-- チーム名&セレクタ -->
+        <v-overflow-btn
+          v-if="isNotPlayer"
+          v-model="selectedTeamId"
+          :loading="teamFetching"
+          :items="teams"
+          item-text="displayName"
+          item-value="id"
+          label="チーム選択"
+          auto-select-first
+          clearable
+          editable
+          dense
+          hide-details
+          class="mt-0 mb-2"
+          @focus="fetchTeams"
+        />
+
+        <penalty-counter
+          v-if="teamId && isNotAudience && problem.resettable"
+          :problem-id="problem.id"
+          :penalties="penalties"
+          :waiting-submit-sec="waitingSubmitSec"
+          class="pb-2"
+        />
+
+        <v-tabs
+          v-model="currentTab"
+          grow
+          class="pb-2"
+          active-class="always-active-color"
+        >
           <v-tabs-slider></v-tabs-slider>
-          <v-tab replace append :to="'#' + answersTabName" class="mx-0">
-            解答
-          </v-tab>
-          <v-tab replace append :to="'#' + issuesTabName" class="mx-0">
-            質問
-          </v-tab>
+          <v-tab replace append :to="'#' + answersTabName">解答</v-tab>
+          <v-tab replace append :to="'#' + issuesTabName">質問</v-tab>
         </v-tabs>
 
-        <v-tabs-items v-model="tabMode" class="pt-2 transparent">
+        <v-tabs-items
+          v-if="teamId"
+          v-model="currentTab"
+          class="pt-1 transparent"
+        >
           <v-tab-item :value="answersTabName">
-            <answer-panel :answers="answers" :problem-body="problem.body" />
+            <answer-panel
+              :answers="answers"
+              :problem="problem"
+              :waiting-submit-sec="waitingSubmitSec"
+            />
           </v-tab-item>
           <v-tab-item :value="issuesTabName">
             <issue-panel :problem="problem" :team-id="teamId" />
@@ -29,23 +63,13 @@
         </v-tabs-items>
       </v-col>
     </v-row>
-
-    <!-- チーム名 -->
-    <v-snackbar :value="isStaff && !!teamId" :timeout="0" color="primary">
-      <v-row justify="center">
-        <v-progress-circular v-if="!team" indeterminate />
-
-        <template v-else>
-          <span>{{ team.displayName }}</span>
-        </template>
-      </v-row>
-    </v-snackbar>
   </v-container>
 </template>
 <script>
-import AnswerPanel from '~/components/organisms/AnswerPanel'
-import IssuePanel from '~/components/organisms/IssuePanel'
-import ProblemDetailsPanel from '~/components/organisms/ProblemDetailsPanel'
+import AnswerPanel from '~/components/problems/id/AnswerPanel'
+import IssuePanel from '~/components/problems/id/IssuePanel'
+import DetailsPanel from '~/components/problems/id/DetailsPanel'
+import PenaltyCounter from '~/components/problems/id/PenaltyCounter'
 import orm from '~/orm'
 
 const MODE_REGEXP = /^#(issues|answers)(=(.*))?$/
@@ -54,37 +78,22 @@ export default {
   name: 'Problem',
   components: {
     AnswerPanel,
+    DetailsPanel,
     IssuePanel,
-    ProblemDetailsPanel
+    PenaltyCounter,
+  },
+  fetch({ params }) {
+    orm.Queries.problemMisc(params.id)
   },
   data() {
     return {
-      tabMode: null
-    }
-  },
-  head() {
-    return {
-      title: this.$elvis(this.problem, 'body.title')
+      selectedTeamId: null,
+      currentTab: null,
+      teamFetching: false,
+      teamFetched: false,
     }
   },
   computed: {
-    mode() {
-      // URL末尾の #issues=:team_id からモードを判定する
-      const match = MODE_REGEXP.exec(this.$route.hash)
-      return match ? match[1] : null
-    },
-    modeIsBlank() {
-      return !this.mode
-    },
-    answersTabName() {
-      return 'answers' + this.hashTailTeamId
-    },
-    issuesTabName() {
-      return 'issues' + this.hashTailTeamId
-    },
-    problemId() {
-      return this.$route.params.id
-    },
     teamId() {
       if (this.isPlayer) {
         return this.currentTeamId
@@ -93,68 +102,108 @@ export default {
       const match = MODE_REGEXP.exec(this.$route.hash)
       return match ? match[3] : null
     },
-    hashTailTeamId() {
-      // プレイヤーならURL末尾にチームIDを付与しない
-      return !this.isPlayer && this.teamId ? `=${this.teamId}` : ''
+    tabMode() {
+      // URL末尾の #issues=:team_id からモードを判定する
+      const match = MODE_REGEXP.exec(this.$route.hash)
+      return match ? match[1] : null
+    },
+    modeIsBlank() {
+      return !this.tabMode
+    },
+    answersTabName() {
+      return 'answers' + this.hashTailTeamId()
+    },
+    issuesTabName() {
+      return 'issues' + this.hashTailTeamId()
+    },
+    problemId() {
+      return this.$route.params.id
     },
     problem() {
-      // TODO: bodyが無ければ loading
-      // TODO: エラー通知&表示
-
       // 編集モーダルや各表示部で使うデータを結合する
       // categoryとpreviousProblemは編集モーダルで必要
       return orm.Problem.query()
         .with([
-          'category',
+          'answers',
           'body',
-          'previousProblem',
+          'category',
           'environments.team',
+          'issues.comments',
+          'penalties',
+          'previousProblem',
           'supplements',
-          'answers.score',
-          'answers.problem.body',
-          'issues.comments'
         ])
         .find(this.problemId)
     },
     problemIsReadable() {
-      // bodyが取得できるなら、公開問題と判断する
-      return !!this.elvis(this.problem, 'body')
-    },
-    showRigthPanel() {
-      return this.problemIsReadable && !!this.teamId
+      return this.problem && this.problem.isReadable
     },
     answers() {
-      return this.problem.answers.filter(o => o.teamId === this.teamId)
+      return this.problem.answers.filter((o) => o.teamId === this.teamId)
     },
-    team() {
-      return orm.Team.query().find(this.teamId)
-    }
-  },
-  fetch({ params }) {
-    // TODO: bodyが取得できないならエラーにする
-    // TODO: modeによって動作を変えたい?(staffの操作が少し軽くなる)
+    penalties() {
+      return this.problem.penalties.filter((o) => o.teamId === this.teamId)
+    },
+    teams() {
+      return this.sortByNumber(orm.Team.players)
+    },
+    waitingSubmitSec() {
+      const latestAnswer = this.findNewer(this.answers)
+      const latestPenalty = this.findNewer(this.penalties)
 
-    orm.Problem.eagerFetch(params.id, [
-      'environments',
-      'supplements',
-      'answers',
-      'issues'
-    ])
+      // 最長の待ち時間を返す
+      return this.$_.max([
+        0,
+        this.$elvis(latestAnswer, 'delayFinishInSec'),
+        this.$elvis(latestPenalty, 'delayFinishInSec'),
+      ])
+    },
+  },
+  watch: {
+    selectedTeamId(value) {
+      this.$router
+        .replace({
+          name: this.$route.name,
+          params: this.$route.params,
+          hash: `#${this.tabMode}${this.hashTailTeamId()}`,
+        })
+        .catch((err) => {
+          if (err.name !== 'NavigationDuplicated') {
+            console.error(err)
+          }
+        })
+    },
   },
   mounted() {
-    this.tabMode = this.mode
+    // dataではisPlayerが使えないためここでセット
+    this.selectedTeamId = this.teamId
+    this.currentTab = this.tabMode
+  },
+  methods: {
+    hashTailTeamId() {
+      // プレイヤーならURL末尾にチームIDを付与しない
+      // playerではselectedTeamId === currentTeamId
 
-    // TODO: contestInfoと同時にfetchしたほうがいいかもしれない
-    if (!this.isPlayer) {
-      orm.Team.eagerFetch()
+      // fetchCurrentSession中だとrole判定ができないので応急処置
+      return (!this.currentTeamId || this.isNotPlayer) && this.selectedTeamId
+        ? `=${this.selectedTeamId}`
+        : ''
+    },
+    async fetchTeams() {
+      if (this.teamFetched) {
+        return
+      }
+
+      this.teamFetching = true
+      await orm.Queries.teams()
+      this.teamFetching = false
+      this.teamFetched = true
+    },
+  },
+  head() {
+    return {
+      title: this.$elvis(this.problem, 'body.title'),
     }
-  }
+  },
 }
 </script>
-<style scoped lang="sass">
-.always-active-color
-  &::before
-    opacity: 0.12 !important
-.transparent
-  background-color: none
-</style>

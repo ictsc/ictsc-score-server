@@ -12,33 +12,20 @@ export default class Category extends BaseModel {
       description: this.string(),
       order: this.number(),
       problems: this.hasMany(orm.Problem, 'categoryId'),
-      updatedAt: this.string()
+      updatedAt: this.string(),
     }
   }
 
-  static applyCategory({
-    action,
-    resolve,
-    params: { code, title, description, order }
-  }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'applyCategory',
-      params: { code, title, description, order },
-      fields: [Category],
-      type: 'upsert'
-    })
+  static mutationFields() {
+    return {
+      code: '',
+      title: '',
+      description: '',
+      order: 0,
+    }
   }
 
-  static deleteCategory({ action, resolve, params: { code } }) {
-    return this.sendMutation({
-      action,
-      resolve,
-      mutation: 'deleteCategory',
-      params: { code },
-      fields: [Category],
-      type: 'delete'
-    })
+  get displayTitle() {
+    return $nuxt.isStaff ? `${this.code}. ${this.title}` : this.title
   }
 }

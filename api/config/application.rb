@@ -10,6 +10,8 @@ require 'active_record/railtie'
 # require 'active_storage/engine'
 require 'action_controller/railtie'
 # require 'action_mailer/railtie'
+# require 'action_mailbox/engine'
+# require 'action_text/engine'
 require 'action_view/railtie'
 require 'action_cable/engine'
 # require 'sprockets/railtie'
@@ -22,25 +24,32 @@ Bundler.require(*Rails.groups)
 module Api
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.2
+    config.load_defaults '6.0'
 
-    # DBにはUTCで保存し、ActiveRecordではJSTに変換する
-    config.active_record.default_timezone = :utc
-    config.time_zone = 'Asia/Tokyo'
+    config.autoload_paths += %w[lib]
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
+    # 常にprivate network内で動かすため全てのhostsからのアクセスを許可する
+    config.hosts.clear
+
+    # Prepend all log lines with the following tags.
+    config.log_tags = %i[request_id]
+
+    # DBにはUTCで保存し、ActiveRecordではTZに合わせる
+    config.active_record.default_timezone = :utc
+    config.time_zone = ENV.fetch('TZ')
+
+    # cache無効
+    config.action_controller.perform_caching = false
+    config.cache_store = :null_store
+
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
-    # TODO: api_onlyにするかどうか
-    # config.api_only = true
-    # config.middleware.use ActionDispatch::Cookies
-    # config.middleware.use ActionDispatch::Session::CookieStore
-    # config.middleware.use ActionDispatch::Session::CacheStore
-    # config.middleware.use ActionDispatch::Session::RedisStore
+    config.api_only = true
   end
 end

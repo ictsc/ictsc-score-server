@@ -5,7 +5,7 @@ export default {
     return {
       currentTime: now,
       currentTimeMsec: Number(now),
-      interval: null
+      interval: null,
     }
   },
   mutations: {
@@ -18,7 +18,7 @@ export default {
     },
     unsetInterval(state) {
       state.interval = null
-    }
+    },
   },
   actions: {
     startInterval({ commit }) {
@@ -32,10 +32,10 @@ export default {
         clearInterval(state.interval)
         commit('unsetInterval')
       }
-    }
+    },
   },
   getters: {
-    currentTime: state => state.currentTime,
-    currentTimeMsec: state => state.currentTimeMsec
-  }
+    currentTime: (state) => state.currentTime,
+    currentTimeMsec: (state) => state.currentTimeMsec,
+  },
 }

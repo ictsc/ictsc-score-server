@@ -1,120 +1,97 @@
 <template>
   <v-container>
     <!-- 問題・カテゴリ追加ボタン -->
-    <v-layout v-if="isStaff" column class="floating-area">
-      <v-btn
-        color="primary"
-        class="elevation-6 my-2"
-        @click="showProblemModal = true"
-      >
-        <v-layout row align-center justify-start>
-          <v-icon>mdi-plus</v-icon>
-          <span class="text-left">
-            問題追加
-          </span>
-        </v-layout>
-      </v-btn>
+    <v-col v-if="isStaff" cols="auto" class="floating-area-100 top-right pa-0">
+      <problem-modal is-new>
+        <template v-slot:activator="{ on }">
+          <v-btn block color="primary" class="elevation-4 my-2" v-on="on">
+            <v-row align="center" justify="start">
+              <v-icon>mdi-plus</v-icon>
+              <span class="text-left">
+                問題追加
+              </span>
+            </v-row>
+          </v-btn>
+        </template>
+      </problem-modal>
 
-      <v-btn
-        color="primary"
-        class="elevation-6"
-        @click="showCategoryModal = true"
-      >
-        <v-layout row align-center justify-start>
-          <v-icon>mdi-plus</v-icon>
-          <span class="text-left">
-            カテゴリ追加
-          </span>
-        </v-layout>
-      </v-btn>
-    </v-layout>
+      <category-modal is-new>
+        <template v-slot:activator="{ on }">
+          <v-btn block color="primary" class="elevation-4" v-on="on">
+            <v-row align="center" justify="start">
+              <v-icon>mdi-plus</v-icon>
+              <span class="text-left">
+                カテゴリ追加
+              </span>
+            </v-row>
+          </v-btn>
+        </template>
+      </category-modal>
+    </v-col>
 
-    <!-- モーダル -->
-    <!-- エラー防止のためにモーダルをレンダリングしない -->
-    <template v-if="isStaff">
-      <!-- 開いた時にデータを再度fetchさせるため -->
-      <problem-modal
-        v-if="showProblemModal"
-        v-model="showProblemModal"
-        is-new
-      />
-      <category-modal
-        v-if="showCategoryModal"
-        v-model="showCategoryModal"
-        is-new
-      />
-    </template>
+    <v-row justify="center">
+      <page-title title="問題一覧" />
+    </v-row>
 
-    <v-layout column justify-start>
-      <v-flex>
-        <v-layout column align-center>
-          <page-title title="問題一覧" />
-        </v-layout>
-      </v-flex>
+    <flow v-if="realtimeGrading" />
+    <attention />
 
-      <v-flex v-if="realtimeGrading">
-        <answer-flow />
-      </v-flex>
-
-      <v-flex mt-2>
-        <answer-attention />
-      </v-flex>
-
-      <v-flex v-for="category in categories" :key="category.id" class="mt-2">
-        <v-divider class="mb-1" />
-        <problem-category :category="category" />
-      </v-flex>
-    </v-layout>
+    <div v-for="category in categories" :key="category.id">
+      <v-divider class="my-2" />
+      <category :category="category" />
+    </div>
   </v-container>
 </template>
-
-<style scoped lang="sass"></style>
-
 <script>
 import { mapGetters } from 'vuex'
-import PageTitle from '~/components/atoms/PageTitle'
-import AnswerAttention from '~/components/molecules/AnswerAttention'
-import AnswerFlow from '~/components/molecules/AnswerFlow'
-import CategoryModal from '~/components/organisms/CategoryModal'
-import ProblemCategory from '~/components/organisms/ProblemCategory'
-import ProblemModal from '~/components/organisms/ProblemModal'
+import PageTitle from '~/components/commons/PageTitle'
+import Attention from '~/components/problems/Attention'
+import Flow from '~/components/problems/Flow'
+import CategoryModal from '~/components/misc/CategoryModal'
+import Category from '~/components/problems/Category'
+import ProblemModal from '~/components/misc/ProblemModal'
 import orm from '~/orm'
 
 export default {
   name: 'Problems',
   components: {
-    AnswerAttention,
-    AnswerFlow,
+    Attention,
+    Flow,
     CategoryModal,
     PageTitle,
-    ProblemCategory,
-    ProblemModal
-  },
-  data() {
-    return {
-      showCategoryModal: false,
-      showProblemModal: false
-    }
+    Category,
+    ProblemModal,
   },
   computed: {
     ...mapGetters('contestInfo', ['gradingDelaySec', 'realtimeGrading']),
     categories() {
-      return this.sortByOrder(
-        orm.Category.query()
-          .with('problems.body')
-          .all()
-      )
-    }
+      const withArg = this.isPlayer
+        ? [
+            'problems',
+            'problems.body',
+            'problems.answers',
+            'problems.penalties',
+          ]
+        : ['problems.body', 'problems.category']
+
+      return this.sortByOrder(orm.Category.query().with(withArg).all())
+    },
   },
-  fetch() {
-    orm.Category.eagerFetch({}, ['problems'])
-  }
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler(value) {
+        // 未ログインだとisPlayer判定がおかしくなるためcreatedではなくwatchで行う
+        if (value) {
+          orm.Queries.pageProblems()
+        }
+      },
+    },
+  },
 }
 </script>
 <style scoped lang="sass">
-.floating-area
-  position: fixed
-  z-index: 100
+.top-right
   top: 3rem
   right: 0.5rem
 </style>

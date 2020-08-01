@@ -1,22 +1,32 @@
 # frozen_string_literal: true
 
+# 非公開API(Preloader)を使っているためバージョンアップ時は注意
+raise 'unsupported AR version' unless ActiveRecord.version.to_s == '6.0.2.2'
+
+# has_many has_one
 class AssociationLoader < GraphQL::Batch::Loader
   def self.validate(model, association_name)
     new(model, association_name)
     nil
   end
 
-  def initialize(model, association_name)
+  def initialize(context, model, association_name)
+    @context = context
     @model = model
     @association_name = association_name
+    @association_reflection = @model.reflections[@association_name.to_s]
+    @is_collection = @association_reflection.collection?
     validate
   end
 
   def load(record)
     raise TypeError, "#{@model} loader can't load association for #{record.class}" unless record.is_a?(@model)
-    return Promise.resolve(read_association(record)) if association_loaded?(record)
 
-    super
+    # ApplyScoreなどでPreloaderを使わずにアソシエーションを呼ぶ場合もあるが、
+    # preload_associationを通さないレコード取得は情報漏洩する可能性がある
+    # return Promise.resolve(read_association(record)) if association_loaded?(record)
+
+    super(record)
   end
 
   # We want to load the associations on all records, even if they have the same id
@@ -25,7 +35,9 @@ class AssociationLoader < GraphQL::Batch::Loader
   end
 
   def perform(records)
-    preload_association(records)
+    Rails.logger.debug "AssociationLoader#perform #{@model}##{@association_name}".magenta
+
+    @preload = preload_association(records)
     records.each {|record| fulfill(record, read_association(record)) }
   end
 
@@ -38,15 +50,22 @@ class AssociationLoader < GraphQL::Batch::Loader
   end
 
   def preload_association(records)
-    ::ActiveRecord::Associations::Preloader.new.preload(records, @association_name, association_model.readables)
+    ::ActiveRecord::Associations::Preloader.new.preload(records, @association_name, association_model.readables(team: @context.current_team!))
   end
 
   def association_model
-    @model.reflections[@association_name.to_s].class_name.constantize
+    @association_reflection.class_name.constantize
   end
 
   def read_association(record)
-    record.public_send(@association_name)
+    return nil if @preload.blank?
+
+    # Preloaderはpreload_scopeを指定するとloadedとしてマークしないため自前で処理する
+    if @is_collection
+      @preload.first.records_by_owner[record].presence || []
+    else
+      @preload.first.records_by_owner[record]&.first
+    end
   end
 
   def association_loaded?(record)

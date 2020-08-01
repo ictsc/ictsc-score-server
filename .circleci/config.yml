@@ -1,10 +1,10 @@
 # Ruby CircleCI 2.0 configuration file
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
 
-version: 2
+version: 2.1
 jobs:
-  build:
-    parallelism: 3
+  api-test:
+    parallelism: 1
     environment:
       - TZ=Asia/Tokyo
 
@@ -22,6 +22,7 @@ jobs:
           - RAILS_ENV=test
           - API_STAFF_PASSWORD=staff
           - API_SESSION_EXPIRE_MINUTES=1440
+          - PLASMA_SUBSCRIBER_REDIS_CHANNELS=realtime_notification
 
           # 空にしないと/usr/src/appを参照する
           - BUNDLE_GEMFILE=
@@ -33,6 +34,7 @@ jobs:
       - image: redis:5.0.4-alpine
 
     steps:
+      #  コンテナ内のworking_directoryに対象のブランチをコピーする
       - checkout
 
       # Download and cache dependencies
@@ -56,6 +58,12 @@ jobs:
       #     paths:
       #       - /usr/local/bundle
 
+      # db:setupは必要ないので先に実行できる
+      - run:
+          name: Run rubocop
+          working_directory: /root/project/api
+          command: bundle exec rubocop
+
       - run:
           name: Wait for Redis
           command: dockerize -wait tcp://127.0.0.1:6379 -timeout 10s
@@ -68,11 +76,6 @@ jobs:
           name: Setup DB
           working_directory: /root/project/api
           command: bundle exec rake db:setup
-
-      - run:
-          name: Run rubocop
-          working_directory: /root/project/api
-          command: bundle exec rubocop
 
       - run:
           name: Run spec
@@ -92,7 +95,7 @@ jobs:
       - run:
           name: Run bundler-audit
           working_directory: /root/project/api
-          command: bundle audit check --update
+          command: bundle exec bundle-audit check --update
 
       - run:
           name: Run brakeman
@@ -106,6 +109,42 @@ jobs:
           # See https://circleci.com/docs/2.0/deployment-integrations/ for example deploy configs
 
       # Save coverage
-      # - store_artifacts:
-      #     # TODO: 並列非対応
-      #     path: /root/project/api/coverage
+      - store_artifacts:
+          # TODO: 並列非対応
+          path: /root/project/api/coverage
+
+  ui-test:
+    parallelism: 1
+    environment:
+      - TZ=Asia/Tokyo
+
+    docker:
+      # The primary container is an instance of the first image listed. The job's commands run in this container.
+      # The secondary and later container is an instance of the listed image which is run in a common network where ports exposed on the primary container are available on localhost.
+      - image: upluse10/ictsc-score-server:ui-develop
+
+    steps:
+      #  コンテナ内のworking_directoryに対象のブランチをコピーする
+      - checkout
+
+      # シンボリックリンクが正しく扱われないバグのワークアラウンド
+      - run:
+          name: Repair symbolic link
+          command: cp --no-dereference /usr/src/app/node_modules /root/project/ui/
+
+      - run:
+          name: install dependencies
+          working_directory: /root/project/ui
+          command: yarn install
+
+      - run:
+          name: Run Yarn Lint
+          working_directory: /root/project/ui
+          command: yarn lint
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - api-test
+      - ui-test

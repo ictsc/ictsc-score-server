@@ -23,6 +23,10 @@ module.exports = {
     'prettier/prettier': [
       'error', {
       }
-    ]
+    ],
+    'default-case': 'error'
+  },
+  globals: {
+    "$nuxt": "readonly"
   }
 }
