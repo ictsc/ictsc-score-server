@@ -9,8 +9,9 @@
 
 class Scoreboard
   class << self
-    def readables(team:) # rubocop:disable Metrics/CyclomaticComplexity
-      return [] if team.player? && (Config.hide_all_score || !Config.competition?)
+    def readables(team:) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      return [] if !team.staff? && !Config.competition?
+      return [] if team.player? && Config.hide_all_score
 
       answers = ScoreAggregator.effective_graded_answers(team: team)
       teams = team.team99? ? Team.player : Team.player_without_team99
