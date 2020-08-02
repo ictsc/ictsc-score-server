@@ -84,6 +84,8 @@ RSpec/MultipleExpectations:
   Enabled: false
 RSpec/ExampleLength:
   Max: 20
+RSpec/NestedGroups:
+  Max: 10
 
 ## rails系
 Rails/Output:
@@ -129,4 +131,8 @@ Style/HashEachMethods:
 Style/HashTransformKeys:
   Enabled: true
 Style/HashTransformValues:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
   Enabled: true

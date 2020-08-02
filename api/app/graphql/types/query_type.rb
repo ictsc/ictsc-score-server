@@ -65,7 +65,7 @@ module Types
         .readables(team: self.current_team!)
         .order(:created_at)
 
-      after ? rel.where(created_at: after..) : rel
+      after.nil? ? rel : rel.where(created_at: after..)
     end
 
     def problem(id:)
@@ -108,6 +108,13 @@ module Types
 
     def report_cards
       ReportCard.readables(team: self.current_team!)
+    end
+
+    class << self
+      def get_fields_query(name, with: nil)
+        type = self.fields.fetch(name).type
+        self.get_type_class(type).to_fields_query(with: with)
+      end
     end
   end
 end

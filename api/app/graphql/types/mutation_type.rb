@@ -27,5 +27,14 @@ module Types
     field :startIssue,               mutation: Mutations::StartIssue
     field :transitionIssueState,     mutation: Mutations::TransitionIssueState
     field :updateConfig,             mutation: Mutations::UpdateConfig
+
+    class << self
+      def get_fields_query(name, with: nil)
+        self.fields
+          .fetch(name)
+          .mutation
+          .to_fields_query(with: with)
+      end
+    end
   end
 end

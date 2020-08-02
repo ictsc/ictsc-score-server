@@ -30,10 +30,10 @@ module Mutations
 
     class << self
       # フィールド一覧をクエリとして使える形式で返す
-      def to_fields_query
+      def to_fields_query(with: nil)
         self.fields.map {|name, field|
           if field.type.kind.composite?
-            "#{name} { #{field.type.to_fields_query} }"
+            "#{name} { #{field.type.to_fields_query(with: with&.at(name))} }"
           else
             name
           end

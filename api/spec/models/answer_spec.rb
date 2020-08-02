@@ -29,7 +29,7 @@ RSpec.describe Answer, type: :model do
     # rubocop:enable Style/WordArray
 
     shared_examples 'valid' do |mode|
-      subject { build_stubbed(:answer, problem: problem, team: player) }
+      subject { build_stubbed(:answer, problem: problem, team: player1) }
 
       let!(:problem_body) { build(:problem_body, mode: mode, candidates: candidates_list[mode], corrects: corrects_list[mode]) }
       let!(:problem) { create(:problem, body: problem_body) }
@@ -40,7 +40,7 @@ RSpec.describe Answer, type: :model do
     end
 
     shared_examples 'invalid' do |mode|
-      subject { build_stubbed(:answer, problem: problem, team: player) }
+      subject { build_stubbed(:answer, problem: problem, team: player1) }
 
       let!(:problem_body) { build(:problem_body, mode: mode, candidates: candidates_list[mode], corrects: corrects_list[mode]) }
       let!(:problem) { create(:problem, body: problem_body) }

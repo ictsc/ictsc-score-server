@@ -24,7 +24,6 @@ RSpec.describe Mutations::ApplyProblemEnvironment, type: :request do
 
     it 'send problem env' do
       post_mutation(input: input)
-      expect(response).to have_http_status(:ok)
       expect(response_json).not_to have_gq_errors
 
       # TODO: dataを確認
