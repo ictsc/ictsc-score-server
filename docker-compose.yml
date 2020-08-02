@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    image: upluse10/ictsc-score-server:api-develop
+    image: upluse10/ictsc-score-server:api
     env_file: .env
     build:
       context: api/
@@ -29,7 +29,7 @@ services:
       '
 
   ui:
-    image: upluse10/ictsc-score-server:ui-develop
+    image: upluse10/ictsc-score-server:ui
     env_file: .env
     build:
       context: ui/
