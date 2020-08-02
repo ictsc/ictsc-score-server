@@ -20,9 +20,13 @@ FactoryBot.define do
       mode { :textbox }
     end
 
+    transient do
+      resettable { !Random.rand(5).zero? }
+    end
+
     callback(:after_build, :after_stub) do |problem, evaluator|
       # callbackで作らないとcreateが失敗する
-      problem.body ||= build(:problem_body, evaluator.mode.to_sym)
+      problem.body ||= build(:problem_body, evaluator.mode.to_sym, resettable: evaluator.resettable)
     end
 
     # association :environments, :problem_environment # optional: nil

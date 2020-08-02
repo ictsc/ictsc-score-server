@@ -174,7 +174,7 @@ end
 def build_answers(problems, teams, count_range)
   problems.each_with_object([]) do |problem, answers|
     teams.each do |team|
-      Random.rand(count_range).times { answers << build_stubbed(:answer, problem: problem, team: team) }
+      Random.rand(count_range).times { answers << build_stubbed(:answer, :created_at_random, problem: problem, team: team) }
     end
   end
 end
