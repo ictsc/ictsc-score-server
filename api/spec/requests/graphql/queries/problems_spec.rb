@@ -6,9 +6,16 @@ require 'rails_helper'
 
 RSpec.describe 'problems', type: :request do
   context_as_staff do
+    let(:problem) { create(:problem) }
+
     it 'get problems' do
       # TODO: impl
       post_query 'problems'
+    end
+
+    it 'get problem' do
+      # TODO: impl
+      post_query 'problem', variables: { id: problem.id }
     end
   end
 

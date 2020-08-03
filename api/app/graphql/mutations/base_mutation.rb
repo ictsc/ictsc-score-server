@@ -27,5 +27,19 @@ module Mutations
       # resolveの戻り値はハッシュかnilな必要がある
       nil
     end
+
+    class << self
+      # フィールド一覧をクエリとして使える形式で返す
+      def to_fields_query(with: nil)
+        self.fields.map {|name, field|
+          if field.type.kind.composite?
+            "#{name} { #{field.type.to_fields_query(with: with&.at(name))} }"
+          else
+            name
+          end
+        }
+          .join("\n")
+      end
+    end
   end
 end

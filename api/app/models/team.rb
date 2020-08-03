@@ -45,7 +45,7 @@ class Team < ApplicationRecord
     return if value.blank?
 
     @password = value
-    self.password_digest = BCrypt::Password.create(@password, cost: BCrypt::Engine.cost)
+    self.password_digest = BCrypt::Password.create(@password, cost: self.class.password_hash_cost)
   end
 
   def authenticate(plain_password)
@@ -67,6 +67,11 @@ class Team < ApplicationRecord
   end
 
   class << self
+    def password_hash_cost
+      # test時は速度を優先
+      Rails.env.test? ? 1 : BCrypt::Engine.cost
+    end
+
     def special_team_name_staff
       'staff'
     end

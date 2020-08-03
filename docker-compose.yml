@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    image: upluse10/ictsc-score-server:api-develop
+    image: upluse10/ictsc-score-server:api
     env_file: .env
     build:
       context: api/
@@ -14,9 +14,6 @@ services:
     tty: true
     volumes:
       - './api:/usr/src/app'
-    environment:
-      # ruby2.7のワーニングを一時的に無効化する
-      - RUBYOPT=-W:no-deprecated -W:no-experimental
     command: sh -ec '
       if [ -f "tmp/pids/server.pid" ]; then
         rm tmp/pids/server.pid;
@@ -29,7 +26,7 @@ services:
       '
 
   ui:
-    image: upluse10/ictsc-score-server:ui-develop
+    image: upluse10/ictsc-score-server:ui
     env_file: .env
     build:
       context: ui/

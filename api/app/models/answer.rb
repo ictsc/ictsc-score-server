@@ -55,7 +55,7 @@ class Answer < ApplicationRecord
 
   class << self
     def delay_filter
-      # created_at <= Time.current - Config.grading_delay_sec.seconds
+      # created_at + Config.grading_delay_sec.seconds <= Time.current
       where(created_at: Time.zone.at(0)..(Time.current - Config.grading_delay_sec.seconds))
     end
 

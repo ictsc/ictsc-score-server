@@ -2,8 +2,7 @@
 
 FactoryBot.define do
   factory :answer do
-    # unique制約から逃れるため適当にずらす
-    created_at { Time.current - Random.rand(60).minutes - Random.rand(60).seconds }
+    created_at { Time.current }
     updated_at { created_at }
     confirming { Random.rand(2).odd? }
 
@@ -23,5 +22,14 @@ FactoryBot.define do
     problem { nil }
     team { nil }
     # association :first_correct_answer # optional: nil
+
+    trait :created_at_after_delay do
+      created_at { Time.current - Config.grading_delay_sec }
+    end
+
+    trait :created_at_random do
+      # unique制約から逃れるため適当にずらす
+      created_at { Time.current - Random.rand(60).minutes - Random.rand(60).seconds }
+    end
   end
 end

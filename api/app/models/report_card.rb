@@ -9,6 +9,7 @@ class ReportCard
       return [] if team.player?
 
       problems = sorted_problems
+      # スコアボードの表示結果と完全に同じにする
       records = Scoreboard.readables(team: team)
       # ScoreAggregator.aggregate_penalties(penalties: Penalty.all)
 

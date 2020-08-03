@@ -3,7 +3,7 @@
 class ScoreAggregator
   class << self
     # 指定teamのスコアボード生成に使える解答のみ返す
-    def effective_answers(team:)
+    def effective_graded_answers(team:)
       rel = Answer.includes(:score).where(score: Score.where.not(point: nil))
       (team.player? && Config.realtime_grading) ? rel.delay_filter : rel
     end
@@ -20,6 +20,7 @@ class ScoreAggregator
     end
 
     # チーム毎のペナルティを計算する
+    # { :team_id=>200 } team_id毎のペナルティを返す
     def aggregate_penalties(penalties:)
       # ほぼSQL側で集計
       penalties

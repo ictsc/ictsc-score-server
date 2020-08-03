@@ -1,4 +1,4 @@
-ICTSC スコアサーバー
+ICTSC Score Server
 ---
 
 [![CircleCI](https://circleci.com/gh/ictsc/ictsc-score-server/tree/develop.svg?style=svg)](https://circleci.com/gh/ictsc/ictsc-score-server)

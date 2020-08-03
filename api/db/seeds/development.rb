@@ -45,7 +45,6 @@ def create_teams
   # 'team a' ~ 'team zz', 'team99', 'audience' を作成
   # パスワードはチーム名同じ
   players = build_stubbed_list(:team, 70, :player)
-  players << build_stubbed(:team, :player, name: 'team99', number: 99)
   audience = build_stubbed(:team, :audience, name: 'audience', number: 100)
 
   Team.import!([audience] + players)
@@ -175,7 +174,7 @@ end
 def build_answers(problems, teams, count_range)
   problems.each_with_object([]) do |problem, answers|
     teams.each do |team|
-      Random.rand(count_range).times { answers << build_stubbed(:answer, problem: problem, team: team) }
+      Random.rand(count_range).times { answers << build_stubbed(:answer, :created_at_random, problem: problem, team: team) }
     end
   end
 end
