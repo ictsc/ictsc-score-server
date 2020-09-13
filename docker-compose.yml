@@ -21,6 +21,7 @@ services:
 
       dockerize -wait tcp://redis:6379 -timeout 100s;
       dockerize -wait tcp://db:5432 -timeout 100s;
+      sleep 2;
       bundle exec rake db:prepare;
       bundle exec rails server -b 0.0.0.0;
       '
