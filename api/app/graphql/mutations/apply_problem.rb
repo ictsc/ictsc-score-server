@@ -27,14 +27,14 @@ module Mutations
     argument :corrects,              [[String]],                    required: true
 
     # 通知無効
-    argument :silent,                Boolean,                       required: false
+    argument :silent,                Boolean,                       required: false, default_value: false
 
     # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-    def resolve(code:, category_code: nil, previous_problem_code: nil,
-                order:, team_isolate:, open_at_begin: nil, open_at_end: nil,
+    def resolve(code:, category_code:, previous_problem_code:,
+                order:, team_isolate:, open_at_begin:, open_at_end:,
                 writer:, secret_text:,
-                mode:, title:, genre:, resettable:, text:, perfect_point:, solved_criterion:, candidates: nil, corrects: nil,
-                silent: false)
+                mode:, title:, genre:, resettable:, text:, perfect_point:, solved_criterion:, candidates:, corrects:,
+                silent:)
 
       Acl.permit!(mutation: self, args: {})
 

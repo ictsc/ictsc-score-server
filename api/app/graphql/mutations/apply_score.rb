@@ -7,7 +7,7 @@ module Mutations
     argument :answer_id, ID,      required: true
     argument :percent,   Integer, required: false
 
-    def resolve(answer_id:, percent: nil)
+    def resolve(answer_id:, percent:)
       answer = Answer.find_by(id: answer_id)
       raise RecordNotExists.new(Answer, id: answer_id) if answer.nil?
 

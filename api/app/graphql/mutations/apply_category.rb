@@ -10,9 +10,9 @@ module Mutations
     argument :order,       Integer, required: true
 
     # 通知無効
-    argument :silent,      Boolean, required: false
+    argument :silent,      Boolean, required: false, default_value: false
 
-    def resolve(code:, title:, description:, order:, silent: false)
+    def resolve(code:, title:, description:, order:, silent:)
       Acl.permit!(mutation: self, args: {})
 
       category = Category.find_or_initialize_by(code: code)
