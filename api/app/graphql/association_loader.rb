@@ -32,7 +32,7 @@ class AssociationLoader < GraphQL::Batch::Loader
 
   # We want to load the associations on all records, even if they have the same id
   def cache_key(record)
-    record.object_id
+    record.id
   end
 
   def perform(records)
