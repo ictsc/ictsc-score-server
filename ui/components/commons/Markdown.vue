@@ -36,6 +36,8 @@ export default {
       // 最後に余白ができるのを抑制
       &:last-child
         margin-bottom: 0
+      code
+        word-break: break-word
 
     // テーブル表示をGitHub風にする
     table
