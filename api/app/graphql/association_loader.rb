@@ -17,6 +17,7 @@ class AssociationLoader < GraphQL::Batch::Loader
     @association_reflection = @model.reflections[@association_name.to_s]
     @is_collection = @association_reflection.collection?
     validate
+    super()
   end
 
   def load(record)

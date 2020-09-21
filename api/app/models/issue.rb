@@ -39,7 +39,7 @@ class Issue < ApplicationRecord
     end
   end
 
-  def transition_by_comment(team:) # rubocop:disable Metrics/CyclomaticComplexity
+  def transition_by_comment(team:)
     case status
     when 'unsolved'
       self.status = 'in_progress' if team.staff?

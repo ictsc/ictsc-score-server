@@ -64,7 +64,7 @@ class AttachmentsController < ApplicationController
     permit_params[:token]
   end
 
-  def validate_file # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+  def validate_file
     if file.blank?
       render json: '"file" field is required', status: :bad_request
     elsif !file.is_a?(ActionDispatch::Http::UploadedFile)

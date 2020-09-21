@@ -9,7 +9,7 @@
 
 class Scoreboard
   class << self
-    def readables(team:) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    def readables(team:) # rubocop:disable Metrics/CyclomaticComplexity
       return [] if !team.staff? && !Config.competition?
       return [] if team.player? && Config.hide_all_score
 

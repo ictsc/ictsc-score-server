@@ -812,7 +812,7 @@ RSpec.describe Scoreboard, type: :request do
       context_as_player2  { include_examples 'player2' }
     end
 
-    describe 'Config.scoreboard_display' do # rubocop:disable RSpec/EmptyExampleGroup
+    describe 'Config.scoreboard_display' do
       describe 'top' do # rubocop:disable RSpec/EmptyExampleGroup
         # TODO: 未作成
         before(:each) do

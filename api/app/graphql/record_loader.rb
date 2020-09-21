@@ -8,6 +8,7 @@ class RecordLoader < GraphQL::Batch::Loader
     @column = column.to_s
     @column_type = model.type_for_attribute(@column)
     @where = where
+    super()
   end
 
   def load(key)

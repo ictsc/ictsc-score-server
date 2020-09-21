@@ -46,7 +46,7 @@ class AnswerBodiesValidator < ActiveModel::EachValidator
         # ラジオボタンなので必ず1つのみ
         # [['foo', 'bar']], [[]]
         record.errors.add(attribute, "in #{record.mode} mode, each #{attribute} elements size must be one")
-      elsif value.zip(record.candidates).any? {|list, candidate| !candidate.include?(list.first) }
+      elsif value.zip(record.candidates).any? {|list, candidate| candidate.exclude?(list.first) }
         # 解答が存在しない選択肢なら
         record.errors.add(attribute, "in #{record.mode} mode, #{attribute} must be included in candidates")
       end

@@ -74,7 +74,7 @@ module Readable
       return none if %w[Config].include?(klass)
 
       # 参加者や見学者は競技時間外やコンテスト中断時にはお知らせ以外は取得不可能
-      return none if !Config.competition? && !%w[Notice].include?(klass)
+      return none if !Config.competition? && %w[Notice].exclude?(klass)
 
       # 誰でも取得可能
       # Problem自体は常時見れるがProblemBody(問題文)はそうではない
