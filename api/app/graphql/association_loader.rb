@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # 非公開API(Preloader)を使っているためバージョンアップ時は注意
-raise 'unsupported AR version' unless ActiveRecord.version.to_s == '6.0.3.2'
+raise 'unsupported AR version' unless ActiveRecord.version.to_s == '6.0.3.3'
 
 # has_many has_one
 class AssociationLoader < GraphQL::Batch::Loader
@@ -17,6 +17,7 @@ class AssociationLoader < GraphQL::Batch::Loader
     @association_reflection = @model.reflections[@association_name.to_s]
     @is_collection = @association_reflection.collection?
     validate
+    super()
   end
 
   def load(record)
@@ -31,7 +32,7 @@ class AssociationLoader < GraphQL::Batch::Loader
 
   # We want to load the associations on all records, even if they have the same id
   def cache_key(record)
-    record.object_id
+    record.id
   end
 
   def perform(records)

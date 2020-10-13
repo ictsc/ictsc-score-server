@@ -14,10 +14,10 @@ module Mutations
     argument :password,     String,                 required: false
 
     # 通知無効
-    argument :silent,       Boolean,                required: false
+    argument :silent,       Boolean,                required: false, default_value: false
 
     # passwordを省略した場合は更新されない
-    def resolve(role:, beginner:, number:, secret_text:, name:, password:, organization:, color:, silent: false)
+    def resolve(role:, beginner:, number:, secret_text:, name:, password:, organization:, color:, silent:)
       Acl.permit!(mutation: self, args: {})
 
       team = Team.find_or_initialize_by(number: number)

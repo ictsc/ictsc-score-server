@@ -5,7 +5,7 @@ require 'matrix'
 # 概要ページ, 得点シート出力用
 class ReportCard
   class << self
-    def readables(team:) # rubocop:disable Metrics/MethodLength
+    def readables(team:) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
       return [] if team.player?
 
       problems = sorted_problems
@@ -77,7 +77,7 @@ class ReportCard
 
     def build_each_score_avg(records:)
       # 未提出はカウントしない
-      Matrix[*records.map {|record| record[:each_score] }]
+      Matrix[*records.map {|record| record[:each_score] }] # rubocop:disable Rails/Pluck
         .column_vectors
         .map {|column| column.select(&:present?) }
         .map {|column| column.size.zero? ? nil : (column.sum / column.size) }

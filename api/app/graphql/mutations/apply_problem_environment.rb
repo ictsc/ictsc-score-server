@@ -19,10 +19,10 @@ module Mutations
     argument :secret_text,  String,  required: true
 
     # 通知無効
-    argument :silent,       Boolean, required: false
+    argument :silent,       Boolean, required: false, default_value: false
 
     # team_numberがnilなら共通として扱う
-    def resolve(problem_code:, team_number:, name:, service:, status:, host:, port:, user:, password:, secret_text:, silent: false)
+    def resolve(problem_code:, team_number:, name:, service:, status:, host:, port:, user:, password:, secret_text:, silent:)
       Acl.permit!(mutation: self, args: {})
 
       problem = Problem.find_by(code: problem_code)

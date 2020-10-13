@@ -8,7 +8,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   # FIXME: selectでカラムをフィルタしたレコードをGrpahQLのTypeに適用するときに必要
   # 応急処置
-  def respond_to?(key, include_all = false)
+  def respond_to?(key, include_all = false) # rubocop:disable Style/OptionalBooleanParameter
     if self.class.column_names.include?(key.to_s)
       true
     else

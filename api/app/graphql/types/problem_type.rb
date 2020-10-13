@@ -27,7 +27,7 @@ module Types
     field :issues,              [Types::IssueType],              null: false
 
     # 全問題取得が100ms程遅くなるので注意
-    field :solved_count,        Integer,                         null: false
+    # field :solved_count,        Integer,                         null: false
 
     # created_atとupdated_atは意味がないので見せない(bodyを見るべき)
 
