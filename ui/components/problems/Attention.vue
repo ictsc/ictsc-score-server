@@ -1,8 +1,6 @@
 <template>
   <v-sheet class="warning lighten-2 pa-2">
-    <span class="subtitle-1">
-      解答時の注意点
-    </span>
+    <span class="subtitle-1"> 解答時の注意点 </span>
     <ul>
       <template v-if="!realtimeGrading">
         <li>採点は競技終了後に行われます。</li>

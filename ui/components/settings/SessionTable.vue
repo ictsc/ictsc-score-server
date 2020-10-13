@@ -30,9 +30,7 @@
             max-width="16em"
           >
             <v-card>
-              <v-card-title>
-                強制切断しますか?
-              </v-card-title>
+              <v-card-title> 強制切断しますか? </v-card-title>
 
               <v-card-text class="black--text">
                 <div v-for="role in selectedRoles" :key="role[0]">
@@ -47,9 +45,7 @@
 
                 <v-spacer />
 
-                <v-btn :disabled="sending" @click="close">
-                  キャンセル
-                </v-btn>
+                <v-btn :disabled="sending" @click="close"> キャンセル </v-btn>
               </v-card-actions>
             </v-card>
             <template v-slot:activator="{ on }">

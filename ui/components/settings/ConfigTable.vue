@@ -22,7 +22,7 @@
     </template>
 
     <template v-slot:item.value="{ item }">
-      <div class="text-truncate" style="width: 14em;">
+      <div class="text-truncate" style="width: 14em">
         {{ item.displayValue }}
       </div>
     </template>

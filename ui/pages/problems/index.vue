@@ -7,9 +7,7 @@
           <v-btn block color="primary" class="elevation-4 my-2" v-on="on">
             <v-row align="center" justify="start">
               <v-icon>mdi-plus</v-icon>
-              <span class="text-left">
-                問題追加
-              </span>
+              <span class="text-left"> 問題追加 </span>
             </v-row>
           </v-btn>
         </template>
@@ -20,9 +18,7 @@
           <v-btn block color="primary" class="elevation-4" v-on="on">
             <v-row align="center" justify="start">
               <v-icon>mdi-plus</v-icon>
-              <span class="text-left">
-                カテゴリ追加
-              </span>
+              <span class="text-left"> カテゴリ追加 </span>
             </v-row>
           </v-btn>
         </template>

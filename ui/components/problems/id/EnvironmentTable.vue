@@ -77,7 +77,7 @@
         </v-btn>
 
         <markdown v-if="isMarkdown(value)" :content="value" dense />
-        <div v-else class="text-truncate" style="width: 12em;">{{ value }}</div>
+        <div v-else class="text-truncate" style="width: 12em">{{ value }}</div>
       </v-row>
     </template>
 

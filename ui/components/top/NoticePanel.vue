@@ -22,12 +22,8 @@
 
     <!-- お知らせなし -->
     <div v-else class="grey--text text-center title">
-      <template v-if="fetching">
-        読み込み中
-      </template>
-      <template v-else>
-        お知らせはありません
-      </template>
+      <template v-if="fetching"> 読み込み中 </template>
+      <template v-else> お知らせはありません </template>
     </div>
 
     <notice-modal v-if="isStaff" v-model="showModal" />

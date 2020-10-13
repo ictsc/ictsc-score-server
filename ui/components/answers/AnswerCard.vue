@@ -11,9 +11,7 @@
     </div>
 
     <div v-if="answer.hasPoint">{{ answer.percent }}% {{ answer.point }}点</div>
-    <div v-else>
-      未採点
-    </div>
+    <div v-else>未採点</div>
 
     <div v-if="answer.showTimer(problem)">{{ answer.delayTickDuration }}</div>
   </v-card>

@@ -1,6 +1,6 @@
 export default {
   // ---- Nuxt標準の設定 ----
-  mode: 'spa',
+  ssr: false,
   server: {
     host: '0.0.0.0',
   },

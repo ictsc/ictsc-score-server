@@ -4,7 +4,7 @@
 
     <v-content>
       <!-- 最低幅を保証する -->
-      <nuxt style="min-width: 500px;" />
+      <nuxt style="min-width: 500px" />
     </v-content>
 
     <notification-area />

@@ -21,7 +21,8 @@ RUN apk add --no-cache --virtual .build-dep g++ make python
 ADD package.json yarn.lock .yarnrc /usr/src/app/
 RUN yarn install
 
-RUN apk del .build-dep
+# 本当は消したほうが良いが、パッケージのアップデートでハマるので残す
+# RUN apk del .build-dep
 
 COPY . /usr/src/app/
 RUN yarn run build
