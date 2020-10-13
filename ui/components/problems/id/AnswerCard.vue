@@ -4,22 +4,14 @@
     <template v-slot:button>
       <v-row align="center">
         <v-col>
-          <span v-if="!realtimeGrading && isPlayer">
-            提出済
-          </span>
+          <span v-if="!realtimeGrading && isPlayer"> 提出済 </span>
           <span v-else>
             <template v-if="answer.hasPoint">
-              <v-icon v-if="answer.solved" small>
-                mdi-check-bold
-              </v-icon>
+              <v-icon v-if="answer.solved" small> mdi-check-bold </v-icon>
               得点 {{ answer.point }} ({{ answer.percent }}%)
             </template>
-            <template v-else-if="isStaff">
-              未採点
-            </template>
-            <template v-else>
-              採点中
-            </template>
+            <template v-else-if="isStaff"> 未採点 </template>
+            <template v-else> 採点中 </template>
           </span>
         </v-col>
 
@@ -74,9 +66,7 @@
       class="pb-2"
     />
 
-    <template v-else>
-      未実装の問題タイプです
-    </template>
+    <template v-else> 未実装の問題タイプです </template>
   </expandable-card>
 </template>
 <script>

@@ -54,9 +54,7 @@
           削除
         </v-btn>
         <v-spacer />
-        <v-btn left :disabled="sending" @click="close">
-          キャンセル
-        </v-btn>
+        <v-btn left :disabled="sending" @click="close"> キャンセル </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -6,9 +6,7 @@
     scrollable
   >
     <v-card>
-      <v-card-title>
-        再採点
-      </v-card-title>
+      <v-card-title> 再採点 </v-card-title>
 
       <v-card-subtitle class="ml-2 text-truncate">
         {{ problem.title }}
@@ -37,9 +35,7 @@
           実行
         </v-btn>
 
-        <v-btn left :disabled="sending" @click="close">
-          閉じる
-        </v-btn>
+        <v-btn left :disabled="sending" @click="close"> 閉じる </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -62,9 +62,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
           >
             確認
           </v-btn>
-          <v-btn :disabled="confirming" @click="close">
-            キャンセル
-          </v-btn>
+          <v-btn :disabled="confirming" @click="close"> キャンセル </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -107,9 +105,7 @@ Markdownを書いて送信するモーダルのベースコンポーネント
           >
             {{ submitLabel }}
           </v-btn>
-          <v-btn :disabled="sending" @click="confirming = false">
-            戻る
-          </v-btn>
+          <v-btn :disabled="sending" @click="confirming = false"> 戻る </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

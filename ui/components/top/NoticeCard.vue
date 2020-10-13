@@ -16,9 +16,7 @@
           :value="notice.pinned"
           @click="pinned"
         />
-        <v-icon v-else-if="notice.pinned" class="mr-2">
-          mdi-pin
-        </v-icon>
+        <v-icon v-else-if="notice.pinned" class="mr-2"> mdi-pin </v-icon>
       </v-row>
     </v-card-title>
     <v-divider />

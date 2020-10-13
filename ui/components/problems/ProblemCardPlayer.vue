@@ -4,7 +4,7 @@
     <template v-if="problem.isReadable">
       <!-- タイトル -->
       <v-row no-gutters class="flex-nowrap">
-        <div class="truncate-clamp2" style="height: 3.4em;">
+        <div class="truncate-clamp2" style="height: 3.4em">
           {{ problem.title }}
         </div>
       </v-row>
@@ -49,9 +49,7 @@
             <v-col class="text-truncate text-right">
               {{ problem.previousProblemTitle }}
             </v-col>
-            <v-col>
-              の基準を突破
-            </v-col>
+            <v-col> の基準を突破 </v-col>
           </v-row>
 
           <div v-if="problem.openAtBegin && problem.openAtEnd">

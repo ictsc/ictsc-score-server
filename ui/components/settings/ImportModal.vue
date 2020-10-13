@@ -68,9 +68,7 @@
         >
           インポート
         </v-btn>
-        <v-btn :disabled="sending" @click="close">
-          キャンセル
-        </v-btn>
+        <v-btn :disabled="sending" @click="close"> キャンセル </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

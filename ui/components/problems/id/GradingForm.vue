@@ -56,7 +56,7 @@
             v-on="on"
           >
             <template v-slot:prepend>
-              <div class="py-1" style="width: 3.2em;">
+              <div class="py-1" style="width: 3.2em">
                 {{ answer.confirming ? '対応中' : '未対応' }}
               </div>
             </template>

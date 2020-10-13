@@ -8,7 +8,7 @@
       tile
       width="17.6em"
     >
-      <v-row align="center" no-gutters style="height: 7em;">
+      <v-row align="center" no-gutters style="height: 7em">
         <problem-card-staff
           v-if="isNotPlayer"
           :problem="problem"

@@ -1,6 +1,6 @@
 <template>
   <div
-    style="width: min-content;"
+    style="width: min-content"
     @mouseenter="onMouse = true"
     @mouseleave="onMouse = false"
   >

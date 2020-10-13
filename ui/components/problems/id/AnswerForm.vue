@@ -26,9 +26,7 @@
           class="pb-3"
         />
 
-        <template v-else>
-          未実装の問題タイプです
-        </template>
+        <template v-else> 未実装の問題タイプです </template>
       </v-card-text>
     </v-card>
 
@@ -39,9 +37,7 @@
       class="mt-2"
       block
     >
-      <template v-if="waitingSubmitSec === 0">
-        確認
-      </template>
+      <template v-if="waitingSubmitSec === 0"> 確認 </template>
       <template v-else>
         解答可能まで{{ $nuxt.timeSimpleStringJp(waitingSubmitSec) }}
       </template>
