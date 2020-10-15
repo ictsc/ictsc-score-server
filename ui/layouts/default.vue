@@ -2,10 +2,10 @@
   <v-app>
     <navigation class="hide-on-print" />
 
-    <v-content>
+    <v-main>
       <!-- 最低幅を保証する -->
       <nuxt style="min-width: 500px" />
-    </v-content>
+    </v-main>
 
     <notification-area />
   </v-app>
