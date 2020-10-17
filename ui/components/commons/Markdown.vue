@@ -36,8 +36,8 @@ export default {
       // 最後に余白ができるのを抑制
       &:last-child
         margin-bottom: 0
-      code
-        word-break: break-word
+    ul
+      margin-bottom: 0.4em
 
     // テーブル表示をGitHub風にする
     table
@@ -50,38 +50,39 @@ export default {
       tr
         &:nth-child(2n)
           background-color: #f6f8fa
-    ul
-      margin-bottom: 0.4em
 
+    // `hoge` や ```hoge```
     code
-      color: #e04040
-      font-weight: 600
-      // なぜかコードの先頭に文字が入る
-      &:before, &:after
-        content: ""
-    // `` でのみ影を消す
-    &:not(pre)
-      code
-        padding: 0 0.3em 0 0.3em
-        box-shadow: none
+      color: #000
+      background-color: #e6e8ea
+      word-break: break-word
+      padding: 0.3em 0.3em 0em 0.3em
+      vertical-align: middle
     pre
+      padding: 0 0.6em
+      background-color: #e6e8ea
+      line-height: 1em
       code
-        color: #000
-        margin-top: 0.4em
-        margin-bottom: 0.4em
-        padding: 0.4em
+        vertical-align: bottom
+        background-color: unset
+        white-space: pre-wrap
         // Firefox用
         word-break: break-word
+        // なぜかコードの先頭に文字が入る問題の緩和
+        &:before, &:after
+          content: "\A"
+          line-height: 0em
 
     img
       max-width: 100%
       height: auto
 
+    // > 引用
     blockquote
       margin: 0.8em 0
       padding-left: 0.8em
       border-left: 0.4em solid #eee
-      color: #777
+      color: #444
 
     h1, h2
       margin-top: 0.8em
