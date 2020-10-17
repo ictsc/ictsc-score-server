@@ -180,25 +180,30 @@ export default {
       const value = this.$jsonStorage.get(this.storageKey())
 
       // 有効な値があれば返す. [] '' 0 は有効な値
-      if (value !== null && value !== undefined) {
+      if (value != null) {
         return value
       }
 
+      const defaultValue = this.buildDefaultValue()
+      this.setStorage(defaultValue)
+
+      // プライベートウィンドウではjsonStorageがnullの場合があるので注意
+      return defaultValue
+    },
+    setStorage(value) {
+      return this.$jsonStorage.set(this.storageKey(), value)
+    },
+    buildDefaultValue() {
       if (this.problem.modeIsTextbox) {
-        this.setStorage([[]])
+        return [[]]
       } else if (
         this.problem.modeIsRadioButton ||
         this.problem.modeIsCheckbox
       ) {
-        this.setStorage((this.problem.candidates || [[]]).map((o) => []))
+        return (this.problem.candidates || [[]]).map((o) => [])
       } else {
         throw new Error(`unsupported problem mode ${this.problem.mode}`)
       }
-
-      return this.$jsonStorage.get(this.storageKey())
-    },
-    setStorage(value) {
-      return this.$jsonStorage.set(this.storageKey(), value)
     },
     async submit() {
       this.sending = true
