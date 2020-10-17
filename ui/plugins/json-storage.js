@@ -32,8 +32,9 @@ export class JsonStroage {
   }
 
   static hasKey(key) {
+    // プライベートウィンドウだとlocalStorageがnullなことがある
     // 該当するキーが無いとnullが返ってくる
-    return localStorage.getItem(key) !== null
+    return localStorage != null && localStorage.getItem(key) != null
   }
 
   static get(key, defaultValue) {
@@ -45,6 +46,11 @@ export class JsonStroage {
   }
 
   static set(key, value) {
+    // プライベートウィンドウだとlocalStorageがnullなことがある
+    if (localStorage == null) {
+      return
+    }
+
     // JSONにundefinedは存在しないため、該当keyを削除する
     if (value === undefined) {
       this.remove(key)
@@ -55,6 +61,11 @@ export class JsonStroage {
   }
 
   static remove(key) {
+    // プライベートウィンドウだとlocalStorageがnullなことがある
+    if (localStorage == null) {
+      return
+    }
+
     localStorage.removeItem(key)
   }
 }
