@@ -38,7 +38,7 @@ export default class Problem extends BaseModel {
     return {
       title: '',
       genre: '',
-      resettable: true,
+      resettable: false,
       code: '',
       writer: '',
       categoryCode: null,
