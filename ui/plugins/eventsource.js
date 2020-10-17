@@ -27,11 +27,15 @@ function subscribe(events, onMessage) {
     // firefoxではリロード時に通知が表示されてしまうため対処
     setTimeout(() => {
       $nuxt.$nextTick(() => {
-        $nuxt.notifyWarning({
-          timeout: 0,
-          message:
-            'Push通知と自動更新が停止しました\nページをリロードしてください',
-        })
+        // $nuxt.notifyWarning({
+        //   timeout: 0,
+        //   message:
+        //     'Push通知と自動更新が停止しました\nページをリロードしてください',
+        // })
+
+        // 接続が切れたら再接続する
+        // 無限ループの可能性があるので良くないが1秒間隔なので一先ずセーフ
+        subscribe(events, onMessage)
       })
     }, 1000)
   }
