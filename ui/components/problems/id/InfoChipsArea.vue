@@ -46,11 +46,13 @@ export default {
       }
 
       if (this.isStaff) {
-        list.push(
+        list.unshift(
           [
             { name: 'コード', value: this.problem.code },
             { name: '作問者', value: this.problem.writer },
           ],
+        )
+        list.push(
           [{ name: '種類', value: this.problem.genre || '未設定' }],
           [{ name: '解答方式', value: this.problem.modeJp }],
           [{ name: '順序', value: this.problem.order }],
