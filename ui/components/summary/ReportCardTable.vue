@@ -141,16 +141,19 @@ export default {
     },
     capture() {
       const hideNodes = document.querySelectorAll('.hide-on-print')
-      const vContent = document.querySelector('.v-content')
-      const paddingTop = vContent.style.paddingTop
+      const unsetNodes = document.querySelectorAll('.unset-padding-on-print')
+      const vMain = document.querySelector('.v-main')
+      const vMainPadding = vMain.style.padding
 
-      vContent.style.paddingTop = ''
       hideNodes.forEach((node) => (node.style.display = 'none'))
+      unsetNodes.forEach((node) => (node.style.padding = 'unset'))
+      vMain.style.padding = 'unset'
 
       window.print()
 
+      vMain.style.padding = vMainPadding
+      unsetNodes.forEach((node) => (node.style.padding = ''))
       hideNodes.forEach((node) => (node.style.display = ''))
-      vContent.style.paddingTop = paddingTop
 
       // TODO: writing-modeをサポートしてないためスタイルが崩れる
       // this.captureById('table', '成績表.png')

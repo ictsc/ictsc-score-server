@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="unset-padding-on-print">
     <v-row justify="center" class="pt-0 hide-on-print">
       <v-col cols="auto" align="center" class="py-0">
         <page-title title="状況" />
