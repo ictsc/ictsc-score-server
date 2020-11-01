@@ -9,7 +9,6 @@
         hide-default-footer
         disable-sort
         disable-pagination
-        class="pa-2"
       >
         <!-- 各問題名 -->
         <template
@@ -163,7 +162,7 @@ export default {
 </script>
 <style scoped lang="sass">
 .problem-title
-  height: 16em
+  height: 19em
   writing-mode: vertical-rl
   text-orientation: sideways
 .negate-px
