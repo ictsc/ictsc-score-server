@@ -41,7 +41,11 @@ export default {
   },
   computed: {
     sortedAnswers() {
-      return this.sortByCreatedAt(this.answers).reverse()
+      const a = this.sortByCreatedAt(this.answers).reverse()
+      if (a.length > 0) {
+        a[0].isLatest = true
+      }
+      return a
     },
   },
 }

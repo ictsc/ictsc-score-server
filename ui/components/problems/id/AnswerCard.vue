@@ -1,5 +1,8 @@
 <template>
-  <expandable-card v-model="opened" color="white">
+  <expandable-card
+    v-model="opened"
+    v-bind:color="answer.isLatest ? 'orange' : 'white'"
+  >
     <!-- カードの帯 -->
     <template v-slot:button>
       <v-row align="center">
@@ -14,6 +17,8 @@
             <template v-else> 採点中 </template>
           </span>
         </v-col>
+
+        <v-col v-if="answer.isLatest"> 採点対象 </v-col>
 
         <v-col v-if="answer.showTimer(problem)">
           <div>{{ answer.delayTickDuration }}</div>
