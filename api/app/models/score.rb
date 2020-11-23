@@ -11,6 +11,7 @@ class Score < ApplicationRecord
   has_one :team, through: :answer
   has_one :problem, through: :answer
 
+  # NOTE: JANOG47 NETCON では使用せず
   after_save :refresh_first_correct_answer, if: :saved_change_to_solved?
 
   def refresh_first_correct_answer

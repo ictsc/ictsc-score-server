@@ -21,7 +21,7 @@ class Team < ApplicationRecord
   has_many :answers,               dependent: :destroy
   has_many :penalties,             dependent: :destroy
   has_many :attachments,           dependent: :destroy
-  has_many :first_correct_answers, dependent: :destroy
+  has_many :first_correct_answers, dependent: :destroy # NOTE: JANOG47 NETCON では使用せず
   has_many :issues,                dependent: :destroy
   has_many :notices,               dependent: :destroy
   has_many :environments,          dependent: :destroy, class_name: 'ProblemEnvironment'

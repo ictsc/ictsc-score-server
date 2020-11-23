@@ -3,7 +3,7 @@
 class Acl
   class << self
     def permit!(mutation:, args:)
-      raise GraphQL::ExecutionError, "Unpermit mutation #{mutation.class} by #{mutation.context.current_team!.name}" unless allow?(mutation: mutation, args: args)
+      raise GraphQL::ExecutionError, "Unpermitted mutation #{mutation.class} by #{mutation.context.current_team!.name}" unless allow?(mutation: mutation, args: args)
     end
 
     def allow?(mutation:, args:)
@@ -17,7 +17,7 @@ class Acl
         'DeleteAttachment', 'DeleteCategory', 'DeleteNotice', 'DeleteProblem', 'DeleteProblemEnvironment', 'DeleteProblemSupplement', 'DeleteSession', 'DeleteTeam'
         team.staff?
       when 'AddAnswer', 'AddPenalty'
-        # player and opened and 解答とペナルティ最終提出から20s
+        # player and opened and 解答とペナルティ最終提出から一定時間以内
         problem = args.fetch(:problem)
         return false if !team.player? || !problem.body.readable?(team: team)
 
@@ -30,7 +30,7 @@ class Acl
         # player and opened
         team.player? && args.fetch(:problem).body.readable?(team: team)
       when 'DeleteIssueComment'
-        # owner and readable and 送信してから一定時間内以内
+        # owner and readable and 送信してから一定時間以内
         issue_comment = args.fetch(:issue_comment)
         issue_comment.team_id == team.id &&
           issue_comment.readable?(team: team)
