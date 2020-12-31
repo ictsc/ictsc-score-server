@@ -1,7 +1,7 @@
 <template>
   <v-col
     align="right"
-    class="py-0 px-0 mx-2 floating-area-1000 bottom-right area-width"
+    class="py-0 px-0 mx-2 floating-area-100 bottom-right area-width"
   >
     <v-slide-x-reverse-transition group>
       <notification-card
