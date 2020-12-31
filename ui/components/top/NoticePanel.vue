@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: 一時的にelevationを消して背景と同一化させる -->
   <v-sheet elevation="0" class="px-2">
     <panel-label label="お知らせ">
       <pen-button

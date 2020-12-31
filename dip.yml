@@ -10,47 +10,66 @@ compose:
 interaction:
   api-sh:
     service: api
-    command: /bin/sh
-  sh:
-    service: api
-    command: /bin/sh
+    command: /bin/bash
+    compose:
+        method: exec
 
   ui-sh:
     service: ui
     command: /bin/sh
+    compose:
+        method: exec
 
   bundle:
     service: api
     command: bundle
+    compose:
+        method: exec
 
   be:
     service: api
     command: bundle exec
+    compose:
+        method: exec
 
   rspec:
     service: api
     command: bundle exec rspec
+    compose:
+        method: exec
 
   document:
     service: api
     command: bundle exec rspec --format=documentation
+    compose:
+        method: exec
 
   cop:
     service: api
     command: bundle exec rubocop
+    compose:
+        method: exec
 
   rails:
     service: api
     command: bundle exec rails
+    compose:
+        method: exec
 
   c:
     service: api
     command: bundle exec rails console
+    compose:
+        method: exec
 
   yarn:
     service: ui
     command: yarn
+    compose:
+        method: exec
 
   yl:
     service: ui
     command: yarn lint
+    compose:
+        method: exec

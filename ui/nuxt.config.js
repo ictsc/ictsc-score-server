@@ -44,6 +44,7 @@ export default {
 
   // ---- Nuxtモジュールの設定 ----
   axios: {
+    // これがないとlocalhost:8900で開いても、APIへのリクエスト先がlocalhost:3000になってしまう
     // Docs: https://axios.nuxtjs.org/options
     prefix: '/api',
     proxy: true,
@@ -69,12 +70,6 @@ export default {
   },
   moment: {
     locales: ['es-us', 'ja'],
-  },
-  proxy: {
-    // 開発時のyarn run devなど、jsでリクエストを受けている場合に使う
-    // 本番環境では前段のLBでリクエストを振り分ける
-    '/api': 'http://api:3000',
-    '/push': 'http://push:8080',
   },
   vuetify: {
     // customVariables: ['~/assets/css/variables.sass'],

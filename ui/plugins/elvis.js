@@ -18,7 +18,7 @@ export function elvis(parent, childrens) {
 
 // template内で使えるようにする
 Vue.mixin({
-  // 引数を取るため、関数を戻り地にする
+  // 引数を取るため、関数を戻り値にする
   computed: { elvis: () => elvis },
 })
 
