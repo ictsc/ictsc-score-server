@@ -1,4 +1,4 @@
-FROM ruby:2.7.0-slim
+FROM ruby:2.7.2-slim
 LABEL maintainer "ICTSC"
 
 # CIが面倒くさいのでbuild-essentialなども消さない
