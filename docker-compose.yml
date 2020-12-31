@@ -23,16 +23,19 @@ services:
     tty: true
     volumes:
       - './api:/usr/src/app'
-    command: sh -ec '
-      if [ -f "tmp/pids/server.pid" ]; then
-        rm tmp/pids/server.pid;
-      fi
+    command: |
+      sh -ec '
+        if [ -f "./tmp/pids/server.pid" ]; then
+          rm ./tmp/pids/server.pid
+        fi
 
-      dockerize -wait tcp://redis:6379 -timeout 100s;
-      dockerize -wait tcp://db:5432 -timeout 100s;
-      sleep 2;
-      bundle exec rake db:prepare;
-      bundle exec rails server -b 0.0.0.0;
+        dockerize -wait tcp://redis:6379 -timeout 100s
+        dockerize -wait tcp://db:5432 -timeout 100s
+
+        sleep 2 # dockerizeをパスした直後でもアクセスできないことがある
+        bundle exec rake db:prepare
+
+        bundle exec rails server -b 0.0.0.0
       '
 
   ui:
