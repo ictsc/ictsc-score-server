@@ -9,8 +9,9 @@ WORKDIR /usr/src/app
 # https://github.com/yarnpkg/yarn/issues/7362
 ENV PATH /usr/local/share/node_modules/.bin:$PATH
 
-# for node-gyp
-RUN apk add --no-cache --virtual .build-dep g++ make python
+# pythonはnode-gyp(fiber)に必要
+# CircleCI使うイメージにはgitとsshを入れておくのが推奨されている
+RUN apk add --update --no-cache --virtual .build-dep g++ make python git openssh-client
 
 ADD package.json yarn.lock .yarnrc /usr/src/app/
 RUN yarn install
