@@ -1,30 +1,25 @@
 <template>
-  <div
-    style="width: min-content"
-    @mouseenter="onMouse = true"
-    @mouseleave="onMouse = false"
-  >
+  <div @mouseenter="onMouse = true" @mouseleave="onMouse = false">
     <v-alert
       v-model="visible"
       :type="type"
-      dismissible
       elevation="6"
-      class="ma-0 text-left"
-      width="30em"
+      dismissible
+      dense
+      class="text-left pl-2 mb-2"
     >
       <div class="notification-message">{{ message }}</div>
 
       <v-menu
         v-if="!!details"
-        max-width="26em"
         top
         left
         offset-y
         open-delay="400"
         open-on-hover
-        content-class="pa-0 opacity-1 elevation-12"
+        content-class="pa-0 elevation-12"
       >
-        <v-card :color="type">
+        <v-card :color="type" dense class="lighten-1">
           <v-card-text class="white--text">
             {{ details }}
           </v-card-text>
@@ -37,11 +32,14 @@
               :ripple="false"
               outlined
               tile
-              class="pr-2 lighten-1"
+              dense
+              class="lighten-1"
               v-on="on"
             >
-              <v-icon dense>mdi-cursor-pointer</v-icon>
-              詳細
+              <v-card-text class="px-1 py-0 white--text">
+                <v-icon dense>mdi-cursor-pointer</v-icon>
+                詳細
+              </v-card-text>
             </v-card>
           </v-row>
         </template>
@@ -165,10 +163,11 @@ export default {
 <style scoped lang="sass">
 .notification-message
   white-space: pre-wrap
-  overflow-wrap: break-word
-  width: 380px
+  word-wrap: break-word
+  // NotificationAreaのwidthに合わせて調整する
+  width: 30em
 
 .details-area
-  bottom: -10px
+  bottom: -4px
   position: relative
 </style>
