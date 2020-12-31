@@ -3,6 +3,7 @@ LABEL maintainer "ICTSC"
 
 # CIが面倒くさいのでbuild-essentialなども消さない
 RUN apt-get update -y -qq \
+  && apt-get upgrade -y -qq \
   && apt-get install -y -qq build-essential libpq-dev wget git tzdata \
   && apt-get clean \
   && rm -rf /var/lib/opt/lists/*
