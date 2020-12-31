@@ -54,9 +54,7 @@
         </template>
 
         <template v-slot:footer>
-          <div>
-            ※  同点の場合は満点回答の数で順位に差を付けています
-          </div>
+          <div>※ 同点の場合は満点回答の数で順位に差を付けています</div>
 
           <v-tooltip v-if="isStaff" bottom content-class="hide-on-print">
             <template v-slot:activator="{ on }">
