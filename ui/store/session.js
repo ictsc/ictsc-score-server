@@ -8,6 +8,15 @@ function buildState(response) {
   }
 }
 
+function unexpectedErrorHandler(response) {
+  console.error(response)
+  const requestId = response.headers['x-request-id']
+
+  $nuxt.notifyError({
+    message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${requestId}`,
+  })
+}
+
 export const state = () => ({
   channels: null,
   teamId: null,
@@ -38,7 +47,8 @@ export const actions = {
       case 400:
         return false
       default:
-        throw new Error(res)
+        unexpectedErrorHandler(res)
+        return false
     }
   },
 
@@ -52,7 +62,8 @@ export const actions = {
       case 401:
         return false
       default:
-        throw new Error(res)
+        unexpectedErrorHandler(res)
+        return false
     }
   },
 
@@ -66,7 +77,8 @@ export const actions = {
       case 401:
         return false
       default:
-        throw new Error(res)
+        unexpectedErrorHandler(res)
+        return false
     }
   },
 }
