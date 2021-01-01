@@ -37,7 +37,7 @@ module SessionHelpers
   ## 以降はrspecにextendされてcontextと同じ文脈で使えるようになる
 
   def context_as(team_name, &block)
-    context "when #{team_name}でログイン" do # rubocop:disable RSpec/EmptyExampleGroup
+    context "when #{team_name}でログイン" do
       let(:current_team) { public_send(team_name) }
 
       # このコンテキスト内ではログイン済みとしてクエリを処理する

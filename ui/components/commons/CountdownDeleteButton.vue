@@ -81,15 +81,9 @@ export default {
       tooltip: false,
       dialog: false,
       sending: false,
-      count: 5,
+      count: 3,
       resetTimer: -1,
-      messages: [
-        'やめて! 私のライフはもう0よ!',
-        '死にたくないー',
-        '助けてー',
-        'やめてー',
-        'きゃー',
-      ],
+      messages: ['やめて! 私のライフはもう0よ!', '死にたくないー', 'きゃー'],
     }
   },
   methods: {
