@@ -9,6 +9,7 @@ RSpec::Matchers.define :have_gq_errors do |expected|
     next false if !json.key?('errors') || json['errors'].empty?
 
     if expected.present?
+      # errorsには複数のエラーが入っている可能性がある
       json['errors'].any? {|error| error.dig('extensions', 'code') == expected }
     else
       true
