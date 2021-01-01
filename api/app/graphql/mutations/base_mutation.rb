@@ -18,8 +18,8 @@ module Mutations
 
     def add_errors(*records)
       records.each do |record|
-        record.errors.each do |attr, message|
-          message = "#{record.model_name} #{attr} #{message}"
+        record.errors.each do |error|
+          message = "#{record.model_name} #{error.attribute} #{error.message}"
           self.add_error_message(GraphQL::ExecutionError.new(message))
         end
       end

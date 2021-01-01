@@ -24,14 +24,14 @@ Bundler.require(*Rails.groups)
 module Api
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults '6.0'
+    config.load_defaults 6.1
 
-    config.autoload_paths += %w[lib]
+    config.eager_load_paths << Rails.root.join('lib')
 
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration can go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded after loading
-    # the framework and any gems in your application.
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
 
     # 常にprivate network内で動かすため全てのhostsからのアクセスを許可する
     config.hosts.clear

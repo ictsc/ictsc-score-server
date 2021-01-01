@@ -1,7 +1,6 @@
 FROM ruby:2.7.2-slim
 LABEL maintainer "ICTSC"
 
-# CIが面倒くさいのでbuild-essentialなども消さない
 RUN apt-get update -y -qq \
   && apt-get upgrade -y -qq \
   && apt-get install -y -qq build-essential libpq-dev wget git tzdata \
@@ -23,3 +22,14 @@ ADD Gemfile.lock /usr/src/app
 RUN bundle install --jobs=4
 
 COPY . /usr/src/app
+
+# bundle binstubs にパスを通す
+ENV PATH /usr/src/app/bin:$PATH
+
+# CircleCIとの関係
+# このプロジェクトではお金をかけずにCIを高速化するために、
+# CI上で環境を構築する際にDocker Hubからこのイメージを取得し、
+# 依存gemの差分のみインストールしている。
+#
+# そのためベースイメージを更新した場合やOSのパッケージ構成を変えた場合は、
+# CIの実行前にDocker Hubにpushしておく必要がある。

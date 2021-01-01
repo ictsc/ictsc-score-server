@@ -21,3 +21,11 @@ RUN yarn install
 
 COPY . /usr/src/app/
 RUN yarn run build
+
+# CircleCIとの関係
+# このプロジェクトではお金をかけずにCIを高速化するために、
+# CI上で環境を構築する際にDocker Hubからこのイメージを取得し、
+# 依存npmパッケージの差分のみインストールしている。
+#
+# そのためベースイメージを更新した場合やOSのパッケージ構成を変えた場合は、
+# CIの実行前にDocker Hubにpushしておく必要がある。
