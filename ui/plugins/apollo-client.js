@@ -20,31 +20,40 @@ const errorLink = onError(
     if (graphQLErrors) {
       graphQLErrors.forEach((error) => {
         console.info('[GraphQL error]', error)
-
-        // 未ログインなどを処理する
-        if (error.extensions && error.extensions.code) {
-          switch (error.extensions.code) {
-            case 'UNAUTHORIZED':
-              $nuxt.$router.push('/login')
-              break
-            case 'UNEXPECTED_ERROR':
-              $nuxt.notifyError({
-                message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
-              })
-              break
-            default:
-              // 実装漏れ
-              $nuxt.notifyError({
-                message: `想定外のエラーコードです\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
-              })
-          }
-        }
+        graphQLErrorHandler(error)
       })
     }
 
     // response.errorsがあると、そのメッセージを持った例外を発生させる
   }
 )
+
+function graphQLErrorHandler(error) {
+  // 未ログインなどを処理する
+  if (error.extensions && error.extensions.code) {
+    switch (error.extensions.code) {
+      case 'unauthorized':
+        $nuxt.$router.push('/login')
+        break
+      case 'unexpected_error':
+        $nuxt.notifyError({
+          message: `想定外のエラーが発生しました\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
+        })
+        break
+      default:
+        // APIが返すエラーコードに対応する分岐を実装してない場合
+        $nuxt.notifyError({
+          message: `想定外のエラーコードです\n運営に問い合わせてください\nリクエストID\n${error.extensions.requestId}`,
+        })
+    }
+  } else {
+    // APIでも正常にハンドリングできてない未知のエラー
+    // requestIdも取れない
+    $nuxt.notifyError({
+      message: `想定外のエラーコードです\n運営に問い合わせてください`,
+    })
+  }
+}
 
 const httpLink = createHttpLink({ uri: '/api/graphql' })
 
