@@ -87,7 +87,7 @@ module GraphqlHelpers
   # @param field [String]  ミューテーションの戻り値
   # @param field_with [Hash<String, String, Array<String>>] クエリの戻り値に追加したい関連名(e.g. { 'team' => 'attachments' })
   # @return [nil]
-  def post_mutation(name = self.default_graphql_name, input:, field_with: nil, field: Types::MutationType.get_fields_query(name, with: field_with))
+  def post_mutation(name = self.gen_graphql_name_from_top_description, input:, field_with: nil, field: gen_mutation_field_query(name, with: field_with))
     operation_name = name.camelcase(:upper)
     operation_arguments = Types::MutationType.get_operation_arguments_query(name)
     arguments = Types::MutationType.get_arguments_query(name)
@@ -105,7 +105,28 @@ module GraphqlHelpers
 
   # 最上位のdescribeをGraphQLのクエリ名にして返す
   # @return [String] クエリ名のcamelCase
-  def default_graphql_name
-    self.class.top_level_description.constantize.graphql_name.camelcase(:lower)
+  def gen_graphql_name_from_top_description
+    constant = self.class.top_level_description.constantize
+    constant.graphql_name.camelcase(:lower)
+  end
+
+  # mutation_nameに対応するMutationのフィールドのクエリ文字列を返す
+  # @param mutation_name [String] ミューテーション名(camelCase)
+  def gen_mutation_field_query(mutation_name, with: nil)
+    mutation = Types::MutationType
+      .fields
+      .fetch(mutation_name)
+      .mutation
+
+    mutation.fields.map {|field_name, field|
+      if field.type.kind.composite?
+        # TODO: Types::* のモンキーパッチに依存しているのでどうにかしたい
+        child_fields = field.type.to_fields_query(with: with&.fetch(field_name, nil))
+        "#{field_name} { #{child_fields} }"
+      else
+        field_name
+      end
+    }
+      .join("\n")
   end
 end
