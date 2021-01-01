@@ -11,7 +11,7 @@ module Mutations
     argument :color,        String,                 required: true
     argument :secret_text,  String,                 required: true
     argument :name,         String,                 required: true
-    argument :password,     String,                 required: false
+    argument :password,     String,                 required: false, default_value: nil
 
     # 通知無効
     argument :silent,       Boolean,                required: false, default_value: false
