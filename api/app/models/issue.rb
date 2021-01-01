@@ -43,9 +43,7 @@ class Issue < ApplicationRecord
     case status
     when 'unsolved'
       self.status = 'in_progress' if team.staff?
-    when 'in_progress'
-      self.status = 'unsolved' if team.player?
-    when 'solved'
+    when 'in_progress', 'solved'
       self.status = 'unsolved' if team.player?
     else
       raise UnhandledIssueStatus, status

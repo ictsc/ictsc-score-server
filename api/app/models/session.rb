@@ -35,7 +35,9 @@ class Session
     end
 
     def destroy_by(team_id:)
-      keys = where(team_id: team_id).map(&:id).map(&PREFIX.method(:+))
+      keys = where(team_id: team_id)
+        .map(&:id)
+        .map {|id| "#{PREFIX}#{id}" }
       redis.del(keys) if keys.present?
     end
 
@@ -62,7 +64,7 @@ class Session
         latest_ip: value['latest_ip'],
         created_at: value['created_at'],
         updated_at: value['updated_at'],
-        id: key.sub(/^#{PREFIX}/, '')
+        id: key.sub(/^#{PREFIX}/o, '')
       )
     end
 

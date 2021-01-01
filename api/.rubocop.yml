@@ -140,3 +140,7 @@ Lint/StructNewOverride:
   Enabled: true
 Style/StringConcatenation:
   Enabled: false
+Lint/DuplicateBranch:
+  Exclude:
+    - 'app/graphql/acl.rb'
+    - 'app/models/concerns/readable.rb'

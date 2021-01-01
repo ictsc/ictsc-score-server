@@ -35,7 +35,7 @@ RSpec.describe 'GraphQL', type: :request do
   end
 
   context 'when not logged-in' do
-    let(:current_team) {}
+    let(:current_team) { nil }
 
     it 'fail in sending GraphQL query' do
       post_query 'me'
