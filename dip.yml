@@ -12,64 +12,64 @@ interaction:
     service: api
     command: /bin/bash
     compose:
-        method: exec
+      method: exec
 
   ui-sh:
     service: ui
     command: /bin/sh
     compose:
-        method: exec
+      method: exec
 
   bundle:
     service: api
     command: bundle
     compose:
-        method: exec
+      method: exec
 
   be:
     service: api
     command: bundle exec
     compose:
-        method: exec
+      method: exec
 
   rspec:
     service: api
     command: bundle exec rspec
     compose:
-        method: exec
+      method: exec
 
   document:
     service: api
     command: bundle exec rspec --format=documentation
     compose:
-        method: exec
+      method: exec
 
   cop:
     service: api
     command: bundle exec rubocop
     compose:
-        method: exec
+      method: exec
 
   rails:
     service: api
     command: bundle exec rails
     compose:
-        method: exec
+      method: exec
 
   c:
     service: api
     command: bundle exec rails console
     compose:
-        method: exec
+      method: exec
 
   yarn:
     service: ui
     command: yarn
     compose:
-        method: exec
+      method: exec
 
   yl:
     service: ui
     command: yarn lint
     compose:
-        method: exec
+      method: exec
