@@ -15,6 +15,7 @@ module Mutations
       self.context.current_team!
     end
 
+    # Mutationのインスタンスから名前にアクセスするショートハンド
     def graphql_name
       self.class.graphql_name
     end
