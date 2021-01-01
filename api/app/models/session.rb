@@ -2,6 +2,8 @@
 
 class Session
   PREFIX = 'sessions:'
+  FIELDS = %i[id team_id latest_ip created_at updated_at].freeze
+  Record = Struct.new(*FIELDS, keyword_init: true)
 
   class << self
     def keys
@@ -15,11 +17,11 @@ class Session
     end
 
     def find(id)
-      get("#{PREFIX}#{id}")
+      get(id_to_key(id))
     end
 
     def find_by(id:)
-      get("#{PREFIX}#{id}")
+      get(id_to_key(id))
     end
 
     def where(team_id:)
@@ -31,13 +33,13 @@ class Session
     end
 
     def destroy(id)
-      redis.del("#{PREFIX}#{id}")
+      redis.del(id_to_key(id))
     end
 
     def destroy_by(team_id:)
       keys = where(team_id: team_id)
-        .map(&:id)
-        .map {|id| "#{PREFIX}#{id}" }
+        .map {|record| id_to_key(record.id) }
+
       redis.del(keys) if keys.present?
     end
 
@@ -51,6 +53,11 @@ class Session
 
     private
 
+    # idをredisのキーに変換する
+    def id_to_key(id)
+      "#{PREFIX}#{id}"
+    end
+
     def get(key)
       raw_value = redis.get(key)
       return nil unless raw_value
@@ -59,12 +66,9 @@ class Session
       # ログアウトさせられたユーザーがその状態でアクセスすると{}が登録される
       return nil if value.blank?
 
-      OpenStruct.new(
-        team_id: value['team_id'],
-        latest_ip: value['latest_ip'],
-        created_at: value['created_at'],
-        updated_at: value['updated_at'],
-        id: key.sub(/^#{PREFIX}/o, '')
+      Record.new(
+        id: key.delete_prefix(PREFIX),
+        **value.slice(*%w[team_id latest_ip created_at updated_at])
       )
     end
 
