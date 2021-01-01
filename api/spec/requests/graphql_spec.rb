@@ -39,7 +39,7 @@ RSpec.describe 'GraphQL', type: :request do
 
     it 'fail in sending GraphQL query' do
       post_query 'me'
-      expect(response_json).to have_gq_errors('UNAUTHORIZED')
+      expect(response_json).to have_gq_errors('unauthorized')
     end
   end
 end

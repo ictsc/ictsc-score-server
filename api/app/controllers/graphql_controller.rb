@@ -4,11 +4,11 @@ class GraphqlController < ApplicationController
   # UI側でcodeを見てエラーハンドリングする
   ERRORS = {
     unauthorized: {
-      code: 'UNAUTHORIZED',
+      code: 'unauthorized',
       message: 'require login'
     },
     unexpected_error: {
-      code: 'UNEXPECTED_ERROR',
+      code: 'unexpected_error',
       message: 'unexpected error caused'
     }
   }.freeze
