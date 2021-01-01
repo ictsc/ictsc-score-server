@@ -50,8 +50,6 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rspec', require: false
-  # 参考程度に使う
-  gem 'rails_best_practices', require: false
 end
 
 group :development do
