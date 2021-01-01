@@ -127,11 +127,6 @@ jobs:
       #  コンテナ内のworking_directoryに対象のブランチをコピーする
       - checkout
 
-      # シンボリックリンクが正しく扱われないバグのワークアラウンド
-      - run:
-          name: Repair symbolic link
-          command: cp --no-dereference /usr/src/app/node_modules /root/project/ui/
-
       - run:
           name: install dependencies
           working_directory: /root/project/ui

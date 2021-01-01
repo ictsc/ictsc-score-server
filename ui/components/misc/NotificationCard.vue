@@ -1,65 +1,63 @@
 <template>
-  <div
-    style="width: min-content"
+  <v-alert
+    v-model="visible"
+    :type="type"
+    elevation="6"
+    dismissible
+    dense
+    class="text-left pl-2 mb-2"
     @mouseenter="onMouse = true"
     @mouseleave="onMouse = false"
   >
-    <v-alert
-      v-model="visible"
-      :type="type"
-      dismissible
-      elevation="6"
-      class="ma-0 text-left"
-      width="30em"
+    <div class="notification-message">{{ message }}</div>
+
+    <v-menu
+      v-if="!!details"
+      top
+      left
+      offset-y
+      open-delay="400"
+      open-on-hover
+      content-class="pa-0 elevation-12"
     >
-      <div class="notification-message">{{ message }}</div>
+      <v-card :color="type" dense class="lighten-1">
+        <v-card-text class="white--text">
+          {{ details }}
+        </v-card-text>
+      </v-card>
 
-      <v-menu
-        v-if="!!details"
-        max-width="26em"
-        top
-        left
-        offset-y
-        open-delay="400"
-        open-on-hover
-        content-class="pa-0 opacity-1 elevation-12"
-      >
-        <v-card :color="type">
-          <v-card-text class="white--text">
-            {{ details }}
-          </v-card-text>
-        </v-card>
-
-        <template v-slot:activator="{ on }">
-          <v-row justify="end" no-gutters class="details-area">
-            <v-card
-              :color="type"
-              :ripple="false"
-              outlined
-              tile
-              class="pr-2 lighten-1"
-              v-on="on"
-            >
+      <template v-slot:activator="{ on }">
+        <v-row justify="end" no-gutters class="details-area">
+          <v-card
+            :color="type"
+            :ripple="false"
+            outlined
+            tile
+            dense
+            class="lighten-1"
+            v-on="on"
+          >
+            <v-card-text class="px-1 py-0 white--text">
               <v-icon dense>mdi-cursor-pointer</v-icon>
               詳細
-            </v-card>
-          </v-row>
-        </template>
-      </v-menu>
+            </v-card-text>
+          </v-card>
+        </v-row>
+      </template>
+    </v-menu>
 
-      <v-progress-linear
-        v-show="onMouse === false"
-        :active="timeout !== 0"
-        :value="progressValue"
-        :color="progressColor"
-        background-opacity="0"
-        absolute
-        bottom
-        rounded
-      >
-      </v-progress-linear>
-    </v-alert>
-  </div>
+    <v-progress-linear
+      v-show="onMouse === false"
+      :active="timeout !== 0"
+      :value="progressValue"
+      :color="progressColor"
+      background-opacity="0"
+      absolute
+      bottom
+      rounded
+    >
+    </v-progress-linear>
+  </v-alert>
 </template>
 <script>
 import { mapGetters, mapMutations } from 'vuex'
@@ -165,10 +163,11 @@ export default {
 <style scoped lang="sass">
 .notification-message
   white-space: pre-wrap
-  overflow-wrap: break-word
-  width: 380px
+  word-wrap: break-word
+  // NotificationAreaのwidthに合わせて調整する
+  width: 30em
 
 .details-area
-  bottom: -10px
+  bottom: -4px
   position: relative
 </style>
