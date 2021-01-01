@@ -23,6 +23,9 @@ RUN bundle install --jobs=4
 
 COPY . /usr/src/app
 
+# bundle binstubs にパスを通す
+ENV PATH /usr/src/app/bin:$PATH
+
 # CircleCIとの関係
 # このプロジェクトではお金をかけずにCIを高速化するために、
 # CI上で環境を構築する際にDocker Hubからこのイメージを取得し、

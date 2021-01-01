@@ -34,31 +34,31 @@ interaction:
 
   rspec:
     service: api
-    command: bundle exec rspec
+    command: rspec
     compose:
       method: exec
 
   document:
     service: api
-    command: bundle exec rspec --format=documentation
+    command: rspec --format=documentation
     compose:
       method: exec
 
   cop:
     service: api
-    command: bundle exec rubocop
+    command: rubocop
     compose:
       method: exec
 
   rails:
     service: api
-    command: bundle exec rails
+    command: rails
     compose:
       method: exec
 
   c:
     service: api
-    command: bundle exec rails console
+    command: rails console
     compose:
       method: exec
 
