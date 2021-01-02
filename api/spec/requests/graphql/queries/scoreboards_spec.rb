@@ -36,7 +36,7 @@ RSpec.describe 'scoreboards', type: :request do
       fields = GraphqlQueryBuilder.fields_to_query(fields: Types::ScoreboardType.fields)
       it "#{fields}を取得可能" do
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(2)
         expect(response_gql.first.keys).to match_array(scoreboard_non_composite_field_keys)
       end
@@ -47,7 +47,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       it 'teamを取得可能' do
         post_query(nest_fields: ['team'])
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(2)
         expect(response_gql.first).to have_key('team')
         expect(response_gql.first.fetch('team').keys).to match_array(team_non_composite_field_keys)
@@ -71,7 +71,7 @@ RSpec.describe 'scoreboards', type: :request do
     shared_examples 'レコード数0' do
       it 'レコード数0' do
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(0)
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(Team.player_without_team99.count).to eq(2)
 
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(2)
       end
     end
@@ -101,7 +101,7 @@ RSpec.describe 'scoreboards', type: :request do
     shared_examples 'レコード数0' do
       it 'レコード数0' do
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(0)
       end
     end
@@ -111,7 +111,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(Team.player_without_team99.count).to eq(2)
 
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(2)
       end
     end
@@ -134,7 +134,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(Score.count).to eq(1)
 
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(0)
       end
     end
@@ -145,7 +145,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(Score.count).to eq(1)
 
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(2)
       end
     end
@@ -170,7 +170,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(closed_problem.body.readable?(team: player1)).to eq(false)
 
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(2)
         expect(response_gql).to match_array([
                                               include({ 'rank' => 1, 'teamId' => player1.id, 'score' => closed_problem.body.perfect_point }),
@@ -197,7 +197,7 @@ RSpec.describe 'scoreboards', type: :request do
     shared_examples 'not team99' do
       it 'team99を除いたランキングが見える,player2は2位' do
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(2)
         expect(response_gql).to match_array([
                                               include({ 'rank' => 1, 'teamId' => player1.id }),
@@ -209,7 +209,7 @@ RSpec.describe 'scoreboards', type: :request do
     shared_examples 'team99' do
       it 'team99を含めたランキングが見える,player2は3位' do
         post_query
-        expect(response_json).not_to have_gq_errors
+        expect(response_json).not_to have_gql_errors
         expect(response_gql.size).to eq(3)
         expect(response_gql).to match_array([
                                               include({ 'rank' => 1, 'teamId' => player1.id }),
@@ -241,7 +241,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(1)
 
           post_query(nest_fields: ['team'])
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'rank' => 1, 'team' => include({ 'beginner' => true }) }),
@@ -256,7 +256,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(1)
 
           post_query(nest_fields: ['team'])
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(1)
           expect(response_gql.first).to include({ 'rank' => 1, 'team' => include({ 'id' => current_team.id, 'beginner' => current_team.beginner }) })
         end
@@ -286,7 +286,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(3)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'rank' => 1, 'teamId' => player1.id }),
@@ -311,7 +311,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(3)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'rank' => 1, 'teamId' => player1.id }),
@@ -361,7 +361,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(5)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(6)
           expect(response_gql).to match_array([
                                                 include({ 'rank' => 1, 'teamId' => player1.id }),
@@ -385,7 +385,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'all' do
         it '全チーム0点&1位' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to all(include({ 'rank' => 1, 'score' => 0 }))
         end
@@ -407,7 +407,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(0)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to all(include({ 'rank' => 1, 'score' => 0 }))
         end
@@ -430,7 +430,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Team.player_without_team99.count).to eq(2)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'teamId' => player1.id, 'rank' => 1, 'score' => answer.score.point }),
@@ -457,7 +457,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(1)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'teamId' => player1.id, 'rank' => 1, 'score' => answer.score.point }),
@@ -471,7 +471,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(1)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to all(include({ 'rank' => 1, 'score' => 0 }))
         end
@@ -506,7 +506,7 @@ RSpec.describe 'scoreboards', type: :request do
               expect(answer2.created_at).to be < answer3.created_at
 
               post_query
-              expect(response_json).not_to have_gq_errors
+              expect(response_json).not_to have_gql_errors
               expect(response_gql.size).to eq(2)
               expect(response_gql).to match_array([
                                                     include({ 'teamId' => player1.id, 'rank' => 1, 'score' => answer1.score.point }),
@@ -540,7 +540,7 @@ RSpec.describe 'scoreboards', type: :request do
               expect(answer2.created_at).to be < answer3.created_at
 
               post_query
-              expect(response_json).not_to have_gq_errors
+              expect(response_json).not_to have_gql_errors
               expect(response_gql.size).to eq(2)
               expect(response_gql).to match_array([
                                                     include({ 'teamId' => player1.id, 'rank' => 1, 'score' => answer3.score.point }),
@@ -557,7 +557,7 @@ RSpec.describe 'scoreboards', type: :request do
               expect(answer2.created_at).to be < answer3.created_at
 
               post_query
-              expect(response_json).not_to have_gq_errors
+              expect(response_json).not_to have_gql_errors
               expect(response_gql.size).to eq(2)
               expect(response_gql).to match_array([
                                                     include({ 'teamId' => player1.id, 'rank' => 1, 'score' => answer1.score.point }),
@@ -598,7 +598,7 @@ RSpec.describe 'scoreboards', type: :request do
             expect(answer2.created_at).to be < answer3.created_at
 
             post_query
-            expect(response_json).not_to have_gq_errors
+            expect(response_json).not_to have_gql_errors
             expect(response_gql.size).to eq(2)
             expect(response_gql).to match_array([
                                                   include({ 'teamId' => player1.id, 'rank' => 1, 'score' => answer2.score.point }),
@@ -635,7 +635,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Score.count).to eq(3)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'teamId' => player1.id, 'rank' => 1, 'score' => answer11.score.point + answer12.score.point }),
@@ -668,7 +668,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'all' do
         it '各チームの合計ペナルティ数分得点が下がる' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'teamId' => player1.id, 'rank' => 1, 'score' => -10 }),
@@ -691,7 +691,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'all' do
         it 'ペナルティがあっても得点が下がらない' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
                                                 include({ 'teamId' => player1.id, 'rank' => 1, 'score' => 0 }),
@@ -723,7 +723,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Team.player_without_team99.count).to eq(2)
 
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
         end
       end
@@ -731,7 +731,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'player' do
         it 'スコアボードは見えない' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(0)
         end
       end
@@ -749,7 +749,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'not player' do
         it '全て見える' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(2)
         end
       end
@@ -757,7 +757,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'player' do
         it '自分のみ' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(1)
         end
       end
@@ -790,7 +790,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'not player' do
         it '全て見える' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(5)
         end
       end
@@ -798,7 +798,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'player1' do
         it '自分と上位Nチーム' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(3)
         end
       end
@@ -806,7 +806,7 @@ RSpec.describe 'scoreboards', type: :request do
       shared_examples 'player2' do
         it '上位Nチーム(自分含む)' do
           post_query
-          expect(response_json).not_to have_gq_errors
+          expect(response_json).not_to have_gql_errors
           expect(response_gql.size).to eq(4)
         end
       end
