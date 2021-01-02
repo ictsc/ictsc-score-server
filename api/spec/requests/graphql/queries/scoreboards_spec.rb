@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Scoreboard, type: :request do
+RSpec.describe 'scoreboards', type: :request do
   # クエリのレスポンスでteamの情報も取得する際に利用する
 
   # テストの前提とする設定
