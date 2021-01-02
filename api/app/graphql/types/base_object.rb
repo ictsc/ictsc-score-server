@@ -11,7 +11,10 @@ module Types
       self.context.current_team!
     end
 
+    # オブジェクト同士の関係を構築するメソッド郡
     class << self
+      private
+
       # 'AnswerType' を Answerクラスにする
       def model_by_query_name
         self.graphql_name.constantize
@@ -67,57 +70,6 @@ module Types
             end
           end
         end
-      end
-
-      def get_type_class(type)
-        if type.non_null? || type.list?
-          self.get_type_class(type.of_type)
-        else
-          type
-        end
-      end
-
-      # scalarやenumなど値としてそのまま使えるキーを返す
-      def non_composite_field_names
-        self.fields.map {|key, field|
-          type = self.get_type_class(field.type)
-          type.kind.composite? ? nil : key
-        }
-          .compact
-      end
-
-      # フィールド一覧をクエリとして使える形式で返す
-      def to_fields_query(with: nil)
-        base_query = self.non_composite_field_names.join(' ')
-        relative_query = self.get_relative_fields_query(*with)
-        relative_query.blank? ? base_query : "#{base_query}\n#{relative_query}"
-      end
-
-      # have_one, have_many, belongs_to関係にあるフィールどをクエリとして使える形で返す
-      def get_relative_fields_query(*names)
-        names
-          .map {|name| "#{name} { #{self.fields.fetch(name).type.to_fields_query} }" }
-          .join("\n")
-      end
-
-      def get_operation_arguments_query(name)
-        query = self.fields
-          .fetch(name)
-          .arguments
-          .map {|(key, arg)| "$#{key}: #{arg.type.graphql_definition}" }
-          .join(', ')
-
-        query.empty? ? '' : "(#{query})"
-      end
-
-      def get_arguments_query(name)
-        query = self.fields
-          .fetch(name)
-          .arguments
-          .map {|(key, _arg)| "#{key}: $#{key}" }
-          .join(', ')
-
-        query.empty? ? '' : "(#{query})"
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Mutations::ApplyProblemEnvironment, type: :request do
+RSpec.describe 'applyProblemEnvironment', type: :request do
   context_as_staff do
     let(:problem) { create(:problem) }
     let(:team) { create(:team, :player) }

@@ -10,7 +10,7 @@ RSpec.describe 'GraphQL', type: :request do
       post sessions_url, params: { name: current_team.name, password: current_team.name }, as: :json
       expect(response).to have_http_status(:ok)
 
-      post_query 'me'
+      post_query(name: 'me')
       expect(response_json).not_to have_gq_errors
       expect(response_gql.fetch('id')).to eq(current_team.id)
     end
@@ -38,7 +38,7 @@ RSpec.describe 'GraphQL', type: :request do
     let(:current_team) { nil }
 
     it "response contain 'unauthorized' error_code" do
-      post_query 'me'
+      post_query(name: 'me')
       expect(response_json).to have_gq_errors('unauthorized')
     end
   end
@@ -51,7 +51,7 @@ RSpec.describe 'GraphQL', type: :request do
 
     context_as_player1 do
       it "response contain 'unexpected_error' error_code" do
-        post_query 'me'
+        post_query(name: 'me')
         expect(response_json).to have_gq_errors('unexpected_error')
       end
     end

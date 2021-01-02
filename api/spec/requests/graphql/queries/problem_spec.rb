@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
-# テストするのは1段目のネストのみ
-
 RSpec.describe 'problems', type: :request do
   context_as_staff do
     let(:problem) { create(:problem) }
 
-    it 'get problems' do
+    it 'get problem' do
       # TODO: impl
-      post_query
+      post_query(variables: { id: problem.id })
     end
   end
 

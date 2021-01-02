@@ -117,12 +117,5 @@ module Types
     def report_cards
       ReportCard.readables(team: self.current_team!)
     end
-
-    class << self
-      def get_fields_query(name, with: nil)
-        type = self.fields.fetch(name).type
-        self.get_type_class(type).to_fields_query(with: with)
-      end
-    end
   end
 end

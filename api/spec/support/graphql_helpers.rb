@@ -17,12 +17,6 @@ RSpec::Matchers.define :have_gq_errors do |expected|
   end
 end
 
-# TODO: delete
-# post_graphql '{ me { id } }'
-# "operationName"=> "Problem"
-# "variables"=> {"id"=>"3eb22c84-8376-476c-aeac-2ac7c3249259"}
-# "query"=> "query Problem($id: ID!) {\n  problem(id: $id) { }
-
 module GraphqlHelpers
   # レスポンスからフィールドの部分のみ抜き出す
   # 例: query { me { id } } を投げた場合
@@ -57,76 +51,36 @@ module GraphqlHelpers
   end
 
   # POSTリクエストでクエリを投げる
+  # 戻り値はnest_fieldsを指定すれば2層目まで指定可能
   #
   # @param name [String] クエリ名(camelCase)
   # @param variables [Hash] クエリの引数
-  # @param field [String]  クエリの戻り値
-  # @param field_with [String, Array<String>] クエリの戻り値に追加したい関連名
+  # @param field [String] クエリの戻り値を自由に設定したい場合のみ指定する
+  # @param nest_fields [Array<String>] クエリの戻り値に追加する関連名(composite field names)
   # @return [nil]
-  def post_query(name, variables: nil, field_with: nil, field: Types::QueryType.get_fields_query(name, with: field_with))
+  def post_query(name: nil, variables: nil, field: nil, nest_fields: [])
+    name ||= self.class.top_level_description
+    field ||= GraphqlQueryBuilder.build_query_field_query(name: name, nest_fields: nest_fields)
     operation_name = name.camelcase(:upper)
-    operation_arguments = Types::QueryType.get_operation_arguments_query(name)
-    arguments = Types::QueryType.get_arguments_query(name)
-
-    query = <<~QUERY
-      query #{operation_name}#{operation_arguments} {
-        #{name}#{arguments} {
-          #{field}
-        }
-      }
-    QUERY
+    query = GraphqlQueryBuilder.build_query(name: name, field: field, operation_name: operation_name)
 
     post_graphql(query, variables: variables, operation_name: operation_name)
   end
 
   # POSTリクエストでミューテーションを投げる
-  # helperとしてincludeされるので呼び出し時のコンテキストを利用できる
+  # 戻り値はnest_fieldsを指定すれば2層目まで指定可能
   #
   # @param name [String] ミューテーション名(camelCase)
   # @param input [Hash] ミューテーションの引数
-  # @param field [String]  ミューテーションの戻り値
-  # @param field_with [Hash<String, String, Array<String>>] クエリの戻り値に追加したい関連名(e.g. { 'team' => 'attachments' })
+  # @param field [String] ミューテーションの戻り値を自由に設定したい場合のみ指定する
+  # @param nest_fields [Hash{String => Array<String>}] クエリの戻り値に追加したい関連名の組み合わせ(e.g. { 'team' => ['attachments'] })
   # @return [nil]
-  def post_mutation(name = self.gen_graphql_name_from_top_description, input:, field_with: nil, field: gen_mutation_field_query(name, with: field_with))
+  def post_mutation(input:, name: nil, field: nil, nest_fields: {})
+    name ||= self.class.top_level_description
+    field ||= GraphqlQueryBuilder.build_mutation_field_query(name: name, nest_fields: nest_fields)
     operation_name = name.camelcase(:upper)
-    operation_arguments = Types::MutationType.get_operation_arguments_query(name)
-    arguments = Types::MutationType.get_arguments_query(name)
-
-    query = <<~QUERY
-      mutation #{operation_name}#{operation_arguments} {
-        #{name}#{arguments} {
-          #{field}
-        }
-      }
-    QUERY
+    query = GraphqlQueryBuilder.build_mutation(name: name, field: field, operation_name: operation_name)
 
     post_graphql(query, variables: { input: input }, operation_name: operation_name)
-  end
-
-  # 最上位のdescribeをGraphQLのクエリ名にして返す
-  # @return [String] クエリ名のcamelCase
-  def gen_graphql_name_from_top_description
-    constant = self.class.top_level_description.constantize
-    constant.graphql_name.camelcase(:lower)
-  end
-
-  # mutation_nameに対応するMutationのフィールドのクエリ文字列を返す
-  # @param mutation_name [String] ミューテーション名(camelCase)
-  def gen_mutation_field_query(mutation_name, with: nil)
-    mutation = Types::MutationType
-      .fields
-      .fetch(mutation_name)
-      .mutation
-
-    mutation.fields.map {|field_name, field|
-      if field.type.kind.composite?
-        # TODO: Types::* のモンキーパッチに依存しているのでどうにかしたい
-        child_fields = field.type.to_fields_query(with: with&.fetch(field_name, nil))
-        "#{field_name} { #{child_fields} }"
-      else
-        field_name
-      end
-    }
-      .join("\n")
   end
 end

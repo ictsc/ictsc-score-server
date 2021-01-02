@@ -31,21 +31,26 @@ RSpec.describe 'scoreboards', type: :request do
 
   describe 'クエリの戻り値の仕様' do
     shared_examples 'basic' do
-      it "#{Types::ScoreboardType.to_fields_query}を取得可能" do
-        post_query 'scoreboards'
+      let!(:scoreboard_non_composite_field_keys) { GraphqlQueryBuilder.reject_composite_fields(Types::ScoreboardType.fields).keys }
+
+      fields = GraphqlQueryBuilder.fields_to_query(fields: Types::ScoreboardType.fields)
+      it "#{fields}を取得可能" do
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(2)
-        expect(response_gql.first.keys).to match_array(Types::ScoreboardType.non_composite_field_names)
+        expect(response_gql.first.keys).to match_array(scoreboard_non_composite_field_keys)
       end
     end
 
     shared_examples 'with team' do
+      let!(:team_non_composite_field_keys) { GraphqlQueryBuilder.reject_composite_fields(Types::TeamType.fields).keys }
+
       it 'teamを取得可能' do
-        post_query 'scoreboards', field_with: 'team'
+        post_query(nest_fields: ['team'])
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(2)
         expect(response_gql.first).to have_key('team')
-        expect(response_gql.first.fetch('team').keys).to match_array(Types::TeamType.non_composite_field_names)
+        expect(response_gql.first.fetch('team').keys).to match_array(team_non_composite_field_keys)
       end
     end
 
@@ -65,7 +70,7 @@ RSpec.describe 'scoreboards', type: :request do
 
     shared_examples 'レコード数0' do
       it 'レコード数0' do
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(0)
       end
@@ -75,7 +80,7 @@ RSpec.describe 'scoreboards', type: :request do
       it 'レコード数2' do
         expect(Team.player_without_team99.count).to eq(2)
 
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(2)
       end
@@ -95,7 +100,7 @@ RSpec.describe 'scoreboards', type: :request do
 
     shared_examples 'レコード数0' do
       it 'レコード数0' do
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(0)
       end
@@ -105,7 +110,7 @@ RSpec.describe 'scoreboards', type: :request do
       it 'レコード数2' do
         expect(Team.player_without_team99.count).to eq(2)
 
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(2)
       end
@@ -128,7 +133,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(Team.player_without_team99.count).to eq(2)
         expect(Score.count).to eq(1)
 
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(0)
       end
@@ -139,7 +144,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(Team.player_without_team99.count).to eq(2)
         expect(Score.count).to eq(1)
 
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(2)
       end
@@ -164,7 +169,7 @@ RSpec.describe 'scoreboards', type: :request do
         expect(Config.competition?).to eq(true)
         expect(closed_problem.body.readable?(team: player1)).to eq(false)
 
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(2)
         expect(response_gql).to match_array([
@@ -191,7 +196,7 @@ RSpec.describe 'scoreboards', type: :request do
 
     shared_examples 'not team99' do
       it 'team99を除いたランキングが見える,player2は2位' do
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(2)
         expect(response_gql).to match_array([
@@ -203,7 +208,7 @@ RSpec.describe 'scoreboards', type: :request do
 
     shared_examples 'team99' do
       it 'team99を含めたランキングが見える,player2は3位' do
-        post_query 'scoreboards'
+        post_query
         expect(response_json).not_to have_gq_errors
         expect(response_gql.size).to eq(3)
         expect(response_gql).to match_array([
@@ -235,7 +240,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(player1.beginner).not_to eq(player2.beginner)
           expect(Score.count).to eq(1)
 
-          post_query 'scoreboards', field_with: 'team'
+          post_query(nest_fields: ['team'])
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -250,7 +255,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(player1.beginner).not_to eq(player2.beginner)
           expect(Score.count).to eq(1)
 
-          post_query 'scoreboards', field_with: 'team'
+          post_query(nest_fields: ['team'])
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(1)
           expect(response_gql.first).to include({ 'rank' => 1, 'team' => include({ 'id' => current_team.id, 'beginner' => current_team.beginner }) })
@@ -280,7 +285,7 @@ RSpec.describe 'scoreboards', type: :request do
         it '満点問題数を考慮する' do
           expect(Score.count).to eq(3)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -305,7 +310,7 @@ RSpec.describe 'scoreboards', type: :request do
         it '同一問題の満点数は考慮しない' do
           expect(Score.count).to eq(3)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -355,7 +360,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Team.player_without_team99.count).to eq(6)
           expect(Score.count).to eq(5)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(6)
           expect(response_gql).to match_array([
@@ -379,7 +384,7 @@ RSpec.describe 'scoreboards', type: :request do
     context 'when 無解答' do
       shared_examples 'all' do
         it '全チーム0点&1位' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to all(include({ 'rank' => 1, 'score' => 0 }))
@@ -401,7 +406,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(Answer.count).to eq(1)
           expect(Score.count).to eq(0)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to all(include({ 'rank' => 1, 'score' => 0 }))
@@ -424,7 +429,7 @@ RSpec.describe 'scoreboards', type: :request do
         it 'player1の順位とスコアが上昇' do
           expect(Team.player_without_team99.count).to eq(2)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -451,7 +456,7 @@ RSpec.describe 'scoreboards', type: :request do
         it 'スコアに反映' do
           expect(Score.count).to eq(1)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -465,7 +470,7 @@ RSpec.describe 'scoreboards', type: :request do
         it 'スコアに未反映' do
           expect(Score.count).to eq(1)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to all(include({ 'rank' => 1, 'score' => 0 }))
@@ -500,7 +505,7 @@ RSpec.describe 'scoreboards', type: :request do
               expect(answer1.created_at).to be < answer2.created_at
               expect(answer2.created_at).to be < answer3.created_at
 
-              post_query 'scoreboards'
+              post_query
               expect(response_json).not_to have_gq_errors
               expect(response_gql.size).to eq(2)
               expect(response_gql).to match_array([
@@ -534,7 +539,7 @@ RSpec.describe 'scoreboards', type: :request do
               expect(answer1.created_at).to be < answer2.created_at
               expect(answer2.created_at).to be < answer3.created_at
 
-              post_query 'scoreboards'
+              post_query
               expect(response_json).not_to have_gq_errors
               expect(response_gql.size).to eq(2)
               expect(response_gql).to match_array([
@@ -551,7 +556,7 @@ RSpec.describe 'scoreboards', type: :request do
               expect(answer1.created_at).to be < answer2.created_at
               expect(answer2.created_at).to be < answer3.created_at
 
-              post_query 'scoreboards'
+              post_query
               expect(response_json).not_to have_gq_errors
               expect(response_gql.size).to eq(2)
               expect(response_gql).to match_array([
@@ -592,7 +597,7 @@ RSpec.describe 'scoreboards', type: :request do
             expect(answer1.created_at).to be < answer2.created_at
             expect(answer2.created_at).to be < answer3.created_at
 
-            post_query 'scoreboards'
+            post_query
             expect(response_json).not_to have_gq_errors
             expect(response_gql.size).to eq(2)
             expect(response_gql).to match_array([
@@ -629,7 +634,7 @@ RSpec.describe 'scoreboards', type: :request do
           expect(problem2.answers.count).to eq(1)
           expect(Score.count).to eq(3)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -662,7 +667,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'all' do
         it '各チームの合計ペナルティ数分得点が下がる' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -685,7 +690,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'all' do
         it 'ペナルティがあっても得点が下がらない' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
           expect(response_gql).to match_array([
@@ -717,7 +722,7 @@ RSpec.describe 'scoreboards', type: :request do
         it 'スコアボードが見える' do
           expect(Team.player_without_team99.count).to eq(2)
 
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
         end
@@ -725,7 +730,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'player' do
         it 'スコアボードは見えない' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(0)
         end
@@ -743,7 +748,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'not player' do
         it '全て見える' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(2)
         end
@@ -751,7 +756,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'player' do
         it '自分のみ' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(1)
         end
@@ -784,7 +789,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'not player' do
         it '全て見える' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(5)
         end
@@ -792,7 +797,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'player1' do
         it '自分と上位Nチーム' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(3)
         end
@@ -800,7 +805,7 @@ RSpec.describe 'scoreboards', type: :request do
 
       shared_examples 'player2' do
         it '上位Nチーム(自分含む)' do
-          post_query 'scoreboards'
+          post_query
           expect(response_json).not_to have_gq_errors
           expect(response_gql.size).to eq(4)
         end
