@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Mutations::ApplyProblemEnvironment, type: :request do
+RSpec.describe 'applyProblemEnvironment', type: :request do
   context_as_staff do
     let(:problem) { create(:problem) }
     let(:team) { create(:team, :player) }
@@ -24,7 +24,7 @@ RSpec.describe Mutations::ApplyProblemEnvironment, type: :request do
 
     it 'send problem env' do
       post_mutation(input: input)
-      expect(response_json).not_to have_gq_errors
+      expect(response_json).not_to have_gql_errors
 
       # TODO: dataを確認
     end

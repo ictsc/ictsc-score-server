@@ -10,8 +10,8 @@ RSpec.describe 'GraphQL', type: :request do
       post sessions_url, params: { name: current_team.name, password: current_team.name }, as: :json
       expect(response).to have_http_status(:ok)
 
-      post_query 'me'
-      expect(response_json).not_to have_gq_errors
+      post_query(name: 'me')
+      expect(response_json).not_to have_gql_errors
       expect(response_gql.fetch('id')).to eq(current_team.id)
     end
   end
@@ -37,9 +37,23 @@ RSpec.describe 'GraphQL', type: :request do
   context 'when not logged-in' do
     let(:current_team) { nil }
 
-    it 'fail in sending GraphQL query' do
-      post_query 'me'
-      expect(response_json).to have_gq_errors('unauthorized')
+    it "response contain 'unauthorized' error_code" do
+      post_query(name: 'me')
+      expect(response_json).to have_gql_errors('unauthorized')
+    end
+  end
+
+  context 'when raise unexpected error' do
+    before(:each) do
+      # 適当にStandardErrorを発生させる
+      allow_any_instance_of(Types::QueryType).to receive(:me).and_raise(StandardError) # rubocop:disable RSpec/AnyInstance
+    end
+
+    context_as_player1 do
+      it "response contain 'unexpected_error' error_code" do
+        post_query(name: 'me')
+        expect(response_json).to have_gql_errors('unexpected_error')
+      end
     end
   end
 end

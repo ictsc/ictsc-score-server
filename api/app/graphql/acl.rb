@@ -2,11 +2,20 @@
 
 class Acl
   class << self
+    # 各Mutationをcurrent_teamがその引数で実行できるか判定する
     def permit!(mutation:, args:)
-      raise GraphQL::ExecutionError, "Unpermitted mutation #{mutation.class} by #{mutation.context.current_team!.name}" unless allow?(mutation: mutation, args: args)
+      unless allow?(mutation: mutation, args: args)
+        current_team_name = mutation.context.current_team!.name
+        raise GraphQL::ExecutionError, "Unpermitted mutation #{mutation.class} by #{current_team_name}"
+      end
     end
 
+    private
+
+    # permit!の本体
     def allow?(mutation:, args:)
+      Rails.logger.debug mutation
+
       team = mutation.context.current_team!
 
       # audienceはデータの作成・更新・削除は一切できない
