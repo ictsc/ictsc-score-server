@@ -63,7 +63,6 @@ module Types
     def penalties(after: nil)
       rel = Penalty
         .readables(team: self.current_team!)
-        .order(:created_at)
 
       after.nil? ? rel : rel.where(created_at: after..)
     end
