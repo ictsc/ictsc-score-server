@@ -35,6 +35,14 @@ module Types
       argument :id, ID, required: true
     end
 
+    # 注意点
+    #
+    # 1. レスポンスは順序を一切保証しない
+    #    順序に意味をもたせるのは使う側
+    #
+    # 2. ActiveRecordのレコードを返すときは必ず、readablesもしくはreadableを通さなければならない
+    #    読み取りのアクセス制御は全てreadablesで行われる
+
     def me
       self.current_team!.readable(team: self.current_team!)
     end
@@ -96,6 +104,7 @@ module Types
     end
 
     def sessions
+      # ActiveRecordではないため、readablesが存在しない
       return [] unless self.current_team!.staff?
 
       Session.all
