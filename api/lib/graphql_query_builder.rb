@@ -133,7 +133,7 @@ module GraphqlQueryBuilder
   def build_composite_fields_query(fields:, nest_field_names:)
     nest_field_names
       .map {|name|
-        child_fields = fields_to_query(fields: fields.fetch(name).type.fields)
+        child_fields = fields_to_query(fields: fields.fetch(name).type.unwrap.fields)
         "#{name} { #{child_fields} }"
       }
       .join("\n")
