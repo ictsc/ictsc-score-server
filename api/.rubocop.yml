@@ -88,6 +88,9 @@ RSpec/ExampleLength:
   Max: 20
 RSpec/NestedGroups:
   Max: 10
+RSpec/ImplicitSubject:
+  Exclude:
+    - 'spec/lib/graphql_query_builder_spec.rb'
 
 ## rails系
 Rails/Output:

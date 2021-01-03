@@ -5,6 +5,9 @@
 #
 # TODO: 制限なくネストしたフィールドを取得できるような作りにしたほうがむしろシンプルな実装になる
 #       現状ではbuild_composite_fields_queryとfields_to_queryが似たような別のことをするメソッドになってしまっている
+#       fieldsを持つ要素と、composite fieldsの無制限にネスト可能なハッシュ { team: { attachments: {} } } を受け取って
+#       クエリを構築するものを作ったほうが単順な実装になるのでは?
+#       テスト書くの大変なので設計がいまいち
 module GraphqlQueryBuilder
   module_function
 
@@ -133,7 +136,7 @@ module GraphqlQueryBuilder
   def build_composite_fields_query(fields:, nest_field_names:)
     nest_field_names
       .map {|name|
-        child_fields = fields_to_query(fields: fields.fetch(name).type.fields)
+        child_fields = fields_to_query(fields: fields.fetch(name).type.unwrap.fields)
         "#{name} { #{child_fields} }"
       }
       .join("\n")
