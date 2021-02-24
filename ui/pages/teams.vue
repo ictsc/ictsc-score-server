@@ -21,7 +21,7 @@
       <v-col>
         <v-text-field
           v-model="search"
-          placeholder="チーム番号 チーム名 学校"
+          placeholder="ユーザ番号 ユーザ名 組織"
           append-icon="mdi-table-search"
           clearable
           single-line

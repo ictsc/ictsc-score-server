@@ -152,7 +152,7 @@ class Notification
       case mutation
       when 'AddAnswer'
         <<~MSG
-          #{record.problem.writer}解答提出
+          #{record.problem.writer} 解答提出
           #{build_team_and_problem_summary(team: record.team, problem: record.problem)}
         MSG
       when 'AddPenalty'
@@ -168,7 +168,7 @@ class Notification
         problem = issue.problem
 
         <<~MSG
-          #{problem.writer}質問追加
+          #{problem.writer} 質問追加
           #{build_team_and_problem_summary(team: issue.team, problem: problem)}
         MSG
       else
