@@ -59,7 +59,7 @@ export default class Mutations extends BaseModel {
 
         // レスポンスから取得したモデルとレコードを関数に渡す
         if (Array.isArray(value)) {
-          value.forEach((v) => func(model, value))
+          value.forEach((v) => func(model, v))
         } else {
           func(model, value)
         }
