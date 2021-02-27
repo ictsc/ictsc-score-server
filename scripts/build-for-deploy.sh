@@ -26,7 +26,7 @@ iss_tag() {
   echo "${image_name}"
 }
 
-docker-compose build api ui
+docker-compose build --parallel api ui
 
 iss_tag api
 iss_tag ui
