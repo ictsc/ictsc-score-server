@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # 非公開API(Preloader)を使っているためバージョンアップ時は注意
-raise 'unsupported ActiveRecord version' if ActiveRecord.version != Gem::Version.new('6.1.0')
+raise 'unsupported ActiveRecord version' if ActiveRecord.version != Gem::Version.new('6.1.3')
 
 # has_many has_one
 class AssociationLoader < GraphQL::Batch::Loader
