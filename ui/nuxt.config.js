@@ -44,10 +44,8 @@ export default {
 
   // ---- Nuxtモジュールの設定 ----
   axios: {
-    // これがないとlocalhost:8900で開いても、APIへのリクエスト先がlocalhost:3000になってしまう
     // Docs: https://axios.nuxtjs.org/options
-    prefix: '/api',
-    proxy: true,
+    baseURL: '/api',
   },
   markdownit: {
     // Docs: https://github.com/markdown-it/markdown-it

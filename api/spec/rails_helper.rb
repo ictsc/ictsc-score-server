@@ -80,9 +80,4 @@ RSpec.configure do |config|
   config.around(:each) do |example|
     DatabaseCleaner.cleaning { example.run }
   end
-
-  # テスト終了後に全削除
-  config.after(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
-  end
 end

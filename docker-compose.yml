@@ -54,7 +54,8 @@ services:
     env_file: .env
     stdin_open: true
     tty: true
-    command: ['postgres', '-c', 'max_connections=$POSTGRES_MAX_CONNECTIONS', '-c', 'shared_buffers=$POSTGRES_SHARED_BUFFERS', '-c', 'work_mem=$POSTGRES_WORK_MEM']
+    command: ['postgres']
+    # command: ['postgres', '-c', 'max_connections=$POSTGRES_MAX_CONNECTIONS', '-c', 'shared_buffers=$POSTGRES_SHARED_BUFFERS', '-c', 'work_mem=$POSTGRES_WORK_MEM']
 
   redis:
     image: redis:5.0.4-alpine
