@@ -120,7 +120,7 @@ export default {
       } else if (this.problem.answers.length === 0) {
         this.changeColor('')
         return '未解答'
-      } else if (this.unscoredAnswers.length === 0) {
+      } else if (this.unscoredAnswers.length !== 0) {
         this.changeColor('')
         return '採点中'
       } else if (this.maxScoreAnswer && this.maxScoreAnswer.percent >= 100) {
