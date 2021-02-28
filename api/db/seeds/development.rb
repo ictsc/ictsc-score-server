@@ -21,7 +21,6 @@ def create_config
     { key: :hide_all_score,                 value_type: :boolean, value: false },
     { key: :realtime_grading,               value_type: :boolean, value: true },
     { key: :competition_stop,               value_type: :boolean, value: false },
-    { key: :text_size_limit,                value_type: :integer, value: 8192 },
     { key: :penalty_weight,                 value_type: :integer, value: -10 },
 
     { key: :all_problem_force_open_at,      value_type: :date,    value: Time.zone.parse('2112-09-03 11:00:00') },
