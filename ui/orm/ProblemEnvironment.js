@@ -53,12 +53,12 @@ export default class ProblemEnvironment extends BaseModel {
 
   get copyText() {
     if (/^SSH$/i.test(this.service)) {
-      return { text: this.sshCommand }
-      // return {
-      //   text: `sshpass -p "${this.password}" ${this.sshCommand}`,
-      //   display: 'sshpassコマンド',
-      //   tooltip: 'sshpassコマンドを使うとpassword入力の手間が省けます',
-      // }
+      // return { text: this.sshCommand }
+      return {
+        text: `sshpass -p "${this.password}" ${this.sshCommand}`,
+        display: 'sshpassコマンド',
+        tooltip: 'sshpassコマンドを使うとpassword入力の手間が省けます',
+      }
     } else if (/^SSH\(公開鍵\)$/i.test(this.service)) {
       return {
         text: this.sshCommand,
