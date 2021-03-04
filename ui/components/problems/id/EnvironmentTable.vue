@@ -90,7 +90,7 @@
 
     <!-- チーム -->
     <template v-slot:item.team="{ value }">
-      <v-icon v-if="!value" small>mdi-check</v-icon>
+      <v-icon v-if="!!value" small>mdi-check</v-icon>
     </template>
 
     <!-- 運営用メモ -->
@@ -189,7 +189,7 @@ export default {
           { text: '運営用メモ', value: 'secretText' },
         ]
       } else {
-        return [{ text: '共通', value: 'team', align: 'center' }, ...commons]
+        return [{ text: 'チーム固有', value: 'team', align: 'center' }, ...commons]
       }
     },
   },
