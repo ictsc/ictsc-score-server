@@ -55,7 +55,7 @@ export default class ProblemEnvironment extends BaseModel {
     if (/^SSH$/i.test(this.service)) {
       // return { text: this.sshCommand }
       return {
-        text: `sshpass -p "${this.password}" ${this.sshCommand}`,
+        text: `sshpass -p "${this.password}" ${this.sshCommand} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null`,
         display: 'sshpassコマンド',
         tooltip: 'sshpassコマンドを使うとpassword入力の手間が省けます',
       }
