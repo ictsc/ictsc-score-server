@@ -3,7 +3,7 @@
     <!-- カードの帯 -->
     <template v-slot:button>
       <v-row align="center">
-        <v-col>
+        <v-col cols="4">
           <span v-if="!realtimeGrading && isPlayer"> 提出済 </span>
           <span v-else>
             <template v-if="answer.hasPoint">
@@ -15,8 +15,17 @@
           </span>
         </v-col>
 
-        <v-col v-if="answer.showTimer(problem)">
-          <div>{{ answer.delayTickDuration }}</div>
+        <v-col cols="4">
+          <div v-if="answer.showTimer(problem)">
+            {{ answer.delayTickDuration }}
+          </div>
+        </v-col>
+
+        <v-col cols="4">
+          <!-- 提出時刻 -->
+          <p class="text-right caption mb-0">
+            提出時刻: {{ answer.createdAtShort }}
+          </p>
         </v-col>
       </v-row>
     </template>
@@ -25,9 +34,6 @@
     <template v-if="isStaff">
       <grading-form :answer="answer" :problem="problem" class="px-2" />
     </template>
-
-    <!-- 提出時刻 -->
-    <p class="text-right caption mb-0">提出時刻: {{ answer.createdAtShort }}</p>
 
     <!-- 解答本体 -->
     <template v-if="problem.modeIsTextbox">
