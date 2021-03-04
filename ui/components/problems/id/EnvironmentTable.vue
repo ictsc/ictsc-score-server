@@ -77,7 +77,9 @@
         </v-btn>
 
         <markdown v-if="isMarkdown(value)" :content="value" dense />
-        <div v-else class="text-truncate" style="width: 12em">{{ value }}</div>
+        <div v-else class="text-truncate" style="max-width: 8em">
+          {{ value }}
+        </div>
       </v-row>
     </template>
 
@@ -189,7 +191,10 @@ export default {
           { text: '運営用メモ', value: 'secretText' },
         ]
       } else {
-        return [{ text: 'チーム固有', value: 'team', align: 'center' }, ...commons]
+        return [
+          { text: 'チーム専用', value: 'team', align: 'center', class: 'pr-0' },
+          ...commons,
+        ]
       }
     },
   },
