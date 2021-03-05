@@ -41,7 +41,7 @@ export default {
   },
   computed: {
     sortedAnswers() {
-      return this.sortByCreatedAt(this.answers).reverse()
+      return this.sortByCreatedAt(this.answers)
     },
   },
 }
