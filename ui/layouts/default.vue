@@ -73,8 +73,8 @@ export default {
             timeout,
           })
         } else {
-          const message = data.title + '\n' + data.body
-          this.notifyInfo({ message, timeout })
+          // const message = data.title + '\n' + data.body
+          // this.notifyInfo({ message, timeout })
         }
       }
     },

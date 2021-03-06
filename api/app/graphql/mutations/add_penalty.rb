@@ -17,7 +17,7 @@ module Mutations
       penalty = Penalty.new
 
       if penalty.update(args.merge(team: self.current_team!))
-        Notification.notify(mutation: self.graphql_name, record: penalty)
+        # Notification.notify(mutation: self.graphql_name, record: penalty)
 
         { penalty: penalty.readable(team: self.current_team!) }
       else
