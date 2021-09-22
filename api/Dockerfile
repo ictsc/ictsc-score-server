@@ -3,7 +3,7 @@ LABEL maintainer "ICTSC"
 
 RUN apt-get update -y -qq \
   && apt-get upgrade -y -qq \
-  && apt-get install -y -qq build-essential libpq-dev wget git tzdata \
+  && apt-get install -y -qq build-essential libpq-dev wget git tzdata shared-mime-info \
   && apt-get clean \
   && rm -rf /var/lib/opt/lists/*
 
